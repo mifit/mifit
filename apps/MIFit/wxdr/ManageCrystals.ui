@@ -1,0 +1,208 @@
+<ui version="4.0" >
+ <class>ManageCrystals</class>
+ <widget class="QDialog" name="ManageCrystals" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>832</width>
+    <height>594</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Manage Crystals</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout" >
+   <item row="0" column="0" >
+    <layout class="QHBoxLayout" name="horizontalLayout" >
+     <item>
+      <widget class="QPushButton" name="newCrystalButton" >
+       <property name="text" >
+        <string>New</string>
+       </property>
+       <property name="autoDefault" >
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="copyCrystalButton" >
+       <property name="text" >
+        <string>Copy</string>
+       </property>
+       <property name="autoDefault" >
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="deleteCrystalButton" >
+       <property name="text" >
+        <string>Delete</string>
+       </property>
+       <property name="autoDefault" >
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="1" >
+    <widget class="QLabel" name="label" >
+     <property name="text" >
+      <string>Crystal</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2" >
+    <widget class="QLineEdit" name="crystalName" />
+   </item>
+   <item rowspan="5" row="1" column="0" >
+    <widget class="QListWidget" name="crystalListBox" />
+   </item>
+   <item row="1" column="1" >
+    <widget class="QLabel" name="label_2" >
+     <property name="text" >
+      <string>Title</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2" >
+    <widget class="QLineEdit" name="title" />
+   </item>
+   <item row="2" column="1" >
+    <widget class="QLabel" name="label_3" >
+     <property name="text" >
+      <string>Unit cell</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2" >
+    <widget class="QLineEdit" name="unitCell" />
+   </item>
+   <item row="3" column="1" >
+    <widget class="QLabel" name="label_4" >
+     <property name="text" >
+      <string>Spacegroup</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2" >
+    <widget class="QLineEdit" name="spaceGroup" />
+   </item>
+   <item row="3" column="3" >
+    <widget class="QPushButton" name="findSpaceGroupButton" >
+     <property name="text" >
+      <string>Find</string>
+     </property>
+     <property name="autoDefault" >
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2" colspan="2" >
+    <widget class="QTextEdit" name="symmOps" >
+     <property name="readOnly" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1" >
+    <widget class="QLabel" name="label_5" >
+     <property name="text" >
+      <string>Non-crystallographic
+symmetry:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="2" colspan="2" >
+    <widget class="QTextEdit" name="ncsOps" />
+   </item>
+   <item row="6" column="2" colspan="2" >
+    <layout class="QHBoxLayout" name="horizontalLayout_2" >
+     <item>
+      <widget class="QPushButton" name="applyButton" >
+       <property name="text" >
+        <string>Apply</string>
+       </property>
+       <property name="autoDefault" >
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="resetButton" >
+       <property name="text" >
+        <string>Reset</string>
+       </property>
+       <property name="autoDefault" >
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="closeButton" >
+       <property name="text" >
+        <string>Close</string>
+       </property>
+       <property name="autoDefault" >
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>closeButton</sender>
+   <signal>clicked()</signal>
+   <receiver>ManageCrystals</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>755</x>
+     <y>567</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>359</x>
+     <y>305</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>applyButton</sender>
+   <signal>clicked()</signal>
+   <receiver>ManageCrystals</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>519</x>
+     <y>560</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>378</x>
+     <y>236</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spaceGroup</sender>
+   <signal>returnPressed()</signal>
+   <receiver>findSpaceGroupButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>703</x>
+     <y>132</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>784</x>
+     <y>137</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

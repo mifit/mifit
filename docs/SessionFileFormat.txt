@@ -1,0 +1,116 @@
+MIFit uses a custom file format called a 'session file'. Until now, the format
+of these files has been undocumented. This document contains some of the
+specifics of the file format (as well as they can be surmised from the current
+code and examples). This document is not complete.
+
+The file extension recognized for session files is .mlw.
+
+Session files can contain model information, viewpoint information, some map
+information, and annotations.
+
+Session files can contain script commands which are documented in Appendix A
+of the MIFit Manual.
+
+Session files can be XML formatted. The XML format is how session files are
+currently created from MIFit, but MIExpert creates plain text session files
+and older versions of MIFit may have created other formats.
+
+MIFit code recognizes XML formatted session files in two ways. The function
+MIGLWidget::IsXMLMolecule looks for the '<?xml' tag and for the '<Molecule' tag
+using a simple substring search. The function MIGLWidget::IsXMLDocument looks
+for '<?xml' and '<wxFitDocument' in a similar manner. 
+
+XML session files are read using the MoleculeHandler which derives from a
+SAX parser interface in the Xerces library. Only MIGLWidget::LoadXMLMolecule
+uses this class; however, the XML files are read in processed by other parts
+of the code in non-XML ways.
+
+XML tags:
+
+This is a overview of the XML tags. It is missing information regarding what
+the tags represent, the attributes they contain, and other schema information.
+These tags were found from the session file output code. Some of these tags
+may not be processed upon reading. Also, other additional tags may be
+recognized during reading. Analysis the input code is yet to be done.
+
+<wxFitDocument>
+  <Molecule>
+    <Compound/>
+    <Pathname/>
+    <Author/>
+    <Source/>
+    <dots_visible/>
+    <visible/>
+    <HVisible/>
+    <labels_visible/>
+    <link_here/>
+    <link_next/>
+    <modelnumber/>
+    <nresidues/>
+    <nlinks/>
+    <nribbons/>
+    <ribbon_coloring/>
+    <s_link/>
+    <s_main/>
+    <s_nonprotein/>
+    <s_radiustype/>
+    <s_sides/>
+    <s_waters/>
+    <srfboxsize/>
+    <srfdotsper/>
+    <symm_radius/>
+    <symmatoms_visible/>
+    <SymmCenter/>
+    <ResidueList>
+      <Residue>
+        <Atom/>
+      </Residue>
+    </ResidueList>
+    <Connect/>
+    <MapHeader>
+      <UnitCell/>
+      <Limits/>
+      <SymmOps/>
+      <MapHeaderOptions/>
+      <NCRSymmop/>
+    </MapHeader>
+    <SymmResidueList>
+      <Residue>
+        <Atom/>
+      </Residue>
+    </SymmResidueList>
+    <RibbonAtoms>
+      <Atom/>
+    </RibbonAtoms>
+    <H_Bond/>
+    <Label/>
+    <Annotation>
+      <Type/>
+      <Text/>
+      <Color/>
+    </Annotation>
+    <Bond/>
+    <SurfDot/>
+  </Molecule>
+  <EMap>
+    <!-- MapHeader is same as above in Molecule -->
+    <MapHeader>
+      <UnitCell/>
+      <Limits/>
+      <SymmOps/>
+      <MapHeaderOptions/>
+      <NCRSymmop/>
+    </MapHeader>
+    <!-- Map script commands here -->
+  </EMap>
+  <AtomStack>
+      <!-- Text representation of atom stack here -->
+  </AtomStack>
+  <ViewPoint>
+      <!-- ViewPoint script commands here -->
+  </ViewPoint>
+</wxFitDocument>
+
+
+XML session files are written using the XMLArchive class and member functions
+of the classes Annotation, Molecule, MIGLWidget.

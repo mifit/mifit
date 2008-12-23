@@ -1,0 +1,150 @@
+<ui version="4.0" >
+ <class>GeneralPreferences</class>
+ <widget class="QWidget" name="GeneralPreferences" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>429</width>
+    <height>419</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>General Preferences</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout" >
+   <item>
+    <widget class="QGroupBox" name="GeneralPrefsGroupBox" >
+     <property name="title" >
+      <string>General Preferences</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_4" >
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_3" >
+        <item>
+         <widget class="QCheckBox" name="incrementallyColorCheckBox" >
+          <property name="text" >
+           <string>Incrementally color additional models</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="xfitMouseCheckBox" >
+          <property name="text" >
+           <string>Use XFit mouse mode</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="saveOnCloseCheckBox" >
+          <property name="text" >
+           <string>On close, save active model to new PDB file</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox_2" >
+        <property name="title" >
+         <string>Jobs</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2" >
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_2" >
+           <item>
+            <widget class="QLabel" name="label" >
+             <property name="text" >
+              <string>Concurrent jobs limit</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="concurrentJobsSpinBox" >
+             <property name="minimum" >
+              <number>1</number>
+             </property>
+             <property name="maximum" >
+              <number>10</number>
+             </property>
+             <property name="value" >
+              <number>1</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_2" >
+             <property name="orientation" >
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0" >
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="autoOpenCheckBox" >
+           <property name="text" >
+            <string>Automatically open results when jobs finish</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox" >
+        <property name="title" >
+         <string>Break chains into segments by:</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout" >
+         <item>
+          <widget class="QCheckBox" name="breakOnDiscontinuityCheckBox" >
+           <property name="text" >
+            <string>Discontinuties in backbone</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="breakOnNonPeptideCheckBox" >
+           <property name="text" >
+            <string>Non-peptide entities</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_3" >
+           <property name="text" >
+            <string>(Do "Sort chains" to apply new settings</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <spacer name="verticalSpacer" >
+        <property name="orientation" >
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0" >
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

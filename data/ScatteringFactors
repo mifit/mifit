@@ -1,0 +1,87 @@
+#  this file contains the scattering factors used by XtalView.
+#  New ones can be found on page 100 of Volume IV of The International
+#  Tables for Crystallography.
+#  f' and f'' can be found on page 149 and are for CuKalpha in this file.
+#  Note an individual can override this file by copying it to her own
+#  $CRYSTALDATA directory and editing there.  If a copy exists there it will
+#  be used before the one in $XTALVIEWHOME/data
+#  Comments are proceeded by a '#' or a '!'
+#
+#  The form used for each line is:
+#  atom_match  res_match a1 b1 a2 b2 a3 b3 a4 b4 c Zeff f' f''
+# 	separate fileds with tabs or spaces
+#  atom_match: is the string which will be matched to atom names
+#  	in sequential order in the file.  i.e. C will match all atoms
+#  	C*.  Later entries will override earlier ones so that if you have 
+#  	a Calcium named CA+2 you could enter CA+ with Ca scattering factors.
+#	The first entry (* *) is the default if no match can be found
+#  res_match: the residue type to match - normally * to match anything
+#	but can be a specific residue to override for an unusual atom name.
+#	matching is done to whole name unlike atoms (i.e. HE does NOT match HEM)
+#  a1-c: are the coefficients as found in Volume IV page 100.
+#  Zeff: is the number of electrons contributing to the scattering
+#	found by taking the atomic number and adding or subtracting
+#	according to charge.  i.e. N+ is 7-1 or 6.
+#  f':  is the real part of the dispersion correction (anamolous scattering)
+#  f'': is the imaginary part.  See page 149 in Volume IV.
+# 	The values here are for CuKalpha - new ones are needed for 
+#	other wavelengths IF you are using anomalous scattering to phase
+#	enter 0.0 if you don't know them.
+#
+#  first record is default type - Carbon.  Never put * * anywhere but first!
+*	*	2.31	20.8439	1.02	10.2075	1.58860	0.5687	0.8650	51.6512	0.2156	6.0	0.017	0.009
+H	*	.489918	20.6593	.262003	7.74039	.197767	49.5519	.049879	2.20159	.001305	1.0	0.0	0.0
+C	*	2.31	20.8439	1.02	10.2075	1.58860	0.5687	0.8650	51.6512	0.2156	6.0	0.017	0.009
+N	*	12.2126	.0057	3.1322	9.8933	2.0125	28.9975	1.1663	.5826	-11.529	7.0	0.029	0.018
+O	*	3.0485	13.2771	2.28280	5.70110	1.54630	0.3239	0.867	32.9089	0.2508	8.0	0.047	0.032
+# Mg+2
+MG	*	3.4988	2.1676	3.8378	4.7542	1.3284	.185	.8497	10.1411	.4853	9.0	0.165	0.177
+P	*	6.4345	1.9067	4.1791	27.157	1.78	.526	1.4908	68.1645	1.1149	15.0	0.283	0.434
+S	*	6.9053	1.4679	5.2034	22.2151	1.4379	.2536	1.5863	56.172	0.8669	16.0	0.319	0.557
+# Mn+2
+MN	*	10.8061	5.2796	7.362	0.3435	3.5268	14.343	.2184	41.3235	1.0874	23.0	-.568	2.808
+# Fe+3
+FE	*	11.1764	4.6147	7.3863	.3005	3.3948	11.6729	.0724	38.5566	.9707	23.0	-1.179	3.204
+# Fe+3 for fake MAD in xheavy - f = 3.2 for all resolutions
+FM      *     0.0      0.0     0.0     0.0     0.0      0.0   0.0      0.0   3.2  3.2  -1.179  3.204
+# Cu+2
+CU	*	11.8168	3.37484	7.11181	.244078	5.78135	7.9876	1.14523	19.897	1.14431 27.0	-2.019	0.589
+# Zn+2
+ZN	*	11.9719	2.9946	7.3862	0.2031	6.4668	7.0826	1.394	18.0995	0.7807	28.0	-1.162	0.678
+SE	*	17.006	2.4098	5.8196	0.2726	3.9731	15.2372	4.35436	43.8163	2.8409	34.0	-0.879	1.139
+BR	*	17.1789	2.1723	5.2358	16.5796	5.6377	0.2609	3.9851	41.4328	2.9557	35.0	-0.767	1.283
+AG	*	19.2808	.6446	16.6885	7.4726	4.8045	24.6605	1.0463	99.8156	5.179	47.0	-.060	4.282
+PD 	*	19.3319	0.69866	15.5017	7.98939	5.29537	25.2052	0.60584	76.8986	5.26593	46.0	-0.059	3.934
+# actually Cd metal but + is used to prevent from being confused with Cdelta 
+CD+	*	19.2214	0.5946	17.6444	6.90890	4.461	24.7008	1.6029	87.4825	5.0694	48.0	-0.079	4.653
+I	*	20.1472	4.347	18.9949	0.2314	7.5138	27.766	2.2735	66.8776	4.07121	53.0	-0.579	6.835
+SM+	*	23.1504	2.31641	20.2599	.174081	11.9202	12.1571	2.71488	24.8242	.954586	59.0	-5.696	12.32
+SM	*	24.0042	2.47274	19.4258	0.19651	13.4396	14.3996	2.89604	128.007	2.20963	62.0	-5.696	12.32
+EU	*	24.6274	2.3879	19.0886	0.1942	13.7603	17.7546	2.92270	123.174	2.5745	63.0	-7.718	11.276
+# Gd+3
+GD+	*	24.3466	2.1553	20.4208	0.15552	11.8708	10.5782	3.7149	21.7029	0.64509	64.0	-9.242	11.946
+# Er+3
+ER	*	26.722	1.84659	19.7748	0.13729	12.1506	8.36225	5.17379	17.8974	1.17613	66.0	-9.733	3.937
+OS	*	28.1894	1.62903	16.155	8.97948	14.9305	0.38266	5.67589	48.1647	11.0005	76.0	-5.581	6.221
+IR	*	27.3049	1.59279	16.7296	8.86553	15.6115	0.41792	5.83377	45.0011	11.4722	77.0	-5.391	6.566
+AU 	*	16.8819	.4611	18.5913	8.6216	25.5582	1.4826	5.86	36.3956	12.0658	79.0	-5.096	7.297
+PT	*	27.0059	1.51293	17.7639	8.81174	15.7131	.424593	5.7837	38.6103	11.6883	78.0	-5.233	6.925
+# Hg +2
+HG+	HG	29.5641	1.21152	18.06	7.05639	12.8374	.284738	6.89912	20.7482	10.6268	78.0	-4.99	7.686
+# HG +0
+HG 	HG	20.6809	0.545	19.0417	8.4484	21.6575	1.5729	5.9676	38.3246	12.6089	80.0	-4.99	7.686
+# Pb+2
+PB+	*	21.7886	1.3366	19.5682	0.48838	19.1406	6.7727	7.01107	23.8132	12.4734	80.0	-4.818	8.505
+# Pb+0
+PB	*	31.0617	.6902	13.0637	2.3576	18.442	8.618	5.9696	47.2579	13.4118	82.0	-4.818	8.505
+# U+3
+U 	*	35.5747	.52048	22.5259	3.12293	12.2165	12.7148	5.37073	26.3394	13.3092	89.0	-5.359	13.409
+#  the following have residue names to help with NAD naming 
+AC	NAD	2.31	20.8439	1.02	10.2075	1.58860	0.5886	0.5687	51.6512	0.2156	6.0	0.017	0.009
+AN	NAD	12.2126	.0057	3.1322	9.8933	2.0125	28.9975	1.1663	.5826	-11.529	7.0	0.029	0.018
+AO	NAD	3.0485	13.2771	2.28280	5.70110	1.54630	0.3239	0.867	32.9089	0.2508	8.0	0.047	0.032
+AP	NAD	6.4345	1.9067	4.1791	27.157	1.78	.526	1.4908	68.1645	1.1149	15.0	0.283	0.434
+NC	NAD	2.31	20.8439	1.02	10.2075	1.58860	0.5886	0.5687	51.6512	0.2156	6.0	0.017	0.009
+NN	NAD	12.2126	.0057	3.1322	9.8933	2.0125	28.9975	1.1663	.5826	-11.529	7.0	0.029	0.018
+NO	NAD	3.0485	13.2771	2.28280	5.70110	1.54630	0.3239	0.867	32.9089	0.2508	8.0	0.047	0.032
+NP	NAD	6.4345	1.9067	4.1791	27.157	1.78	.526	1.4908	68.1645	1.1149	15.0	0.283	0.434

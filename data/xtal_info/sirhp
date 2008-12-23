@@ -1,0 +1,4 @@
+name hemoprotein subunit of sulfite reductase
+cell 69.750000 77.440002 87.790001 90.000000 90.000000 90.000000
+spgp p212121 19 4 4 orthorhombic
+symm x,y,z; 1/2-x,-y,1/2+z; -x,1/2+y,1/2-z; 1/2+x,1/2-y,-z.

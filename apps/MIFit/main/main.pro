@@ -1,0 +1,69 @@
+
+include(../../../common.pri)
+
+TEMPLATE = app
+TARGET = MIFit
+INCLUDEPATH += .
+DESTDIR = ../../..
+
+# to copy executable from build dir to source distribution dir
+target.path = $DESTDIR
+INSTALLS += target
+
+CONFIG += no_lflags_merge
+CONFIG -= staticlib
+
+unix { 
+  LIBPREFIX = /lib
+  LIBSPATH = ../../../libs
+}
+win32 {
+  LIBSPATH = ../../../libs
+  LIBPREFIX = /
+  RC_FILE=mifit.rc
+}
+
+mac {
+ICON=../images/mifit.icns
+}
+
+# specify library dependencies
+PRE_TARGETDEPS += \
+        ..$${LIBPREFIX}core$${LIB_EXTENSION} \
+        ..$${LIBPREFIX}ui$${LIB_EXTENSION} \
+        ..$${LIBPREFIX}wxdr$${LIB_EXTENSION} \
+        ..$${LIBPREFIX}mipython$${LIB_EXTENSION} \
+        $${LIBSPATH}$${LIBPREFIX}ligand$${LIB_EXTENSION} \
+        $${LIBSPATH}$${LIBPREFIX}map$${LIB_EXTENSION} \
+        $${LIBSPATH}$${LIBPREFIX}molopt$${LIB_EXTENSION} \
+        $${LIBSPATH}$${LIBPREFIX}conflib$${LIB_EXTENSION} \
+        $${LIBSPATH}$${LIBPREFIX}chemlib$${LIB_EXTENSION} \
+        $${LIBSPATH}$${LIBPREFIX}miopengl$${LIB_EXTENSION} \
+        $${LIBSPATH}$${LIBPREFIX}mimath$${LIB_EXTENSION} \
+        $${LIBSPATH}$${LIBPREFIX}miutil$${LIB_EXTENSION} \
+        $${LIBSPATH}$${LIBPREFIX}jacgrid$${LIB_EXTENSION} \
+        $${LIBSPATH}$${LIBPREFIX}umtz$${LIB_EXTENSION}
+
+USE_ASPLOT{ 
+  PRE_TARGETDEPS += ..$${LIBPREFIX}figurelib$${LIB_EXTENSION} 
+  FIGURELIB=-lfigurelib
+}
+MI_USE_JOBS{ 
+  PRE_TARGETDEPS += ..$${LIBPREFIX}jobs$${LIB_EXTENSION} 
+  JOBSLIB=-ljobs
+}
+
+MYLIBS=-L../ -lui $$FIGURELIB $$JOBSLIB -lwxdr -lcore -lmipython -L../../../libs -lligand -lmap -lmolopt -lconflib -lchemlib -lmiopengl -lmimath -lmiutil -ljacgrid -lumtz
+LIBS =  $$MYLIBS $$MYLIBS $$LIBS
+
+unix:!mac{
+  QMAKE_LFLAGS += -Wl,--rpath=\\\$\$ORIGIN
+  QMAKE_LFLAGS += -Wl,--rpath=\\\$\$ORIGIN/libs
+  QMAKE_RPATH=
+}
+
+mac {
+  QMAKE_LFLAGS+=-Wl,-search_paths_first
+}
+
+SOURCES += *.cpp

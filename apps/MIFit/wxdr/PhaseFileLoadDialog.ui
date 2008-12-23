@@ -1,0 +1,330 @@
+<ui version="4.0" >
+ <class>PhaseFileLoadDialog</class>
+ <widget class="QDialog" name="PhaseFileLoadDialog" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>896</width>
+    <height>364</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Phase File Loading Options</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2" >
+   <item>
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="title" >
+      <string>Files / Models</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout" >
+      <item>
+       <widget class="QLabel" name="filename" >
+        <property name="text" >
+         <string>filename</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="map1Model" >
+        <property name="text" >
+         <string>Model1</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="map2Model" >
+        <property name="text" >
+         <string>Model2</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_2" >
+     <property name="title" >
+      <string>Maps</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout" >
+      <item row="0" column="0" >
+       <widget class="QCheckBox" name="map1Check" >
+        <property name="text" >
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3" >
+       <widget class="QComboBox" name="map1Type" />
+      </item>
+      <item row="0" column="6" >
+       <widget class="QComboBox" name="map1FoChoice" />
+      </item>
+      <item row="0" column="8" >
+       <widget class="QComboBox" name="map1FcChoice" />
+      </item>
+      <item row="0" column="10" >
+       <widget class="QComboBox" name="map1PhiChoice" />
+      </item>
+      <item row="0" column="12" >
+       <widget class="QComboBox" name="map1FomChoice" />
+      </item>
+      <item row="0" column="2" >
+       <widget class="QLabel" name="label_5" >
+        <property name="text" >
+         <string>Map Type</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="5" >
+       <widget class="QLabel" name="map1F1Label" >
+        <property name="text" >
+         <string>Fo=</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="7" >
+       <widget class="QLabel" name="fc1Label" >
+        <property name="text" >
+         <string>Fc=</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="9" >
+       <widget class="QLabel" name="phase1Label" >
+        <property name="text" >
+         <string>Phase=</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="11" >
+       <widget class="QLabel" name="fom1Label" >
+        <property name="text" >
+         <string>Fom=</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="12" >
+       <widget class="QComboBox" name="map2FomChoice" />
+      </item>
+      <item row="1" column="10" >
+       <widget class="QComboBox" name="map2PhiChoice" />
+      </item>
+      <item row="1" column="8" >
+       <widget class="QComboBox" name="map2FcChoice" />
+      </item>
+      <item row="1" column="6" >
+       <widget class="QComboBox" name="map2FoChoice" />
+      </item>
+      <item row="1" column="3" >
+       <widget class="QComboBox" name="map2Type" />
+      </item>
+      <item row="1" column="11" >
+       <widget class="QLabel" name="fom2Label" >
+        <property name="text" >
+         <string>Fom=</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="9" >
+       <widget class="QLabel" name="phase2Label" >
+        <property name="text" >
+         <string>Phase=</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="7" >
+       <widget class="QLabel" name="fc2Label" >
+        <property name="text" >
+         <string>Fc=</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="5" >
+       <widget class="QLabel" name="map2F1Label" >
+        <property name="text" >
+         <string>Fo=</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2" >
+       <widget class="QLabel" name="label_14" >
+        <property name="text" >
+         <string>Map Type</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QCheckBox" name="map2Check" >
+        <property name="text" >
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item rowspan="2" row="0" column="4" >
+       <widget class="Line" name="line" >
+        <property name="orientation" >
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="13" >
+       <spacer name="horizontalSpacer_2" >
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="13" >
+       <spacer name="horizontalSpacer_3" >
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_3" >
+     <property name="title" >
+      <string>Resolution</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout" >
+      <item>
+       <widget class="QLabel" name="label_2" >
+        <property name="text" >
+         <string>Min</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QDoubleSpinBox" name="resmin" />
+      </item>
+      <item>
+       <widget class="QLabel" name="label_3" >
+        <property name="text" >
+         <string>Max</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QDoubleSpinBox" name="resmax" />
+      </item>
+      <item>
+       <widget class="QLabel" name="label_4" >
+        <property name="text" >
+         <string>Grid Size</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="gridChoice" >
+        <item>
+         <property name="text" >
+          <string>Coarse Grid</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Medium Grid</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Fine Grid</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer" >
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer" >
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0" >
+      <size>
+       <width>20</width>
+       <height>1</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>PhaseFileLoadDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>PhaseFileLoadDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

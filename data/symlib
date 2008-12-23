@@ -1,0 +1,462 @@
+spgp p1 1 1 1 triclinic
+symm x,y,z.
+spgp p-1 2 2 2 triclinic
+symm x,y,z; -x,-y,-z.
+spgp p2 3 2 2 monoclinic
+symm x,y,z; -x,y,-z.
+spgp p21 4 2 2 monoclinic
+symm x,y,z; -x,y+1/2,-z.
+spgp c2 5 4 2 monoclinic
+symm x,y,z; -x,y,-z; 1/2+x,1/2+y,z; 1/2-x,1/2+y,-z.
+spgp pm 6 2 2 monoclinic
+symm x,y,z; x,-y,z.
+spgp pc 7 2 2 monoclinic
+symm x,y,z; x,-y,1/2+z.
+spgp cm 8 4 2 monoclinic
+symm x,y,z; x,-y,z; 1/2+x,1/2+y,z; 1/2+x,1/2-y,z.
+spgp cc 9 4 2 monoclinic
+symm x,y,z; x,-y,1/2+z; 1/2+x,1/2+y,z; 1/2+x,1/2-y,1/2+z.
+spgp p2/m 10 4 4 monoclinic
+symm x,y,z; x,-y,z; -x,y,-z; -x,-y,-z.
+spgp p21/m 11 4 4 monoclinic
+symm x,y,z; -x,1/2+y,-z; -x,-y,-z; x,1/2-y,z.
+spgp c2/m 12 8 4 monoclinic
+symm x,y,z; x,-y,z; -x,y,-z; -x,-y,-z; 1/2+x,1/2+y,z; 1/2+x,1/2-y,z; 1/2-x,1/2+y,-z; 1/2-x,1/2-y,-z.
+spgp p2/c 13 4 4 monoclinic
+symm x,y,z; -x,y,1/2-z; -x,-y,-z; x,-y,1/2+z.
+spgp p21/c 14 4 4 monoclinic
+symm x,y,z; -x,-y,-z; -x,1/2+y,1/2-z; x,1/2-y,1/2+z.
+spgp c2/c 15 8 4 monoclinic
+symm x,y,z; -x,y,1/2-z; -x,-y,-z; x,-y,1/2+z; 1/2+x,1/2+y,z; 1/2-x,1/2+y,1/2-z; 1/2-x,1/2-y,-z; 1/2+x,1/2-y,1/2+z.
+spgp p222 16 4 4 orthorhombic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z.
+spgp p2221 17 4 4 orthorhombic
+symm x,y,z; -x,-y,1/2+z; -x,y,1/2-z; x,-y,-z.
+spgp p21212 18 4 4 orthorhombic
+symm x,y,z; -x,-y,z; 1/2-x,1/2+y,-z; 1/2+x,1/2-y,-z.
+spgp p212121 19 4 4 orthorhombic
+symm x,y,z; 1/2-x,-y,1/2+z; -x,1/2+y,1/2-z; 1/2+x,1/2-y,-z.
+spgp c2221 20 8 4 orthorhombic
+symm x,y,z; -x,-y,1/2+z; -x,y,1/2-z; x,-y,-z; 1/2+x,1/2+y,z; 1/2-x,1/2-y,1/2+z; 1/2-x,1/2+y,1/2-z; 1/2+x,1/2-y,-z.
+spgp c222 21 8 4 orthorhombic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; 1/2+x,1/2+y,z; 1/2-x,1/2-y,z; 1/2-x,1/2+y,-z; 1/2+x,1/2-y,-z.
+spgp f222 22 16 4 orthorhombic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; x,1/2+y,1/2+z; -x,1/2-y,1/2+z; -x,1/2+y,1/2-z; x,1/2-y,1/2-z; 1/2+x,y,1/2+z; 1/2-x,-y,1/2+z; 1/2-x,y,1/2-z; 1/2+x,-y,1/2-z; 1/2+x,1/2+y,z; 1/2-x,1/2-y,z; 1/2-x,1/2+y,-z; 1/2+x,1/2-y,-z.
+spgp i222 23 8 4 orthorhombic
+symm x,y,z; -x,-y,z; x,-y,-z; -x,y,-z; x+1/2,y+1/2,z+1/2; -x+1/2,-y+1/2,z+1/2; x+1/2,-y+1/2,-z+1/2; -x+1/2,y+1/2,-z+1/2.
+spgp i212121 24 8 4 orthorhombic
+symm x,y,z; 1/2-x,-y,1/2+z; -x,1/2+y,1/2-z; 1/2+x,1/2-y,-z; 1/2+x,1/2+y,1/2+z; -x,1/2-y,z; 1/2-x,y,-z; x,-y,1/2-z.
+spgp pmm2 25 4 4 orthorhombic
+symm x,y,z; -x,-y,z; x,-y,z; -x,y,z.
+spgp pmc21 26 4 4 orthorhombic
+symm x,y,z; -x,-y,1/2+z; x,-y,1/2+z; -x,y,z.
+spgp pcc2 27 4 4 orthorhombic
+symm x,y,z; -x,-y,z; x,-y,1/2+z; -x,y,1/2+z.
+spgp pma2 28 4 4 orthorhombic
+symm x,y,z; -x,-y,z; 1/2+x,-y,z; 1/2-x,y,z.
+spgp pca21 29 4 4 orthorhombic
+symm x,y,z; -x,-y,1/2+z; 1/2+x,-y,z; 1/2-x,y,1/2+z.
+spgp pnc2 30 4 4 orthorhombic
+symm x,y,z; -x,-y,z; x,1/2-y,1/2+z; -x,1/2+y,1/2+z.
+spgp pmn21 31 4 4 orthorhombic
+symm x,y,z; 1/2-x,-y,1/2+z; 1/2+x,-y,1/2+z; -x,y,z.
+spgp pba2 32 4 4 orthorhombic
+symm x,y,z; -x,-y,z; 1/2+x,1/2-y,z; 1/2-x,1/2+y,z.
+spgp pna21 33 4 4 orthorhombic
+symm x,y,z; -x,-y,1/2+z; 1/2+x,1/2-y,z; 1/2-x,1/2+y,1/2+z.
+spgp pnn2 34 4 4 orthorhombic
+symm x,y,z; -x,-y,z; 1/2+x,1/2-y,1/2+z; 1/2-x,1/2+y,1/2+z.
+spgp cmm2 35 8 4 orthorhombic
+symm x,y,z; -x,-y,z; x,-y,z; -x,y,z; 1/2+x,1/2+y,z; 1/2-x,1/2-y,z; 1/2+x,1/2-y,z; 1/2-x,1/2+y,z.
+spgp cmc21 36 8 4 orthorhombic
+symm x,y,z; -x,-y,1/2+z; x,-y,1/2+z; -x,y,z; 1/2+x,1/2+y,z; 1/2-x,1/2-y,1/2+z; 1/2+x,1/2-y,1/2+z; 1/2-x,1/2+y,z.
+spgp ccc2 37 8 4 orthorhombic
+symm x,y,z; -x,-y,z; x,-y,1/2+z; -x,y,1/2+z; 1/2+x,1/2+y,z; 1/2-x,1/2-y,z; 1/2+x,1/2-y,1/2+z; 1/2-x,1/2+y,1/2+z.
+spgp amm2 38 8 4 orthorhombic
+symm x,y,z; -x,-y,z; x,-y,z; -x,y,z; x,1/2+y,1/2+z; -x,1/2-y,1/2+z; x,1/2-y,1/2+z; -x,1/2+y,1/2+z.
+spgp abm2 39 8 4 orthorhombic
+symm x,y,z; -x,-y,z; x,1/2-y,z; -x,1/2+y,z; x,1/2+y,1/2+z; -x,1/2-y,1/2+z; x,-y,1/2+z; -x,y,1/2+z.
+spgp ama2 40 8 4 orthorhombic
+symm x,y,z; -x,-y,z; 1/2+x,-y,z; 1/2-x,y,z; x,1/2+y,1/2+z; -x,1/2_y,1/2+z; 1/2+x,1/2-y,1/2+z; 1/2-x,1/2+y,1/2+z.
+spgp aba2 41 8 4 orthorhombic
+symm x,y,z; -x,-y,z; 1/2+x,1/2-y,z; 1/2-x,1/2+y,z; x,1/2+y,1/2+z; -x,1/2-y,1/2+z; 1/2+x,-y,1/2+z; 1/2-x,y,1/2+z.
+spgp fmm2 42 16 4 orthorhombic
+symm x,y,z; -x,-y,z; x,-y,z; -x,y,z; x,1/2+y,1/2+z; -x,1/2-y,1/2+z; x,1/2-y,1/2+z; -x,1/2+y,1/2+z; 1/2+x,y,1/2+z; 1/2-x,-y,1/2+z; 1/2+x,-y,1/2+z; 1/2-x,y,1/2+z; 1/2+x,1/2+y,z; 1/2-x,1/2-y,z; 1/2+x,1/2-y,z; 1/2-x,1/2+y,z.
+spgp fdd2 43 16 4 orthorhombic
+symm x,y,z; -x,-y,z; 1/4+x,1/4-y,1/4+z; 1/4-x,1/2+y,1/4+z; x,1/2+y,1/2+z; -x,1/2-y,1/2+z; 1/4+x,3/4-y,3/4+z; 1/4-x,3/4+y,3/4+z; 1/2+x,y,1/2+z; 1/2-x,-y,1/2+z; 3/4+x,1/4-y,3/4+z; 3/4-x,1/4+y,3/4+z; 1/2+x,1/2+y,z; 1/2-x,1/2-y,z; 3/4+x,3/4-y,1/4+z; 3/4-x,3/4+y,1/4+z.
+spgp imm2 44 8 4 orthorhombic
+symm x,y,z; -x,-y,z; x,-y,z; -x,y,z; 1/2+x,1/2+y,1/2+z; 1/2-x,1/2-y,1/2+z; 1/2+x,1/2-y,1/2+z; 1/2-x,1/2+y,1/2+z.
+spgp iba2 45 8 4 orthorhombic
+symm x,y,z; -x,-y,z; 1/2+x,1/2-y,z; 1/2-x,1/2+y,z; 1/2+x,1/2+y,1/2+z; 1/2-x,1/2-y,1/2+z; x,-y,1/2+z; -x,y,1/2+z.
+spgp ima2 46 8 4 orthorhombic
+symm x,y,z; -x,-y,z; 1/2+x,-y,z; 1/2-x,y,z; 1/2+x,1/2+y,1/2+z; 1/2-x,1/2_y,1/2+z; x,1/2-y,1/2+z; -x,1/2+y,1/2+z.
+spgp pmmm 47 8 8 orthorhombic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; -x,-y,-z; x,y,-z; x,-y,z; -x,y,z.
+spgp pnnn 48 8 8 orthorhombic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; 1/2-x,1/2-y,1/2-z; 1/2+x,1/2+y,1/2-z; 1/2+x,1/2-y,1/2+z; 1/2-x,1/2+y,1/2+z.
+spgp pccm 49 8 8 orthorhombic
+symm x,y,z; -x,-y,z; -x,y,1/2-z; x,-y,1/2-z; -x,-y,-z; x,y,-z; x,-y,1/2+z; -x,y,1/2+z.
+spgp pban 50 8 8 orthorhombic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; 1/2-x,1/2-y,-z; 1/2+x,1/2+y,-z; 1/2+x,1/2-y,z; 1/2-x,1/2+y,z.
+spgp pmma 51 8 8 orthorhombic
+symm x,y,z; 1/2-x,-y,z; -x,y,-z; 1/2+x,-y,-z; -x,-y,-z; 1/2+x,y,-z; x,-y,z; 1/2-x,y,z.
+spgp pnna 52 8 8 orthorhombic
+symm x,y,z; 1/2-x,-y,z; 1/2-x,1/2+y,1/2-z; x,1/2-y,1/2-z; -x,-y,-z; 1/2+x,y,-z; 1/2+x,1/2-y,1/2+z; -x,1/2+y,1/2+z.
+spgp pmna 53 8 8 orthorhombic
+symm x,y,z; 1/2-x,-y,1/2+z; 1/2-x,y,1/2-z; x,-y,-z; -x,-y,-z; 1/2+x,y,1/2-z; 1/2+x,-y,1/2+z; -x,y,z.
+spgp pcca 54 8 8 orthorhombic
+symm x,y,z; 1/2-x,-y,z; -x,y,1/2-z; 1/2+x,-y,1/2-z; -x,-y,-z; 1/2+x,y,-z; x,-y,1/2+z; 1/2-x,y,1/2+z.
+spgp pbam 55 8 8 orthorhombic
+symm x,y,z; -x,-y,z; 1/2-x,1/2+y,-z; 1/2+x,1/2-y,-z; -x,-y,-z; x,y,-z; 1/2+x,1/2-y,z; 1/2-x,1/2+y,z.
+spgp pccn 56 8 8 orthorhombic
+symm x,y,z; 1/2-x,1/2-y,z; -x,1/2+y,1/2-z; 1/2+x,-y,1/2-z; -x,-y,-z; 1/2+x,1/2+y,-z; x,1/2-y,1/2+z; 1/2-x,y,1/2+z.
+spgp pbcm 57 8 8 orthorhombic
+symm x,y,z; -x,-y,1/2+z; -x,1/2+y,1/2-z; x,1/2-y,-z; -x,-y,-z; x,y,1/2-z; x,1/2-y,1/2+z; -x,1/2+y,z.
+spgp pnnm 58 8 8 orthorhombic
+symm x,y,z; -x,-y,z; 1/2-x,1/2+y,1/2-z; 1/2+x,1/2-y,1/2-z; -x,-y,-z; x,y,-z; 1/2+x,1/2-y,1/2+z; 1/2-x,1/2+y,1/2+z.
+spgp pmmn 59 8 8 orthorhombic
+symm x,y,z; -x,-y,z; 1/2-x,y+1/2,-z; x+1/2,1/2-y,-z; 1/2-x,1/2-y,-z; x+1/2,y+1/2,-z; x,-y,z; -x,y,z.
+spgp pmmn2 1059 8 8 orthorhombic
+symm x,y,z; 1/2-x,1/2-y,z; -x,1/2+y,-z; 1/2+x,-y,-z; -x,-y,-z; x+1/2,y+1/2,-z; x,1/2-y,z; 1/2-x,y,z.
+spgp pbcn 60 8 8 orthorhombic
+symm x,y,z; 1/2-x,1/2-y,1/2+z; -x,y,1/2-z; 1/2+x,1/2-y,-z; -x,-y,-z; 1/2+x,1/2+y,1/2-z; x,-y,1/2+z; 1/2-x,1/2+y,z.
+spgp pbca 61 8 8 orthorhombic
+symm x,y,z; 1/2-x,-y,1/2+z; -x,1/2+y,1/2-z; 1/2+x,1/2-y,-z; -x,-y,-z; 1/2+x,y,1/2-z; x,1/2-y,1/2+z; 1/2-x,1/2+y,z.
+spgp pnma 62 8 8 orthorhombic
+symm x,y,z; -x+1/2,-y,z+1/2; -x,y+1/2,-z; x+1/2,-y+1/2,-z+1/2; -x,-y,-z; x+1/2,y,-z+1/2; x,-y+1/2,z; -x+1/2,y+1/2,z+1/2.
+spgp cmcm 63 16 8 orthorhombic
+symm x,y,z; -x,-y,1/2+z; -x,y,1/2-z; x,-y,-z; -x,-y,-z; x,y,1/2-z; x,-y,1/2+z; -x,y,z; 1/2+x,1/2+y,z; 1/2-x,1/2-y,1/2+z; 1/2-x,1/2+y,1/2-z; 1/2+x,1/2-y,-z; 1/2-x,1/2-y,-z; 1/2+x,1/2+y,1/2-z; 1/2+x,1/2-y,1/2+z; 1/2-x,1/2+y,z.
+spgp cmca 64 16 8 orthorhombic
+symm x,y,z; -x,1/2-y,1/2+z; -x,1/2+y,1/2-z; x,-y,-z; -x,-y,-z; x,1/2+y,1/2-z; x,1/2-y,1/2+z; -x,y,z; 1/2+x,1/2+y,z; 1/2-x,-y,1/2+z; 1/2-x,y,1/2-z; 1/2+x,1/2-y,-z; 1/2-x,1/2-y,-z; 1/2+x,y,1/2-z; 1/2+x,-y,1/2+z; 1/2-x,1/2+y,z.
+spgp cmmm 65 16 8 orthorhombic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; -x,-y,-z; x,y,-z; x,-y,z; -x,y,z; 1/2+x,1/2+y,z; 1/2-x,1/2-y,z; 1/2-x,1/2+y,-z; 1/2+x,1/2-y,-z; 1/2-x,1/2-y,-z; 1/2+x,1/2+y,-z; 1/2+x,1/2-y,z; 1/2-x,1/2+y,z.
+spgp cccm 66 16 8 orthorhombic
+symm x,y,z; -x,-y,z; -x,y,1/2-z; x,-y,1/2-z; -x,-y,-z; x,y,-z; x,-y,1/2+z; -x,y,1/2+z; 1/2+x,1/2+y,z; 1/2-x,1/2-y,z; 1/2-x,1/2+y,1/2-z; 1/2+x,1/2-y,1/2-z; 1/2-x,1/2-y,-z; 1/2+x,1/2+y,-z; 1/2+x,1/2-y,1/2+z; 1/2-x,1/2+y,1/2+z.
+spgp cmma 67 16 8 orthorhombic
+symm x,y,z; -x,1/2-y,z; -x,1/2+y,-z; x,-y,-z; -x,-y,-z; x,1/2+y,-z; x,1/2-y,z; -x,y,z; 1/2+x,1/2+y,z; 1/2-x,-y,z; 1/2-x,y,-z; 1/2+x,1/2-y,-z; 1/2-x,1/2-y,-z; 1/2+x,y,-z; 1/2+x,-y,z; 1/2-x,1/2+y,z.
+spgp ccca 68 16 8 orthorhombic
+symm x,y,z; 1/2-x,1/2-y,z; -x,y,-z; 1/2+x,1/2-y,-z; -x,1/2-y,1/2-z; 1/2+x,y,1/2-z; x,1/2-y,1/2+z; 1/2-x,y,1/2+z; 1/2+x,1/2+y,z; -x,-y,z; 1/2-x,1/2+y,-z; x,-y,-z; 1/2-x,-y,1/2-z; x,1/2+y,1/2-z; 1/2+x,-y,1/2+z; -x,1/2+y,1/2+z.
+spgp fmmm 69 32 8 orthorhombic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; -x,-y,-z; x,y,-z; x,-y,z; -x,y,z; x,1/2+y,1/2+z; -x,1/2-y,1/2+z; -x,1/2+y,1/2-z; x,1/2-y,1/2-z; -x,1/2-y,1/2-z; x,1/2+y,1/2-z; x,1/2-y,1/2+z; -x,1/2+y,1/2+z; 1/2+x,y,1/2+z; 1/2-x,-y,1/2+z; 1/2-x,y,1/2-z; 1/2+x,-y,1/2-z; 1/2-x,-y,1/2-z; 1/2+x,y,1/2-z; 1/2+x,-y,1/2+z; 1/2-x,y,1/2+z; 1/2+x,1/2+y,z; 1/2-x,1/2-y,z; 1/2-x,1/2+y,-z; 1/2+x,1/2-y,-z; 1/2-x,1/2-y,-z; 1/2+x,1/2+y,-z; 1/2+x,1/2-y,z; 1/2-x,1/2+y,z.
+spgp fddd 70 32 8 orthorhombic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; 1/4-x,1/4-y,1/4-z; 1/4+x,1/4+y,1/4-z; 1/4+x,1/4-y,1/4+z; 1/4-x,1/4+y,1/4+z; x,1/2+y,1/2+z; -x,1/2-y,1/2+z; -x,1/2+y,1/2-z; x,1/2-y,1/2-z; 1/4-x,3/4-y,3/4-z; 1/4+x,3/4+y,3/4-z; 1/4+x,3/4-y,3/4+z; 1/4-x,3/4+y,3/4+z; 1/2+x,y,1/2+z; 1/2-x,-y,1/2+z; 1/2-x,y,1/2-z; 1/2+x,-y,1/2-z; 3/4-x,1/4-y,3/4-z; 3/4+x,1/4+y,3/4-z; 3/4+x,1/4-y,3/4+z; 3/4-x,1/4+y,3/4+z; 1/2+x,1/2+y,z; 1/2-x,1/2-y,z; 1/2-x,1/2+y,-z; 1/2+x,1/2-y,-z; 3/4-x,3/4-y,1/4-z; 3/4+x,3/4+y,1/4-z; 3/4+x,3/4-y,1/4+z; 3/4-x,3/4+y,1/4+z.
+spgp immm 71 16 8 orthorhombic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; -x,-y,-z; x,y,-z; x,-y,z; -x,y,z; 1/2+x,1/2+y,1/2+z; 1/2-x,1/2-y,1/2+z; 1/2-x,1/2+y,1/2-z; 1/2+x,1/2-y,1/2-z; 1/2-x,1/2-y,1/2-z; 1/2+x,1/2+y,1/2-z; 1/2+x,1/2-y,1/2+z; 1/2-x,1/2+y,1/2+z.
+spgp ibam 72 16 8 orthorhombic
+symm x,y,z; -x,-y,z; 1/2-x,1/2+y,-z; 1/2+x,1/2-y,-z; -x,-y,-z; x,y,-z; 1/2+x,1/2-y,z; 1/2-x,1/2+y,z; 1/2+x,1/2+y,1/2+z; 1/2-x,1/2-y,1/2+z; -x,y,1/2-z; x,-y,1/2-z; 1/2-x,1/2-y,1/2-z; 1/2+x,1/2+y,1/2-z; x,-y,1/2+z; -x,y,1/2+z.
+spgp ibca 73 16 8 orthorhombic
+symm x,y,z; 1/2-x,-y,1/2+z; -x,1/2+y,1/2-z; 1/2+x,1/2-y,-z; -x,-y,-z; 1/2+x,y,1/2-z; x,1/2-y,1/2+z; 1/2-x,1/2+y,z; 1/2+x,1/2+y,1/2+z; -x,1/2-y,z; 1/2-x,y,-z; x,-y,1/2-z; 1/2-x,1/2-y,1/2-z; x,1/2+y,-z; 1/2+x,-y,z; -x,y,1/2+z.
+spgp imma 74 16 8 orthorhombic
+symm x,y,z; -x,1/2-y,z; -x,1/2+y,-z; x,-y,-z; -x,-y,-z; x,1/2+y,-z; x,1/2-y,z; -x,y,z; 1/2+x,1/2+y,1/2+z; 1/2-x,-y,1/2+z; 1/2-x,y,1/2-z; 1/2+x,1/2-y,1/2-z; 1/2-x,1/2-y,1/2-z; 1/2+x,y,1/2-z; 1/2+x,-y,1/2+z; 1/2-x,1/2+y,1/2+z.
+spgp p4 75 4 4 tetragonal
+symm x,y,z; -x,-y,z; -y,x,z; y,-x,z.
+spgp p41 76 4 4 tetragonal
+symm x,y,z; -x,-y,1/2+z; -y,x,1/4+z; y,-x,3/4+z.
+spgp p42 77 4 4 tetragonal
+symm x,y,z; -x,-y,z; -y,x,1/2+z; y,-x,1/2+z.
+spgp p43 78 4 4 tetragonal
+symm x,y,z; -x,-y,1/2+z; -y,x,3/4+z; y,-x,1/4+z.
+spgp i4 79 8 4 tetragonal
+symm x,y,z; -x,-y,z; -y,x,z; y,-x,z; 1/2+x,1/2+y,1/2+z; 1/2-x,1/2-y,1/2+z; 1/2-y,1/2+x,1/2+z; 1/2+y,1/2-x,1/2+z.
+spgp i41 80 8 4 tetragonal
+symm x,y,z; 1/2-x,1/2-y,1/2+z; -y,1/2+x,1/4+z; 1/2+y,-x,3/4+z; 1/2+x,1/2+y,1/2+z; -x,-y,z; 1/2-y,x,3/4+z; y,1/2-x,1/4+z.
+spgp p-4 81 4 4 tetragonal
+symm x,y,z; -x,-y,z; y,-x,-z; -y,x,-z.
+spgp i-4 82 8 4 tetragonal
+symm x,y,z; -x,-y,z; y,-x,-z; -y,x,-z; 1/2+x,1/2+y,1/2+z; 1/2-x,1/2-y,1/2+z; 1/2+y,1/2-x,1/2-z; 1/2-y,1/2+x,1/2-z.
+spgp p4/m 83 8 8 tetragonal
+symm x,y,z; -x,-y,z; -y,x,z; y,-x,z; -x,-y,-z; x,y,-z; y,-x,-z; -y,x,-z.
+spgp p42/m 84 8 8 tetragonal
+symm x,y,z; -x,-y,z; -y,x,1/2+z; y,-x,1/2+z; -x,-y,-z; x,y,-z; y,-x,1/2-z; -y,x,1/2-z.
+spgp p4/n 85 8 8 tetragonal
+symm x,y,z; -x,-y,z; 1/2-y,1/2+x,z; 1/2+y,1/2-x,z; 1/2-x,1/2-y,-z; 1/2+x,1/2+y,-z; y,-x,-z; -y,x,-z.
+spgp p42/n 86 8 8 tetragoanl
+symm x,y,z; -x,-y,z; 1/2-y,1/2+x,1/2+z; 1/2+y,1/2-x,1/2+z; 1/2-x,1/2-y,1/2-z; 1/2+x,1/2+y,1/2-z; y,-x,-z; -y,x,-z.
+spgp i4/m 87 16 8 tetragonal
+symm x,y,z; -x,-y,z; -y,x,z; y,-x,z; -x,-y,-z; x,y,-z; y,-x,-z; -y,x,-z; 1/2+x,1/2+y,1/2+z; 1/2-x,1/2-y,1/2+z; 1/2-y,1/2+x,1/2+z; 1/2+y,1/2-x,1/2+z; 1/2-x,1/2-y,1/2-z; 1/2+x,1/2+y,1/2-z; 1/2+y,1/2-x,1/2-z; 1/2-y,1/2+x,1/2-z.
+spgp i41/a 88 16 8 tetragonal
+symm x,y,z; 1/2-x,1/2-y,1/2+z; -y,1/2+x,1/4+z; 1/2+y,-x,3/4+z; -x,1/2-y,1/4-z; 1/2+x,y,3/4-z; y,-x,-z; 1/2-y,1/2+x,1/2-z; 1/2+x,1/2+y,1/2+z; -x,-y,z; 1/2-y,x,3/4+z; y,1/2-x,1/4+z; 1/2-x,-y,3/4-z; x,1/2+y,1/4-z; 1/2+y,1/2-x,1/2-z; -y,x,-z.
+spgp p422 89 8 8 tetragonal
+symm x,y,z; -x,-y,z; -y,x,z; y,-x,z; -x,y,-z; x,-y,-z; y,x,-z; -y,-x,-z.
+spgp p4212 90 8 8 tetragonal
+symm x,y,z; -x,-y,z; 1/2-y,1/2+x,z; 1/2+y,1/2-x,z; 1/2-x,1/2+y,-z; 1/2+x,1/2-y,-z; y,x,-z; -y,-x,-z.
+spgp p4122 91 8 8 tetragonal
+symm x,y,z; -x,-y,1/2+z; -y,x,1/4+z; y,-x,3/4+z; -x,y,-z; x,-y,1/2-z; y,x,3/4-z; -y,-x,1/4-z.
+spgp p41212 92 8 8 tetragonal
+symm x,y,z; -x,-y,1/2+z; 1/2-y,1/2+x,1/4+z; 1/2+y,1/2-x,3/4+z; 1/2-x,1/2+y,1/4-z; 1/2+x,1/2-y,3/4-z; y,x,-z; -y,-x,1/2-z.
+spgp p4222 93 8 8 tetragonal
+symm x,y,z; -x,-y,z; -y,x,1/2+z; y,-x,1/2+z; -x,y,-z; x,-y,-z; y,x,1/2-z; -y,-x,1/2-z.
+spgp p42212 94 8 8 tetragonal
+symm x,y,z; -x,-y,z; 1/2-y,1/2+x,1/2+z; 1/2+y,1/2-x,1/2+z; 1/2-x,1/2+y,1/2-z; 1/2+x,1/2-y,1/2-z; y,x,-z; -y,-x,-z.
+spgp p4322 95 8 8 tetragonal
+symm x,y,z; -x,-y,1/2+z; -y,x,3/4+z; y,-x,1/4+z; -x,y,-z; x,-y,1/2-z; y,x,1/4-z; -y,-x,3/4-z.
+spgp p43212 96 8 8 tetragonal
+symm x,y,z; -x,-y,1/2+z; 1/2-y,1/2+x,3/4+z; 1/2+y,1/2-x,1/4+z; 1/2-x,1/2+y,3/4-z; 1/2+x,1/2-y,1/4-z; y,x,-z; -y,-x,1/2-z.
+spgp i422 97 16 8 tetragonal
+symm x,y,z; -x,-y,z; -y,x,z; y,-x,z; -x,y,-z; x,-y,-z; y,x,-z; -y,-x,-z; 1/2+x,1/2+y,1/2+z; 1/2-x,1/2-y,1/2+z; 1/2-y,1/2+x,1/2+z; 1/2+y,1/2-x,1/2+z; 1/2-x,1/2+y,1/2-z; 1/2+x,1/2-y,1/2-z; 1/2+y,1/2+x,1/2-z; 1/2-y,1/2-x,1/2-z.
+spgp i4122 98 16 8 tetragonal
+symm x,y,z; 1/2-x,1/2-y,1/2+z; -y,1/2+x,1/4+z; 1/2+y,-x,3/4+z; 1/2-x,y,3/4-z; x,1/2-y,1/4-z; 1/2+y,1/2+x,1/2-z; -y,-x,-z; 1/2+x,1/2+y,1/2+z; -x,-y,z; 1/2-y,x,3/4+z; y,1/2-x,1/4+z; -x,1/2+y,1/4-z; 1/2+x,-y,3/4-z; y,x,-z; 1/2-y,1/2-x,1/2-z.
+spgp p4mm 99 8 8 tetragonal
+symm x,y,z; -x,-y,z; -y,x,z; y,-x,z; x,-y,z; -x,y,z; -y,-x,z; y,x,z.
+spgp p4bm 100 8 8 tetragonal
+symm x,y,z; -x,-y,z; -y,x,z; y,-x,z; 1/2+x,1/2-y,z; 1/2-x,1/2+y,z; 1/2-y,1/2-x,z; 1/2+y,1/2+x,z.
+spgp p42cm 101 8 8 tetragonal
+symm x,y,z; -x,-y,z; -y,x,1/2+z; y,-x,1/2+z; x,-y,1/2+z; -x,y,1/2+z; -y,-x,z; y,x,z.
+spgp p42nm 102 8 8 tetragonal
+symm x,y,z; -x,-y,z; 1/2-y,1/2+x,1/2+z; 1/2+y,1/2-x,1/2+z; 1/2+x,1/2-y,1/2+z; 1/2-x,1/2+y,1/2+z; -y,-x,z; y,x,z.
+spgp p4cc 103 8 8 tetragonal
+symm x,y,z; -x,-y,z; -y,x,z; y,-x,z; x,-y,1/2+z; -x,y,1/2+z; -y,-x,1/2+z; y,x,1/2+z.
+spgp p4nc 104 8 8 tetragonal
+symm x,y,z; -x,-y,z; -y,x,z; y,-x,z; 1/2+x,1/2-y,1/2+z; 1/2-x,1/2+y,1/2+z; 1/2-y,1/2-x,1/2+z; 1/2+y,1/2+x,1/2+z.
+spgp p42mc 105 8 8 tetragonal
+symm x,y,z; -x,-y,z; -y,x,1/2+z; y,-x,1/2+z; x,-y,z; -x,y,z; -y,-x,1/2+z; y,x,1/2+z.
+spgp p42bc 106 8 8 tetragonal
+symm x,y,z; -x,-y,z; -y,x,1/2+z; y,-x,1/2+z; 1/2+x,1/2-y,z; 1/2-x,1/2+y,z; 1/2-y,1/2-x,1/2+z; 1/2+y,1/2+x,1/2+z.
+spgp i4mm 107 16 8 tetragonal
+symm x,y,z; -x,-y,z; -y,x,z; y,-x,z; x,-y,z; -x,y,z; -y,-x,z; y,x,z; 1/2+x,1/2+y,1/2+z; 1/2-x,1/2-y,1/2+z; 1/2-y,1/2+x,1/2+z; 1/2+y,1/2-x,1/2+z; 1/2+x,1/2-y,1/2+z; 1/2-x,1/2+y,1/2+z; 1/2-y,1/2-x,1/2+z; 1/2+y,1/2+x,1/2+z.
+spgp i4cm 108 16 8 tetragonal
+symm x,y,z; -x,-y,z; -y,x,z; y,-x,z; x,-y,1/2+z; -x,y,1/2+z; -y,-x,1/2+z; y,x,1/2+z; 1/2+x,1/2+y,1/2+z; 1/2-x,1/2-y,1/2+z; 1/2-y,1/2+x,1/2+z; 1/2+y,1/2-x,1/2+z; 1/2+x,1/2-y,z; 1/2-x,1/2+y,z; 1/2-y,1/2-x,z; 1/2+y,1/2+x,z.
+spgp i41md 109 16 8 tetragonal
+symm x,y,z; 1/2-x,1/2-y,1/2+z; -y,1/2+x,1/4+z; 1/2+y,-x,3/4+z; x,-y,z; 1/2-x,1/2+y,1/2+z; -y,1/2-x,1/4+z; 1/2+y,x,3/4+z; 1/2+x,1/2+y,1/2+z; -x,-y,z; 1/2-y,x,3/4+z; y,1/2-x,1/4+z; 1/2+x,1/2-y,1/2+z; -x,y,z; 1/2-y,-x,3/4+z; y,1/2+x,1/4+z.
+spgp i41cd 110 16 8 tetragonal
+symm x,y,z; 1/2-x,1/2-y,1/2+z; -y,1/2+x,1/4+z; 1/2+y,-x,3/4+z; x,-y,1/2+z; 1/2-x,1/2+y,z; -y,1/2-x,3/4+z; 1/2+y,x,1/4+z; 1/2+x,1/2+y,1/2+z; -x,-y,z; 1/2-y,x,3/4+z; y,1/2-x,1/4+z; 1/2+x,1/2-y,z; -x,y,1/2+z; 1/2-y,-x,1/4+z; y,1/2+x,3/4+z.
+spgp p-42m 111 8 8 tetragonal
+symm x,y,z; -x,-y,z; -y,x,-z; y,-x,-z; -x,y,-z; x,-y,-z; -y,-x,z; y,x,z.
+spgp p-42c 112 8 8 tetragonal
+symm x,y,z; -x,-y,z; y,x,-z; y,-x,-z; -x,y,1/2-z; x,-y,1/2-z; -y,-x,1/2+z; y,x,1/2+z.
+spgp p-421m 113 8 8 tetragonal
+symm x,y,z; -x,-y,z; -y,x,-z; y,-x,-z; 1/2-x,1/2+y,-z; 1/2+x,1/2-y,-z; 1/2-y,1/2-x,z; 1/2+y,1/2+x,z.
+spgp p-421c 114 8 8 tetragonal
+symm x,y,z; -x,-y,z; -y,x,-z; y,-x,-z; 1/2-x,1/2+y,1/2-z; 1/2+x,1/2-y,1/2-z; 1/2-y,1/2-x,1/2+z; 1/2+y,1/2+x,1/2+z.
+spgp p-4m2 115 8 8 tetragonal
+symm x,y,z; -x,-y,z; -y,x,z; y,-x,-z; x,-y,-z; -x,y,z; y,x,-z; -y,-x,-z.
+spgp p-4c2 116 8 8 tetragonal
+symm x,y,z; -x,-y,z; -y,x,-z; y,-x,-z; x,-y,1/2+z; -x,y,1/2+z; y,x,1/2-z; -y,-x,1/2-z.
+spgp p-4b2 117 8 8 tetragonal
+symm x,y,z; -x,-y,z; -y,x,-z; y,-x,-z; 1/2+x,1/2-y,z; 1/2-x,1/2+y,z; 1/2+y,1/2+x,-z; 1/2-y,1/2-x,-z.
+spgp p-4n2 118 8 8 tetragonal
+symm x,y,z; -x,-y,z; -y,x,-z; y,-x,-z; 1/2+x,1/2-y,1/2+z; 1/2-x,1/2+y,1/2+z; 1/2+y,1/2+x,1/2-z; 1/2-y,1/2-x,1/2-z.
+spgp i-4m2 119 16 8 tetragonal
+symm x,y,z; -x,-y,z; -y,x,-z; y,-x,-z; x,-y,z; -x,y,z; y,x,-z; -y,-x,-z; 1/2+x,1/2+y,1/2+z; 1/2-x,1/2-y,1/2+z; 1/2-y,1/2+x,1/2-z; 1/2+y,1/2-x,1/2-z; 1/2+x,1/2-y,1/2+z; 1/2-x,1/2+y,1/2+z; 1/2+y,1/2+x,1/2-z; 1/2-y,1/2-x,1/2-z.
+spgp i-4c2 120 16 8 tetragonal
+symm x,y,z; -x,-y,z; -y,x,-z; y,-x,-z; x,-y,1/2+z; -x,y,1/2+z; y,x,1/2-z; -y,-x,1/2-z; 1/2+x,1/2+y,z; 1/2-x,1/2-y,z; 1/2-y,1/2+x,-z; 1/2+y,1/2-x,-z; 1/2+x,1/2-y,z; 1/2-x,1/2+y,z; 1/2+y,1/2+x,-z; 1/2-y,1/2-x,-z.
+spgp i-42m 121 16 8 tetragonal
+symm x,y,z; -x,-y,z; -y,x,-z; y,-x,-z; -x,y,-z; x,-y,-z; -y,-x,z; y,x,z; 1/2+x,1/2+y,1/2+z; 1/2-x,1/2-y,1/2+z; 1/2-y,1/2+x,1/2-z; 1/2+y,1/2-x,1/2-z; 1/2-x,1/2+y,1/2-z; 1/2+x,1/2-y,1/2-z; 1/2-y,1/2-x,1/2+z; 1/2+y,1/2+x,1/2+z.
+spgp i-42d 122 16 8 tetragonal
+symm x,y,z; -x,-y,z; -y,x,-z; y,-x,-z; 1/2-x,y,3/4-z; 1/2+x,-y,3/4-z; 1/2-y,-x,3/4+z; 1/2+y,x,3/4+z; 1/2+x,1/2+y,1/2+z; 1/2-x,1/2-y,1/2+z; 1/2-y,1/2+x,1/2-z; 1/2+y,1/2-x,1/2-z; -x,1/2+y,1/4-z; x,1/2-y,1/4-z; -y,1/2-x,1/4+z; y,1/2+x,1/4+z.
+spgp p4/mmm 123 16 16 tetragonal
+symm x,y,z; -x,-y,z; -y,x,z; y,-x,z; -x,y,-z; x,-y,-z; y,x,-z; -y,-x,-z; -x,-y,-z; x,y,-z; y,-x,-z; -y,x,-z; x,-y,z; -x,y,z; -y,-x,z; y,x,z.
+spgp p4/mcc 124 16 16 tetragonal
+symm x,y,z; -x,-y,z; -y,x,z; y,-x,z; -x,y,1/2-z; x,-y,1/2-z; y,x,1/2-z; -y,-x,1/2-z; -x,-y,-z; x,y,-z; y,-x,-z; -y,x,-z; x,-y,1/2+z; -x,y,1/2+z; -y,-x,1/2+z; y,x,1/2+z.
+spgp p4/nbm 125 16 16 tetragonal
+symm x,y,z; -x,-y,z; -y,x,z; y,-x,z; -x,y,-z; x,-y,-z; y,x,-z; -y,-x,-z; 1/2-x,1/2-y,-z; 1/2+x,1/2+y,-z; 1/2+y,1/2-x,-z; 1/2-y,1/2+x,-z; 1/2+x,1/2-y,z; 1/2-x,1/2+y,z; 1/2-y,1/2-x,z; 1/2+y,1/2+x,z.
+spgp p4/nnc 126 16 16 tetragonal
+symm x,y,z; -x,-y,z; -y,x,z; y,-x,z; -x,y,-z; x,-y,-z; y,x,-z; -y,-x,-z; 1/2-x,1/2-y,1/2-z; 1/2+x,1/2+y,1/2-z; 1/2+y,1/2-x,1/2-z; 1/2-y,1/2+x,1/2-z; 1/2+x,1/2-y,1/2+z; 1/2-x,1/2+y,1/2+z; 1/2-y,1/2-x,1/2+z; 1/2+y,1/2+x,1/2+z.
+spgp p4/mbm 127 16 16 tetragonal
+symm x,y,z; -x,-y,z; -y,x,z; y,-x,z; 1/2-x,1/2+y,-z; 1/2+x,1/2-y,-z; 1/2+y,1/2+x,-z; 1/2-y,1/2-x,-z; -x,-y,-z; x,y,-z; y,-x,-z; -y,x,-z; 1/2+x,1/2-y,z; 1/2-x,1/2+y,z; 1/2-y,1/2-x,z; 1/2+y,1/2+x,z.
+spgp p4/mnc 128 16 16 tetragonal
+symm x,y,z; -x,-y,z; -y,x,z; y,-x,z; 1/2-x,1/2+y,1/2-z; 1/2+x,1/2-y,1/2-z; 1/2+y,1/2+x,1/2-z; 1/2-y,1/2-x,1/2-z; -x,-y,-z; x,y,-z; y,-x,-z; -y,x,-z; 1/2+x,1/2-y,1/2+z; 1/2-x,1/2+y,1/2+z; 1/2-y,1/2-x,1/2+z; 1/2+y,1/2+x,1/2+z.
+spgp p4/nmm 129 16 16 tetragonal
+symm x,y,z; -x,-y,z; 1/2-y,1/2+x,z; 1/2+y,1/2-x,z; 1/2-x,1/2+y,-z; 1/2+x,1/2-y,-z; y,x,-z; -y,-x,-z; 1/2-x,1/2-y,-z; 1/2+x,1/2+y,-z; y,-x,-z; -y,x,-z; x,-y,z; -x,y,z; 1/2-y,1/2-x,z; 1/2+y,1/2+x,z.
+spgp p4/ncc 130 16 16 tetragonal
+symm x,y,z; -x,-y,z; 1/2-y,1/2+x,z; 1/2+y,1/2-x,z; 1/2-x,1/2+y,1/2-z; 1/2+x,1/2-y,1/2-z; y,x,1/2-z; -y,-x,1/2-z; 1/2-x,1/2-y,-z; 1/2+x,1/2+y,-z; y,-x,-z; -y,x,-z; x,-y,1/2+z; -x,y,1/2+z; 1/2-y,1/2-x,1/2+z; 1/2+y,1/2+x,1/2+z.
+spgp p42/mmc 131 16 16 tetragonal
+symm x,y,z; -x,-y,z; -y,x,1/2+z; y,-x,1/2+z; -x,y,-z; x,-y,-z; y,x,1/2-z; -y,-x,1/2-z; -x,-y,-z; x,y,-z; y,-x,1/2-z; -y,x,1/2-z; x,-y,z; -x,y,z; -y,-x,1/2+z; y,x,1/2+z.
+spgp p42/mcm 132 16 16 tetragonal
+symm x,y,z; -x,-y,z; -y,x,1/2+z; y,-x,1/2+z; -x,y,1/2-z; x,-y,1/2-z; y,x,-z; -y,-x,-z; -x,-y,-z; x,y,-z; y,-x,1/2-z; -y,x,1/2-z; x,-y,1/2+z; -x,y,1/2+z; -y,-x,z; y,x,z.
+spgp p42/nbc 133 16 16 tetragonal
+symm x,y,z; -x,-y,z; 1/2-y,1/2+x,1/2+z; 1/2+y,1/2-x,1/2+z; -x,y,1/2-z; x,-y,1/2-z; 1/2+y,1/2+x,-z; 1/2-y,1/2-x,-z; 1/2-x,1/2-y,1/2-z; 1/2+x,1/2+y,1/2-z; y,-x,-z; -y,x,-z; 1/2+x,1/2-y,z; 1/2-x,1/2+y,z; -y,-x,1/2+z; y,x,1/2+z.
+spgp p42/nnm 134 16 16 tetragonal
+symm x,y,z; -x,-y,z; 1/2-y,1/2+x,1/2+z; 1/2+y,1/2-x,1/2+z; -x,y,-z; x,-y,-z; 1/2+y,1/2+x,1/2-z; 1/2-y,1/2-x,1/2-z; 1/2-x,1/2-y,1/2-z; 1/2+x,1/2+y,1/2-z; y,-x,-z; -y,x,-z; 1/2+x,1/2-y,1/2+z; 1/2-x,1/2+y,1/2+z; -y,-x,z; y,x,z.
+spgp p42/mbc 135 16 16 tetragonal
+symm x,y,z; -x,-y,z; -y,x,1/2+z; y,-x,1/2+z; 1/2-x,1/2+y,-z; 1/2+x,1/2-y,-z; 1/2+y,1/2+x,1/2-z; 1/2-y,1/2-x,1/2-z; -x,-y,-z; x,y,-z; y,-x,1/2-z; -y,x,1/2-z; 1/2+x,1/2-y,z; 1/2-x,1/2+y,z; 1/2-y,1/2-x,1/2+z; 1/2+y,1/2+x,1/2+z.
+spgp p42/mnm 136 16 16 tetragonal
+symm x,y,z; -x,-y,z; 1/2-y,x+1/2,z+1/2; y+1/2,1/2-x,z+1/2; 1/2-x,y+1/2,1/2-z; x+1/2,1/2-y,1/2-z; y,x,-z; -y,-x,-z; -x,-y,-z; x,y,-z; y+1/2,1/2-x,1/2-z; 1/2-y,x+1/2,1/2-z; x+1/2,1/2-y,z+1/2; 1/2-x,y+1/2,z+1/2; -y,-x,z; y,x,z.
+spgp p42/nmc 137 16 16 tetragonal
+symm x,y,z; -x,-y,z; 1/2-y,1/2+x,1/2+z; 1/2+y,1/2-x,1/2+z; 1/2-x,1/2+y,1/2-z; 1/2+x,1/2-y,1/2-z; y,x,-z; -y,-x,-z; 1/2-x,1/2-y,1/2-z; 1/2+x,1/2+y,1/2-z; y,-x,-z; -y,x,-z; x,-y,z; -x,y,z; 1/2-y,1/2-x,1/2+z; 1/2+y,1/2+x,1/2+z.
+spgp p42/ncm 138 16 16 tetragonal
+symm x,y,z; -x,-y,z; 1/2-y,1/2+x,1/2+z; 1/2+y,1/2-x,1/2+z; 1/2-x,1/2+y,-z; 1/2+x,1/2-y,-z; y,x,1/2-z; -y,-x,1/2-z; 1/2-x,1/2-y,1/2-z; 1/2+x,1/2+y,1/2-z; y,-x,-z; -y,x,-z; x,-y,1/2+z; -x,y,1/2+z; 1/2-y,1/2-x,z; 1/2+y,1/2+x,z.
+spgp i4/mmm 139 32 16 tetragonal
+symm x,y,z; -x,-y,z; -y,x,z; y,-x,z; -x,y,-z; x,-y,-z; y,x,-z; -y,-x,-z; -x,-y,-z; x,y,-z; y,-x,-z; -y,x,-z; x,-y,z; -x,y,z; -y,-x,z; y,x,z; 1/2+x,1/2+y,1/2+z; 1/2-x,1/2-y,1/2+z; 1/2-y,1/2+x,1/2+z; 1/2+y,1/2-x,1/2+z; 1/2-x,1/2+y,1/2-z; 1/2+x,1/2-y,1/2-z; 1/2+y,1/2+x,1/2-z; 1/2-y,1/2-x,1/2-z; 1/2-x,1/2-y,1/2-z; 1/2+x,1/2+y,1/2-z; 1/2+y,1/2-x,1/2-z; 1/2-y,1/2+x,1/2-z; 1/2+x,1/2-y,1/2+z; 1/2-x,1/2+y,1/2+z; 1/2-y,1/2-x,1/2+z; 1/2+y,1/2+x,1/2+z.
+spgp i4/mcm 140 32 16 tetragonal
+symm x,y,z; -x,-y,z; -y,x,z; y,-x,z; -x,y,1/2-z; x,-y,1/2-z; y,x,1/2-z; -y,-x,1/2-z; -x,-y,-z; x,y,-z; y,-x,-z; -y,x,-z; x,-y,1/2+z; -x,y,1/2+z; -y,-x,1/2+z; y,x,1/2+z; 1/2+x,1/2+y,1/2+z; 1/2-x,1/2-y,1/2+z; 1/2-y,1/2+x,1/2+z; 1/2+y,1/2-x,1/2+z; 1/2-x,1/2+y,-z; 1/2+x,1/2-y,-z; 1/2+y,1/2+x,-z; 1/2-y,1/2-x,-z; 1/2-x,1/2-y,1/2-z; 1/2+x,1/2+y,1/2-z; 1/2+y,1/2-x,1/2-z; 1/2-y,1/2+x,1/2-z; 1/2+x,1/2-y,z; 1/2-x,1/2+y,z; 1/2-y,1/2-x,z; 1/2+y,1/2+x,z.
+spgp i41/amd 141 32 16 tetragonal
+symm x,y,z; 1/2-x,1/2-y,1/2+z; -y,1/2+x,1/4+z; 1/2+y,-x,3/4+z; 1/2-x,y,3/4-z; x,1/2-y,1/4-z; 1/2+y,1/2+x,1/2-z; -y,-x,-z; -x,1/2-y,1/4-z; 1/2+x,y,3/4-z; y,-x,-z; 1/2-y,1/2+x,1/2-z; 1/2+x,1/2-y,1/2+z; -x,y,z; 1/2-y,-x,3/4+z; y,1/2+x,1/4+z; 1/2+x,1/2+y,1/2+z; -x,-y,z; 1/2-y,x,3/4+z; y,1/2-x,1/4+z; -x,1/2+y,1/4-z; 1/2+x,-y,3/4-z; y,x,-z; 1/2-y,1/2-x,1/2-z; 1/2-x,-y,3/4-z; x,1/2+y,1/4-z; 1/2+y,1/2-x,1/2-z; -y,x,-z; x,-y,z; 1/2-x,1/2+y,1/2+z; -y,1/2-x,1/4+z; 1/2+y,x,3/4+z.
+spgp i41/acd 142 32 16 tetragonal
+symm x,y,z; 1/2-x,1/2-y,1/2+z; -y,1/2+x,1/4+z; 1/2+y,-x,3/4+z; 1/2-x,y,1/4-z; x,1/2-y,3/4-z; 1/2+y,1/2+x,-z; -y,-x,1/2-z; -x,1/2-y,1/4-z; 1/2+x,y,3/4-z; y,-x,-z; 1/2-y,1/2+x,1/2-z; 1/2+x,1/2-y,z; -x,y,1/2+z; 1/2-y,-x,1/4+z; y,1/2+x,3/4+z; 1/2+x,1/2+y,1/2+z; -x,-y,z; 1/2-y,x,3/4+z; y,1/2-x,1/4+z; -x,1/2+y,3/4-z; 1/2+x,-y,1/4-z; y,x,1/2-z; 1/2-y,1/2-x,-z; 1/2-x,-y,3/4-z; x,1/2+y,1/4-z; 1/2+y,1/2-x,1/2-z; -y,x,-z; x,-y,1/2+z; 1/2-x,1/2+y,z; -y,1/2-x,3/4+z; 1/2+y,x,1/4+z.
+spgp p3 143 3 3 trigonal
+symm x,y,z; -y,x-y,z; y-x,-x,z.
+spgp p31 144 3 3 trigonal
+symm x,y,z; -y,x-y,z+1/3; y-x,-x,z+2/3.
+spgp p32 145 3 3 trigonal
+symm x,y,z; -y,x-y,z+2/3; y-x,-x,z+1/3.
+spgp r3 146 9 3 trigonal
+symm x,y,z; -y,x-y,z; y-x,-x,z; x+2/3,y+1/3,z+1/3; -y+2/3,x-y+1/3,z+1/3; y-x+2/3,-x+1/3,z+1/3; x+1/3,y+2/3,z+2/3; -y+1/3,x-y+2/3,z+2/3; y-x+1/3,-x+2/3,z+2/3.
+spgp p-3 147 6 6 trigonal
+symm x,y,z; -y,x-y,z; y-x,-x,z; -x,-y,-z; y,y-x,-z; x-y,x,-z.
+spgp r-3 148 18 6 trigonal
+symm x,y,z; -y,x-y,z; y-x,-x,z; -x,-y,-z; y,y-x,-z; x-y,x,-z; 2/3+x,1/3+y,1/3+z; 2/3-y,1/3+x-y,1/3+z; 2/3+y-x,1/3-x,1/3+z; 2/3-x,1/3-y,1/3-z; 2/3+y,1/3+y-x,1/3-z; 2/3+x-y,1/3+x,1/3-z; 1/3+x,2/3+y,2/3+z; 1/3-y,2/3+x-y,2/3+z; 1/3+y-x,2/3-x,2/3+z; 1/3-x,2/3-y,2/3-z; 1/3+y,2/3+y-x,2/3-z; 1/3+x-y,2/3+x,2/3-z.
+spgp p312 149 6 6 trigonal
+symm x,y,z; -y,x-y,z; y-x,-x,z; -y,-x,-z; y-x,y,-z; x,x-y,-z.
+spgp p321 150 6 6 trigonal
+symm x,y,z; -y,x-y,z; y-x,-x,z; y,x,-z; x-y,-y,-z; -x,y-x,-z.
+spgp p3112 151 6 6 trigonal
+symm x,y,z; -y,x-y,1/3+z; y-x,-x,2/3+z; -y,-x,2/3-z; y-x,y,1/3-z; x,x-y,-z.
+spgp p3121 152 6 6 trigonal
+symm x,y,z; -y,x-y,z+1/3; y-x,-x,z+2/3; y,x,-z; x-y,-y,2/3-z; -x,y-x,1/3-z.
+spgp p3212 153 6 6 trigonal
+symm x,y,z; -y,x-y,2/3+z; y-x,-x,1/3+z; -y,-x,1/3-z; y-x,y,2/3-z; x,x-y,-z.
+spgp p3221 154 6 6 trigonal
+symm x,y,z; -y,x-y,z+2/3; y-x,-x,z+1/3; y,x,-z; x-y,-y,1/3-z; -x,y-x,2/3-z.
+spgp r32 155 18 6 trigonal
+symm x,y,z; -y,x-y,z; y-x,-x,z; y,x,-z; x-y,-y,-z; -x,y-x,-z; 2/3+x,1/3+y,1/3+z; 2/3-y,1/3+x-y,1/3+z; 2/3+y-x,1/3-x,1/3+z; 2/3+y,1/3+x,1/3-z; 2/3+x-y,1/3-y,1/3-z; 2/3-x,1/3+y-x,1/3-z; 1/3+x,2/3+y,2/3+z; 1/3-y,2/3+x-y,2/3+z; 1/3+y-x,2/3-x,2/3+z; 1/3+y,2/3+x,2/3-z; 1/3+x-y,2/3-y,2/3-z; 1/3-x,2/3+y-x,2/3-z.
+spgp p3m1 156 6 6 trigonal
+symm x,y,z; -y,x-y,z; y-x,-x,z; -y,-x,z; y-x,y,z; x,x-y,z.
+spgp p31m 157 6 6 trigonal
+symm x,y,z; -y,x-y,z; y-x,-x,z; y,x,z; x-y,-y,z; -x,y-x,z.
+spgp p3c1 158 6 6 trigonal
+symm x,y,z; -y,x-y,z; y-x,-x,z; -y,-x,1/2+z; y-x,y,1/2+z; x,x-y,1/2+z.
+spgp p31c 159 6 6 trigonal
+symm x,y,z; -y,x-y,z; y-x,-x,z; y,x,1/2+z; x-y,-y,1/2+z; -x,y-x,1/2+z.
+spgp r3m 160 18 6 trigonal
+symm x,y,z; -y,x-y,z; y-x,-x,z; -y,-x,z; y-x,y,z; x,x-y,z; 2/3+x,1/3+y,1/3+z; 2/3-y,1/3+x-y,1/3+z; 2/3+y-x,1/3-x,1/3+z; 2/3-y,1/3-x,1/3+z; 2/3+y-x,1/3+y,1/3+z; 2/3+x,1/3+x-y,1/3+z; 1/3+x,2/3+y,2/3+z; 1/3-y,2/3+x-y,1/3+z; 1/3+y-x,2/3-x,2/3+z; 1/3-y,2/3-x,2/3+z; 1/3+y-x,2/3+y,2/3+z; 1/3+x,2/3+x-y,2/3+z.
+spgp r3c 161 18 6 trigonal
+symm x,y,z; -y,x-y,z; y-x,-x,z; -y,-x,1/2+z; y-x,y,1/2+z; x,x-y,1/2+z; 2/3+x,1/3+y,1/3+z; 2/3-y,1/3+x-y,1/3+z; 2/3+y-x,1/3-x,1/3+z; 2/3-y,1/3-x,5/6+z; 2/3+y-x,1/3+y,5/6+z; 2/3+x,1/3+x-y,5/6+z; 1/3+x,2/3+y,2/3+z; 1/3-y,2/3+x-y,2/3+z; 1/3+y-x,2/3-x,2/3+z; 1/3-y,2/3-x,1/6+z; 1/3+y-x,2/3+y,1/6+z; 1/3+x,2/3+x-y,1/6+z.
+spgp p-31m 162 12 12 trigonal
+symm x,y,z; -y,x-y,z; y-x,-x,z; -y,-x,-z; y-x,y,-z; x,x-y,-z; -x,-y,-z; y,y-x,-z; x-y,x,-z; y,x,z; x-y,-y,z; -x,y-x,z.
+spgp p-31c 163 12 12 trigonal
+symm x,y,z; -y,x-y,z; y-x,-x,z; -y,-x,1/2-z; y-x,y,1/2-z; x,x-y,1/2-z; -x,-y,-z; y,y-x,-z; x-y,x,-z; y,x,1/2+z; x-y,-y,1/2+z; -x,y-x,1/2+z.
+spgp p3m1 164 12 12 trigonal
+symm x,y,z; -y,x-y,z; y-x,-x,z; y,x,-z; x-y,-y,-z; -x,y-x,-z; -x,-y,-z; y,y-x,-z; x-y,x,-z; -y,-x,z; y-x,y,z; x,x-y,z.
+spgp p-3c1 165 12 12 trigonal
+symm x,y,z; -y,x-y,z; y-x,-x,z; y,x,1/2-z; x-y,-y,1/2-z; -x,y-x,1/2-z; -x,-y,-z; y,y-x,-z; x-y,x,-z; -y,-x,1/2+z; y-x,y,1/2+z; x,x-y,1/2+z.
+spgp r-3m 166 36 12 trigonal
+symm x,y,z; -y,x-y,z; y-x,-x,z; y,x,-z; x-y,-y,-z; -x,y-x,-z; -x,-y,-z; y,y-x,-z; x-y,x,-z; -y,-x,z; y-x,y,z; x,x-y,z; 2/3+x,1/3+y,1/3+z; 2/3-y,1/3+x-y,1/3+z; 2/3+y-x,1/3-x,1/3+z; 2/3+y,1/3+x,1/3-z; 2/3+x-y,1/3-y,1/3-z; 2/3-x,1/3+y-x,1/3-z; 2/3-x,1/3-y,1/3-z; 2/3+y,1/3+y-x,1/3-z; 2/3+x-y,1/3+x,1/3-z; 2/3-y,1/3-x,1/3+z; 2/3+y-x,1/3+y,1/3+z; 2/3+x,1/3+x-y,1/3+z; 1/3+x,2/3+y,2/3+z; 1/3-y,2/3+x-y,2/3+z; 1/3+y-x,2/3-x,1/3+z; 1/3+y,2/3+x,2/3-z; 1/3+x-y,2/3-y,2/3-z; 1/3-x,2/3+y-x,2/3-z; 1/3-x,2/3-y,2/3-z; 1/3+y,2/3+y-x,2/3-z; 1/3x-y,2/3+x,2/3-z; 1/3-y,2/3-x,2/3+z; 1/3+y-x,2/3+y,2/3+z; 1/3+x,2/3+x-y,2/3+z.
+spgp r-3c 167 36 12 trigonal
+symm x,y,z; -y,x-y,z; y-x,-x,z; y,x,1/2-z; x-y,-y,1/2-z; -x,y-x,1/2-z; -x,-y,-z; y,y-x,-z; x-y,x,-z; -y,-x,1/2+z; y-x,y,1/2+z; x,x-y,1/2+z; 2/3+x,1/3+y,1/3+z; 2/3-y,1/3+x-y,1/3+z; 2/3+y-x,1/3-x,1/3+z; 2/3+y,1/3+x,5/6-z; 2/3+x-y,1/3-y,5/6-z; 2/3-x,1/3+y-x,5/6-z; 2/3-x,1/3-y,1/3-z; 2/3+y,1/3+y-x,1/3-z; 2/3+x-y,1/3+x,1/3-z; 2/3-y,1/3-x,5/6+z; 2/3+y-x,1/3+y,5/6+z; 2/3+x,1/3+x-y,5/6+z; 1/3+x,2/3+y,2/3+z; 1/3-y,2/3+x-y,2/3+z; 1/3+y-x,2/3-x,2/3+z; 1/3+y,2/3+x,1/6-z; 1/3+x-y,2/3-y,1/6-z; 1/3-x,2/3+y-x,1/6-z; 1/3-x,2/3-y,2/3-z; 1/3+y,2/3+y-x,2/3-z; 1/3+x-y,2/3+x,2/3-z; 1/3-y,2/3-x,1/6+z; 1/3+y-x,2/3+y,1/6+z; 1/3+x,2/3+x-y,1/6+z.
+spgp p6 168 6 6 hexagonal
+symm x,y,z; -y,x-y,z; y-x,-x,z; -x,-y,z; y,y-x,z; x-y,x,z .
+spgp p61 169 6 6 hexagonal
+symm x,y,z; -y,x-y,z+1/3; y-x,-x,z+2/3; -x,-y,z+1/2; y,y-x,z+5/6; x-y,x,z+1/6.
+spgp p65 170 6 6 hexagonal
+symm x,y,z; -y,x-y,z+2/3; y-x,-x,z+1/3; -x,-y,z+1/2; y,y-x,z+1/6; x-y,x,z+5/6.
+spgp p62 171 6 6 hexagonal
+symm x,y,z; -y,x-y,2/3+z; y-x,-x,1/3+z; -x,-y,z; y,y-x,2/3+z; x-y,x,1/3+z.
+spgp p64 172 6 6 hexagonal
+symm x,y,z; -y,x-y,1/3+z; y-x,-x,2/3+z; -x,-y,z; y,y-x,1/3+z; x-y,x,2/3+z.
+spgp p63 173 6 6 hexagonal
+symm x,y,z; -y,x-y,z; y-x,-x,z; -x,-y,1/2+z; y,y-x,1/2+z; x-y,x,1/2+z .
+spgp p-6 174 6 6 hexagonal
+symm x,y,z; -y,x-y,z; y-x,-x,z; x,y,-z; -y,x-y,-z; y-x,-x,-z.
+spgp p6/m 175 12 12 hexagonal
+symm x,y,z; -y,x-y,z; y-x,-x,z; -x,-y,z; y,y-x,z; x-y,x,z; -x,-y,-z; y,y-x,-z; x-y,x,-z; x,y,-z; -y,x-y,-z; y-x,-x,-z.
+spgp p63/m 176 12 12 hexagonal
+symm x,y,z; -y,x-y,z; y-x,-x,z; -x,-y,1/2+z; y,y-x,1/2+z; x-y,x,1/2+z; -x,-y,-z; y,y-x,-z; x-y,x,-z; x,y,1/2-z; -y,x-y,1/2-z; y-x,-x,1/2-z.
+spgp p622 177 12 12 hexagonal
+symm x,y,z ; -y,x-y,z ; y-x,-x,z; -x,-y,z; y,y-x,z; x-y,x,z; y,x,-z ; x-y,-y,-z; -x,y-x,-z ; -y,-x,-z ; y-x,y,-z; x,x-y,-z  .
+spgp p6122 178 12 12 hexagonal
+symm x,y,z ; -y,x-y,1/3+z; y-x,-x,2/3+z; -x,-y,1/2+z; y,y-x,5/6+z; x-y,x,1/6+z; y,x,1/3-z; x-y,-y,-z; -x,y-x,2/3-z; -y,-x,5/6-z; y-x,y,1/2-z; x,x-y,1/6-z.
+spgp p6522 179 12 12 hexagonal
+symm x,y,z ; -y,x-y,2/3+z; y-x,-x,1/3+z; -x,-y,1/2+z; y,y-x,1/6+z; x-y,x,5/6+z; y,x,2/3-z; x-y,-y,-z; -x,y-x,1/3-z; -y,-x,1/6-z; y-x,y,1/2-z; x,x-y,5/6-z .
+spgp p6222 180 12 12 hexagonal
+symm x,y,z ; -y,x-y,2/3+z ; y-x,-x,1/3+z; -x,-y,z; y,y-x,2/3+z; x-y,x,1/3+z; y,x,2/3-z ; x-y,-y,-z; -x,y-x,1/3-z ; -y,-x,2/3-z ; y-x,y,-z; x,x-y,1/3-z  .
+spgp p6422 181 12 12 hexagonal
+symm x,y,z ; -y,x-y,1/3+z ; y-x,-x,2/3+z; -x,-y,z; y,y-x,1/3+z; x-y,x,2/3+z; y,x,1/3-z ; x-y,-y,-z; -x,y-x,2/3-z ; -y,-x,1/3-z ; y-x,y,-z; x,x-y,2/3-z  .
+spgp p6322 182 12 12 hexagonal
+symm x,y,z ; -y,x-y,z ; y-x,-x,z; -x,-y,1/2+z; y,y-x,1/2+z; x-y,x,1/2+z; y,x,-z ; x-y,-y,-z; -x,y-x,-z ; -y,-x,1/2-z ; y-x,y,1/2-z; x,x-y,1/2-z  .
+spgp p6mm 183 12 12 hexagoanl
+symm x,y,z ; -y,x-y,z ; y-x,-x,z; -x,-y,z; y,y-x,z; x-y,x,z; -y,-x,z; y-x,y,z; x,x-y,z; y,x,z; x-y,-y,z; -x,y-x,z.
+spgp p6cc 184 12 12 hexagonal
+symm x,y,z ; -y,x-y,z ; y-x,-x,z; -x,-y,z; y,y-x,z; x-y,x,z; -y,-x,1/2+z; y-x,y,1/2+z; x,x-y,1/2+z; y,x,1/2+z; x-y,-y,1/2+z; -x,y-x,1/2+z.
+spgp p63cm 185 12 12 hexagonal
+symm x,y,z ; -y,x-y,z ; y-x,-x,z; -x,-y,1/2+z; y,y-x,1/2+z; x-y,x,1/2+z; -y,-x,1/2+z; y-x,y,1/2+z; x,x-y,1/2+z; y,x,z; x-y,-y,z; -x,y-x,z.
+spgp p63mc 186 12 12 hexagonal
+symm x,y,z ; -y,x-y,z ; y-x,-x,z; -x,-y,1/2+z; y,y-x,1/2+z; x-y,x,1/2+z; -y,-x,z; y-x,y,z; x,x-y,z; y,x,1/2+z; x-y,-y,1/2+z; -x,y-x,1/2+z.
+spgp p-6m2 187 12 12 hexagonal
+symm x,y,z ; -y,x-y,z ; y-x,-x,z; x,y,-z; -y,x-y,-z; y-x,-x,-z; -y,-x,z; y-x,y,z; x,x-y,z; -y,-x,-z; y-x,y,-z; x,x-y,-z.
+spgp p-6c2 188 12 12 hexagonal
+symm x,y,z ; -y,x-y,z ; y-x,-x,z; x,y,1/2-z; -y,x-y,1/2-z; y-x,-x,1/2-z; -y,-x,1/2+z; y-x,y,1/2+z; x,x-y,1/2+z; -y,-x,-z; y-x,y,-z; x,x-y,-z.
+spgp p-62m 189 12 12 hexagonal
+symm x,y,z ; -y,x-y,z ; y-x,-x,z; x,y,-z; -y,x-y,-z; y-x,-x,-z; y,x,-z; x-y,-y,-z; -x,y-x,-z; y,x,z; x-y,-y,z; -x,y-x,z.
+spgp p-62c 190 12 12 hexagonal
+symm x,y,z ; -y,x-y,z ; y-x,-x,z; x,y,1/2-z; -y,x-y,1/2-z; y-x,-x,1/2-z; y,x,-z; x-y,-y,-z; -x,y-x,-z; y,x,1/2+z; x-y,-y,1/2+z; -x,y-x,1/2+z.
+spgp p6/mmm 191 24 24 hexagonal
+symm x,y,z; -y,x-y,z; y-x,-x,z; -x,-y,z; y,y-x,z; x-y,x,z; y,x,-z; x-y,-y,-z; -x,y-x,-z; -y,-x,-z; y-x,y,-z; x,x-y,-z; -x,-y,-z; y,y-x,-z; x-y,x,-z; x,y,-z; y-x,-x,-z; -y,x-y,-z; -y,-x,z; y-x,y,z; x,x-y,z; y,x,z; x-y,-y,z; -x,y-x,z .
+spgp p6/mcc 192 24 24 hexagonal
+symm x,y,z; -y,x-y,z; y-x,-x,z; -x,-y,z; y,y-x,z; x-y,x,z; y,x,1/2-z; x-y,-y,1/2-z; -x,y-x,1/2-z; -y,-x,1/2-z; y-x,y,1/2-z; x,x-y,1/2-z; -x,-y,-z; y,y-x,-z; x-y,x,-z; x,y,-z; y-x,-x,-z; -y,x-y,-z; -y,-x,1/2+z; y-x,y,1/2+z; x,x-y,1/2+z; y,x,1/2+z; x-y,-y,1/2+z; -x,y-x,1/2+z .
+spgp p63/mcm 193 24 24 hexagonal
+symm x,y,z; -y,x-y,z; y-x,-x,z; -x,-y,1/2+z; y,y-x,1/2+z; x-y,x,1/2+z; y,x,1/2-z; x-y,-y,1/2-z; -x,y-x,1/2-z; -y,-x,-z; y-x,y,-z; x,x-y,-z; -x,-y,-z; y,y-x,-z; x-y,x,-z; x,y,1/2-z; y-x,-x,1/2-z; -y,x-y,1/2-z; -y,-x,1/2+z; y-x,y,1/2+z; x,x-y,1/2+z; y,x,z; x-y,-y,z; -x,y-x,z .
+spgp p63/mmc 194 24 24 hexagonal
+symm x,y,z; -y,x-y,z; y-x,-x,z; -x,-y,1/2+z; y,y-x,1/2+z; x-y,x,1/2+z; y,x,-z; x-y,-y,-z; -x,y-x,-z; -y,-x,1/2-z; y-x,y,1/2-z; x,x-y,1/2-z; -x,-y,-z; y,y-x,-z; x-y,x,-z; x,y,1/2-z; y-x,-x,1/2-z; -y,x-y,1/2-z; -y,-x,z; y-x,y,z; x,x-y,z; y,x,1/2+z; x-y,-y,1/2+z; -x,y-x,1/2+z .
+spgp p23 195 12 12 cubic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; z,x,y; z,-x,-y; -z,-x,y; -z,x,-y; y,z,x; -y,z,-x; y,-z,-x; -y,-z,x.
+spgp f23 196 48 12 cubic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; z,x,y; z,-x,-y; -z,-x,y; -z,x,-y; y,z,x; -y,z,-x; y,-z,-x; -y,-z,x; x,1/2+y,1/2+z; -x,1/2-y,1/2+z; -x,1/2+y,1/2-z; x,1/2-y,1/2-z; z,1/2+x,1/2+y; z,1/2-x,1/2-y; -z,1/2-x,1/2+y; -z,1/2+x,1/2-y; y,1/2+z,1/2+x; -y,1/2+z,1/2-x; y,1/2-z,1/2-x; -y,1/2-z,1/2+x; 1/2+x,y,1/2+z; 1/2-x,-y,1/2+z; 1/2-x,y,1/2-z; 1/2+x,-y,1/2-z; 1/2+z,x,1/2+y; 1/2+z,-x,1/2-y; 1/2-z,-x,1/2+y; 1/2-z,x,1/2-y; 1/2+y,z,1/2+x; 1/2-y,z,1/2-x; 1/2+y,-z,1/2-x; 1/2-y,-z,1/2+x; 1/2+x,1/2+y,z; 1/2-x,1/2-y,z; 1/2-x,1/2+y,-z; 1/2+x,1/2-y,-z; 1/2+z,1/2+x,y; 1/2+z,1/2-x,-y; 1/2-z,1/2-x,y; 1/2-z,1/2+x,-y; 1/2+y,1/2+z,x; 1/2-y,1/2+z,-x; 1/2+y,1/2-z,-x; 1/2-y,1/2-z,x.
+spgp i23 197 24 12 cubic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; z,x,y; z,-x,-y; -z,-x,y; -z,x,-y; y,z,x; -y,z,-x; y,-z,-x; -y,-z,x; 1/2+x,1/2+y,1/2+z; 1/2-x,1/2-y,1/2+z; 1/2-x,1/2+y,1/2-z; 1/2+x,1/2-y,1/2-z; 1/2+z,1/2+x,1/2+y; 1/2+z,1/2-x,1/2-y; 1/2-z,1/2-x,1/2+y; 1/2-z,1/2+x,1/2-y; 1/2+y,1/2+z,1/2+x; 1/2-y,1/2+z,1/2-x; 1/2+y,1/2-z,1/2-x; 1/2-y,1/2-z,1/2+x.
+spgp p213 198 12 12 cubic
+symm x,y,z; 1/2-x,-y,1/2+z; -x,1/2+y,1/2-z; 1/2+x,1/2-y,-z; z,x,y; 1/2+z,1/2-x,-y; 1/2-z,-x,1/2+y; -z,1/2+x,1/2-y; y,z,x; -y,1/2+z,1/2-x; 1/2+y,1/2-z,-x; 1/2-y,-z,1/2+x.
+spgp i213 199 24 12 cubic
+symm x,y,z; 1/2-x,-y,1/2+z; -x,1/2+y,1/2-z; 1/2+x,1/2-y,-z; z,x,y; 1/2+z,1/2-x,-y; 1/2-z,-x,1/2+y; -z,1/2+x,1/2-y; y,z,x; -y,1/2+z,1/2-x; 1/2+y,1/2-z,-x; 1/2-y,-z,1/2+x; 1/2+x,1/2+y,1/2+z; -x,1/2-y,z; 1/2-x,y,-z; x,-y,1/2-z; 1/2+z,1/2+x,1/2+y; z,-x,1/2-y; -z,1/2-x,y; 1/2-z,x,-y; 1/2+y,1/2+z,1/2+x; 1/2-y,z,-x; y,-z,1/2-x; -y,1/2-z,x.
+spgp pm-3 200 24 24 cubic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; z,x,y; z,-x,-y; -z,-x,y; -z,x,-y; y,z,x; -y,z,-x; y,-z,-x; -y,-z,x; -x,-y,-z; x,y,-z; x,-y,z; -x,y,z; -z,-x,-y; -z,x,y; z,x,-y; z,-x,y; -y,-z,-x; y,-z,x; -y,z,x; y,z,-x.
+spgp pn-3 201 24 24 cubic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; z,x,y; z,-x,-y; -z,-x,y; -z,x,-y; y,z,x; -y,z,-x; y,-z,-x; -y,-z,x; 1/2-x,1/2-y,1/2-z; 1/2+x,1/2+y,1/2-z; 1/2+x,1/2-y,1/2+z; 1/2-x,1/2+y,1/2+z; 1/2-z,1/2-x,1/2-y; 1/2-z,1/2+x,1/2+y; 1/2+z,1/2+x,1/2-y; 1/2+z,1/2-x,1/2+y; 1/2-y,1/2-z,1/2-x; 1/2+y,1/2-z,1/2+x; 1/2-y,1/2+z,1/2+x; 1/2+y,1/2+z,1/2-x.
+spgp fm-3 202 96 24 cubic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; z,x,y; z,-x,-y; -z,-x,y; -z,x,-y; y,z,x; -y,z,-x; y,-z,-x; -y,-z,x; -x,-y,-z; x,y,-z; x,-y,z; -x,y,z; -z,-x,-y; -z,x,y; z,x,-y; z,-x,y; -y,-z,-x; y,-z,x; -y,z,x; y,z,-x; x,1/2+y,1/2+z; -x,1/2-y,1/2+z; -x,1/2+y,1/2-z; x,1/2-y,1/2-z; z,1/2+x,1/2+y; z,1/2-x,1/2-y; -z,1/2-x,1/2+y; -z,1/2+x,1/2-y; y,1/2+z,1/2+x; -y,1/2+z,1/2-x; y,1/2-z,1/2-x; -y,1/2-z,1/2+x; -x,1/2-y,1/2-z; x,1/2+y,1/2-z; x,1/2-y,1/2+z; -x,1/2+y,1/2+z; -z,1/2-x,1/2-y; -z,1/2+x,1/2+y; z,1/2+x,1/2-y; z,1/2-x,1/2+y; -y,1/2-z,1/2-x; y,1/2-z,1/2+x; -y,1/2+z,1/2+x; y,1/2+z,1/2-x; 1/2+x,y,1/2+z; 1/2-x,-y,1/2+z; 1/2-x,y,1/2-z; 1/2+x,-y,1/2-z; 1/2+z,x,1/2+y; 1/2+z,-x,1/2-y; 1/2-z,-x,1/2+y; 1/2-z,x,1/2-y; 1/2+y,z,1/2+x; 1/2-y,z,1/2-x; 1/2+y,-z,1/2-x; 1/2-y,-z,1/2+x; 1/2-x,-y,1/2-z; 1/2+x,y,1/2-z; 1/2+x,-y,1/2+z; 1/2-x,y,1/2+z; 1/2-z,-x,1/2-y; 1/2-z,x,1/2+y; 1/2+z,x,1/2-y; 1/2+z,-x,1/2+y; 1/2-y,-z,1/2-x; 1/2+y,-z,1/2+x; 1/2-y,z,1/2+x; 1/2+y,z,1/2-x; 1/2+x,1/2+y,z; 1/2-x,1/2-y,z; 1/2-x,1/2+y,-z; 1/2+x,1/2-y,-z; 1/2+z,1/2+x,y; 1/2+z,1/2-x,-y; 1/2-z,1/2-x,y; 1/2-z,1/2+x,-y; 1/2+y,1/2+z,x; 1/2-y,1/2+z,-x; 1/2+y,1/2-z,-x; 1/2-y,1/2-z,x; 1/2-x,1/2-y,-z; 1/2+x,1/2+y,-z; 1/2+x,1/2-y,z; 1/2-x,1/2+y,z; 1/2-z,1/2-x,-y; 1/2-z,1/2+x,y; 1/2+z,1/2+x,-y; 1/2+z,1/2-x,y; 1/2-y,1/2-z,-x; 1/2+y,1/2-z,x; 1/2-y,1/2+z,x; 1/2+y,1/2+z,-x.
+spgp fd-3 203 96 24 cubic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; z,x,y; z,-x,-y; -z,-x,y; -z,x,-y; y,z,x; -y,z,-x; y,-z,-x; -y,-z,x; 1/4-x,1/4-y,1/4-z; 1/4+x,1/4+y,1/4-z; 1/4+x,1/4-y,1/4+z; 1/4-x,1/4+y,1/4+z; 1/4-z,1/4-x,1/4-y; 1/4-z,1/4+x,1/4+y; 1/4+z,1/4+x,1/4-y; 1/4+z,1/4-x,1/4+y; 1/4-y,1/4-z,1/4-x; 1/4+y,1/4-z,1/4+x; 1/4-y,1/4+z,1/4+x; 1/4+y,1/4+z,1/4-x; x,1/2+y,1/2+z; -x,1/2-y,1/2+z; -x,1/2+y,1/2-z; x,1/2-y,1/2-z; z,1/2+x,1/2+y; z,1/2-x,1/2-y; -z,1/2-x,1/2+y; -z,1/2+x,1/2-y; y,1/2+z,1/2+x; -y,1/2+z,1/2-x; y,1/2-z,1/2-x; -y,1/2-z,1/2+x; 1/4-x,3/4-y,3/4-z; 1/4+x,3/4+y,3/4-z; 1/4+x,3/4-y,3/4+z; 1/4-x,3/4+y,3/4+z; 1/4-z,3/4-x,3/4-y; 1/4-z,3/4+x,3/4+y; 1/4+z,3/4+x,3/4-y; 1/4+z,3/4-x,3/4+y; 1/4-y,3/4-z,3/4-x; 1/4+y,3/4-z,3/4+x; 1/4-y,3/4+z,3/4+x; 1/4+y,3/4+z,3/4-x; 1/2+x,y,1/2+z; 1/2-x,-y,1/2+z; 1/2-x,y,1/2-z; 1/2+x,-y,1/2-z; 1/2+z,x,1/2+y; 1/2+z,-x,1/2-y; 1/2-z,-x,1/2+y; 1/2-z,x,1/2-y; 1/2+y,z,1/2+x; 1/2-y,z,1/2-x; 1/2+y,-z,1/2-x; 1/2-y,-z,1/2+x; 3/4-x,1/4-y,3/4-z; 3/4+x,1/4+y,3/4-z; 3/4+x,1/4-y,3/4+z; 3/4-x,1/4+y,3/4+z; 3/4-z,1/4-x,3/4-y; 3/4-z,1/4+x,3/4+y; 3/4+z,1/4+x,3/4-y; 3/4+z,1/4-x,3/4+y; 3/4-y,1/4-z,3/4-x; 3/4+y,1/4-z,3/4+x; 3/4-y,1/4+z,3/4+x; 3/4+y,1/4+z,3/4-x; 1/2+x,1/2+y,z; 1/2-x,1/2-y,z; 1/2-x,1/2+y,-z; 1/2+x,1/2-y,-z; 1/2+z,1/2+x,y; 1/2+z,1/2-x,-y; 1/2-z,1/2-x,y; 1/2-z,1/2+x,-y; 1/2+y,1/2+z,x; 1/2-y,1/2+z,-x; 1/2+y,1/2-z,-x; 1/2-y,1/2-z,x; 3/4-x,3/4-y,1/4-z; 3/4+x,3/4+y,1/4-z; 3/4+x,3/4-y,z+1/4; 3/4-x,3/4+y,z+1/4; 3/4-z,3/4-x,1/4-y; 3/4-z,3/4+x,1/4+y; 3/4+z,3/4+x,1/4-y; 3/4+z,3/4-x,1/4+y; 3/4-y,3/4-z,1/4-x; 3/4+y,3/4-z,1/4+x; 3/4-y,3/4+z,1/4+x; 3/4+y,3/4+z,1/4-x.
+spgp im-3 204 48 24 cubic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; z,x,y; z,-x,-y; -z,-x,y; -z,x,-y; y,z,x; -y,z,-x; y,-z,-x; -y,-z,x; -x,-y,-z; x,y,-z; x,-y,z; -x,y,z; -z,-x,-y; -z,x,y; z,x,-y; z,-x,y; -y,-z,-x; y,-z,x; -y,z,x; y,z,-x; 1/2+x,1/2+y,1/2+z; 1/2-x,1/2-y,1/2+z; 1/2-x,1/2+y,1/2-z; 1/2+x,1/2-y,1/2-z; 1/2+z,1/2+x,1/2+y; 1/2+z,1/2-x,1/2-y; 1/2-z,1/2-x,1/2+y; 1/2-z,1/2+x,1/2-y; 1/2+y,1/2+z,1/2+x; 1/2-y,1/2+z,1/2-x; 1/2+y,1/2-z,1/2-x; 1/2-y,1/2-z,1/2+x; 1/2-x,1/2-y,1/2-z; 1/2+x,1/2+y,1/2-z; 1/2+x,1/2-y,1/2+z; 1/2-x,1/2+y,1/2+z; 1/2-z,1/2-x,1/2-y; 1/2-z,1/2+x,1/2+y; 1/2+z,1/2+x,1/2-y; 1/2+z,1/2-x,1/2+y; 1/2-y,1/2-z,1/2-x; 1/2+y,1/2-z,1/2+x; 1/2-y,1/2+z,1/2+x; 1/2+y,1/2+z,1/2-x.
+spgp pa-3 205 24 24 cubic
+symm x,y,z; 1/2-x,-y,1/2+z; -x,1/2+y,1/2-z; 1/2+x,1/2-y,-z; z,x,y; 1/2+z,1/2-x,-y; 1/2-z,-x,1/2+y; -z,1/2+x,1/2-y; y,z,x; -y,1/2+z,1/2-x; 1/2+y,1/2-z,-x; 1/2-y,-z,1/2+x; -x,-y,-z; 1/2+x,y,1/2-z; x,1/2-y,1/2+z; 1/2-x,1/2+y,z; -z,-x,-y; 1/2-z,1/2+x,y; 1/2+z,x,1/2-y; z,1/2-x,1/2+y; -y,-z,-x; y,1/2-z,1/2+x; 1/2-y,1/2+z,x; 1/2+y,z,1/2-x.
+spgp ia-3 206 48 24 cubic
+symm x,y,z; 1/2-x,-y,1/2+z; -x,1/2+y,1/2-z; 1/2+x,1/2-y,-z; z,x,y; 1/2+z,1/2-x,-y; 1/2-z,-x,1/2+y; -z,1/2+x,1/2-y; y,z,x; -y,1/2+z,1/2-x; 1/2+y,1/2-z,-x; 1/2-y,-z,1/2+x; -x,-y,-z; 1/2+x,y,1/2-z; x,1/2-y,1/2+z; 1/2-x,1/2+y,z; -z,-x,-y; 1/2-z,1/2+x,y; 1/2+z,x,1/2-y; z,1/2-x,1/2+y; -y,-z,-x; y,1/2-z,1/2+x; 1/2-y,1/2+z,x; 1/2+y,z,1/2-x; 1/2+x,1/2+y,1/2+z; -x,1/2-y,z; 1/2-x,+y,-z; x,-y,1/2-z; 1/2+z,1/2+x,1/2+y; z,-x,1/2-y; -z,1/2-x,y; 1/2-z,x,-y; 1/2+y,1/2+z,1/2+x; 1/2-y,z,-x; y,-z,1/2-x; -y,1/2-z,x; 1/2-x,1/2-y,1/2-z; x,1/2+y,-z; 1/2+x,-y,z; -x,y,1/2+z; 1/2-z,1/2-x,1/2-y; -z,x,1/2+y; z,1/2+x,-y; 1/2+z,-x,y; 1/2-y,1/2-z,1/2-x; 1/2+y,-z,x; -y,z,1/2+x; y,1/2+z,-x.
+spgp p432 207 24 24 cubic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; z,x,y; z,-x,-y; -z,-x,y; -z,x,-y; y,z,x; -y,z,-x; y,-z,-x; -y,-z,x; y,x,-z; -y,-x,-z; y,-x,z; -y,x,z; x,z,-y; -x,z,y; -x,-z,-y; x,-z,y; z,y,-x; z,-y,x; -z,y,x; -z,-y,-x.
+spgp p4232 208 24 24 cubic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; z,x,y; z,-x,-y; -z,-x,y; -z,x,-y; y,z,x; -y,z,-x; y,-z,-x; -y,-z,x; 1/2+y,1/2+x,1/2-z; 1/2-y,1/2-x,1/2-z; 1/2+y,1/2-x,1/2+z; 1/2-y,1/2+x,1/2+z; 1/2+x,1/2+z,1/2-y; 1/2-x,1/2+z,1/2+y; 1/2-x,1/2-z,1/2-y; 1/2+x,1/2-z,1/2+y; 1/2+z,1/2+y,1/2-x; 1/2+z,1/2-y,1/2+x; 1/2-z,1/2+y,1/2+x; 1/2-z,1/2-y,1/2-x.
+spgp f432 209 96 24 cubic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; z,x,y; z,-x,-y; -z,-x,y; -z,x,-y; y,z,x; -y,z,-x; y,-z,-x; -y,-z,x; y,x,-z; -y,-x,-z; y,-x,z; -y,x,z; x,z,-y; -x,z,y; -x,-z,-y; x,-z,y; z,y,-x; z,-y,x; -z,y,x; -z,-y,-x; x,1/2+y,1/2+z; -x,1/2-y,1/2+z; -x,1/2+y,1/2-z; x,1/2-y,1/2-z; z,1/2+x,1/2+y; z,1/2-x,1/2-y; -z,1/2-x,1/2+y; -z,1/2+x,1/2-y; y,1/2+z,1/2+x; -y,1/2+z,1/2-x; y,1/2-z,1/2-x; -y,1/2-z,1/2+x; y,1/2+x,1/2-z; -y,1/2-x,1/2-z; y,1/2-x,1/2+z; -y,1/2+x,1/2+z; x,1/2+z,1/2-y; -x,1/2+z,1/2+y; -x,1/2-z,1/2-y; x,1/2-z,1/2+y; z,1/2+y,1/2-x; z,1/2-y,1/2+x; -z,1/2+y,1/2+x; -z,1/2-y,1/2-x; 1/2+x,y,1/2+z; 1/2-x,-y,1/2+z; 1/2-x,y,1/2-z; 1/2+x,-y,1/2-z; 1/2+z,x,1/2+y; 1/2+z,-x,1/2-y; 1/2-z,-x,1/2+y; 1/2-z,x,1/2-y; 1/2+y,z,1/2+x; 1/2-y,z,1/2-x; 1/2+y,-z,1/2-x; 1/2-y,-z,1/2+x; 1/2+y,x,1/2-z; 1/2-y,-x,1/2-z; 1/2+y,-x,1/2+z; 1/2-y,x,1/2+z; 1/2+x,z,1/2-y; 1/2-x,z,1/2+y; 1/2-x,-z,1/2-y; 1/2+x,-z,1/2+y; 1/2+z,y,1/2-x; 1/2+z,-y,1/2+x; 1/2-z,y,1/2+x; 1/2-z,-y,-1/2+x; 1/2+x,1/2+y,z; 1/2-x,1/2-y,z; 1/2-x,1/2+y,-z; 1/2+x,1/2-y,-z; 1/2+z,1/2+x,y; 1/2+z,1/2-x,-y; 1/2-z,1/2-x,y; 1/2-z,1/2+x,-y; 1/2+y,1/2+z,x; 1/2-y,1/2+z,-x; 1/2+y,1/2-z,-x; 1/2-y,1/2-z,x; 1/2+y,1/2+x,-z; 1/2-y,1/2-x,-z; 1/2+y,1/2-x,z; 1/2-y,1/2+x,z; 1/2+x,1/2+z,-y; 1/2-x,1/2+z,y; 1/2-x,1/2-z,-y; 1/2+x,1/2-z,y; 1/2+z,1/2+y,-x; 1/2+z,1/2-y,x; 1/2-z,1/2+y,x; 1/2-z,1/2-y,-x.
+spgp f4132 210 96 24 cubic
+symm x,y,z; -x,1/2-y,1/2+z; 1/2-x,1/2+y,-z; 1/2+x,-y,1/2-z; z,x,y; 1/2+z,-x,1/2-y; -z,1/2-x,1/2+y; 1/2-z,1/2+x,-y; y,z,x; 1/2-y,1/2+z,-x; 1/2+y,-z,1/2-x; -y,1/2-z,1/2+x; 3/4+y,1/4+x,3/4-z; 1/4-y,1/4-x,1/4-z; 1/4+y,3/4-x,3/4+z; 3/4-y,1/4+x,1/4+z; 3/4+x,1/4+z,3/4-y; 3/4-x,3/4+z,1/4+y; 1/4-x,1/4-z,1/4-y; 1/4+x,3/4-z,3/4+y; 3/4+z,1/4+y,3/4-x; 1/4+z,3/4-y,3/4+x; 3/4-z,3/4+y,1/4+x; 1/4-z,1/4-y,1/4-x; x,1/2+y,1/2+z; -x,-y,z; 1/2-x,y,1/2-z; 1/2+x,1/2-y,-z; z,1/2+x,1/2+y; 1/2+z,1/2-x,-y; -z,-x,y; 1/2-z,x,1/2-y; y,1/2+z,1/2+x; 1/2-y,z,1/2-x; 1/2+y,1/2-z,-x; -y,-z,x; 3/4+y,3/4+x,1/4-z; 1/4-y,3/4-x,3/4-z; 1/4+y,1/4-x,1/4+z; 3/4-y,3/4+x,3/4+z; 3/4+x,3/4+z,1/4-y; 3/4-x,1/4+z,3/4+y; 1/4-x,3/4-z,3/4-y; 1/4+x,1/4-z,1/4+y; 3/4+z,3/4+y,1/4-x; 1/4+z,1/4-y,1/4+x; 3/4-z,1/4+y,3/4+x; 1/4-z,3/4-y,3/4-x; 1/2+x,y,1/2+z; 1/2-x,1/2-y,z; -x,1/2+y,1/2-z; x,-y,-z; 1/2+z,x,1/2+y; z,-x,-y; 1/2-z,1/2-x,y; -z,1/2+x,1/2-y; 1/2+y,z,1/2+x; -y,1/2+z,1/2-x; y,-z,-x; 1/2-y,1/2-z,x; 1/4+y,1/4+x,1/4-z; 3/4-y,1/4-x,3/4-z; 3/4+y,3/4-x,1/4+z; 1/4-y,1/4+x,3/4+z; 1/4+x,1/4+z,1/4-y; 1/4-x,3/4+z,3/4+y; 3/4-x,1/4-z,3/4-y; 3/4+x,3/4-z,1/4+y; 1/4+z,1/4+y,1/4-x; 3/4+z,3/4-y,1/4+x; 1/4-z,3/4+y,3/4+x; 3/4-z,1/4-y,3/4-x; 1/2+x,1/2+y,z; 1/2-x,-y,1/2+z; -x,y,-z; x,1/2-y,1/2-z; 1/2+z,1/2+x,y; z,1/2-x,1/2-y; 1/2-z,-x,1/2+y; -z,x,-y; 1/2+y,1/2+z,x; -y,z,-x; y,1/2-z,1/2-x; 1/2-y,-z,1/2+x; 1/4+y,3/4+x,3/4-z; 3/4-y,3/4-x,1/4-z; 3/4+y,1/4-x,3/4+z; 1/4-y,3/4+x,1/4+z; 1/4+x,3/4+z,3/4-y; 1/4-x,1/4+z,1/4+y; 3/4-x,3/4-z,1/4-y; 3/4+x,1/4-z,3/4+y; 1/4+z,3/4+y,3/4-x; 3/4+z,1/4-y,3/4+x; 1/4-z,1/4+y,1/4+x; 3/4-z,3/4-y,1/4-x.
+spgp i432 211 48 24 cubic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; z,x,y; z,-x,-y; -z,-x,y; -z,x,-y; y,z,x; -y,z,-x; y,-z,-x; -y,-z,x; y,x,-z; -y,-x,-z; y,-x,z; -y,x,z; x,z,-y; -x,z,y; -x,-z,-y; x,-z,y; z,y,-x; z,-y,x; -z,y,x; -z,-y,-x; 1/2+x,1/2+y,1/2+z; 1/2-x,1/2-y,1/2+z; 1/2-x,1/2+y,1/2-z; 1/2+x,1/2-y,1/2-z; 1/2+z,1/2+x,1/2+y; 1/2+z,1/2-x,1/2-y; 1/2-z,1/2-x,1/2+y; 1/2-z,1/2+x,1/2-y; 1/2+y,1/2+z,1/2+x; 1/2-y,1/2+z,1/2-x; 1/2+y,1/2-z,1/2-x; 1/2-y,1/2-z,1/2+x; 1/2+y,1/2+x,1/2-z; 1/2-y,1/2-x,1/2-z; 1/2+y,1/2-x,1/2+z; 1/2-y,1/2+x,1/2+z; 1/2+x,1/2+z,1/2-y; 1/2-x,1/2+z,1/2+y; 1/2-x,1/2-z,1/2-y; 1/2+x,1/2-z,1/2+y; 1/2+z,1/2+y,1/2-x; 1/2+z,1/2-y,1/2+x; 1/2-z,1/2+y,1/2+x; 1/2-z,1/2-y,1/2-x.
+spgp p4332 212 24 24 cubic
+symm x,y,z; 1/2-x,-y,1/2+z; -x,1/2+y,1/2-z; 1/2+x,1/2-y,-z; z,x,y; 1/2+z,1/2-x,-y; 1/2-z,-x,1/2+y; -z,1/2+x,1/2-y; y,z,x; -y,1/2+z,1/2-x; 1/2+y,1/2-z,-x; 1/2-y,-z,1/2+x; 1/4+y,3/4+x,3/4-z; 1/4-y,1/4-x,1/4-z; 3/4+y,3/4-x,1/4+z; 3/4-y,1/4+x,3/4+z; 1/4+x,3/4+z,3/4-y; 3/4-x,1/4+z,3/4+y; 1/4-x,1/4-z,1/4-y; 3/4+x,3/4-z,1/4+y; 1/4+z,3/4+y,3/4-x; 3/4+z,3/4-y,1/4+x; 3/4-z,1/4+y,3/4+x; 1/4-z,1/4-y,1/4-x.
+spgp p4132 213 24 24 cubic
+symm x,y,z; 1/2-x,-y,1/2+z; -x,1/2+y,1/2-z; 1/2+x,1/2-y,-z; z,x,y; 1/2+z,1/2-x,-y; 1/2-z,-x,1/2+y; -z,1/2+x,1/2-y; y,z,x; -y,1/2+z,1/2-x; 1/2+y,1/2-z,-x; 1/2-y,-z,1/2+x; 3/4+y,1/4+x,1/4-z; 3/4-y,3/4-x,3/4-z; 1/4+y,1/4-x,3/4+z; 1/4-y,3/4+x,1/4+z; 3/4+x,1/4+z,1/4-y; 1/4-x,3/4+z,1/4+y; 3/4-x,3/4-z,3/4-y; 1/4+x,1/4-z,3/4+y; 3/4+z,1/4+y,1/4-x; 1/4+z,1/4-y,3/4+x; 1/4-z,3/4+y,1/4+x; 3/4-z,3/4-y,3/4-x.
+spgp i4132 214 48 24 cubic
+symm x,y,z; 1/2-x,-y,1/2+z; -x,1/2+y,1/2-z; 1/2+x,1/2-y,-z; z,x,y; 1/2+z,1/2-x,-y; 1/2-z,-x,1/2+y; -z,1/2+x,1/2-y; y,z,x; -y,1/2+z,1/2-x; 1/2+y,1/2-z,-x; 1/2-y,-z,1/2+x; 3/4+y,1/4+x,1/4-z; 3/4-y,3/4-x,3/4-z; 1/4+y,1/4-x,3/4+z; 1/4-y,3/4+x,1/4+z; 3/4+x,1/4+z,1/4-y; 1/4-x,3/4+z,1/4+y; 3/4-x,3/4-z,3/4-y; 1/4+x,1/4-z,3/4+y; 3/4+z,1/4+y,1/4-x; 1/4+z,1/4-y,3/4+x; 1/4-z,3/4+y,1/4+x; 3/4-z,3/4-y,3/4-x; 1/2+x,1/2+y,1/2+z; -x,1/2-y,z; 1/2-x,y,-z; x,-y,1/2-z; 1/2+z,1/2+x,1/2+y; z,-x,1/2-y; -z,1/2-x,y; 1/2-z,x,-y; 1/2+y,1/2+z,1/2+x; 1/2-y,z,-x; y,-z,1/2-x; -y,1/2-z,x; 1/4+y,3/4+x,3/4-z; 1/4-y,1/4-x,1/4-z; 3/4+y,3/4-x,1/4+z; 3/4-y,1/4+x,3/4+z; 1/4+x,3/4+z,3/4-y; 3/4-x,1/4+z,3/4+y; 1/4-x,1/4-z,1/4-y; 3/4+x,3/4-z,1/4+y; 1/4+z,3/4+y,3/4-x; 3/4+z,3/4-y,1/4+x; 3/4-z,1/4+y,3/4+x; 1/4-z,1/4-y,1/4-x.
+spgp p-43m 215 24 24 cubic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; z,x,y; z,-x,-y; -z,-x,y; -z,x,-y; y,z,x; -y,z,-x; y,-z,-x; -y,-z,x; y,x,z; -y,-x,z; y,-x,-z; -y,x,-z; x,z,y; -x,z,-y; -x,-z,y; x,-z,-y; z,y,x; z,-y,-x; -z,y,-x; -z,-y,x.
+spgp f4-3m 216 96 24 cubic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; z,x,y; z,-x,-y; -z,-x,y; -z,x,-y; y,z,x; -y,z,-x; y,-z,-x; -y,-z,x; y,x,z; -y,-x,z; y,-x,-z; -y,x,-z; x,z,y; -x,z,-y; -x,-z,y; x,-z,-y; z,y,x; z,-y,-x; -z,y,-x; -z,-y,x; x,1/2+y,1/2+z; -x,1/2-y,1/2+z; -x,1/2+y,1/2-z; x,1/2-y,1/2-z; z,1/2+x,1/2+y; z,1/2-x,1/2-y; -z,1/2-x,1/2+y; -z,1/2+x,1/2-y; y,1/2+z,1/2+x; -y,1/2+z,1/2-x; y,1/2-z,1/2-x; -y,1/2-z,1/2+x; y,1/2+x,1/2+z; -y,1/2-x,1/2+z; y,1/2-x,1/2-z; -y,1/2+x,1/2-z; x,1/2+z,1/2+y; -x,1/2+z,1/2-y; -x,1/2-z,1/2+y; x,1/2-z,1/2-y; z,1/2+y,1/2+x; z,1/2-y,1/2-x; -z,1/2+y,1/2-x; -z,1/2-y,1/2+x; 1/2+x,y,1/2+z; 1/2-x,-y,1/2+z; 1/2-x,y,1/2-z; 1/2+x,-y,1/2-z; 1/2+z,x,1/2+y; 1/2+z,-x,1/2-y; 1/2-z,-x,1/2+y; 1/2-z,x,1/2-y; 1/2+y,z,1/2+x; 1/2-y,z,1/2-x; 1/2+y,-z,1/2-x; 1/2-y,-z,1/2+x; 1/2+y,x,1/2+z; 1/2-y,-x,1/2+z; 1/2+y,-x,1/2-z; 1/2-y,x,1/2-z; 1/2+x,z,1/2+y; 1/2-x,z,1/2-y; 1/2-x,-z,1/2+y; 1/2+x,-z,1/2-y; 1/2+z,y,1/2+x; 1/2+z,-y,1/2-x; 1/2-z,y,1/2-x; 1/2-z,-y,1/2+x; 1/2+x,1/2+y,z; 1/2-x,1/2-y,z; 1/2-x,1/2+y,-z; 1/2+x,1/2-y,-z; 1/2+z,1/2+x,y; 1/2+z,1/2-x,-y; 1/2-z,1/2-x,y; 1/2-z,1/2+x,-y; 1/2+y,1/2+z,x; 1/2-y,1/2+z,-x; 1/2+y,1/2-z,-x; 1/2-y,1/2-z,x; 1/2+y,1/2+x,z; 1/2-y,1/2-x,z; 1/2+y,1/2-x,-z; 1/2-y,1/2+x,-z; 1/2+x,1/2+z,y; 1/2-x,1/2+z,-y; 1/2-x,1/2-z,y; 1/2+x,1/2-z,-y; 1/2+z,1/2+y,x; 1/2+z,1/2-y,-x; 1/2-z,1/2+y,-x; 1/2-z,1/2-y,x.
+spgp i-43 217 48 24 cubic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; z,x,y; z,-x,-y; -z,-x,y; -z,x,-y; y,z,x; -y,z,-x; y,-z,-x; -y,-z,x; y,x,z; -y,-x,z; y,-x,-z; -y,x,-z; x,z,y; -x,z,-y; -x,-z,y; x,-z,-y; z,y,x; z,-y,-x; -z,y,-x; -z,-y,x; 1/2+x,1/2+y,1/2+z; 1/2-x,1/2-y,1/2+z; 1/2-x,1/2+y,1/2-z; 1/2+x,1/2-y,1/2-z; 1/2+z,1/2+x,1/2+y; 1/2+z,1/2-x,1/2-y; 1/2-z,1/2-x,1/2+y; 1/2-z,1/2+x,1/2-y; 1/2+y,1/2+z,1/2+x; 1/2-y,1/2+z,1/2-x; 1/2+y,1/2-z,1/2-x; 1/2-y,1/2-z,1/2+x; 1/2+y,1/2+x,1/2+z; 1/2-y,1/2-x,1/2+z; 1/2+y,1/2-x,1/2-z; 1/2-y,1/2+x,1/2-z; 1/2+x,1/2+z,1/2+y; 1/2-x,1/2+z,1/2-y; 1/2-x,1/2-z,1/2+y; 1/2+x,1/2-z,1/2-y; 1/2+z,1/2+y,1/2+x; 1/2+z,1/2-y,1/2-x; 1/2-z,1/2+y,1/2-x; 1/2-z,1/2-y,1/2+x.
+spgp p-43n 218 24 24 cubic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; z,x,y; z,-x,-y; -z,-x,y; -z,x,-y; y,z,x; -y,z,-x; y,-z,-x; -y,-z,x; 1/2+y,1/2+x,1/2+z; 1/2-y,1/2-x,1/2+z; 1/2+y,1/2-x,1/2-z; 1/2-y,1/2+x,1/2-z; 1/2+x,1/2+z,1/2+y; 1/2-x,1/2+z,1/2-y; 1/2-x,1/2-z,1/2+y; 1/2+x,1/2-z,1/2-y; 1/2+z,1/2+y,1/2+x; 1/2+z,1/2-y,1/2-x; 1/2-z,1/2+y,1/2-x; 1/2-z,1/2-y,1/2+x.
+spgp f-43c 219 96 24 cubic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; z,x,y; z,-x,-y; -z,-x,y; -z,x,-y; y,z,x; -y,z,-x; y,-z,-x; -y,-z,x; 1/2+y,1/2+x,1/2+z; 1/2-y,1/2-x,1/2+z; 1/2+y,1/2-x,1/2-z; 1/2-y,1/2+x,1/2-z; 1/2+x,1/2+z,1/2+y; 1/2-x,1/2+z,1/2-y; 1/2-x,1/2-z,1/2+y; 1/2+x,1/2-z,1/2-y; 1/2+z,1/2+y,1/2+x; 1/2+z,1/2-y,1/2-x; 1/2-z,1/2+y,1/2-x; 1/2-z,1/2-y,1/2+x; x,1/2+y,1/2+z; -x,1/2-y,1/2+z; -x,1/2+y,1/2-z; x,1/2-y,1/2-z; z,1/2+x,1/2+y; z,1/2-x,1/2-y; -z,1/2-x,1/2+y; -z,1/2+x,1/2-y; y,1/2+z,1/2+x; -y,1/2+z,1/2-x; y,1/2-z,1/2-x; -y,1/2-z,1/2+x; 1/2+y,x,1/2+z; 1/2-y,-x,1/2+z; 1/2+y,-x,1/2-z; 1/2-y,x,1/2-z; 1/2+x,z,1/2+y; 1/2-x,z,1/2-y; 1/2-x,-z,1/2+y; 1/2+x,-z,1/2-y; 1/2+z,y,1/2+x; 1/2+z,-y,1/2-x; 1/2-z,y,1/2-x; 1/2-z,-y,1/2+x; 1/2+x,y,1/2+z; 1/2-x,-y,1/2+z; 1/2-x,y,1/2-z; 1/2+x,-y,1/2-z; 1/2+z,x,1/2+y; 1/2+z,-x,1/2-y; 1/2-z,-x,1/2+y; 1/2-z,x,1/2-y; 1/2+y,z,1/2+x; 1/2-y,z,1/2-x; 1/2+y,-z,1/2-x; 1/2-y,-z,1/2+x; y,1/2+x,z; -y,1/2-x,z; y,1/2-x,-z; -y,1/2+x,-z; x,1/2+z,y; -x,1/2+z,-y; -x,1/2-z,y; x,1/2-z,-y; z,1/2+y,x; z,1/2-y,-x; -z,1/2+y,-x; -z,1/2-y,x; 1/2+x,1/2+y,z; 1/2-x,1/2-y,z; 1/2-x,1/2+y,-z; 1/2+x,1/2-y,-z; 1/2+z,1/2+x,y; 1/2+z,1/2-x,-y; 1/2-z,1/2-x,y; 1/2-z,1/2+x,-y; 1/2+y,1/2+z,x; 1/2-y,1/2+z,-x; 1/2+y,1/2-z,-x; 1/2-y,1/2-z,x; y,x,1/2+z; -y,-x,1/2+z; y,-x,1/2-z; -y,x,1/2-z; x,z,1/2+y; -x,z,1/2-y; -x,-z,1/2+y; x,-z,1/2-y; z,y,1/2+x; z,-y,1/2-x; -z,y,1/2-x; -z,-y,1/2+x.
+spgp i-43 220 48 24 cubic
+symm x,y,z; 1/2-x,-y,1/2+z; -x,1/2+y,1/2-z; 1/2+x,1/2-y,-z; z,x,y; 1/2+z,1/2-x,-y; 1/2-z,-x,1/2+y; -z,1/2+x,1/2-y; y,z,x; -y,1/2+z,1/2-x; 1/2+y,1/2-z,-x; 1/2-y,-z,1/2+x; 1/4+y,1/4+x,1/4+z; 1/4-y,3/4-x,3/4+z; 3/4+y,1/4-x,3/4+z; 3/4-y,3/4+x,1/4-z; 1/4+x,1/4+z,1/4+y; 3/4-x,3/4+z,1/4-y; 1/4-x,3/4-z,3/4+y; 3/4+x,1/4-z,3/4-y; 1/4+z,1/4+y,1/4+x; 3/4+z,1/4-y,3/4-x; 3/4-z,3/4+y,1/4-x; 1/4-z,3/4-y,3/4+x; 1/2+x,1/2+y,1/2+z; -x,1/2-y,z; 1/2-x,y,-z; x,-y,1/2-z; 1/2+z,1/2+x,1/2+y; z,-x,1/2-y; -z,1/2-x,y; 1/2-z,x,-y; 1/2+y,1/2+z,1/2+x; 1/2-y,z,-x; y,-z,1/2-x; -y,1/2-z,x; 3/4+y,3/4+x,3/4+z; 3/4-y,1/4-x,1/4+z; 1/4+y,3/4-x,1/4+z; 1/4-y,1/4+x,3/4-z; 3/4+x,3/4+z,3/4+y; 1/4-x,1/4+z,3/4-y; 3/4-x,1/4-z,1/4+y; 1/4+x,3/4-z,1/4-y; 3/4+z,3/4+y,3/4+x; 1/4+z,3/4-y,1/4-x; 1/4-z,1/4+y,3/4-x; 3/4-z,1/4-y,1/4+x.
+spgp pm-3m 221 48 48 cubic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; z,x,y; z,-x,-y; -z,-x,y; -z,x,-y; y,z,x; -y,z,-x; y,-z,-x; -y,-z,x; y,x,-z; -y,-x,-z; y,-x,z; -y,x,z; x,z,-y; -x,z,y; -x,-z,-y; x,-z,y; z,y,-x; z,-y,x; -z,y,x; -z,-y,-x; -x,-y,-z; x,y,-z; x,-y,z; -x,y,z; -z,-x,-y; -z,x,y; z,x,-y; z,-x,y; -y,-z,-x; y,-z,x; -y,z,x; y,z,-x; -y,-x,z; y,x,z; -y,x,-z; y,-x,-z; -x,-z,y; x,-z,-y; x,z,y; -x,z,-y; -z,-y,x; -z,y,-x; z,-y,-x; z,y,x.
+spgp pn-3n 222 48 48 cubic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; z,x,y; z,-x,-y; -z,-x,y; -z,x,-y; y,z,x; -y,z,-x; y,-z,-x; -y,-z,x; y,x,-z; -y,-x,-z; y,-x,z; -y,x,z; x,z,-y; -x,z,y; -x,-z,-y; x,-z,y; z,y,-x; z,-y,x; -z,y,x; -z,-y,-x; -x,-y,-z; x,y,-z; x,-y,z; -x,y,z; -z,-x,-y; -z,x,y; z,x,-y; z,-x,y; -y,-z,-x; y,-z,x; -y,z,x; y,z,-x; -y,-x,z; y,x,z; -y,x,-z; y,-x,-z; -x,-z,y; x,-z,-y; x,z,y; -x,z,-y; -z,-y,x; -z,y,-x; z,-y,-x; z,y,x.
+spgp pm-3n 223 48 48 cubic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; z,x,y; z,-x,-y; -z,-x,y; -z,x,-y; y,z,x; -y,z,-x; y,-z,-x; -y,-z,x; 1/2+y,1/2+x,1/2-z; 1/2-y,1/2-x,1/2-z; 1/2+y,1/2-x,1/2+z; 1/2-y,1/2+x,1/2+z; 1/2+x,1/2+z,1/2-y; 1/2-x,1/2+z,1/2+y; 1/2-x,1/2-z,1/2-y; 1/2+x,1/2-z,1/2+y; 1/2+z,1/2+y,1/2-x; 1/2+z,1/2-y,1/2+x; 1/2-z,1/2+y,1/2+x; 1/2-z,1/2-y,1/2-x; -x,-y,-z; x,y,-z; x,-y,z; -x,y,z; -z,-x,-y; -z,x,y; z,x,-y; z,-x,y; -y,-z,-x; y,-z,x; -y,z,x; y,z,-x; 1/2-y,1/2-x,1/2+z; 1/2+y,1/2+x,1/2+z; 1/2-y,1/2+x,1/2-z; 1/2+y,1/2-x,1/2-z; 1/2-x,1/2-z,1/2+y; 1/2+x,1/2-z,1/2-y; 1/2+x,1/2+z,1/2+y; 1/2-x,1/2+z,1/2-y; 1/2-z,1/2-y,1/2+x; 1/2-z,1/2+y,1/2-x; 1/2+z,1/2-y,1/2-x; 1/2+z,1/2+y,1/2+x.
+spgp pn-3m 224 48 48 cubic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; z,x,y; z,-x,-y; -z,-x,y; -z,x,-y; y,z,x; -y,z,-x; y,-z,-x; -y,-z,x; 1/2+y,1/2+x,1/2-z; 1/2-y,1/2-x,1/2-z; 1/2+y,1/2-x,1/2+z; 1/2-y,1/2+x,1/2+z; 1/2+x,1/2+z,1/2-y; 1/2-x,1/2+z,1/2+y; 1/2-x,1/2-z,1/2-y; 1/2+x,1/2-z,1/2+y; 1/2+z,1/2+y,1/2-x; 1/2+z,1/2-y,1/2+x; 1/2-z,1/2+y,1/2+x; 1/2-z,1/2-y,1/2-x; 1/2-x,1/2-y,1/2-z; 1/2+x,1/2+y,1/2-z; 1/2+x,1/2-y,1/2+z; 1/2-x,1/2+y,1/2+z; 1/2-z,1/2-x,1/2-y; 1/2-z,1/2+x,1/2+y; 1/2+z,1/2+x,1/2-y; 1/2+z,1/2-x,1/2+y; 1/2-y,1/2-z,1/2-x; 1/2+y,1/2-z,1/2+x; 1/2-y,1/2+z,1/2+x; 1/2+y,1/2+z,1/2-x; -y,-x,z; y,x,z; -y,x,-z; y,-x,-z; -x,-z,y; x,-z,-y; x,z,y; -x,z,-y; -z,-y,x; -z,y,-x; z,-y,-x; z,y,x.
+spgp fm-3m 225 192 48 cubic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; z,x,y; z,-x,-y; -z,-x,y; -z,x,-y; y,z,x; -y,z,-x; y,-z,-x; -y,-z,x; y,x,-z; -y,-x,-z; y,-x,z; -y,x,z; x,z,-y; -x,z,y; -x,-z,-y; x,-z,y; z,y,-x; z,-y,x; -z,y,x; -z,-y,-x; -x,-y,-z; x,y,-z; x,-y,z; -x,y,z; -z,-x,-y; -z,x,y; z,x,-y; z,-x,y; -y,-z,-x; y,-z,x; -y,z,x; y,z,-x; -y,-x,z; y,x,z; -y,x,-z; y,-x,-z; -x,-z,y; x,-z,-y; x,z,y; -x,z,-y; -z,-y,x; -z,y,-x; z,-y,-x; z,y,x; x,1/2+y,1/2+z; -x,1/2-y,1/2+z; -x,1/2+y,1/2-z; x,1/2-y,1/2-z; z,1/2+x,1/2+y; z,1/2-x,1/2-y; -z,1/2-x,1/2+y; -z,1/2+x,1/2-y; y,1/2+z,1/2+x; -y,1/2+z,1/2-x; y,1/2-z,1/2-x; -y,1/2-z,1/2+x; y,1/2+x,1/2-z; -y,1/2-x,1/2-z; y,1/2-x,1/2+z; -y,1/2+x,1/2+z; x,1/2+z,1/2-y; -x,1/2+z,1/2+y; -x,1/2-z,1/2-y; x,1/2-z,1/2+y; z,1/2+y,1/2-x; z,1/2-y,1/2+x; -z,1/2+y,1/2+x; -z,1/2-y,1/2-x; -x,1/2-y,1/2-z; x,1/2+y,1/2-z; x,1/2-y,1/2+z; -x,1/2+y,1/2+z; -z,1/2-x,1/2-y; -z,1/2+x,1/2+y; z,1/2+x,1/2-y; z,1/2-x,1/2+y; -y,1/2-z,1/2-x; y,1/2-z,1/2+x; -y,1/2+z,1/2+x; y,1/2+z,1/2-x; -y,1/2-x,1/2+z; y,1/2+x,1/2+z; -y,1/2+x,1/2-z; y,1/2-x,1/2-z; -x,1/2-z,1/2+y; x,1/2-z,1/2-y; x,1/2+z,1/2+y; -x,1/2+z,1/2-y; -z,1/2-y,1/2+x; -z,1/2+y,1/2-x; z,1/2-y,1/2-x; z,1/2+y,1/2+x; 1/2+x,y,1/2+z; 1/2-x,-y,1/2+z; 1/2-x,y,1/2-z; 1/2+x,-y,1/2-z; 1/2+z,x,1/2+y; 1/2+z,-x,1/2-y; 1/2-z,-x,1/2+y; 1/2-z,x,1/2-y; 1/2+y,z,1/2+x; 1/2-y,z,1/2-x; 1/2+y,-z,1/2-x; 1/2-y,-z,1/2+x; 1/2+y,x,1/2-z; 1/2-y,-x,1/2-z; 1/2+y,-x,1/2+z; 1/2-y,x,1/2+z; 1/2+x,z,1/2-y; 1/2-x,z,1/2+y; 1/2-x,-z,1/2-y; 1/2+x,-z,1/2+y; 1/2+z,y,1/2-x; 1/2+z,-y,1/2+x; 1/2-z,y,1/2+x; 1/2-z,-y,1/2-x; 1/2-x,-y,1/2-z; 1/2+x,y,1/2-z; 1/2+x,-y,1/2+z; 1/2-x,y,1/2+z; 1/2-z,-x,1/2-y; 1/2-z,x,1/2+y; 1/2+z,x,1/2-y; 1/2+z,-x,1/2+y; 1/2-y,-z,1/2-x; 1/2+y,-z,1/2+x; 1/2-y,z,1/2+x; 1/2+y,z,1/2-x; 1/2-y,-x,1/2+z; 1/2+y,x,1/2+z; 1/2-y,x,1/2-z; 1/2+y,-x,1/2-z; 1/2-x,-z,1/2+y; 1/2+x,-z,1/2-y; 1/2+x,z,1/2+y; 1/2-x,z,1/2-y; 1/2-z,-y,1/2+x; 1/2-z,y,1/2-x; 1/2+z,-y,1/2-x; 1/2+z,y,1/2+x; 1/2+x,1/2+y,z; 1/2-x,1/2-y,z; 1/2-x,1/2+y,-z; 1/2+x,1/2-y,-z; 1/2+z,1/2+x,y; 1/2+z,1/2-x,-y; 1/2-z,1/2-x,y; 1/2-z,1/2+x,-y; 1/2+y,1/2+z,x; 1/2-y,1/2+z,-x; 1/2+y,1/2-z,-x; 1/2-y,1/2-z,x; 1/2+y,1/2+x,-z; 1/2-y,1/2-x,-z; 1/2+y,1/2-x,z; 1/2-y,1/2+x,z; 1/2+x,1/2+z,-y; 1/2-x,1/2+z,y; 1/2-x,1/2-z,-y; 1/2+x,1/2-z,y; 1/2+z,1/2+y,-x; 1/2+z,1/2-y,x; 1/2-z,1/2+y,x; 1/2-z,1/2-y,-x; 1/2-x,1/2-y,-z; 1/2+x,1/2+y,-z; 1/2+x,1/2-y,z; 1/2-x,1/2+y,z; 1/2-z,1/2-x,-y; 1/2-z,1/2+x,y; 1/2+z,1/2+x,-y; 1/2+z,1/2-x,y; 1/2-y,1/2-z,-x; 1/2+y,1/2-z,x; 1/2-y,1/2+z,x; 1/2+y,1/2+z,-x; 1/2-y,1/2-x,z; 1/2+y,1/2+x,z; 1/2-y,1/2+x,-z; 1/2+y,1/2-x,-z; 1/2-x,1/2-z,y; 1/2+x,1/2-z,-y; 1/2+x,1/2+z,y; 1/2-x,1/2+z,-y; 1/2-z,1/2-y,x; 1/2-z,1/2+y,-x; 1/2+z,1/2-y,-x; 1/2+z,1/2+y,x.
+spgp fm-3c 226 192 48 cubic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; z,x,y; z,-x,-y; -z,-x,y; -z,x,-y; y,z,x; -y,z,-x; y,-z,-x; -y,-z,x; 1/2+y,1/2+x,1/2-z; 1/2-y,1/2-x,1/2-z; 1/2+y,1/2-x,1/2+z; 1/2-y,1/2+x,1/2+z; 1/2+x,1/2+z,1/2-y; 1/2-x,1/2+z,1/2+y; 1/2-x,1/2-z,1/2-y; 1/2+x,1/2-z,1/2+y; 1/2+z,1/2+y,1/2-x; 1/2+z,1/2-y,1/2+x; 1/2-z,1/2+y,1/2+x; 1/2-z,1/2-y,1/2-x; -x,-y,-z; x,y,-z; x,-y,z; -x,y,z; -z,-x,-y; -z,x,y; z,x,-y; z,-x,y; -y,-z,-x; y,-z,x; -y,z,x; y,z,-x; 1/2-y,1/2-x,1/2+z; 1/2+y,1/2+x,1/2+z; 1/2-y,1/2+x,1/2-z; 1/2+y,1/2-x,1/2-z; 1/2-x,1/2-z,1/2+y; 1/2+x,1/2-z,1/2-y; 1/2+x,1/2+z,1/2+y; 1/2-x,1/2+z,1/2-y; 1/2-z,1/2-y,1/2+x; 1/2-z,1/2+y,1/2-x; 1/2+z,1/2-y,1/2-x; 1/2+z,1/2+y,1/2+x; x,1/2+y,1/2+z; -x,1/2-y,1/2+z; -x,1/2+y,1/2-z; x,1/2-y,1/2-z; z,1/2+x,1/2+y; z,1/2-x,1/2-y; -z,1/2-x,1/2+y; -z,1/2+x,1/2-y; y,1/2+z,1/2+x; -y,1/2+z,1/2-x; y,1/2-z,1/2-x; -y,1/2-z,1/2+x; 1/2+y,x,-z; 1/2-y,-x,-z; 1/2+y,-x,z; 1/2-y,x,z; 1/2+x,z,-y; 1/2-x,z,y; 1/2-x,-z,-y; 1/2+x,-z,y; 1/2+z,y,-x; 1/2+z,-y,x; 1/2-z,y,x; 1/2-z,-y,-x; -x,1/2-y,1/2-z; x,1/2+y,1/2-z; x,1/2-y,1/2+z; -x,1/2+y,1/2+z; -z,1/2-x,1/2-y; -z,1/2+x,1/2+y; z,1/2+x,1/2-y; z,1/2-x,1/2+y; -y,1/2-z,1/2-x; y,1/2-z,1/2+x; -y,1/2+z,1/2+x; y,1/2+z,1/2-x; 1/2-y,-x,z; 1/2+y,x,z; 1/2-y,x,-z; 1/2+y,-x,-z; 1/2-x,-z,y; 1/2+x,-z,-y; 1/2+x,z,y; 1/2-x,z,-y; 1/2-z,-y,x; 1/2-z,y,-x; 1/2+z,-y,-x; 1/2+z,y,x; 1/2+x,y,1/2+z; 1/2-x,-y,1/2+z; 1/2-x,y,1/2-z; 1/2+x,-y,1/2-z; 1/2+z,x,1/2+y; 1/2+z,-x,1/2-y; 1/2-z,-x,1/2+y; 1/2-z,x,1/2-y; 1/2+y,z,1/2+x; 1/2-y,z,1/2-x; 1/2+y,-z,1/2-x; 1/2-y,-z,1/2+x; y,1/2+x,-z; -y,1/2-x,-z; y,1/2-x,z; -y,1/2+x,z; x,1/2+z,-y; -x,1/2+z,y; -x,1/2-z,-y; x,1/2-z,y; z,1/2+y,-x; z,1/2-y,x; -z,1/2+y,x; -z,1/2-y,-x; 1/2-x,-y,1/2-z; 1/2+x,y,1/2-z; 1/2+x,-y,1/2+z; 1/2-x,y,1/2+z; 1/2-z,-x,1/2-y; 1/2-z,x,1/2+y; 1/2+z,x,1/2-y; 1/2+z,-x,1/2+y; 1/2-y,-z,1/2-x; 1/2+y,-z,1/2+x; 1/2-y,z,1/2+x; 1/2+y,z,1/2-x; -y,1/2-x,z; y,1/2+x,z; -y,1/2+x,-z; y,1/2-x,-z; -x,1/2-z,y; x,1/2-z,-y; x,1/2+z,y; -x,1/2+z,-y; -z,1/2-y,x; -z,1/2+y,-x; z,1/2-y,-x; z,1/2+y,x; 1/2+x,1/2+y,z; 1/2-x,1/2-y,z; 1/2-x,1/2+y,-z; 1/2+x,1/2-y,-z; 1/2+z,1/2+x,y; 1/2+z,1/2-x,-y; 1/2-z,1/2-x,y; 1/2-z,1/2+x,-y; 1/2+y,1/2+z,x; 1/2-y,1/2+z,-x; 1/2+y,1/2-z,-x; 1/2-y,1/2-z,x; y,x,1/2-z; -y,-x,1/2-z; y,-x,1/2+z; -y,x,1/2+z; x,z,1/2-y; -x,z,1/2+y; -x,-z,1/2-y; x,-z,1/2+y; z,y,1/2-x; z,-y,1/2+x; -z,y,1/2+x; -z,-y,1/2-x; 1/2-x,1/2-y,-z; 1/2+x,1/2+y,-z; 1/2+x,1/2-y,z; 1/2-x,1/2+y,z; 1/2-z,1/2-x,-y; 1/2-z,1/2+x,y; 1/2+z,1/2+x,-y; 1/2+z,1/2-x,y; 1/2-y,1/2-z,-x; 1/2+y,1/2-z,x; 1/2-y,1/2+z,x; 1/2+y,1/2+z,-x; -y,-x,1/2+z; y,x,1/2+z; -y,x,1/2-z; y,-x,1/2-z; -x,-z,1/2+y; x,-z,1/2-y; x,z,1/2+y; -x,z,1/2-y; -z,-y,1/2+x; -z,y,1/2-x; z,-y,1/2-x; z,y,1/2+x.
+spgp fd-3m 227 192 48 cubic
+symm x,y,z; -x,1/2-y,1/2+z; 1/2-x,1/2+y,-z; 1/2+x,-y,1/2-z; z,x,y; 1/2+z,-x,1/2-y; -z,1/2-x,1/2+y; 1/2-z,1/2+x,-y; y,z,x; 1/2-y,1/2+z,-x; 1/2+y,-z,1/2-x; -y,1/2-z,1/2+x; 3/4+y,1/4+x,3/4-z; 1/4-y,1/4-x,1/4-z; 1/4+y,3/4-x,3/4+z; 3/4-y,3/4+x,1/4+z; 3/4+x,1/4+z,3/4-y; 3/4-x,3/4+z,1/4+y; 1/4-x,1/4-z,1/4-y; 1/4+x,3/4-z,3/4+y; 3/4+z,1/4+y,3/4-x; 1/4+z,3/4-y,3/4+x; 3/4-z,3/4+y,1/4+x; 1/4-z,1/4-y,1/4-x; 1/4-x,1/4-y,1/4-z; 1/4+x,3/4+y,3/4-z; 3/4+x,3/4-y,1/4+z; 3/4-x,1/4+y,3/4+z; 1/4-z,1/4-x,1/4-y; 3/4-z,1/4+x,3/4+y; 1/4+z,3/4+x,3/4-y; 3/4+z,3/4-x,1/4+y; 1/4-y,1/4-z,1/4-x; 3/4+y,3/4-z,1/4+x; 3/4-y,1/4+z,3/4+x; 1/4+y,3/4+z,3/4-x; 1/2-y,-x,1/2+z; y,x,z; -y,1/2+x,1/2-z; 1/2+y,1/2-x,-z; 1/2-x,-z,1/2+y; 1/2+x,1/2-z,-y; x,z,y; -x,1/2+z,1/2-y; 1/2-z,-y,1/2+x; -z,1/2+y,1/2-x; 1/2+z,1/2-y,-x; z,y,x; x,1/2+y,1/2+z; -x,-y,z; 1/2-x,y,1/2-z; 1/2+x,1/2-y,-z; z,1/2+x,1/2+y; 1/2+z,1/2-x,-y; -z,-x,y; 1/2-z,x,1/2-y; y,1/2+z,1/2+x; 1/2-y,z,1/2-x; 1/2+y,1/2-z,-x; -y,-z,x; 3/4+y,3/4+x,1/4-z; 1/4-y,3/4-x,3/4-z; 1/4+y,1/4-x,1/4+z; 3/4-y,1/4+x,3/4+z; 3/4+x,3/4+z,1/4-y; 3/4-x,1/4+z,3/4+y; 1/4-x,3/4-z,3/4-y; 1/4+x,1/4-z,1/4+y; 3/4+z,3/4+y,1/4-x; 1/4+z,1/4-y,1/4+x; 3/4-z,1/4+y,3/4+x; 1/4-z,3/4-y,3/4-x; 1/4-x,3/4-y,3/4-z; 1/4+x,1/4+y,1/4-z; 3/4+x,1/4-y,3/4+z; 3/4-x,3/4+y,1/4+z; 1/4-z,3/4-x,3/4-y; 3/4-z,3/4+x,1/4+y; 1/4+z,1/4+x,1/4-y; 3/4+z,1/4-x,3/4+y; 1/4-y,3/4-z,3/4-x; 3/4+y,1/4-z,3/4+x; 3/4-y,3/4+z,1/4+x; 1/4+y,1/4+z,1/4-x; 1/2-y,1/2-x,z; y,1/2+x,1/2+z; -y,x,-z; 1/2+y,-x,1/2-z; 1/2-x,1/2-z,y; 1/2+x,-z,1/2-y; x,1/2+z,1/2+y; -x,z,-y; 1/2-z,1/2-y,x; -z,y,-x; 1/2+z,-y,1/2-x; z,1/2+y,1/2+x; 1/2+x,y,1/2+z; 1/2-x,1/2-y,z; -x,1/2+y,1/2-z; x,-y,-z; 1/2+z,x,1/2+y; z,-x,-y; 1/2-z,1/2-x,y; -z,1/2+x,1/2-y; 1/2+y,z,1/2+x; -y,1/2+z,1/2-x; y,-z,-x; 1/2-y,1/2-z,x; 1/4+y,1/4+x,1/4-z; 3/4-y,1/4-x,3/4-z; 3/4+y,3/4-x,1/4+z; 1/4-y,3/4+x,3/4+z; 1/4+x,1/4+z,1/4-y; 1/4-x,3/4+z,3/4+y; 3/4-x,1/4-z,3/4-y; 3/4+x,3/4-z,1/4+y; 1/4+z,1/4+y,1/4-x; 3/4+z,3/4-y,1/4+x; 1/4-z,3/4+y,3/4+x; 3/4-z,1/4-y,3/4-x; 3/4-x,1/4-y,3/4-z; 3/4+x,3/4+y,1/4-z; 1/4+x,3/4-y,3/4+z; 1/4-x,1/4+y,1/4+z; 3/4-z,1/4-x,3/4-y; 1/4-z,1/4+x,1/4+y; 3/4+z,3/4+x,1/4-y; 1/4+z,3/4-x,3/4+y; 3/4-y,1/4-z,3/4-x; 1/4+y,3/4-z,3/4+x; 1/4-y,1/4+z,1/4+x; 3/4+y,3/4+z,1/4-x; -y,-x,z; 1/2+y,x,1/2+z; 1/2-y,1/2+x,-z; y,1/2-x,1/2-z; -x,-z,y; x,1/2-z,1/2-y; 1/2+x,z,1/2+y; 1/2-x,1/2+z,-y; -z,-y,x; 1/2-z,1/2+y,-x; z,1/2-y,1/2-x; 1/2+z,y,1/2+x; 1/2+x,1/2+y,z; 1/2-x,-y,1/2+z; -x,y,-z; x,1/2-y,1/2-z; 1/2+z,1/2+x,y; z,1/2-x,1/2-y; 1/2-z,-x,1/2+y; -z,x,-y; 1/2+y,1/2+z,x; -y,z,-x; y,1/2-z,1/2-x; 1/2-y,-z,1/2+x; 1/4+y,3/4+x,3/4-z; 3/4-y,3/4-x,1/4-z; 3/4+y,1/4-x,3/4+z; 1/4-y,1/4+x,1/4+z; 1/4+x,3/4+z,3/4-y; 1/4-x,1/4+z,1/4+y; 3/4-x,3/4-z,1/4-y; 3/4+x,1/4-z,3/4+y; 1/4+z,3/4+y,3/4-x; 3/4+z,1/4-y,3/4+x; 1/4-z,1/4+y,1/4+x; 3/4-z,3/4-y,1/4-x; 3/4-x,3/4-y,1/4-z; 3/4+x,1/4+y,3/4-z; 1/4+x,1/4-y,1/4+z; 1/4-x,3/4+y,3/4+z; 3/4-z,3/4-x,1/4-y; 1/4-z,3/4+x,3/4+y; 3/4+z,1/4+x,3/4-y; 1/4+z,1/4-x,1/4+y; 3/4-y,3/4-z,1/4-x; 1/4+y,1/4-z,1/4+x; 1/4-y,3/4+z,3/4+x; 3/4+y,1/4+z,3/4-x; -y,1/2-x,1/2+z; 1/2+y,1/2+x,z; 1/2-y,x,1/2-z; y,-x,-z; -x,1/2-z,1/2+y; x,-z,-y; 1/2+x,1/2+z,y; 1/2-x,z,1/2-y; -z,1/2-y,1/2+x; 1/2-z,y,1/2-x; z,-y,-x; 1/2+z,1/2+y,x.
+spgp fd-3c 228 192 48 cubic
+symm x,y,z; -x,1/2-y,1/2+z; 1/2-x,1/2+y,-z; 1/2+x,-y,1/2-z; z,x,y; 1/2+z,-x,1/2-y; -z,1/2-x,1/2+y; 1/2-z,1/2+x,-y; y,z,x; 1/2-y,1/2+z,-x; 1/2+y,-z,1/2-x; -y,1/2-z,1/2+x; 3/4+y,1/4+x,3/4-z; 1/4-y,1/4-x,1/4-z; 1/4+y,3/4-x,3/4+z; 3/4-y,3/4+x,1/4+z; 3/4+x,1/4+z,3/4-y; 3/4-x,3/4+z,1/4+y; 1/4-x,1/4-z,1/4-y; 1/4+x,3/4-z,3/4+y; 3/4+z,1/4+y,3/4-x; 1/4+z,3/4-y,3/4+x; 3/4-z,3/4+y,1/4+x; 1/4-z,1/4-y,1/4-x; 3/4-x,3/4-y,3/4-z; 3/4+x,1/4+y,1/4-z; 1/4+x,1/4-y,3/4+z; 1/4-x,3/4+y,1/4+z; 3/4-z,3/4-x,3/4-y; 1/4-z,3/4+x,1/4+y; 3/4+z,1/4+x,1/4+y; 1/4+z,1/4-x,3/4+y; 3/4-y,3/4-z,3/4-x; 1/4+y,1/4-z,3/4+x; 1/4-y,3/4+z,1/4+x; 3/4+y,1/4+z,1/4-x; -y,1/2-x,z; 1/2+y,1/2+x,1/2+z; 1/2-y,x,-z; y,-x,1/2-z; -x,1/2-z,y; x,-z,1/2-y; 1/2+x,1/2+z,1/2+y; 1/2-x,z,-y; -z,1/2-y,x; 1/2-z,y,-x; z,-y,1/2-x; 1/2+z,1/2+y,1/2+x; x,1/2+y,1/2+z; -x,-y,z; 1/2-x,y,1/2-z; 1/2+x,1/2-y,-z; z,1/2+x,1/2+y; 1/2+z,1/2-x,-y; -z,-x,y; 1/2-z,x,1/2-y; y,1/2+z,1/2+x; 1/2-y,z,1/2-x; 1/2+y,1/2-z,-x; -y,-z,x; 3/4+y,3/4+x,1/4-z; 1/4-y,3/4-x,3/4-z; 1/4+y,1/4-x,1/4+z; 3/4-y,1/4+x,3/4+z; 3/4+x,3/4+z,1/4-y; 3/4-x,1/4+z,3/4+y; 1/4-x,3/4-z,3/4-y; 1/4+x,1/4-z,1/4+y; 3/4+z,3/4+y,1/4-x; 1/4+z,1/4-y,1/4+x; 3/4-z,1/4+y,3/4+x; 1/4-z,3/4-y,3/4-x; 3/4-x,1/4-y,1/4-z; 3/4+x,3/4+y,3/4-z; 1/4+x,3/4-y,1/4+z; 1/4-x,1/4+y,3/4+z; 3/4-z,1/4-x,1/4-y; 1/4-z,1/4+x,3/4+y; 3/4+z,3/4+x,3/4+y; 1/4+z,3/4-x,1/4+y; 3/4-y,1/4-z,1/4-x; 1/4+y,3/4-z,1/4+x; 1/4-y,1/4+z,3/4+x; 3/4+y,3/4+z,3/4-x; -y,-x,1/2+z; 1/2+y,x,z; 1/2-y,1/2+x,1/2-z; y,1/2-x,-z; -x,-z,1/2+y; x,1/2-z,y; 1/2+x,z,y; 1/2-x,1/2+z,1/2-y; -z,-y,1/2+x; 1/2-z,1/2+y,1/2-x; z,1/2-y,-x; 1/2+z,y,x; 1/2+x,y,1/2+z; 1/2-x,1/2-y,z; -x,1/2+y,1/2-z; x,-y,-z; 1/2+z,x,1/2+y; z,-x,-y; 1/2-z,1/2-x,y; -z,1/2+x,1/2-y; 1/2+y,z,1/2+x; -y,1/2+z,1/2-x; y,-z,-x; 1/2-y,1/2-z,x; 1/4+y,1/4+x,1/4-z; 3/4-y,1/4-x,3/4-z; 3/4+y,3/4-x,1/4+z; 1/4-y,3/4+x,3/4+z; 1/4+x,1/4+z,1/4-y; 1/4-x,3/4+z,3/4+y; 3/4-x,1/4-z,3/4-y; 3/4+x,3/4-z,1/4+y; 1/4+z,1/4+y,1/4-x; 3/4+z,3/4-y,1/4+x; 1/4-z,3/4+y,3/4+x; 3/4-z,1/4-y,3/4-x; 1/4-x,3/4-y,1/4-z; 1/4+x,1/4+y,3/4-z; 3/4+x,1/4-y,1/4+z; 3/4-x,3/4+y,3/4+z; 1/4-z,3/4-x,1/4-y; 3/4-z,3/4+x,3/4+y; 1/4+z,1/4+x,3/4+y; 3/4+z,1/4-x,1/4+y; 1/4-y,3/4-z,1/4-x; 3/4+y,1/4-z,1/4+x; 3/4-y,3/4+z,3/4+x; 1/4+y,1/4+z,3/4-x; 1/2-y,1/2-x,1/2+z; y,1/2+x,z; -y,x,1/2-z; 1/2+y,-x,-z; 1/2-x,1/2-z,1/2+y; 1/2+x,-z,-y; x,1/2+z,y; -x,z,1/2-y; 1/2-z,1/2-y,1/2+x; -z,y,1/2-x; 1/2+z,-y,-x; z,1/2+y,x; 1/2+x,1/2+y,z; 1/2-x,-y,1/2+z; -x,y,-z; x,1/2-y,1/2-z; 1/2+z,1/2+x,y; z,1/2-x,1/2-y; 1/2-z,-x,1/2+y; -z,x,-y; 1/2+y,1/2+z,x; -y,z,-x; y,1/2-z,1/2-x; 1/2-y,-z,1/2+x; 1/4+y,3/4+x,3/4-z; 3/4-y,3/4-x,1/4-z; 3/4+y,1/4-x,3/4+z; 1/4-y,1/4+x,1/4+z; 1/4+x,3/4+z,3/4-y; 1/4-x,1/4+z,1/4+y; 3/4-x,3/4-z,1/4-y; 3/4+x,1/4-z,3/4+y; 1/4+z,3/4+y,3/4-x; 3/4+z,1/4-y,3/4+x; 1/4-z,1/4+y,1/4+x; 3/4-z,3/4-y,1/4-x; 1/4-x,1/4-y,3/4-z; 1/4+x,3/4+y,1/4-z; 3/4+x,3/4-y,3/4+z; 3/4-x,1/4+y,1/4+z; 1/4-z,1/4-x,3/4-y; 3/4-z,1/4+x,1/4+y; 1/4+z,3/4+x,1/4+y; 3/4+z,3/4-x,3/4+y; 1/4-y,1/4-z,3/4-x; 3/4+y,3/4-z,3/4+x; 3/4-y,1/4+z,1/4+x; 1/4+y,3/4+z,1/4-x; 1/2-y,-x,z; y,x,1/2+z; -y,1/2+x,-z; 1/2+y,1/2-x,1/2-z; 1/2-x,-z,y; 1/2+x,1/2-z,1/2-y; x,z,1/2+y; -x,1/2+z,-y; 1/2-z,-y,x; -z,1/2+y,-x; 1/2+z,1/2-y,1/2-x; z,y,1/2+x.
+spgp im-3m 229 96 48 cubic
+symm x,y,z; -x,-y,z; -x,y,-z; x,-y,-z; z,x,y; z,-x,-y; -z,-x,y; -z,x,-y; y,z,x; -y,z,-x; y,-z,-x; -y,-z,x; y,x,-z; -y,-x,-z; y,-x,z; -y,x,z; x,z,-y; -x,z,y; -x,-z,-y; x,-z,y; z,y,-x; z,-y,x; -z,y,x; -z,-y,-x; -x,-y,-z; x,y,-z; x,-y,z; -x,y,z; -z,-x,-y; -z,x,y; z,x,-y; z,-x,y; -y,-z,-x; y,-z,x; -y,z,x; y,z,-x; -y,-x,z; y,x,z; -y,x,-z; y,-x,-z; -x,-z,y; x,-z,-y; x,z,y; -x,z,-y; -z,-y,x; -z,y,-x; z,-y,-x; z,y,x; 1/2+x,1/2+y,1/2+z; 1/2-x,1/2-y,1/2+z; 1/2-x,1/2+y,1/2-z; 1/2+x,1/2-y,1/2-z; 1/2+z,1/2+x,1/2+y; 1/2+z,1/2-x,1/2-y; 1/2-z,1/2-x,1/2+y; 1/2-z,1/2+x,1/2-y; 1/2+y,1/2+z,1/2+x; 1/2-y,1/2+z,1/2-x; 1/2+y,1/2-z,1/2-x; 1/2-y,1/2-z,1/2+x; 1/2+y,1/2+x,1/2-z; 1/2-y,1/2-x,1/2-z; 1/2+y,1/2-x,1/2+z; 1/2-y,1/2+x,1/2+z; 1/2+x,1/2+z,1/2-y; 1/2-x,1/2+z,1/2+y; 1/2-x,1/2-z,1/2-y; 1/2+x,1/2-z,1/2+y; 1/2+z,1/2+y,1/2-x; 1/2+z,1/2-y,1/2+x; 1/2-z,1/2+y,1/2+x; 1/2-z,1/2-y,1/2-x; 1/2-x,1/2-y,1/2-z; 1/2+x,1/2+y,1/2-z; 1/2+x,1/2-y,1/2+z; 1/2-x,1/2+y,1/2+z; 1/2-z,1/2-x,1/2-y; 1/2-z,1/2+x,1/2+y; 1/2+z,1/2+x,1/2-y; 1/2+z,1/2-x,1/2+y; 1/2-y,1/2-z,1/2-x; 1/2+y,1/2-z,1/2+x; 1/2-y,1/2+z,1/2+x; 1/2+y,1/2+z,1/2-x; 1/2-y,1/2-x,1/2+z; 1/2+y,1/2+x,1/2+z; 1/2-y,1/2+x,1/2-z; 1/2+y,1/2-x,1/2-z; 1/2-x,1/2-z,1/2+y; 1/2+x,1/2-z,1/2-y; 1/2+x,1/2+z,1/2+y; 1/2-x,1/2+z,1/2-y; 1/2-z,1/2-y,1/2+x; 1/2-z,1/2+y,1/2-x; 1/2+z,1/2-y,1/2-x; 1/2+z,1/2+y,1/2+x.
+spgp ia-3d 230 96 48 cubic
+symm x,y,z; 1/2-x,-y,1/2+z; -x,1/2+y,1/2-z; 1/2+x,1/2-y,-z; z,x,y; 1/2+z,1/2-x,-y; 1/2-z,-x,1/2+y; -z,1/2+x,1/2-y; y,z,x; -y,1/2+z,1/2-x; 1/2+y,1/2-z,-x; 1/2-y,-z,1/2+x; 3/4+y,3/4+x,1/4-z; 3/4-y,3/4-x,3/4-z; 1/4+y,1/4-x,3/4+z; 1/4-y,3/4+x,1/4+z; 3/4+x,1/4+z,1/4-y; 1/4-x,3/4+z,1/4+y; 3/4-x,3/4-z,3/4-y; 1/4+x,1/4-z,3/4+y; 3/4+z,1/4+y,1/4-x; 1/4+z,1/4-y,3/4+x; 1/4-z,3/4+y,1/4+x; 3/4-z,3/4-y,3/4-x; -x,-y,-z; 1/2+x,y,1/2-z; x,1/2-y,1/2+z; 1/2-x,1/2+y,z; -z,-x,-y; 1/2-z,1/2+x,y; 1/2+z,x,1/2-y; z,1/2-x,1/2+y; -y,-z,-x; y,1/2-z,1/2+x; 1/2-y,1/2+z,x; 1/2+y,z,1/2-x; 1/4-y,3/4-x,3/4+z; 1/4+y,1/4+x,1/4+z; 3/4-y,3/4+x,1/4-z; 3/4+y,1/4-x,3/4-z; 1/4-x,3/4-z,3/4+y; 3/4+x,1/4-z,3/4-y; 1/4+x,1/4+z,1/4+y; 3/4-x,3/4+z,1/4-y; 1/4-z,3/4-y,3/4+x; 3/4-z,3/4+y,1/4-x; 3/4+z,1/4-y,3/4-x; 1/4+z,1/4+y,1/4+x; 1/2+x,1/2+y,1/2+z; -x,1/2-y,z; 1/2-x,y,-z; x,-y,1/2-z; 1/2+z,1/2+x,1/2+y; z,-x,1/2-y; -z,1/2-x,y; 1/2-z,x,-y; 1/2+y,1/2+z,1/2+x; 1/2-y,z,-x; y,-z,1/2-x; -y,1/2-z,x; 1/4+y,1/4+x,3/4-z; 1/4-y,1/4-x,1/4-z; 3/4+y,3/4-x,1/4+z; 3/4-y,1/4+x,3/4+z; 1/4+x,3/4+z,3/4-y; 3/4-x,1/4+z,3/4+y; 1/4-x,1/4-z,1/4-y; 3/4+x,3/4-z,1/4+y; 1/4+z,3/4+y,3/4-x; 3/4+z,3/4-y,1/4+x; 3/4-z,1/4+y,3/4+x; 1/4-z,1/4-y,1/4-x; 1/2-x,1/2-y,1/2-z; x,1/2+y,-z; 1/2+x,-y,z; -x,y,1/2+z; 1/2-z,1/2-x,1/2-y; -z,x,1/2+y; z,1/2+x,-y; 1/2+z,-x,y; 1/2-y,1/2-z,1/2-x; 1/2+y,-z,x; -y,z,1/2+x; y,1/2+z,-x; 3/4-y,1/4-x,1/4+z; 3/4+y,3/4+x,3/4+z; 1/4-y,1/4+x,3/4-z; 1/4+y,3/4-x,1/4-z; 3/4-x,1/4-z,1/4+y; 1/4+x,3/4-z,1/4-y; 3/4+x,3/4+z,3/4+y; 1/4-x,1/4+z,3/4-y; 3/4-z,1/4-y,1/4+x; 1/4-z,1/4+y,3/4-x; 1/4+z,3/4-y,1/4-x; 3/4+z,3/4+y,3/4+x.

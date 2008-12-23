@@ -1,0 +1,29 @@
+LoadPDB 1 automation_out.pdb
+LoadMapPhase 1 bng_mlmap.fcf
+silentmode
+coefficients Fo
+fftapply
+maptocont 1
+maplinewidth 1.000000
+contourlevels 31
+contourleveldefault 50.000000 100.000000 150.000000 200.000000 250.000000
+contourradius 7.000000
+color 21
+contourcolor 1
+color 22
+contourcolor 2
+color 23
+contourcolor 3
+color 24
+contourcolor 4
+color 25
+contourcolor 5
+contourmap 1
+translation 61 33 26
+rotation 1.0000 0.0000 0.0000 0.0000 1.0000 0.0000 0.0000 0.0000 1.0000
+zoom 30.000
+perspective 0.000
+frontclip 3.00
+backclip -3.00
+transform
+stereo off

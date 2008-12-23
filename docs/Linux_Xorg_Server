@@ -1,0 +1,13 @@
+There is an bug in the xorg 6.9/7.0 glx module which prevents MIFit from 
+running properly by default.  If you have this issue, MIFit will exit 
+immediately on startup with an error message:
+
+
+If you get this error message, you may work around it by the following method.
+
+1) make sure $HOME/.config/Rigaku/MIFit.conf exists
+2) make sure it contains at least the following entry:
+
+[View%20Parameters]
+AlternateTextRendering=1
+

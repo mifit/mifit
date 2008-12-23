@@ -1,0 +1,153 @@
+<ui version="4.0" >
+ <class>EnvironmentPreferences</class>
+ <widget class="QWidget" name="EnvironmentPreferences" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>638</width>
+    <height>210</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout" >
+   <item row="6" column="1" >
+    <spacer name="verticalSpacer" >
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0" >
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="0" column="0" >
+    <widget class="QLabel" name="label" >
+     <property name="text" >
+      <string>Crystal Data Directory:</string>
+     </property>
+     <property name="alignment" >
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" >
+    <widget class="QLineEdit" name="crystalDataLineEdit" />
+   </item>
+   <item row="0" column="2" >
+    <widget class="QPushButton" name="crystalDataButton" >
+     <property name="text" >
+      <string>Browse...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" >
+    <widget class="QLabel" name="label_2" >
+     <property name="text" >
+      <string>Custom Dictionary File:</string>
+     </property>
+     <property name="alignment" >
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1" >
+    <widget class="QLineEdit" name="customDictionaryLineEdit" />
+   </item>
+   <item row="1" column="2" >
+    <widget class="QPushButton" name="customDictionaryButton" >
+     <property name="text" >
+      <string>Browse...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" >
+    <widget class="QLabel" name="label_6" >
+     <property name="text" >
+      <string>Shelx Home:</string>
+     </property>
+     <property name="alignment" >
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" >
+    <widget class="QLineEdit" name="shelxHomeLineEdit" />
+   </item>
+   <item row="2" column="2" >
+    <widget class="QPushButton" name="shelxHomeButton" >
+     <property name="text" >
+      <string>Browse...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" >
+    <widget class="QLabel" name="label_3" >
+     <property name="text" >
+      <string>HTML Browser:</string>
+     </property>
+     <property name="alignment" >
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" >
+    <widget class="QLineEdit" name="htmlBrowserLineEdit" />
+   </item>
+   <item row="3" column="2" >
+    <widget class="QPushButton" name="htmlBrowserButton" >
+     <property name="text" >
+      <string>Browse...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" >
+    <widget class="QLabel" name="label_8" >
+     <property name="text" >
+      <string>Smiles Database Command:</string>
+     </property>
+     <property name="alignment" >
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1" >
+    <widget class="QLineEdit" name="smilesDatabaseLineEdit" />
+   </item>
+   <item row="4" column="2" >
+    <widget class="QPushButton" name="smilesDatabaseButton" >
+     <property name="text" >
+      <string>Browse...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0" >
+    <widget class="QLabel" name="label_7" >
+     <property name="text" >
+      <string>Checkpoint Directory:</string>
+     </property>
+     <property name="alignment" >
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1" >
+    <widget class="QLineEdit" name="checkpointDirectoryLineEdit" />
+   </item>
+   <item row="5" column="2" >
+    <widget class="QPushButton" name="checkpointDirectoryButton" >
+     <property name="text" >
+      <string>Browse...</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

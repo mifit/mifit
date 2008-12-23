@@ -1,0 +1,821 @@
+HEADER    PEPTIDE ANTIBIOTIC                      08-DEC-87   1AMT      1AMT   3
+COMPND    ALAMETHICIN                                                   1AMT   4
+SOURCE    (TRICHODERMA $VIRIDE)                                         1AMT   5
+AUTHOR    R.O.FOX,F.M.RICHARDS                                          1AMT   6
+REVDAT   2   15-JAN-91 1AMTA   3       ATOM   CONECT                    1AMTA  1
+REVDAT   1   09-OCT-88 1AMT    0                                        1AMT   7
+JRNL        AUTH   R.O.FOX,F.M.RICHARDS                                 1AMT   8
+JRNL        TITL   A VOLTAGE-GATED ION CHANNEL MODEL INFERRED FROM THE  1AMT   9
+JRNL        TITL 2 CRYSTAL STRUCTURE OF ALAMETHICIN AT 1.5-*ANGSTROMS   1AMT  10
+JRNL        TITL 3 RESOLUTION                                           1AMT  11
+JRNL        REF    NATURE                        V. 300   325 1982      1AMT  12
+JRNL        REFN   ASTM NATUAS  UK ISSN 0028-0836                  006  1AMT  13
+REMARK   1                                                              1AMT  14
+REMARK   1 REFERENCE 1                                                  1AMT  15
+REMARK   1  AUTH   R.O.FOX                                              1AMT  16
+REMARK   1  TITL   THE CRYSTAL STRUCTURE OF ALAMETHICIN AT 1.5          1AMT  17
+REMARK   1  TITL 2 ANGSTROMS RESOLUTION                                 1AMT  18
+REMARK   1  REF    THESIS,YALE                                          1AMT  19
+REMARK   1  REFN                                                   854  1AMT  20
+REMARK   2                                                              1AMT  21
+REMARK   2 RESOLUTION. 1.5 ANGSTROMS.                                   1AMT  22
+REMARK   3                                                              1AMT  23
+REMARK   3 REFINEMENT. BY THE RESTRAINED LEAST SQUARES PROCEDURE OF J.  1AMT  24
+REMARK   3  KONNERT AND W. HENDRICKSON (PROGRAM *PROLSQ*).  THE R       1AMT  25
+REMARK   3  VALUE IS 0.155 FOR 5458 REFLECTIONS IN THE RESOLUTION       1AMT  26
+REMARK   3  RANGE 10.0 TO 1.5 ANGSTROMS.  THE RMS DEVIATION FROM        1AMT  27
+REMARK   3  IDEALITY OF THE BOND LENGTHS IS 0.04 ANGSTROMS.  THE SIDE   1AMT  28
+REMARK   3  CHAIN OF VAL B 10 WAS MODIFIED FOLLOWING THE FINAL CYCLE    1AMT  29
+REMARK   3  OF REFINEMENT AND THE B VALUES OF ATOMS CG1 AND CG2 WERE    1AMT  30
+REMARK   3  SET TO 15.0 ANGSTROMS**2.  THE ACETONITRILE BOND ANGLES     1AMT  31
+REMARK   3  AND SOLVENT NONBONDED CONTACTS WERE NOT RESTRAINED.         1AMT  32
+REMARK   4                                                              1AMT  33
+REMARK   4 ALAMETHICIN FORMS VOLTAGE-GATED ION CHANNELS IN LIPID        1AMT  34
+REMARK   4 BILAYERS.  CRYSTALS OF THE PEPIDE WERE GROWN FROM METHANOL   1AMT  35
+REMARK   4 WITH ACETONITRILE AS A PRECIPITANT AND DIFFRACT BEYOND 1.0   1AMT  36
+REMARK   4 ANGSTROMS RESOLUTION.  THERE ARE THREE MOLECULES IN THE      1AMT  37
+REMARK   4 ASYMMETRIC UNIT, WHICH HAVE BEEN ASSIGNED CHAIN IDENTIFIERS  1AMT  38
+REMARK   4 *A*, *B*, AND *C*.  EACH MOLECULE IS IN AN ALPHA-HELICAL     1AMT  39
+REMARK   4 CONFORMATION WITH THE HELIX AXIS APPROXIMATELY PARALLEL TO   1AMT  40
+REMARK   4 THE CRYSTAL A AXIS.  THE ALPHA HELICAL HYDROGEN BONDING      1AMT  41
+REMARK   4 PATTERN HAS BEEN DISRUPTED AT RESIDUE PRO 14, WITH EACH      1AMT  42
+REMARK   4 MOLECULE DIFFERING IN THE HYDROGEN BONDING PATTERN FORMED    1AMT  43
+REMARK   4 IN THIS REGION.  THE PEPTIDE MOLECULES ARE ACETYLATED (ACE)  1AMT  44
+REMARK   4 AT THE AMINO TERMINUS, HAVE THE AMINO ALCOHOL                1AMT  45
+REMARK   4 L-PHENYLALANINOL (PHL) AS THE CARBOXY TERMINAL RESIDUE AND   1AMT  46
+REMARK   4 CONTAIN ALPHA-AMINOISOBUTYRIC ACID RESIDUES WITHIN THE       1AMT  47
+REMARK   4 SEQUENCE.                                                    1AMT  48
+REMARK   5                                                              1AMTA  2
+REMARK   5 CORRECTION. STANDARDIZE ATOM NAMING AND ORDERING FOR ACE.    1AMTA  3
+REMARK   5  15-JAN-91.                                                  1AMTA  4
+SEQRES   1 A   21  ACE AIB PRO AIB ALA AIB ALA GLN AIB VAL AIB GLY LEU  1AMT  49
+SEQRES   2 A   21  AIB PRO VAL AIB AIB GLU GLN PHL                      1AMT  50
+SEQRES   1 B   21  ACE AIB PRO AIB ALA AIB ALA GLN AIB VAL AIB GLY LEU  1AMT  51
+SEQRES   2 B   21  AIB PRO VAL AIB AIB GLU GLN PHL                      1AMT  52
+SEQRES   1 C   21  ACE AIB PRO AIB ALA AIB ALA GLN AIB VAL AIB GLY LEU  1AMT  53
+SEQRES   2 C   21  AIB PRO VAL AIB AIB GLU GLN PHL                      1AMT  54
+HET    AIB  A   2       6     ALPHA-AMINOISOBUTYRIC ACID                1AMT  55
+HET    AIB  A   4       6     ALPHA-AMINOISOBUTYRIC ACID                1AMT  56
+HET    AIB  A   6       6     ALPHA-AMINOISOBUTYRIC ACID                1AMT  57
+HET    AIB  A   9       6     ALPHA-AMINOISOBUTYRIC ACID                1AMT  58
+HET    AIB  A  11       6     ALPHA-AMINOISOBUTYRIC ACID                1AMT  59
+HET    AIB  A  14       6     ALPHA-AMINOISOBUTYRIC ACID                1AMT  60
+HET    AIB  A  17       6     ALPHA-AMINOISOBUTYRIC ACID                1AMT  61
+HET    AIB  A  18       6     ALPHA-AMINOISOBUTYRIC ACID                1AMT  62
+HET    PHL  A  21      11     L-PHENYLALANINOL                          1AMT  63
+HET    AIB  B   2       6     ALPHA-AMINOISOBUTYRIC ACID                1AMT  64
+HET    AIB  B   4       6     ALPHA-AMINOISOBUTYRIC ACID                1AMT  65
+HET    AIB  B   6       6     ALPHA-AMINOISOBUTYRIC ACID                1AMT  66
+HET    AIB  B   9       6     ALPHA-AMINOISOBUTYRIC ACID                1AMT  67
+HET    AIB  B  11       6     ALPHA-AMINOISOBUTYRIC ACID                1AMT  68
+HET    AIB  B  14       6     ALPHA-AMINOISOBUTYRIC ACID                1AMT  69
+HET    AIB  B  17       6     ALPHA-AMINOISOBUTYRIC ACID                1AMT  70
+HET    AIB  B  18       6     ALPHA-AMINOISOBUTYRIC ACID                1AMT  71
+HET    PHL  B  21      11     L-PHENYLALANINOL                          1AMT  72
+HET    AIB  C   2       6     ALPHA-AMINOISOBUTYRIC ACID                1AMT  73
+HET    AIB  C   4       6     ALPHA-AMINOISOBUTYRIC ACID                1AMT  74
+HET    AIB  C   6       6     ALPHA-AMINOISOBUTYRIC ACID                1AMT  75
+HET    AIB  C   9       6     ALPHA-AMINOISOBUTYRIC ACID                1AMT  76
+HET    AIB  C  11       6     ALPHA-AMINOISOBUTYRIC ACID                1AMT  77
+HET    AIB  C  14       6     ALPHA-AMINOISOBUTYRIC ACID                1AMT  78
+HET    AIB  C  17       6     ALPHA-AMINOISOBUTYRIC ACID                1AMT  79
+HET    AIB  C  18       6     ALPHA-AMINOISOBUTYRIC ACID                1AMT  80
+HET    PHL  C  21      11     L-PHENYLALANINOL                          1AMT  81
+HET    CCN      1       3     ACETONITRILE                              1AMT  82
+HET    CCN      2       3     ACETONITRILE                              1AMT  83
+HET    MOH      3       2     METHANOL                                  1AMT  84
+HET    MOH      4       2     METHANOL                                  1AMT  85
+HET    MOH      5       2     METHANOL                                  1AMT  86
+HET    MOH      6       2     METHANOL                                  1AMT  87
+HET    MOH      7       2     METHANOL                                  1AMT  88
+HET    MOH      8       2     METHANOL                                  1AMT  89
+HET    MOH      9       2     METHANOL                                  1AMT  90
+HET    MOH     10       2     METHANOL                                  1AMT  91
+HET    MOH     11       2     METHANOL                                  1AMT  92
+HET    MOH     12       2     METHANOL                                  1AMT  93
+HET    MOH     13       2     METHANOL                                  1AMT  94
+HET    MOH     14       2     METHANOL                                  1AMT  95
+HET    MOH     15       2     METHANOL                                  1AMT  96
+FORMUL   1  AIB    8(C4 H10 N1 O2)                                      1AMT  97
+FORMUL   1  PHL    C9 H13 N1 O1                                         1AMT  98
+FORMUL   2  AIB    8(C4 H10 N1 O2)                                      1AMT  99
+FORMUL   2  PHL    C9 H13 N1 O1                                         1AMT 100
+FORMUL   3  AIB    8(C4 H10 N1 O2)                                      1AMT 101
+FORMUL   3  PHL    C9 H13 N1 O1                                         1AMT 102
+FORMUL   4  CCN    2(C2 H3 N1)                                          1AMT 103
+FORMUL   5  MOH    13(C1 H4 O1)                                         1AMT 104
+CRYST1   33.330   29.620   23.200  90.00 120.40  90.00 P 21          6  1AMT 105
+ORIGX1      1.000000  0.000000  0.000000        0.00000                 1AMT 106
+ORIGX2      0.000000  1.000000  0.000000        0.00000                 1AMT 107
+ORIGX3      0.000000  0.000000  1.000000        0.00000                 1AMT 108
+SCALE1      0.030003  0.000000  0.017603        0.00000                 1AMT 109
+SCALE2      0.000000  0.033761  0.000000        0.00000                 1AMT 110
+SCALE3      0.000000  0.000000  0.049974        0.00000                 1AMT 111
+ATOM      1  C   ACE A   1      47.951   1.513  -1.337  1.00  3.22      1AMTA  5
+ATOM      2  O   ACE A   1      46.783   1.173  -0.780  1.00  3.84      1AMTA  6
+ATOM      3  CH3 ACE A   1      49.084   0.832  -0.475  1.00  6.05      1AMTA  7
+HETATM    4  N   AIB A   2      48.065   2.462  -1.964  1.00  2.06      1AMT 115
+HETATM    5  CA  AIB A   2      46.920   3.266  -2.573  1.00  2.00      1AMT 116
+HETATM    6  C   AIB A   2      45.865   2.301  -3.116  1.00  5.00      1AMT 117
+HETATM    7  O   AIB A   2      44.700   2.587  -2.746  1.00  3.21      1AMT 118
+HETATM    8  CB1 AIB A   2      47.457   4.132  -3.656  1.00  4.50      1AMT 119
+HETATM    9  CB2 AIB A   2      46.329   4.215  -1.516  1.00  5.09      1AMT 120
+ATOM     10  N   PRO A   3      46.136   1.294  -3.808  1.00  2.71      1AMT 121
+ATOM     11  CA  PRO A   3      44.970   0.437  -4.396  1.00  3.18      1AMT 122
+ATOM     12  C   PRO A   3      44.079  -0.162  -3.297  1.00  3.82      1AMT 123
+ATOM     13  O   PRO A   3      42.950  -0.295  -3.555  1.00  5.12      1AMT 124
+ATOM     14  CB  PRO A   3      45.717  -0.573  -5.263  1.00  3.86      1AMT 125
+ATOM     15  CG  PRO A   3      47.135  -0.023  -5.498  1.00  4.92      1AMT 126
+ATOM     16  CD  PRO A   3      47.389   0.798  -4.268  1.00  6.02      1AMT 127
+HETATM   17  N   AIB A   4      44.584  -0.501  -2.166  1.00  2.01      1AMT 128
+HETATM   18  CA  AIB A   4      43.781  -1.151  -1.108  1.00  3.37      1AMT 129
+HETATM   19  C   AIB A   4      42.813  -0.016  -0.769  1.00  3.67      1AMT 130
+HETATM   20  O   AIB A   4      41.551  -0.556  -0.463  1.00  4.22      1AMT 131
+HETATM   21  CB1 AIB A   4      44.716  -1.330   0.154  1.00  5.31      1AMT 132
+HETATM   22  CB2 AIB A   4      43.363  -2.496  -1.540  1.00  5.67      1AMT 133
+ATOM     23  N   ALA A   5      43.076   1.102  -0.526  1.00  3.23      1AMT 134
+ATOM     24  CA  ALA A   5      42.065   2.185  -0.170  1.00  2.93      1AMT 135
+ATOM     25  C   ALA A   5      41.011   2.324  -1.271  1.00  5.21      1AMT 136
+ATOM     26  O   ALA A   5      39.843   2.399  -0.859  1.00  3.60      1AMT 137
+ATOM     27  CB  ALA A   5      42.776   3.455   0.193  1.00  5.70      1AMT 138
+HETATM   28  N   AIB A   6      41.335   2.427  -2.458  1.00  4.45      1AMT 139
+HETATM   29  CA  AIB A   6      40.420   2.596  -3.610  1.00  2.98      1AMT 140
+HETATM   30  C   AIB A   6      39.578   1.349  -3.629  1.00  3.67      1AMT 141
+HETATM   31  O   AIB A   6      38.243   1.649  -3.569  1.00  4.20      1AMT 142
+HETATM   32  CB1 AIB A   6      41.245   2.551  -4.879  1.00  3.89      1AMT 143
+HETATM   33  CB2 AIB A   6      39.738   3.952  -3.392  1.00  4.33      1AMT 144
+ATOM     34  N   ALA A   7      39.980   0.147  -3.476  1.00  2.00      1AMT 145
+ATOM     35  CA  ALA A   7      39.069  -1.059  -3.550  1.00  3.17      1AMT 146
+ATOM     36  C   ALA A   7      38.218  -1.074  -2.331  1.00  3.75      1AMT 147
+ATOM     37  O   ALA A   7      37.008  -1.498  -2.477  1.00  4.40      1AMT 148
+ATOM     38  CB  ALA A   7      39.984  -2.283  -3.731  1.00  5.40      1AMT 149
+ATOM     39  N   GLN A   8      38.736  -0.667  -1.192  1.00  4.21      1AMT 150
+ATOM     40  CA  GLN A   8      37.841  -0.715   0.011  1.00  4.74      1AMT 151
+ATOM     41  C   GLN A   8      36.716   0.260  -0.108  1.00  2.00      1AMT 152
+ATOM     42  O   GLN A   8      35.543  -0.197   0.234  1.00  3.67      1AMT 153
+ATOM     43  CB  GLN A   8      38.712  -0.459   1.299  1.00  2.35      1AMT 154
+ATOM     44  CG  GLN A   8      39.502  -1.624   1.684  1.00  8.42      1AMT 155
+ATOM     45  CD  GLN A   8      38.846  -2.556   2.828  1.00  4.67      1AMT 156
+ATOM     46  OE1 GLN A   8      38.183  -2.082   3.722  1.00 14.10      1AMT 157
+ATOM     47  NE2 GLN A   8      39.213  -3.786   2.719  1.00  8.34      1AMT 158
+HETATM   48  N   AIB A   9      36.857   1.439  -0.497  1.00  3.21      1AMT 159
+HETATM   49  CA  AIB A   9      35.903   2.553  -0.660  1.00  2.00      1AMT 160
+HETATM   50  C   AIB A   9      34.930   1.984  -1.651  1.00  2.00      1AMT 161
+HETATM   51  O   AIB A   9      33.608   2.076  -1.179  1.00  4.10      1AMT 162
+HETATM   52  CB1 AIB A   9      36.417   3.797  -1.190  1.00  3.22      1AMT 163
+HETATM   53  CB2 AIB A   9      35.339   2.778   0.776  1.00  5.34      1AMT 164
+ATOM     54  N   VAL A  10      35.251   1.420  -2.736  1.00  3.01      1AMT 165
+ATOM     55  CA  VAL A  10      34.218   1.044  -3.728  1.00  2.75      1AMT 166
+ATOM     56  C   VAL A  10      33.387  -0.039  -3.252  1.00  4.20      1AMT 167
+ATOM     57  O   VAL A  10      32.088  -0.105  -3.325  1.00  5.54      1AMT 168
+ATOM     58  CB  VAL A  10      34.972   0.643  -5.019  1.00  4.48      1AMT 169
+ATOM     59  CG1 VAL A  10      33.884   0.103  -5.934  1.00  7.66      1AMT 170
+ATOM     60  CG2 VAL A  10      35.499   1.896  -5.548  1.00  5.78      1AMT 171
+HETATM   61  N   AIB A  11      33.969  -1.128  -2.564  1.00  2.00      1AMT 172
+HETATM   62  CA  AIB A  11      33.299  -2.343  -1.992  1.00  2.00      1AMT 173
+HETATM   63  C   AIB A  11      32.368  -1.791  -0.943  1.00  2.75      1AMT 174
+HETATM   64  O   AIB A  11      31.193  -2.264  -0.933  1.00  6.59      1AMT 175
+HETATM   65  CB1 AIB A  11      34.364  -3.175  -1.297  1.00  6.61      1AMT 176
+HETATM   66  CB2 AIB A  11      32.665  -3.137  -3.098  1.00  3.24      1AMT 177
+ATOM     67  N   GLY A  12      32.638  -0.755  -0.182  1.00  2.36      1AMT 178
+ATOM     68  CA  GLY A  12      31.719  -0.298   0.903  1.00  4.06      1AMT 179
+ATOM     69  C   GLY A  12      30.597   0.484   0.307  1.00  3.58      1AMT 180
+ATOM     70  O   GLY A  12      29.439   0.581   0.917  1.00  7.72      1AMT 181
+ATOM     71  N   LEU A  13      30.679   1.102  -0.743  1.00  3.08      1AMT 182
+ATOM     72  CA  LEU A  13      29.617   1.973  -1.460  1.00  2.75      1AMT 183
+ATOM     73  C   LEU A  13      28.818   1.002  -2.230  1.00  4.20      1AMT 184
+ATOM     74  O   LEU A  13      27.546   1.351  -2.389  1.00  6.11      1AMT 185
+ATOM     75  CB  LEU A  13      30.147   3.042  -2.437  1.00  4.89      1AMT 186
+ATOM     76  CG  LEU A  13      30.929   4.046  -1.619  1.00  6.24      1AMT 187
+ATOM     77  CD1 LEU A  13      31.596   5.056  -2.627  1.00  9.09      1AMT 188
+ATOM     78  CD2 LEU A  13      29.918   4.861  -0.819  1.00  7.67      1AMT 189
+HETATM   79  N   AIB A  14      29.251  -0.094  -2.856  1.00  4.36      1AMT 190
+HETATM   80  CA  AIB A  14      28.363  -0.835  -3.820  1.00  4.00      1AMT 191
+HETATM   81  C   AIB A  14      27.063  -1.239  -3.322  1.00  4.69      1AMT 192
+HETATM   82  O   AIB A  14      26.163  -1.112  -4.090  1.00  4.94      1AMT 193
+HETATM   83  CB1 AIB A  14      29.216  -2.084  -4.144  1.00  3.34      1AMT 194
+HETATM   84  CB2 AIB A  14      28.235   0.098  -5.048  1.00  6.43      1AMT 195
+ATOM     85  N   PRO A  15      26.819  -1.583  -2.067  1.00  3.09      1AMT 196
+ATOM     86  CA  PRO A  15      25.515  -2.080  -1.588  1.00  4.44      1AMT 197
+ATOM     87  C   PRO A  15      24.610  -0.870  -1.582  1.00  4.19      1AMT 198
+ATOM     88  O   PRO A  15      23.409  -1.228  -1.821  1.00  6.80      1AMT 199
+ATOM     89  CB  PRO A  15      25.775  -2.686  -0.237  1.00  5.59      1AMT 200
+ATOM     90  CG  PRO A  15      27.301  -3.113  -0.311  1.00  8.58      1AMT 201
+ATOM     91  CD  PRO A  15      27.817  -1.927  -1.011  1.00  6.57      1AMT 202
+ATOM     92  N   VAL A  16      24.978   0.270  -1.393  1.00  3.67      1AMT 203
+ATOM     93  CA  VAL A  16      23.950   1.411  -1.395  1.00  4.51      1AMT 204
+ATOM     94  C   VAL A  16      23.442   1.421  -2.801  1.00  6.64      1AMT 205
+ATOM     95  O   VAL A  16      22.156   1.642  -2.887  1.00  4.95      1AMT 206
+ATOM     96  CB  VAL A  16      24.833   2.727  -1.028  1.00  5.33      1AMT 207
+ATOM     97  CG1 VAL A  16      24.003   3.997  -1.436  1.00  8.36      1AMT 208
+ATOM     98  CG2 VAL A  16      25.205   2.449   0.451  1.00 14.62      1AMT 209
+HETATM   99  N   AIB A  17      24.160   1.626  -3.890  1.00  3.70      1AMT 210
+HETATM  100  CA  AIB A  17      23.745   1.694  -5.230  1.00  5.66      1AMT 211
+HETATM  101  C   AIB A  17      22.813   0.493  -5.501  1.00  3.95      1AMT 212
+HETATM  102  O   AIB A  17      21.691   0.656  -6.075  1.00  4.90      1AMT 213
+HETATM  103  CB1 AIB A  17      24.946   1.594  -6.247  1.00  9.63      1AMT 214
+HETATM  104  CB2 AIB A  17      23.014   2.979  -5.463  1.00  6.37      1AMT 215
+HETATM  105  N   AIB A  18      23.261  -0.737  -5.239  1.00  3.71      1AMT 216
+HETATM  106  CA  AIB A  18      22.610  -1.967  -5.516  1.00  2.14      1AMT 217
+HETATM  107  C   AIB A  18      21.153  -2.028  -5.037  1.00  2.00      1AMT 218
+HETATM  108  O   AIB A  18      20.273  -2.361  -5.829  1.00  3.54      1AMT 219
+HETATM  109  CB1 AIB A  18      23.376  -3.140  -4.695  1.00  2.93      1AMT 220
+HETATM  110  CB2 AIB A  18      22.654  -2.225  -7.037  1.00  3.71      1AMT 221
+ATOM    111  N   GLU A  19      20.950  -1.433  -3.837  1.00  2.00      1AMT 222
+ATOM    112  CA  GLU A  19      19.589  -1.514  -3.252  1.00  3.30      1AMT 223
+ATOM    113  C   GLU A  19      18.557  -0.634  -3.847  1.00  3.93      1AMT 224
+ATOM    114  O   GLU A  19      17.436  -0.582  -3.496  1.00  7.18      1AMT 225
+ATOM    115  CB  GLU A  19      19.694  -1.445  -1.805  1.00  2.44      1AMT 226
+ATOM    116  CG  GLU A  19      20.314  -2.590  -0.958  1.00  3.80      1AMT 227
+ATOM    117  CD  GLU A  19      19.337  -3.812  -1.238  1.00  6.48      1AMT 228
+ATOM    118  OE1 GLU A  19      19.804  -4.849  -1.608  1.00 12.85      1AMT 229
+ATOM    119  OE2 GLU A  19      18.338  -3.801  -0.771  1.00 12.84      1AMT 230
+ATOM    120  N   GLN A  20      18.953   0.272  -4.851  1.00  2.00      1AMT 231
+ATOM    121  CA  GLN A  20      18.032   1.163  -5.555  1.00  3.45      1AMT 232
+ATOM    122  C   GLN A  20      17.638   0.425  -6.794  1.00  3.88      1AMT 233
+ATOM    123  O   GLN A  20      16.776   1.076  -7.557  1.00  5.12      1AMT 234
+ATOM    124  CB  GLN A  20      18.569   2.557  -5.713  1.00  2.04      1AMT 235
+ATOM    125  CG  GLN A  20      19.291   3.155  -4.508  1.00  2.34      1AMT 236
+ATOM    126  CD  GLN A  20      18.643   2.879  -3.145  1.00  2.27      1AMT 237
+ATOM    127  OE1 GLN A  20      17.399   3.108  -3.144  1.00  5.57      1AMT 238
+ATOM    128  NE2 GLN A  20      19.333   2.479  -2.155  1.00  6.16      1AMT 239
+HETATM  129  N   PHL A  21      18.209  -0.716  -7.138  1.00  2.88      1AMT 240
+HETATM  130  CA  PHL A  21      17.891  -1.435  -8.408  1.00  3.01      1AMT 241
+HETATM  131  C   PHL A  21      17.422  -2.861  -8.123  1.00  7.11      1AMT 242
+HETATM  132  O   PHL A  21      16.351  -2.879  -7.360  1.00  8.42      1AMT 243
+HETATM  133  CB  PHL A  21      19.165  -1.348  -9.321  1.00  6.71      1AMT 244
+HETATM  134  CG  PHL A  21      19.474   0.057  -9.742  1.00  2.00      1AMT 245
+HETATM  135  CD1 PHL A  21      18.913   0.495 -10.987  1.00  6.02      1AMT 246
+HETATM  136  CD2 PHL A  21      20.273   0.980  -8.979  1.00  2.22      1AMT 247
+HETATM  137  CE1 PHL A  21      19.190   1.798 -11.448  1.00 10.23      1AMT 248
+HETATM  138  CE2 PHL A  21      20.417   2.237  -9.435  1.00  9.01      1AMT 249
+HETATM  139  CZ  PHL A  21      19.951   2.728 -10.709  1.00  7.35      1AMT 250
+TER     140      PHL A  21                                              1AMT 251
+ATOM    141  C   ACE B   1      36.338   7.458  14.393  1.00  4.71      1AMTA  8
+ATOM    142  O   ACE B   1      35.228   6.946  14.248  1.00  4.84      1AMTA  9
+ATOM    143  CH3 ACE B   1      37.390   6.461  13.726  1.00  4.72      1AMTA 10
+HETATM  144  N   AIB B   2      36.676   8.300  15.258  1.00  3.53      1AMT 255
+HETATM  145  CA  AIB B   2      35.670   8.940  16.149  1.00  4.86      1AMT 256
+HETATM  146  C   AIB B   2      34.632   9.517  15.213  1.00  4.97      1AMT 257
+HETATM  147  O   AIB B   2      33.398   9.327  15.506  1.00  6.43      1AMT 258
+HETATM  148  CB1 AIB B   2      36.258  10.147  16.917  1.00  4.91      1AMT 259
+HETATM  149  CB2 AIB B   2      35.071   8.022  17.246  1.00  4.95      1AMT 260
+ATOM    150  N   PRO B   3      34.921  10.256  14.159  1.00  4.39      1AMT 261
+ATOM    151  CA  PRO B   3      33.839  10.920  13.346  1.00  4.10      1AMT 262
+ATOM    152  C   PRO B   3      33.020   9.835  12.645  1.00  6.21      1AMT 263
+ATOM    153  O   PRO B   3      31.738  10.092  12.546  1.00  7.88      1AMT 264
+ATOM    154  CB  PRO B   3      34.663  11.673  12.265  1.00  8.28      1AMT 265
+ATOM    155  CG  PRO B   3      35.909  12.030  12.972  1.00 10.05      1AMT 266
+ATOM    156  CD  PRO B   3      36.313  10.769  13.776  1.00  5.94      1AMT 267
+HETATM  157  N   AIB B   4      33.453   8.775  12.187  1.00  5.37      1AMT 268
+HETATM  158  CA  AIB B   4      32.681   7.740  11.491  1.00  4.73      1AMT 269
+HETATM  159  C   AIB B   4      31.598   7.297  12.519  1.00  8.27      1AMT 270
+HETATM  160  O   AIB B   4      30.409   7.202  12.065  1.00  8.55      1AMT 271
+HETATM  161  CB1 AIB B   4      33.704   6.715  11.115  1.00  6.96      1AMT 272
+HETATM  162  CB2 AIB B   4      31.936   8.290  10.200  1.00  5.94      1AMT 273
+ATOM    163  N   ALA B   5      32.038   7.013  13.691  1.00  4.00      1AMT 274
+ATOM    164  CA  ALA B   5      31.059   6.484  14.722  1.00  4.13      1AMT 275
+ATOM    165  C   ALA B   5      30.010   7.582  14.963  1.00  5.17      1AMT 276
+ATOM    166  O   ALA B   5      28.808   7.257  15.069  1.00  5.93      1AMT 277
+ATOM    167  CB  ALA B   5      31.626   6.042  16.020  1.00  6.03      1AMT 278
+HETATM  168  N   AIB B   6      30.340   8.811  15.149  1.00  5.20      1AMT 279
+HETATM  169  CA  AIB B   6      29.385   9.968  15.426  1.00  5.24      1AMT 280
+HETATM  170  C   AIB B   6      28.307  10.031  14.346  1.00  7.81      1AMT 281
+HETATM  171  O   AIB B   6      27.149   9.907  14.668  1.00  7.76      1AMT 282
+HETATM  172  CB1 AIB B   6      30.241  11.282  15.462  1.00  6.02      1AMT 283
+HETATM  173  CB2 AIB B   6      28.911   9.744  16.833  1.00 11.06      1AMT 284
+ATOM    174  N   ALA B   7      28.722   9.947  13.076  1.00  5.74      1AMT 285
+ATOM    175  CA  ALA B   7      27.850   9.974  11.941  1.00  7.14      1AMT 286
+ATOM    176  C   ALA B   7      27.015   8.758  11.959  1.00  7.49      1AMT 287
+ATOM    177  O   ALA B   7      25.730   8.976  11.638  1.00  7.05      1AMT 288
+ATOM    178  CB  ALA B   7      28.614  10.003  10.665  1.00  8.67      1AMT 289
+ATOM    179  N   GLN B   8      27.282   7.646  12.270  1.00  6.08      1AMT 290
+ATOM    180  CA  GLN B   8      26.521   6.363  12.170  1.00  5.22      1AMT 291
+ATOM    181  C   GLN B   8      25.298   6.584  13.186  1.00  3.73      1AMT 292
+ATOM    182  O   GLN B   8      24.152   6.160  12.854  1.00  6.04      1AMT 293
+ATOM    183  CB  GLN B   8      27.242   5.122  12.337  1.00  7.04      1AMT 294
+ATOM    184  CG  GLN B   8      28.092   5.033  11.008  1.00  5.05      1AMT 295
+ATOM    185  CD  GLN B   8      28.731   3.802  10.897  1.00 12.29      1AMT 296
+ATOM    186  OE1 GLN B   8      28.721   2.749  11.621  1.00 13.23      1AMT 297
+ATOM    187  NE2 GLN B   8      29.228   3.595   9.640  1.00 20.19      1AMT 298
+HETATM  188  N   AIB B   9      25.694   7.055  14.371  1.00  4.06      1AMT 299
+HETATM  189  CA  AIB B   9      24.726   7.339  15.421  1.00  4.92      1AMT 300
+HETATM  190  C   AIB B   9      23.688   8.274  14.846  1.00  5.36      1AMT 301
+HETATM  191  O   AIB B   9      22.360   7.980  14.997  1.00  6.18      1AMT 302
+HETATM  192  CB1 AIB B   9      25.333   7.905  16.655  1.00  5.79      1AMT 303
+HETATM  193  CB2 AIB B   9      24.068   6.015  15.892  1.00  4.60      1AMT 304
+ATOM    194  N   VAL B  10      23.966   9.328  14.205  1.00  4.89      1AMT 305
+ATOM    195  CA  VAL B  10      23.025  10.312  13.648  1.00  5.46      1AMT 306
+ATOM    196  C   VAL B  10      22.211   9.569  12.608  1.00  6.21      1AMT 307
+ATOM    197  O   VAL B  10      20.926   9.811  12.470  1.00  6.13      1AMT 308
+ATOM    198  CB  VAL B  10      23.728  11.495  13.183  1.00  9.90      1AMT 309
+ATOM    199  CG1 VAL B  10      22.799  12.528  12.542  1.00 15.00      1AMT 310
+ATOM    200  CG2 VAL B  10      24.460  12.235  14.304  1.00 15.00      1AMT 311
+HETATM  201  N   AIB B  11      22.732   8.802  11.656  1.00  6.44      1AMT 312
+HETATM  202  CA  AIB B  11      22.011   8.094  10.656  1.00  5.16      1AMT 313
+HETATM  203  C   AIB B  11      20.940   7.305  11.358  1.00  5.33      1AMT 314
+HETATM  204  O   AIB B  11      19.869   7.225  10.722  1.00  8.83      1AMT 315
+HETATM  205  CB1 AIB B  11      23.004   7.151   9.931  1.00  6.85      1AMT 316
+HETATM  206  CB2 AIB B  11      21.459   9.029   9.562  1.00  6.73      1AMT 317
+ATOM    207  N   GLY B  12      21.226   6.757  12.398  1.00  3.50      1AMT 318
+ATOM    208  CA  GLY B  12      20.202   5.815  13.069  1.00  3.55      1AMT 319
+ATOM    209  C   GLY B  12      19.283   6.679  13.833  1.00  4.93      1AMT 320
+ATOM    210  O   GLY B  12      17.995   6.252  13.964  1.00  7.29      1AMT 321
+ATOM    211  N   LEU B  13      19.463   7.835  14.413  1.00  3.92      1AMT 322
+ATOM    212  CA  LEU B  13      18.606   8.691  15.160  1.00  5.71      1AMT 323
+ATOM    213  C   LEU B  13      17.662   9.396  14.242  1.00  3.45      1AMT 324
+ATOM    214  O   LEU B  13      16.489   9.621  14.642  1.00  3.68      1AMT 325
+ATOM    215  CB  LEU B  13      19.385   9.674  16.003  1.00  4.82      1AMT 326
+ATOM    216  CG  LEU B  13      20.046   9.106  17.221  1.00  8.43      1AMT 327
+ATOM    217  CD1 LEU B  13      21.130  10.061  17.803  1.00  9.27      1AMT 328
+ATOM    218  CD2 LEU B  13      19.039   8.864  18.324  1.00 11.12      1AMT 329
+HETATM  219  N   AIB B  14      18.088   9.949  13.167  1.00  3.51      1AMT 330
+HETATM  220  CA  AIB B  14      17.214  10.780  12.259  1.00  4.90      1AMT 331
+HETATM  221  C   AIB B  14      15.876  10.124  11.891  1.00  6.56      1AMT 332
+HETATM  222  O   AIB B  14      14.931  10.998  12.142  1.00  7.69      1AMT 333
+HETATM  223  CB1 AIB B  14      18.055  11.054  10.905  1.00  4.36      1AMT 334
+HETATM  224  CB2 AIB B  14      17.012  12.135  12.946  1.00  6.78      1AMT 335
+ATOM    225  N   PRO B  15      15.810   8.961  11.528  1.00  6.55      1AMT 336
+ATOM    226  CA  PRO B  15      14.485   8.303  11.109  1.00  6.32      1AMT 337
+ATOM    227  C   PRO B  15      13.664   8.169  12.332  1.00  7.80      1AMT 338
+ATOM    228  O   PRO B  15      12.387   8.004  12.216  1.00 13.46      1AMT 339
+ATOM    229  CB  PRO B  15      15.002   7.226  10.209  1.00  7.63      1AMT 340
+ATOM    230  CG  PRO B  15      16.227   6.732  10.924  1.00  7.05      1AMT 341
+ATOM    231  CD  PRO B  15      16.894   8.037  11.227  1.00  7.76      1AMT 342
+ATOM    232  N   VAL B  16      14.188   8.027  13.527  1.00  8.64      1AMT 343
+ATOM    233  CA  VAL B  16      13.353   7.912  14.735  1.00  6.89      1AMT 344
+ATOM    234  C   VAL B  16      12.634   9.146  14.877  1.00  7.66      1AMT 345
+ATOM    235  O   VAL B  16      11.290   9.147  15.098  1.00  9.93      1AMT 346
+ATOM    236  CB  VAL B  16      14.242   7.600  15.984  1.00 10.87      1AMT 347
+ATOM    237  CG1 VAL B  16      13.387   7.668  17.289  1.00 11.69      1AMT 348
+ATOM    238  CG2 VAL B  16      14.806   6.214  15.653  1.00 15.57      1AMT 349
+HETATM  239  N   AIB B  17      13.018  10.310  14.719  1.00  4.93      1AMT 350
+HETATM  240  CA  AIB B  17      12.512  11.659  14.774  1.00  4.97      1AMT 351
+HETATM  241  C   AIB B  17      11.305  11.671  13.791  1.00  5.15      1AMT 352
+HETATM  242  O   AIB B  17      10.157  12.313  14.178  1.00  6.38      1AMT 353
+HETATM  243  CB1 AIB B  17      13.356  12.961  14.560  1.00  8.56      1AMT 354
+HETATM  244  CB2 AIB B  17      11.974  11.941  16.224  1.00  7.66      1AMT 355
+HETATM  245  N   AIB B  18      11.499  11.212  12.603  1.00  7.67      1AMT 356
+HETATM  246  CA  AIB B  18      10.380  11.268  11.541  1.00  7.27      1AMT 357
+HETATM  247  C   AIB B  18       9.126  10.532  12.066  1.00  4.53      1AMT 358
+HETATM  248  O   AIB B  18       7.961  10.916  11.628  1.00  8.03      1AMT 359
+HETATM  249  CB1 AIB B  18      10.951  10.501  10.410  1.00  8.17      1AMT 360
+HETATM  250  CB2 AIB B  18      10.091  12.665  11.152  1.00 10.83      1AMT 361
+ATOM    251  N   GLU B  19       9.213   9.575  12.954  1.00  3.33      1AMT 362
+ATOM    252  CA  GLU B  19       8.014   8.763  13.434  1.00  4.88      1AMT 363
+ATOM    253  C   GLU B  19       7.267   9.658  14.387  1.00  4.26      1AMT 364
+ATOM    254  O   GLU B  19       5.969   9.291  14.746  1.00  7.88      1AMT 365
+ATOM    255  CB  GLU B  19       8.385   7.438  14.103  1.00  3.07      1AMT 366
+ATOM    256  CG  GLU B  19       9.142   6.537  13.174  1.00  5.20      1AMT 367
+ATOM    257  CD  GLU B  19       8.183   6.081  12.161  1.00 13.25      1AMT 368
+ATOM    258  OE1 GLU B  19       7.147   5.402  12.487  1.00 13.57      1AMT 369
+ATOM    259  OE2 GLU B  19       8.244   6.344  10.957  1.00 10.82      1AMT 370
+ATOM    260  N   GLN B  20       7.753  10.634  15.050  1.00  2.97      1AMT 371
+ATOM    261  CA  GLN B  20       6.989  11.567  15.961  1.00  3.67      1AMT 372
+ATOM    262  C   GLN B  20       6.160  12.554  15.130  1.00  2.00      1AMT 373
+ATOM    263  O   GLN B  20       5.161  12.913  15.557  1.00  7.55      1AMT 374
+ATOM    264  CB  GLN B  20       8.006  12.268  16.914  1.00  3.53      1AMT 375
+ATOM    265  CG  GLN B  20       7.204  13.237  17.906  1.00  5.01      1AMT 376
+ATOM    266  CD  GLN B  20       6.418  12.479  18.942  1.00  5.74      1AMT 377
+ATOM    267  OE1 GLN B  20       7.196  12.165  20.011  1.00  7.37      1AMT 378
+ATOM    268  NE2 GLN B  20       5.337  12.255  18.837  1.00  3.18      1AMT 379
+HETATM  269  N   PHL B  21       6.812  13.208  14.125  1.00  4.56      1AMT 380
+HETATM  270  CA  PHL B  21       6.292  14.250  13.257  1.00  8.73      1AMT 381
+HETATM  271  C   PHL B  21       6.519  13.625  11.711  1.00  8.79      1AMT 382
+HETATM  272  O   PHL B  21       5.601  12.695  11.679  1.00 17.27      1AMT 383
+HETATM  273  CB  PHL B  21       7.318  15.333  13.334  1.00  7.91      1AMT 384
+HETATM  274  CG  PHL B  21       7.427  15.968  14.722  1.00  3.67      1AMT 385
+HETATM  275  CD1 PHL B  21       8.639  15.491  15.346  1.00  6.66      1AMT 386
+HETATM  276  CD2 PHL B  21       6.571  16.803  15.406  1.00 10.54      1AMT 387
+HETATM  277  CE1 PHL B  21       8.964  15.910  16.579  1.00 14.18      1AMT 388
+HETATM  278  CE2 PHL B  21       6.902  17.082  16.774  1.00  8.80      1AMT 389
+HETATM  279  CZ  PHL B  21       8.094  16.681  17.258  1.00  9.42      1AMT 390
+TER     280      PHL B  21                                              1AMT 391
+ATOM    281  C   ACE C   1      47.231   5.950   6.645  1.00  4.29      1AMTA 11
+ATOM    282  O   ACE C   1      45.985   5.718   6.815  1.00  5.33      1AMTA 12
+ATOM    283  CH3 ACE C   1      48.259   4.903   7.071  1.00  7.21      1AMTA 13
+HETATM  284  N   AIB C   2      47.588   7.033   6.135  1.00  2.90      1AMT 395
+HETATM  285  CA  AIB C   2      46.708   8.141   5.750  1.00  2.62      1AMT 396
+HETATM  286  C   AIB C   2      45.578   7.603   4.849  1.00  6.28      1AMT 397
+HETATM  287  O   AIB C   2      44.451   7.931   5.091  1.00  4.08      1AMT 398
+HETATM  288  CB1 AIB C   2      47.382   9.278   4.978  1.00  5.74      1AMT 399
+HETATM  289  CB2 AIB C   2      46.153   8.832   7.081  1.00  5.38      1AMT 400
+ATOM    290  N   PRO C   3      45.842   6.718   3.931  1.00  3.48      1AMT 401
+ATOM    291  CA  PRO C   3      44.729   6.321   2.986  1.00  2.62      1AMT 402
+ATOM    292  C   PRO C   3      43.786   5.420   3.773  1.00  4.66      1AMT 403
+ATOM    293  O   PRO C   3      42.544   5.519   3.234  1.00  3.73      1AMT 404
+ATOM    294  CB  PRO C   3      45.429   5.506   1.821  1.00  5.21      1AMT 405
+ATOM    295  CG  PRO C   3      46.949   5.948   2.001  1.00  5.46      1AMT 406
+ATOM    296  CD  PRO C   3      47.142   6.284   3.406  1.00  6.79      1AMT 407
+HETATM  297  N   AIB C   4      44.049   4.681   4.679  1.00  5.20      1AMT 408
+HETATM  298  CA  AIB C   4      43.188   3.809   5.513  1.00  4.17      1AMT 409
+HETATM  299  C   AIB C   4      42.105   4.835   6.086  1.00  6.30      1AMT 410
+HETATM  300  O   AIB C   4      40.906   4.429   6.011  1.00  6.13      1AMT 411
+HETATM  301  CB1 AIB C   4      43.953   3.119   6.539  1.00  6.10      1AMT 412
+HETATM  302  CB2 AIB C   4      42.545   2.778   4.649  1.00  6.77      1AMT 413
+ATOM    303  N   ALA C   5      42.519   5.875   6.619  1.00  3.62      1AMT 414
+ATOM    304  CA  ALA C   5      41.655   6.933   7.211  1.00  2.00      1AMT 415
+ATOM    305  C   ALA C   5      40.731   7.545   6.166  1.00  2.76      1AMT 416
+ATOM    306  O   ALA C   5      39.501   7.709   6.393  1.00  3.11      1AMT 417
+ATOM    307  CB  ALA C   5      42.404   8.080   7.889  1.00  4.56      1AMT 418
+HETATM  308  N   AIB C   6      41.124   7.817   4.953  1.00  2.81      1AMT 419
+HETATM  309  CA  AIB C   6      40.388   8.440   3.865  1.00  2.70      1AMT 420
+HETATM  310  C   AIB C   6      39.377   7.315   3.441  1.00  2.58      1AMT 421
+HETATM  311  O   AIB C   6      38.137   7.812   3.363  1.00  2.68      1AMT 422
+HETATM  312  CB1 AIB C   6      41.447   8.622   2.678  1.00  3.70      1AMT 423
+HETATM  313  CB2 AIB C   6      39.741   9.722   4.202  1.00  4.48      1AMT 424
+ATOM    314  N   ALA C   7      39.698   6.172   3.312  1.00  3.21      1AMT 425
+ATOM    315  CA  ALA C   7      38.697   5.144   2.918  1.00  2.00      1AMT 426
+ATOM    316  C   ALA C   7      37.615   4.975   4.061  1.00  4.52      1AMT 427
+ATOM    317  O   ALA C   7      36.436   4.793   3.731  1.00  4.19      1AMT 428
+ATOM    318  CB  ALA C   7      39.361   3.813   2.591  1.00  8.32      1AMT 429
+ATOM    319  N   GLN C   8      37.987   5.095   5.302  1.00  2.40      1AMT 430
+ATOM    320  CA  GLN C   8      37.079   4.840   6.432  1.00  3.77      1AMT 431
+ATOM    321  C   GLN C   8      36.082   5.918   6.374  1.00  4.71      1AMT 432
+ATOM    322  O   GLN C   8      34.858   5.629   6.729  1.00  3.57      1AMT 433
+ATOM    323  CB  GLN C   8      37.972   4.810   7.681  1.00  6.83      1AMT 434
+ATOM    324  CG  GLN C   8      37.183   4.560   8.898  1.00  7.10      1AMT 435
+ATOM    325  CD  GLN C   8      37.866   4.243  10.210  1.00  6.47      1AMT 436
+ATOM    326  OE1 GLN C   8      38.542   5.180  10.584  1.00  9.68      1AMT 437
+ATOM    327  NE2 GLN C   8      37.833   3.032  10.550  1.00 11.63      1AMT 438
+HETATM  328  N   AIB C   9      36.473   7.169   6.143  1.00  3.20      1AMT 439
+HETATM  329  CA  AIB C   9      35.476   8.375   6.076  1.00  2.00      1AMT 440
+HETATM  330  C   AIB C   9      34.428   8.036   4.975  1.00  3.59      1AMT 441
+HETATM  331  O   AIB C   9      33.265   8.241   5.322  1.00  4.56      1AMT 442
+HETATM  332  CB1 AIB C   9      36.255   9.638   5.801  1.00  5.36      1AMT 443
+HETATM  333  CB2 AIB C   9      34.823   8.489   7.493  1.00  4.30      1AMT 444
+ATOM    334  N   VAL C  10      34.811   7.534   3.904  1.00  2.44      1AMT 445
+ATOM    335  CA  VAL C  10      33.808   7.250   2.814  1.00  3.38      1AMT 446
+ATOM    336  C   VAL C  10      32.942   6.142   3.274  1.00  5.27      1AMT 447
+ATOM    337  O   VAL C  10      31.674   6.319   3.257  1.00  7.57      1AMT 448
+ATOM    338  CB  VAL C  10      34.568   7.006   1.589  1.00  5.76      1AMT 449
+ATOM    339  CG1 VAL C  10      33.638   6.568   0.377  1.00  5.54      1AMT 450
+ATOM    340  CG2 VAL C  10      35.415   8.073   1.102  1.00  4.95      1AMT 451
+HETATM  341  N   AIB C  11      33.433   5.013   3.529  1.00  4.02      1AMT 452
+HETATM  342  CA  AIB C  11      32.749   3.851   4.020  1.00  2.46      1AMT 453
+HETATM  343  C   AIB C  11      31.709   4.171   5.141  1.00  3.84      1AMT 454
+HETATM  344  O   AIB C  11      30.663   3.733   5.221  1.00  7.89      1AMT 455
+HETATM  345  CB1 AIB C  11      33.645   2.708   4.591  1.00  7.58      1AMT 456
+HETATM  346  CB2 AIB C  11      31.928   3.175   2.900  1.00  6.27      1AMT 457
+ATOM    347  N   GLY C  12      32.309   4.896   6.131  1.00  4.57      1AMT 458
+ATOM    348  CA  GLY C  12      31.586   5.175   7.353  1.00  4.40      1AMT 459
+ATOM    349  C   GLY C  12      30.341   6.059   6.977  1.00  7.43      1AMT 460
+ATOM    350  O   GLY C  12      29.574   6.018   8.030  1.00  6.14      1AMT 461
+ATOM    351  N   LEU C  13      30.384   6.823   6.054  1.00  6.06      1AMT 462
+ATOM    352  CA  LEU C  13      29.113   7.711   5.817  1.00  5.54      1AMT 463
+ATOM    353  C   LEU C  13      28.093   6.917   4.858  1.00  6.00      1AMT 464
+ATOM    354  O   LEU C  13      27.036   7.559   4.644  1.00  5.88      1AMT 465
+ATOM    355  CB  LEU C  13      29.563   8.970   5.258  1.00  5.79      1AMT 466
+ATOM    356  CG  LEU C  13      29.825  10.196   5.919  1.00 14.89      1AMT 467
+ATOM    357  CD1 LEU C  13      29.626  10.138   7.392  1.00 10.85      1AMT 468
+ATOM    358  CD2 LEU C  13      30.814  11.152   5.342  1.00 14.19      1AMT 469
+HETATM  359  N   AIB C  14      28.369   5.733   4.363  1.00  4.59      1AMT 470
+HETATM  360  CA  AIB C  14      27.517   4.971   3.457  1.00  2.95      1AMT 471
+HETATM  361  C   AIB C  14      26.138   4.783   4.249  1.00  4.47      1AMT 472
+HETATM  362  O   AIB C  14      25.157   4.985   3.525  1.00  5.50      1AMT 473
+HETATM  363  CB1 AIB C  14      28.148   3.586   3.202  1.00  7.44      1AMT 474
+HETATM  364  CB2 AIB C  14      27.389   5.774   2.145  1.00  6.91      1AMT 475
+ATOM    365  N   PRO C  15      26.162   4.601   5.493  1.00  5.96      1AMT 476
+ATOM    366  CA  PRO C  15      24.776   4.403   6.129  1.00  5.80      1AMT 477
+ATOM    367  C   PRO C  15      24.033   5.656   6.062  1.00  5.41      1AMT 478
+ATOM    368  O   PRO C  15      22.689   5.569   6.082  1.00  5.23      1AMT 479
+ATOM    369  CB  PRO C  15      25.048   4.013   7.621  1.00  7.92      1AMT 480
+ATOM    370  CG  PRO C  15      26.466   3.486   7.561  1.00 10.01      1AMT 481
+ATOM    371  CD  PRO C  15      27.179   4.254   6.456  1.00  7.81      1AMT 482
+ATOM    372  N   VAL C  16      24.468   6.845   6.001  1.00  2.00      1AMT 483
+ATOM    373  CA  VAL C  16      23.676   8.154   5.786  1.00  3.47      1AMT 484
+ATOM    374  C   VAL C  16      22.959   8.020   4.495  1.00  6.61      1AMT 485
+ATOM    375  O   VAL C  16      21.766   8.373   4.350  1.00  5.09      1AMT 486
+ATOM    376  CB  VAL C  16      24.581   9.412   5.860  1.00  5.15      1AMT 487
+ATOM    377  CG1 VAL C  16      23.685  10.558   5.534  1.00  6.25      1AMT 488
+ATOM    378  CG2 VAL C  16      25.313   9.458   7.179  1.00  7.20      1AMT 489
+HETATM  379  N   AIB C  17      23.620   7.682   3.329  1.00  5.92      1AMT 490
+HETATM  380  CA  AIB C  17      23.006   7.481   1.999  1.00  4.10      1AMT 491
+HETATM  381  C   AIB C  17      21.940   6.473   2.153  1.00  2.29      1AMT 492
+HETATM  382  O   AIB C  17      20.730   6.682   1.664  1.00  5.49      1AMT 493
+HETATM  383  CB1 AIB C  17      24.135   6.786   1.101  1.00  6.35      1AMT 494
+HETATM  384  CB2 AIB C  17      22.492   8.774   1.497  1.00  5.46      1AMT 495
+HETATM  385  N   AIB C  18      22.145   5.323   2.701  1.00  4.43      1AMT 496
+HETATM  386  CA  AIB C  18      21.208   4.166   2.790  1.00  3.49      1AMT 497
+HETATM  387  C   AIB C  18      20.048   4.667   3.616  1.00  4.36      1AMT 498
+HETATM  388  O   AIB C  18      18.838   4.257   3.250  1.00  6.88      1AMT 499
+HETATM  389  CB1 AIB C  18      21.929   3.133   3.649  1.00  9.79      1AMT 500
+HETATM  390  CB2 AIB C  18      20.849   3.607   1.405  1.00  6.62      1AMT 501
+ATOM    391  N   GLU C  19      20.010   5.486   4.560  1.00  3.49      1AMT 502
+ATOM    392  CA  GLU C  19      18.929   5.891   5.414  1.00  5.47      1AMT 503
+ATOM    393  C   GLU C  19      18.147   6.878   4.543  1.00  4.34      1AMT 504
+ATOM    394  O   GLU C  19      16.795   7.017   4.837  1.00  6.22      1AMT 505
+ATOM    395  CB  GLU C  19      19.501   6.608   6.620  1.00  5.02      1AMT 506
+ATOM    396  CG  GLU C  19      18.531   7.074   7.654  1.00 10.35      1AMT 507
+ATOM    397  CD  GLU C  19      17.937   8.432   7.237  1.00 13.02      1AMT 508
+ATOM    398  OE1 GLU C  19      18.501   9.256   6.688  1.00 17.61      1AMT 509
+ATOM    399  OE2 GLU C  19      16.753   8.719   7.537  1.00 13.75      1AMT 510
+ATOM    400  N   GLN C  20      18.625   7.622   3.631  1.00  2.00      1AMT 511
+ATOM    401  CA  GLN C  20      17.869   8.568   2.740  1.00  3.08      1AMT 512
+ATOM    402  C   GLN C  20      17.035   7.930   1.691  1.00  4.01      1AMT 513
+ATOM    403  O   GLN C  20      15.932   8.307   1.415  1.00  7.36      1AMT 514
+ATOM    404  CB  GLN C  20      18.830   9.622   2.164  1.00  5.24      1AMT 515
+ATOM    405  CG  GLN C  20      19.361  10.624   2.975  1.00  5.59      1AMT 516
+ATOM    406  CD  GLN C  20      18.400  11.537   3.576  1.00  3.61      1AMT 517
+ATOM    407  OE1 GLN C  20      18.154  11.537   4.772  1.00  8.49      1AMT 518
+ATOM    408  NE2 GLN C  20      17.737  12.384   2.798  1.00  6.26      1AMT 519
+HETATM  409  N   PHL C  21      17.497   6.868   1.056  1.00  3.52      1AMT 520
+HETATM  410  CA  PHL C  21      16.898   6.146  -0.090  1.00  2.36      1AMT 521
+HETATM  411  C   PHL C  21      17.259   4.677   0.010  1.00  5.10      1AMT 522
+HETATM  412  O   PHL C  21      16.894   4.003   1.054  1.00  8.07      1AMT 523
+HETATM  413  CB  PHL C  21      17.107   7.021  -1.333  1.00  6.86      1AMT 524
+HETATM  414  CG  PHL C  21      18.663   7.271  -1.596  1.00  5.23      1AMT 525
+HETATM  415  CD1 PHL C  21      19.376   6.229  -2.114  1.00  6.40      1AMT 526
+HETATM  416  CD2 PHL C  21      19.033   8.478  -1.399  1.00  3.99      1AMT 527
+HETATM  417  CE1 PHL C  21      20.868   6.439  -2.297  1.00 11.32      1AMT 528
+HETATM  418  CE2 PHL C  21      20.477   8.712  -1.612  1.00  9.32      1AMT 529
+HETATM  419  CZ  PHL C  21      21.199   7.681  -2.077  1.00  5.18      1AMT 530
+TER     420      PHL C  21                                              1AMT 531
+HETATM  421  N   CCN     1      32.064   9.671  19.193  1.00 17.04      1AMT 532
+HETATM  422  C1  CCN     1      31.921   8.532  19.788  1.00 23.26      1AMT 533
+HETATM  423  C2  CCN     1      31.251   7.442  19.137  1.00 18.51      1AMT 534
+HETATM  424  N   CCN     2      19.409  -1.288   1.881  1.00 28.07      1AMT 535
+HETATM  425  C1  CCN     2      19.115  -0.086   1.808  1.00 25.38      1AMT 536
+HETATM  426  C2  CCN     2      18.321   0.929   2.420  1.00 25.98      1AMT 537
+HETATM  427  C   MOH     3      27.261  14.543  15.116  1.00 25.51      1AMT 538
+HETATM  428  O   MOH     3      26.858  14.274  16.484  1.00 22.44      1AMT 539
+HETATM  429  C   MOH     4      37.193   8.570  10.583  1.00  8.91      1AMT 540
+HETATM  430  O   MOH     4      38.630   8.376   9.938  1.00 14.61      1AMT 541
+HETATM  431  C   MOH     5      40.716  12.139   8.013  1.00 33.76      1AMT 542
+HETATM  432  O   MOH     5      39.341  11.819   8.028  1.00 34.09      1AMT 543
+HETATM  433  C   MOH     6      34.643   3.291  12.747  1.00 22.78      1AMT 544
+HETATM  434  O   MOH     6      33.213   3.413  13.149  1.00 19.72      1AMT 545
+HETATM  435  C   MOH     7      27.986   9.525   1.187  1.00 23.92      1AMT 546
+HETATM  436  O   MOH     7      26.951   9.848   0.252  1.00 20.71      1AMT 547
+HETATM  437  C   MOH     8      36.611   0.925   8.071  1.00 31.90      1AMT 548
+HETATM  438  O   MOH     8      36.343   0.716   9.466  1.00 32.66      1AMT 549
+HETATM  439  C   MOH     9      22.790   3.445  10.883  1.00 29.49      1AMT 550
+HETATM  440  O   MOH     9      21.780   2.499  10.596  1.00 33.84      1AMT 551
+HETATM  441  C   MOH    10      38.729   1.056   5.076  1.00 18.25      1AMT 552
+HETATM  442  O   MOH    10      37.364   1.034   5.484  1.00 25.85      1AMT 553
+HETATM  443  C   MOH    11      19.869  12.970   8.624  1.00 29.86      1AMT 554
+HETATM  444  O   MOH    11      20.088  11.863   7.692  1.00 24.82      1AMT 555
+HETATM  445  C   MOH    12      32.857  13.350  17.457  1.00 32.16      1AMT 556
+HETATM  446  O   MOH    12      32.292  14.481  18.060  1.00 31.14      1AMT 557
+HETATM  447  C   MOH    13      28.979  14.651  17.395  1.00 33.66      1AMT 558
+HETATM  448  O   MOH    13      29.398  15.526  16.342  1.00 34.35      1AMT 559
+HETATM  449  C   MOH    14      24.047  10.182  19.047  1.00 35.17      1AMT 560
+HETATM  450  O   MOH    14      24.716  11.140  18.244  1.00 31.01      1AMT 561
+HETATM  451  C   MOH    15      31.593  -1.096  11.556  1.00 46.75      1AMT 562
+HETATM  452  O   MOH    15      30.888   0.062  12.014  1.00 44.76      1AMT 563
+CONECT    1    2    3    4                                              1AMTA 14
+CONECT    4    1    5                                                   1AMTA 15
+CONECT    5    4    6    8    9                                         1AMT 566
+CONECT    6    5    7   10                                              1AMT 567
+CONECT    7    6                                                        1AMT 568
+CONECT    8    5                                                        1AMT 569
+CONECT    9    5                                                        1AMT 570
+CONECT   10    6   11   16                                              1AMT 571
+CONECT   12   11   13   17                                              1AMT 572
+CONECT   17   12   18                                                   1AMT 573
+CONECT   18   17   19   21   22                                         1AMT 574
+CONECT   19   18   20   23                                              1AMT 575
+CONECT   20   19                                                        1AMT 576
+CONECT   21   18                                                        1AMT 577
+CONECT   22   18                                                        1AMT 578
+CONECT   23   19   24                                                   1AMT 579
+CONECT   25   24   26   28                                              1AMT 580
+CONECT   28   25   29                                                   1AMT 581
+CONECT   29   28   30   32   33                                         1AMT 582
+CONECT   30   29   31   34                                              1AMT 583
+CONECT   31   30                                                        1AMT 584
+CONECT   32   29                                                        1AMT 585
+CONECT   33   29                                                        1AMT 586
+CONECT   34   30   35                                                   1AMT 587
+CONECT   41   40   42   48                                              1AMT 588
+CONECT   48   41   49                                                   1AMT 589
+CONECT   49   48   50   52   53                                         1AMT 590
+CONECT   50   49   51   54                                              1AMT 591
+CONECT   51   50                                                        1AMT 592
+CONECT   52   49                                                        1AMT 593
+CONECT   53   49                                                        1AMT 594
+CONECT   54   50   55                                                   1AMT 595
+CONECT   56   55   57   61                                              1AMT 596
+CONECT   61   56   62                                                   1AMT 597
+CONECT   62   61   63   65   66                                         1AMT 598
+CONECT   63   62   64   67                                              1AMT 599
+CONECT   64   63                                                        1AMT 600
+CONECT   65   62                                                        1AMT 601
+CONECT   66   62                                                        1AMT 602
+CONECT   67   63   68                                                   1AMT 603
+CONECT   73   72   74   79                                              1AMT 604
+CONECT   79   73   80                                                   1AMT 605
+CONECT   80   79   81   83   84                                         1AMT 606
+CONECT   81   80   82   85                                              1AMT 607
+CONECT   82   81                                                        1AMT 608
+CONECT   83   80                                                        1AMT 609
+CONECT   84   80                                                        1AMT 610
+CONECT   85   81   86   91                                              1AMT 611
+CONECT   94   93   95   99                                              1AMT 612
+CONECT   99   94  100                                                   1AMT 613
+CONECT  100   99  101  103  104                                         1AMT 614
+CONECT  101  100  102  105                                              1AMT 615
+CONECT  102  101                                                        1AMT 616
+CONECT  103  100                                                        1AMT 617
+CONECT  104  100                                                        1AMT 618
+CONECT  105  101  106                                                   1AMT 619
+CONECT  106  105  107  109  110                                         1AMT 620
+CONECT  107  106  108  111                                              1AMT 621
+CONECT  108  107                                                        1AMT 622
+CONECT  109  106                                                        1AMT 623
+CONECT  110  106                                                        1AMT 624
+CONECT  111  107  112                                                   1AMT 625
+CONECT  122  121  123  129                                              1AMT 626
+CONECT  129  122  130                                                   1AMT 627
+CONECT  130  129  131  133                                              1AMT 628
+CONECT  131  130  132                                                   1AMT 629
+CONECT  132  131                                                        1AMT 630
+CONECT  133  130  134                                                   1AMT 631
+CONECT  134  133  135  136                                              1AMT 632
+CONECT  135  134  137                                                   1AMT 633
+CONECT  136  134  138                                                   1AMT 634
+CONECT  137  135  139                                                   1AMT 635
+CONECT  138  136  139                                                   1AMT 636
+CONECT  139  137  138                                                   1AMT 637
+CONECT  141  142  143  144                                              1AMTA 16
+CONECT  144  141  145                                                   1AMTA 17
+CONECT  145  144  146  148  149                                         1AMT 640
+CONECT  146  145  147  150                                              1AMT 641
+CONECT  147  146                                                        1AMT 642
+CONECT  148  145                                                        1AMT 643
+CONECT  149  145                                                        1AMT 644
+CONECT  150  146  151  156                                              1AMT 645
+CONECT  152  151  153  157                                              1AMT 646
+CONECT  157  152  158                                                   1AMT 647
+CONECT  158  157  159  161  162                                         1AMT 648
+CONECT  159  158  160  163                                              1AMT 649
+CONECT  160  159                                                        1AMT 650
+CONECT  161  158                                                        1AMT 651
+CONECT  162  158                                                        1AMT 652
+CONECT  163  159  164                                                   1AMT 653
+CONECT  165  164  166  168                                              1AMT 654
+CONECT  168  165  169                                                   1AMT 655
+CONECT  169  168  170  172  173                                         1AMT 656
+CONECT  170  169  171  174                                              1AMT 657
+CONECT  171  170                                                        1AMT 658
+CONECT  172  169                                                        1AMT 659
+CONECT  173  169                                                        1AMT 660
+CONECT  174  170  175                                                   1AMT 661
+CONECT  181  180  182  188                                              1AMT 662
+CONECT  188  181  189                                                   1AMT 663
+CONECT  189  188  190  192  193                                         1AMT 664
+CONECT  190  189  191  194                                              1AMT 665
+CONECT  191  190                                                        1AMT 666
+CONECT  192  189                                                        1AMT 667
+CONECT  193  189                                                        1AMT 668
+CONECT  194  190  195                                                   1AMT 669
+CONECT  196  195  197  201                                              1AMT 670
+CONECT  201  196  202                                                   1AMT 671
+CONECT  202  201  203  205  206                                         1AMT 672
+CONECT  203  202  204  207                                              1AMT 673
+CONECT  204  203                                                        1AMT 674
+CONECT  205  202                                                        1AMT 675
+CONECT  206  202                                                        1AMT 676
+CONECT  207  203  208                                                   1AMT 677
+CONECT  213  212  214  219                                              1AMT 678
+CONECT  219  213  220                                                   1AMT 679
+CONECT  220  219  221  223  224                                         1AMT 680
+CONECT  221  220  222  225                                              1AMT 681
+CONECT  222  221                                                        1AMT 682
+CONECT  223  220                                                        1AMT 683
+CONECT  224  220                                                        1AMT 684
+CONECT  225  221  226  231                                              1AMT 685
+CONECT  234  233  235  239                                              1AMT 686
+CONECT  239  234  240                                                   1AMT 687
+CONECT  240  239  241  243  244                                         1AMT 688
+CONECT  241  240  242  245                                              1AMT 689
+CONECT  242  241                                                        1AMT 690
+CONECT  243  240                                                        1AMT 691
+CONECT  244  240                                                        1AMT 692
+CONECT  245  241  246                                                   1AMT 693
+CONECT  246  245  247  249  250                                         1AMT 694
+CONECT  247  246  248  251                                              1AMT 695
+CONECT  248  247                                                        1AMT 696
+CONECT  249  246                                                        1AMT 697
+CONECT  250  246                                                        1AMT 698
+CONECT  251  247  252                                                   1AMT 699
+CONECT  262  261  263  269                                              1AMT 700
+CONECT  269  262  270                                                   1AMT 701
+CONECT  270  269  271  273                                              1AMT 702
+CONECT  271  270  272                                                   1AMT 703
+CONECT  272  271                                                        1AMT 704
+CONECT  273  270  274                                                   1AMT 705
+CONECT  274  273  275  276                                              1AMT 706
+CONECT  275  274  277                                                   1AMT 707
+CONECT  276  274  278                                                   1AMT 708
+CONECT  277  275  279                                                   1AMT 709
+CONECT  278  276  279                                                   1AMT 710
+CONECT  279  277  278                                                   1AMT 711
+CONECT  281  282  283  284                                              1AMTA 18
+CONECT  284  281  285                                                   1AMTA 19
+CONECT  285  284  286  288  289                                         1AMT 714
+CONECT  286  285  287  290                                              1AMT 715
+CONECT  287  286                                                        1AMT 716
+CONECT  288  285                                                        1AMT 717
+CONECT  289  285                                                        1AMT 718
+CONECT  290  286  291  296                                              1AMT 719
+CONECT  292  291  293  297                                              1AMT 720
+CONECT  297  292  298                                                   1AMT 721
+CONECT  298  297  299  301  302                                         1AMT 722
+CONECT  299  298  300  303                                              1AMT 723
+CONECT  300  299                                                        1AMT 724
+CONECT  301  298                                                        1AMT 725
+CONECT  302  298                                                        1AMT 726
+CONECT  303  299  304                                                   1AMT 727
+CONECT  305  304  306  308                                              1AMT 728
+CONECT  308  305  309                                                   1AMT 729
+CONECT  309  308  310  312  313                                         1AMT 730
+CONECT  310  309  311  314                                              1AMT 731
+CONECT  311  310                                                        1AMT 732
+CONECT  312  309                                                        1AMT 733
+CONECT  313  309                                                        1AMT 734
+CONECT  314  310  315                                                   1AMT 735
+CONECT  321  320  322  328                                              1AMT 736
+CONECT  328  321  329                                                   1AMT 737
+CONECT  329  328  330  332  333                                         1AMT 738
+CONECT  330  329  331  334                                              1AMT 739
+CONECT  331  330                                                        1AMT 740
+CONECT  332  329                                                        1AMT 741
+CONECT  333  329                                                        1AMT 742
+CONECT  334  330  335                                                   1AMT 743
+CONECT  336  335  337  341                                              1AMT 744
+CONECT  341  336  342                                                   1AMT 745
+CONECT  342  341  343  345  346                                         1AMT 746
+CONECT  343  342  344  347                                              1AMT 747
+CONECT  344  343                                                        1AMT 748
+CONECT  345  342                                                        1AMT 749
+CONECT  346  342                                                        1AMT 750
+CONECT  347  343  348                                                   1AMT 751
+CONECT  353  352  354  359                                              1AMT 752
+CONECT  359  353  360                                                   1AMT 753
+CONECT  360  359  361  363  364                                         1AMT 754
+CONECT  361  360  362  365                                              1AMT 755
+CONECT  362  361                                                        1AMT 756
+CONECT  363  360                                                        1AMT 757
+CONECT  364  360                                                        1AMT 758
+CONECT  365  361  366  371                                              1AMT 759
+CONECT  374  373  375  379                                              1AMT 760
+CONECT  379  374  380                                                   1AMT 761
+CONECT  380  379  381  383  384                                         1AMT 762
+CONECT  381  380  382  385                                              1AMT 763
+CONECT  382  381                                                        1AMT 764
+CONECT  383  380                                                        1AMT 765
+CONECT  384  380                                                        1AMT 766
+CONECT  385  381  386                                                   1AMT 767
+CONECT  386  385  387  389  390                                         1AMT 768
+CONECT  387  386  388  391                                              1AMT 769
+CONECT  388  387                                                        1AMT 770
+CONECT  389  386                                                        1AMT 771
+CONECT  390  386                                                        1AMT 772
+CONECT  391  387  392                                                   1AMT 773
+CONECT  402  401  403  409                                              1AMT 774
+CONECT  409  402  410                                                   1AMT 775
+CONECT  410  409  411  413                                              1AMT 776
+CONECT  411  410  412                                                   1AMT 777
+CONECT  412  411                                                        1AMT 778
+CONECT  413  410  414                                                   1AMT 779
+CONECT  414  413  415  416                                              1AMT 780
+CONECT  415  414  417                                                   1AMT 781
+CONECT  416  414  418                                                   1AMT 782
+CONECT  417  415  419                                                   1AMT 783
+CONECT  418  416  419                                                   1AMT 784
+CONECT  419  417  418                                                   1AMT 785
+CONECT  421  422                                                        1AMT 786
+CONECT  422  421  423                                                   1AMT 787
+CONECT  423  422                                                        1AMT 788
+CONECT  424  425                                                        1AMT 789
+CONECT  425  424  426                                                   1AMT 790
+CONECT  426  425                                                        1AMT 791
+CONECT  427  428                                                        1AMT 792
+CONECT  428  427                                                        1AMT 793
+CONECT  429  430                                                        1AMT 794
+CONECT  430  429                                                        1AMT 795
+CONECT  431  432                                                        1AMT 796
+CONECT  432  431                                                        1AMT 797
+CONECT  433  434                                                        1AMT 798
+CONECT  434  433                                                        1AMT 799
+CONECT  435  436                                                        1AMT 800
+CONECT  436  435                                                        1AMT 801
+CONECT  437  438                                                        1AMT 802
+CONECT  438  437                                                        1AMT 803
+CONECT  439  440                                                        1AMT 804
+CONECT  440  439                                                        1AMT 805
+CONECT  441  442                                                        1AMT 806
+CONECT  442  441                                                        1AMT 807
+CONECT  443  444                                                        1AMT 808
+CONECT  444  443                                                        1AMT 809
+CONECT  445  446                                                        1AMT 810
+CONECT  446  445                                                        1AMT 811
+CONECT  447  448                                                        1AMT 812
+CONECT  448  447                                                        1AMT 813
+CONECT  449  450                                                        1AMT 814
+CONECT  450  449                                                        1AMT 815
+CONECT  451  452                                                        1AMT 816
+CONECT  452  451                                                        1AMT 817
+MASTER       38    0   42    0    0    0    0    6  449    3  254    6  1AMTA 20
+END                                                                     1AMT 819

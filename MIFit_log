@@ -1,0 +1,54 @@
+#!/bin/sh
+outputFile="MIFit_log.out"
+mifit=""
+
+getMIFitPath() {
+  echo "Please enter the full path to the MIFit executable." >/dev/tty
+  echo -n "> " >/dev/tty
+  read mifit
+  echo "User entered MIFit location: $mifit"
+}
+
+
+echo -n "Generating $outputFile..."
+exec > $outputFile
+exec 2>&1
+set -x
+mifit=`which MIFit 2>/dev/null`
+if [ "x$mifit" = "x" ]; then
+  echo "Error: MIFit not found in $PATH"
+  echo  >/dev/tty
+  echo "MIFit not found in PATH" >/dev/tty
+  getMIFitPath
+  echo "User entered MIFit location: $mifit"
+  if [ ! -x $mifit ]; then
+    echo "That is not a path to an executable file" >/dev/tty
+    getMIFitPath
+    if [ ! -x $mifit ]; then
+      echo "That is not a path to an executable file" >/dev/tty
+      getMIFitPath
+      if [ ! -x $mifit ]; then
+        echo "That is not a path to an executable file" >/dev/tty
+        echo "Continuing anyway..." >/dev/tty
+      fi
+    fi
+  fi
+else
+  echo "MIFit location in PATH: $mifit"
+fi
+uname -a
+cat /etc/*release
+cat /proc/version
+cat /var/log/X*.log
+glxinfo
+ldd "$mifit"
+gdb "$mifit" <<EOF
+run -record "$@"
+where
+quit
+EOF
+set +x
+cat *.mih
+exec > /dev/tty
+echo "done."
+echo "Please send the file $outputFile to the MIFit develpers."

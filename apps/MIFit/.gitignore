@@ -1,0 +1,10 @@
+*.make
+Makefile
+build
+*.dll
+*.vcproj*
+*.sln
+*.pyc
+*.o
+*.so*
+*.a

@@ -1,0 +1,364 @@
+<ui version="4.0" >
+ <class>BValueColors</class>
+ <widget class="QDialog" name="BValueColors" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>258</width>
+    <height>463</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>B-Value Range Colors</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2" >
+   <item row="0" column="0" >
+    <layout class="QGridLayout" name="gridLayout" >
+     <item row="0" column="0" >
+      <widget class="QLabel" name="levelLabel_1" >
+       <property name="text" >
+        <string>Level 1:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1" >
+      <widget class="QDoubleSpinBox" name="levelSpinBox_1" />
+     </item>
+     <item row="0" column="2" >
+      <widget class="QLabel" name="colorLabel_1" >
+       <property name="text" >
+        <string>Color</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3" >
+      <widget class="QToolButton" name="colorToolButton1" >
+       <property name="text" >
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0" >
+      <widget class="QLabel" name="levelLabel_2" >
+       <property name="text" >
+        <string>Level 2:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1" >
+      <widget class="QDoubleSpinBox" name="levelSpinBox_2" />
+     </item>
+     <item row="1" column="2" >
+      <widget class="QLabel" name="colorLabel_2" >
+       <property name="text" >
+        <string>Color</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3" >
+      <widget class="QToolButton" name="colorToolButton2" >
+       <property name="text" >
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0" >
+      <widget class="QLabel" name="levelLabel_3" >
+       <property name="text" >
+        <string>Level 3:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1" >
+      <widget class="QDoubleSpinBox" name="levelSpinBox_3" />
+     </item>
+     <item row="2" column="2" >
+      <widget class="QLabel" name="colorLabel_3" >
+       <property name="text" >
+        <string>Color</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="3" >
+      <widget class="QToolButton" name="colorToolButton3" >
+       <property name="text" >
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0" >
+      <widget class="QLabel" name="levelLabel_4" >
+       <property name="text" >
+        <string>Level 4:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1" >
+      <widget class="QDoubleSpinBox" name="levelSpinBox_4" />
+     </item>
+     <item row="3" column="2" >
+      <widget class="QLabel" name="colorLabel_4" >
+       <property name="text" >
+        <string>Color</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="3" >
+      <widget class="QToolButton" name="colorToolButton4" >
+       <property name="text" >
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0" >
+      <widget class="QLabel" name="levelLabel_5" >
+       <property name="text" >
+        <string>Level 5:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1" >
+      <widget class="QDoubleSpinBox" name="levelSpinBox_5" />
+     </item>
+     <item row="4" column="2" >
+      <widget class="QLabel" name="colorLabel_5" >
+       <property name="text" >
+        <string>Color</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="3" >
+      <widget class="QToolButton" name="colorToolButton5" >
+       <property name="text" >
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0" >
+      <widget class="QLabel" name="levelLabel_6" >
+       <property name="text" >
+        <string>Level 6:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1" >
+      <widget class="QDoubleSpinBox" name="levelSpinBox_6" />
+     </item>
+     <item row="5" column="2" >
+      <widget class="QLabel" name="colorLabel_6" >
+       <property name="text" >
+        <string>Color</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="3" >
+      <widget class="QToolButton" name="colorToolButton6" >
+       <property name="text" >
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0" >
+      <widget class="QLabel" name="levelLabel_7" >
+       <property name="text" >
+        <string>Level 7:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1" >
+      <widget class="QDoubleSpinBox" name="levelSpinBox_7" />
+     </item>
+     <item row="6" column="2" >
+      <widget class="QLabel" name="colorLabel_7" >
+       <property name="text" >
+        <string>Color</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="3" >
+      <widget class="QToolButton" name="colorToolButton7" >
+       <property name="text" >
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0" >
+      <widget class="QLabel" name="levelLabel_8" >
+       <property name="text" >
+        <string>Level 8:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1" >
+      <widget class="QDoubleSpinBox" name="levelSpinBox_8" />
+     </item>
+     <item row="7" column="2" >
+      <widget class="QLabel" name="colorLabel_8" >
+       <property name="text" >
+        <string>Color</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="3" >
+      <widget class="QToolButton" name="colorToolButton8" >
+       <property name="text" >
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="0" >
+      <widget class="QLabel" name="levelLabel_9" >
+       <property name="text" >
+        <string>Level 9:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="1" >
+      <widget class="QDoubleSpinBox" name="levelSpinBox_9" />
+     </item>
+     <item row="8" column="2" >
+      <widget class="QLabel" name="colorLabel_9" >
+       <property name="text" >
+        <string>Color</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="3" >
+      <widget class="QToolButton" name="colorToolButton9" >
+       <property name="text" >
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="0" >
+      <widget class="QLabel" name="levelLabel_10" >
+       <property name="text" >
+        <string>Level 10:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="1" >
+      <widget class="QDoubleSpinBox" name="levelSpinBox_10" />
+     </item>
+     <item row="9" column="2" >
+      <widget class="QLabel" name="colorLabel_10" >
+       <property name="text" >
+        <string>Color</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="3" >
+      <widget class="QToolButton" name="colorToolButton10" >
+       <property name="text" >
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="0" colspan="4" >
+      <widget class="QCheckBox" name="saveCheckBox" >
+       <property name="text" >
+        <string>Save</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="1" >
+    <spacer name="horizontalSpacer" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0" >
+      <size>
+       <width>3</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="0" >
+    <spacer name="verticalSpacer" >
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0" >
+      <size>
+       <width>20</width>
+       <height>8</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="2" column="0" >
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>levelSpinBox_1</tabstop>
+  <tabstop>colorToolButton1</tabstop>
+  <tabstop>levelSpinBox_2</tabstop>
+  <tabstop>colorToolButton2</tabstop>
+  <tabstop>levelSpinBox_3</tabstop>
+  <tabstop>colorToolButton3</tabstop>
+  <tabstop>levelSpinBox_4</tabstop>
+  <tabstop>colorToolButton4</tabstop>
+  <tabstop>levelSpinBox_5</tabstop>
+  <tabstop>colorToolButton5</tabstop>
+  <tabstop>levelSpinBox_6</tabstop>
+  <tabstop>colorToolButton6</tabstop>
+  <tabstop>levelSpinBox_7</tabstop>
+  <tabstop>colorToolButton7</tabstop>
+  <tabstop>levelSpinBox_8</tabstop>
+  <tabstop>colorToolButton8</tabstop>
+  <tabstop>levelSpinBox_9</tabstop>
+  <tabstop>colorToolButton9</tabstop>
+  <tabstop>levelSpinBox_10</tabstop>
+  <tabstop>colorToolButton10</tabstop>
+  <tabstop>saveCheckBox</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>BValueColors</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>187</x>
+     <y>442</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>238</x>
+     <y>282</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>BValueColors</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>122</x>
+     <y>443</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>246</x>
+     <y>234</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

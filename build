@@ -1,0 +1,11 @@
+#!/bin/sh
+if [ `uname` == "Darwin" ] 
+then
+  # pick up premake from External
+  PATH=$PWD/../External/bin/mac:$PATH
+  #export SWIG_LIB=$PWD/tools/Lib
+else
+  PATH=$PWD/tools:$PATH
+  export SWIG_LIB=$PWD/tools/Lib
+fi
+python build.py "$@"

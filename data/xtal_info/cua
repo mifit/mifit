@@ -1,0 +1,4 @@
+name cuA in P21
+cell 34.900002 70.599998 53.500000 90.000000 98.120003 90.000000
+spgp p21 4 2 2 monoclinic
+symm x,y,z; -x,y+1/2,-z.

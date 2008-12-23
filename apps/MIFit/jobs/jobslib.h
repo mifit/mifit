@@ -1,0 +1,8 @@
+#ifndef mifit_jobs_jobslib_h
+#define mifit_jobs_jobslib_h
+#include "BatchJob.h"
+#include "BatchJobManager.h"
+#include "TestJob.h"
+#include "CustomJob.h"
+#include "OpenJobResults.h"
+#endif

@@ -1,0 +1,278 @@
+<ui version="4.0" >
+ <class>NCSModeling</class>
+ <widget class="QDialog" name="NCSModeling" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>705</width>
+    <height>343</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>NCS Modeling</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2" >
+   <item row="0" column="0" >
+    <layout class="QHBoxLayout" name="horizontalLayout_2" >
+     <item>
+      <spacer name="horizontalSpacer_2" >
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_4" >
+       <property name="text" >
+        <string>Primary Chain ID</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="primaryChainIDLineEdit" >
+       <property name="maxLength" >
+        <number>1</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer" >
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0" >
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="title" >
+      <string>GroupBox</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout" >
+      <item row="0" column="0" colspan="2" >
+       <widget class="QLabel" name="label" >
+        <property name="text" >
+         <string>Working directory:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" >
+       <widget class="QLineEdit" name="workingDirLineEdit" />
+      </item>
+      <item row="0" column="3" >
+       <widget class="QPushButton" name="workingDirPushButton" >
+        <property name="text" >
+         <string>Browse...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2" >
+       <widget class="QCheckBox" name="modelCheckBox" >
+        <property name="text" >
+         <string>Model exclusions:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2" >
+       <widget class="QLineEdit" name="modelLineEdit" />
+      </item>
+      <item row="1" column="3" >
+       <widget class="QPushButton" name="modelPushButton" >
+        <property name="text" >
+         <string>Browse...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" colspan="2" >
+       <widget class="QCheckBox" name="dataCheckBox" >
+        <property name="text" >
+         <string>Data (mtz):</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2" >
+       <widget class="QLineEdit" name="dataLineEdit" />
+      </item>
+      <item row="3" column="3" >
+       <widget class="QPushButton" name="dataPushButton" >
+        <property name="text" >
+         <string>Browse...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1" >
+       <layout class="QHBoxLayout" name="horizontalLayout_3" >
+        <item>
+         <widget class="QCheckBox" name="maskAdditionsCheckBox" >
+          <property name="text" >
+           <string>Mask Additions:</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="4" column="2" >
+       <widget class="QLineEdit" name="maskAdditionsLineEdit" />
+      </item>
+      <item row="4" column="3" >
+       <widget class="QPushButton" name="maskAdditionsPushButton" >
+        <property name="text" >
+         <string>Browse...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1" colspan="3" >
+       <widget class="QGroupBox" name="phaseOptions" >
+        <property name="title" >
+         <string>Phase Options</string>
+        </property>
+        <property name="flat" >
+         <bool>false</bool>
+        </property>
+        <property name="checkable" >
+         <bool>false</bool>
+        </property>
+        <property name="checked" >
+         <bool>false</bool>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout" >
+         <item>
+          <widget class="QRadioButton" name="calculatedRadioButton" >
+           <property name="text" >
+            <string>Average Calculated Phases</string>
+           </property>
+           <property name="checked" >
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="averageRadioButton" >
+           <property name="text" >
+            <string>Average Experimental Phases</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="combinedRadioButton" >
+           <property name="text" >
+            <string>Average Combined Phaes</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="4" column="0" >
+       <spacer name="horizontalSpacer_4" >
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0" >
+    <spacer name="verticalSpacer" >
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0" >
+      <size>
+       <width>20</width>
+       <height>6</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="3" column="0" >
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+  <zorder>groupBox</zorder>
+  <zorder>buttonBox</zorder>
+  <zorder>maskAdditionsCheckBox</zorder>
+  <zorder>horizontalSpacer_3</zorder>
+ </widget>
+ <tabstops>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>primaryChainIDLineEdit</tabstop>
+  <tabstop>workingDirLineEdit</tabstop>
+  <tabstop>workingDirPushButton</tabstop>
+  <tabstop>modelCheckBox</tabstop>
+  <tabstop>modelLineEdit</tabstop>
+  <tabstop>modelPushButton</tabstop>
+  <tabstop>dataCheckBox</tabstop>
+  <tabstop>dataLineEdit</tabstop>
+  <tabstop>dataPushButton</tabstop>
+  <tabstop>maskAdditionsCheckBox</tabstop>
+  <tabstop>maskAdditionsLineEdit</tabstop>
+  <tabstop>maskAdditionsPushButton</tabstop>
+  <tabstop>calculatedRadioButton</tabstop>
+  <tabstop>averageRadioButton</tabstop>
+  <tabstop>combinedRadioButton</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>NCSModeling</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>254</x>
+     <y>338</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>NCSModeling</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>322</x>
+     <y>338</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

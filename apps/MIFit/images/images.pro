@@ -1,0 +1,4 @@
+TEMPLATE=lib
+SOURCES=*.cpp
+HEADERS=*.h
+DESTDIR=..

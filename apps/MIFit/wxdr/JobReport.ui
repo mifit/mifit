@@ -1,0 +1,422 @@
+<ui version="4.0" >
+ <class>JobReport</class>
+ <widget class="QDialog" name="JobReport" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>715</width>
+    <height>618</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Job Report</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout" >
+   <item row="0" column="0" >
+    <widget class="QLabel" name="label" >
+     <property name="text" >
+      <string>Working directory:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" >
+    <widget class="QLineEdit" name="workingDirLineEdit" />
+   </item>
+   <item row="0" column="2" >
+    <widget class="QPushButton" name="workingDirPushButton" >
+     <property name="text" >
+      <string>Browse...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" >
+    <widget class="QLabel" name="label_2" >
+     <property name="text" >
+      <string>Model (PDB):</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1" >
+    <widget class="QLineEdit" name="modelLineEdit" />
+   </item>
+   <item row="1" column="2" >
+    <widget class="QPushButton" name="modelPushButton" >
+     <property name="text" >
+      <string>Browse...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" >
+    <widget class="QLabel" name="label_3" >
+     <property name="text" >
+      <string>Data:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" >
+    <widget class="QLineEdit" name="dataLineEdit" />
+   </item>
+   <item row="3" column="0" colspan="3" >
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="title" >
+      <string>Optional Items</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2" >
+      <item row="0" column="0" >
+       <widget class="QCheckBox" name="fileRootnameCheckBox" >
+        <property name="text" >
+         <string>Output File Rootname:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QLineEdit" name="fileRootnameLineEdit" />
+      </item>
+      <item row="1" column="0" >
+       <widget class="QCheckBox" name="dictionaryCheckBox" >
+        <property name="text" >
+         <string>Dictionary:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="QLineEdit" name="dictionaryLineEdit" />
+      </item>
+      <item row="1" column="2" >
+       <widget class="QPushButton" name="dictionaryPushButton" >
+        <property name="text" >
+         <string>Browse...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" >
+       <widget class="QCheckBox" name="sequenceCheckBox" >
+        <property name="text" >
+         <string>Sequence:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" >
+       <widget class="QLineEdit" name="sequenceLineEdit" />
+      </item>
+      <item row="2" column="2" >
+       <widget class="QPushButton" name="sequencePushButton" >
+        <property name="text" >
+         <string>Browse...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" >
+       <widget class="QCheckBox" name="processingLogCheckBox" >
+        <property name="text" >
+         <string>Processing Log:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" >
+       <widget class="QLineEdit" name="processingLogLineEdit" />
+      </item>
+      <item row="3" column="2" >
+       <widget class="QPushButton" name="processingLogPushButton" >
+        <property name="text" >
+         <string>Browse...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" >
+       <widget class="QCheckBox" name="annotationCheckBox" >
+        <property name="text" >
+         <string>Annotation:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1" >
+       <widget class="QLineEdit" name="annotationLineEdit" />
+      </item>
+      <item row="4" column="2" >
+       <widget class="QPushButton" name="annotationPushButton" >
+        <property name="text" >
+         <string>Browse...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0" >
+       <widget class="QCheckBox" name="ligandDensityMapCheckBox" >
+        <property name="text" >
+         <string>Write Ligand Density Maps:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1" >
+       <layout class="QHBoxLayout" name="horizontalLayout" >
+        <item>
+         <widget class="QLabel" name="label_4" >
+          <property name="text" >
+           <string>Border</string>
+          </property>
+          <property name="alignment" >
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="borderSpinBox" >
+          <property name="value" >
+           <number>6</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer" >
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0" >
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="6" column="0" >
+       <widget class="QCheckBox" name="mmCIFReportCheckBox" >
+        <property name="text" >
+         <string>Write mmCIF Report</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1" >
+       <layout class="QHBoxLayout" name="horizontalLayout_2" >
+        <item>
+         <widget class="QCheckBox" name="mmCIFDataCheckBox" >
+          <property name="layoutDirection" >
+           <enum>Qt::LeftToRight</enum>
+          </property>
+          <property name="text" >
+           <string>Write mmCIF Data</string>
+          </property>
+          <property name="tristate" >
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="textReportCheckBox" >
+          <property name="text" >
+           <string>Write Text Report</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="7" column="1" >
+       <spacer name="verticalSpacer" >
+        <property name="orientation" >
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0" >
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="8" column="0" colspan="3" >
+       <widget class="QGroupBox" name="htmlReportGroupBox" >
+        <property name="title" >
+         <string>Write HTML Report</string>
+        </property>
+        <property name="checkable" >
+         <bool>true</bool>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_3" >
+         <item row="0" column="0" >
+          <widget class="QCheckBox" name="reportTitleCheckBox" >
+           <property name="text" >
+            <string>Report Title</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1" >
+          <widget class="QLineEdit" name="reportTitleLineEdit" >
+           <property name="text" >
+            <string>Report</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0" >
+          <widget class="QCheckBox" name="image1CheckBox" >
+           <property name="text" >
+            <string>Image 1:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1" >
+          <widget class="QLineEdit" name="image1LineEdit" />
+         </item>
+         <item row="1" column="2" >
+          <widget class="QPushButton" name="image1PushButton" >
+           <property name="text" >
+            <string>Browse...</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0" >
+          <widget class="QCheckBox" name="image2CheckBox" >
+           <property name="text" >
+            <string>Image 2:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1" >
+          <widget class="QLineEdit" name="image2LineEdit" />
+         </item>
+         <item row="2" column="2" >
+          <widget class="QPushButton" name="image2PushButton" >
+           <property name="text" >
+            <string>Browse...</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0" >
+          <widget class="QCheckBox" name="image3CheckBox" >
+           <property name="text" >
+            <string>Image 3:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1" >
+          <widget class="QLineEdit" name="image3LineEdit" />
+         </item>
+         <item row="3" column="2" >
+          <widget class="QPushButton" name="image3PushButton" >
+           <property name="text" >
+            <string>Browse...</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+     <zorder>fileRootnameCheckBox</zorder>
+     <zorder>fileRootnameLineEdit</zorder>
+     <zorder>dictionaryCheckBox</zorder>
+     <zorder>dictionaryLineEdit</zorder>
+     <zorder>dictionaryPushButton</zorder>
+     <zorder>sequenceCheckBox</zorder>
+     <zorder>sequenceLineEdit</zorder>
+     <zorder>sequencePushButton</zorder>
+     <zorder>processingLogCheckBox</zorder>
+     <zorder>processingLogLineEdit</zorder>
+     <zorder>processingLogPushButton</zorder>
+     <zorder>annotationCheckBox</zorder>
+     <zorder>annotationLineEdit</zorder>
+     <zorder>annotationPushButton</zorder>
+     <zorder>ligandDensityMapCheckBox</zorder>
+     <zorder>mmCIFReportCheckBox</zorder>
+     <zorder>mmCIFDataCheckBox</zorder>
+     <zorder>htmlReportGroupBox</zorder>
+     <zorder>verticalSpacer</zorder>
+     <zorder>textReportCheckBox</zorder>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="3" >
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2" >
+    <widget class="QPushButton" name="dataPushButton" >
+     <property name="text" >
+      <string>Browse...</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>workingDirLineEdit</tabstop>
+  <tabstop>workingDirPushButton</tabstop>
+  <tabstop>modelLineEdit</tabstop>
+  <tabstop>modelPushButton</tabstop>
+  <tabstop>dataLineEdit</tabstop>
+  <tabstop>fileRootnameCheckBox</tabstop>
+  <tabstop>fileRootnameLineEdit</tabstop>
+  <tabstop>dictionaryCheckBox</tabstop>
+  <tabstop>dictionaryLineEdit</tabstop>
+  <tabstop>dictionaryPushButton</tabstop>
+  <tabstop>sequenceCheckBox</tabstop>
+  <tabstop>sequenceLineEdit</tabstop>
+  <tabstop>sequencePushButton</tabstop>
+  <tabstop>processingLogCheckBox</tabstop>
+  <tabstop>processingLogLineEdit</tabstop>
+  <tabstop>processingLogPushButton</tabstop>
+  <tabstop>annotationCheckBox</tabstop>
+  <tabstop>annotationLineEdit</tabstop>
+  <tabstop>annotationPushButton</tabstop>
+  <tabstop>ligandDensityMapCheckBox</tabstop>
+  <tabstop>borderSpinBox</tabstop>
+  <tabstop>mmCIFReportCheckBox</tabstop>
+  <tabstop>mmCIFDataCheckBox</tabstop>
+  <tabstop>textReportCheckBox</tabstop>
+  <tabstop>htmlReportGroupBox</tabstop>
+  <tabstop>reportTitleCheckBox</tabstop>
+  <tabstop>reportTitleLineEdit</tabstop>
+  <tabstop>image1CheckBox</tabstop>
+  <tabstop>image1LineEdit</tabstop>
+  <tabstop>image1PushButton</tabstop>
+  <tabstop>image2CheckBox</tabstop>
+  <tabstop>image2LineEdit</tabstop>
+  <tabstop>image2PushButton</tabstop>
+  <tabstop>image3CheckBox</tabstop>
+  <tabstop>image3LineEdit</tabstop>
+  <tabstop>image3PushButton</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>JobReport</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>JobReport</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

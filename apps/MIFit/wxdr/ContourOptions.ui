@@ -1,0 +1,800 @@
+<ui version="4.0" >
+ <class>ContourOptions</class>
+ <widget class="QWidget" name="ContourOptions" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>575</width>
+    <height>430</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Contour Options</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2" >
+   <item row="0" column="0" >
+    <widget class="QGroupBox" name="methodGroupBox" >
+     <property name="title" >
+      <string>Method</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2" >
+      <item>
+       <widget class="QRadioButton" name="boxMethodRadioButton" >
+        <property name="text" >
+         <string>Box</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="sphereMethodRadioButton" >
+        <property name="text" >
+         <string>Sphere</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="blobMethodRadioButton" >
+        <property name="text" >
+         <string>Blob</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="1" >
+    <widget class="QGroupBox" name="methodOptionsGroupBox" >
+     <property name="title" >
+      <string>Method options</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3" >
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_7" >
+        <item>
+         <widget class="QLabel" name="radiusLabel" >
+          <property name="text" >
+           <string>Radius:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="radiusSpinBox" >
+          <property name="minimum" >
+           <number>1</number>
+          </property>
+          <property name="maximum" >
+           <number>50</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_6" >
+          <item>
+           <widget class="QLabel" name="minRadiusLabel" >
+            <property name="text" >
+             <string>1</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSlider" name="radiusSlider" >
+            <property name="minimum" >
+             <number>1</number>
+            </property>
+            <property name="maximum" >
+             <number>50</number>
+            </property>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="maxRadiusLabel" >
+            <property name="text" >
+             <string>50</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="maxRadiusSpinBox" >
+          <property name="maximum" >
+           <number>200</number>
+          </property>
+          <property name="value" >
+           <number>50</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_8" >
+        <item>
+         <widget class="QLabel" name="blobDistanceLabel" >
+          <property name="text" >
+           <string>Blob Distance:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="blobDistanceSpinBox" >
+          <property name="value" >
+           <double>1.700000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer" >
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0" >
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2" >
+    <layout class="QGridLayout" name="gridLayout" >
+     <item row="0" column="0" >
+      <widget class="QLabel" name="contourNumberLabel_0" >
+       <property name="text" >
+        <string>1:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1" >
+      <widget class="QSpinBox" name="contourSpinBox_0" >
+       <property name="minimum" >
+        <number>-250</number>
+       </property>
+       <property name="maximum" >
+        <number>250</number>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2" >
+      <widget class="QLabel" name="minLabel_0" >
+       <property name="text" >
+        <string>-250</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3" >
+      <widget class="QSlider" name="contourSlider_0" >
+       <property name="minimum" >
+        <number>-250</number>
+       </property>
+       <property name="maximum" >
+        <number>250</number>
+       </property>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="tickPosition" >
+        <enum>QSlider::NoTicks</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="4" >
+      <widget class="QLabel" name="maxLabel_0" >
+       <property name="text" >
+        <string>250</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="5" >
+      <widget class="QCheckBox" name="showBox_0" >
+       <property name="text" >
+        <string>Show</string>
+       </property>
+       <property name="checked" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="6" >
+      <widget class="QToolButton" name="colorButton_0" >
+       <property name="text" >
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0" >
+      <widget class="QLabel" name="contourNumberLabel_1" >
+       <property name="text" >
+        <string>2:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1" >
+      <widget class="QSpinBox" name="contourSpinBox_1" >
+       <property name="minimum" >
+        <number>-250</number>
+       </property>
+       <property name="maximum" >
+        <number>250</number>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2" >
+      <widget class="QLabel" name="minLabel_1" >
+       <property name="text" >
+        <string>-250</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3" >
+      <widget class="QSlider" name="contourSlider_1" >
+       <property name="minimum" >
+        <number>-250</number>
+       </property>
+       <property name="maximum" >
+        <number>250</number>
+       </property>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="tickPosition" >
+        <enum>QSlider::NoTicks</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="4" >
+      <widget class="QLabel" name="maxLabel_1" >
+       <property name="text" >
+        <string>250</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="5" >
+      <widget class="QCheckBox" name="showBox_1" >
+       <property name="text" >
+        <string>Show</string>
+       </property>
+       <property name="checked" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="6" >
+      <widget class="QToolButton" name="colorButton_1" >
+       <property name="text" >
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0" >
+      <widget class="QLabel" name="contourNumberLabel_2" >
+       <property name="text" >
+        <string>3:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1" >
+      <widget class="QSpinBox" name="contourSpinBox_2" >
+       <property name="minimum" >
+        <number>-250</number>
+       </property>
+       <property name="maximum" >
+        <number>250</number>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="2" >
+      <widget class="QLabel" name="minLabel_2" >
+       <property name="text" >
+        <string>-250</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="3" >
+      <widget class="QSlider" name="contourSlider_2" >
+       <property name="minimum" >
+        <number>-250</number>
+       </property>
+       <property name="maximum" >
+        <number>250</number>
+       </property>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="tickPosition" >
+        <enum>QSlider::NoTicks</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="4" >
+      <widget class="QLabel" name="maxLabel_2" >
+       <property name="text" >
+        <string>250</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="5" >
+      <widget class="QCheckBox" name="showBox_2" >
+       <property name="text" >
+        <string>Show</string>
+       </property>
+       <property name="checked" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="6" >
+      <widget class="QToolButton" name="colorButton_2" >
+       <property name="text" >
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0" >
+      <widget class="QLabel" name="contourNumberLabel_3" >
+       <property name="text" >
+        <string>4:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1" >
+      <widget class="QSpinBox" name="contourSpinBox_3" >
+       <property name="minimum" >
+        <number>-250</number>
+       </property>
+       <property name="maximum" >
+        <number>250</number>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2" >
+      <widget class="QLabel" name="minLabel_3" >
+       <property name="text" >
+        <string>-250</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="3" >
+      <widget class="QSlider" name="contourSlider_3" >
+       <property name="minimum" >
+        <number>-250</number>
+       </property>
+       <property name="maximum" >
+        <number>250</number>
+       </property>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="tickPosition" >
+        <enum>QSlider::NoTicks</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="4" >
+      <widget class="QLabel" name="maxLabel_3" >
+       <property name="text" >
+        <string>250</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="5" >
+      <widget class="QCheckBox" name="showBox_3" >
+       <property name="text" >
+        <string>Show</string>
+       </property>
+       <property name="checked" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="6" >
+      <widget class="QToolButton" name="colorButton_3" >
+       <property name="text" >
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0" >
+      <widget class="QLabel" name="contourNumberLabel_4" >
+       <property name="text" >
+        <string>5:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1" >
+      <widget class="QSpinBox" name="contourSpinBox_4" >
+       <property name="minimum" >
+        <number>-250</number>
+       </property>
+       <property name="maximum" >
+        <number>250</number>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="2" >
+      <widget class="QLabel" name="minLabel_4" >
+       <property name="text" >
+        <string>-250</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="3" >
+      <widget class="QSlider" name="contourSlider_4" >
+       <property name="minimum" >
+        <number>-250</number>
+       </property>
+       <property name="maximum" >
+        <number>250</number>
+       </property>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="tickPosition" >
+        <enum>QSlider::NoTicks</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="4" >
+      <widget class="QLabel" name="maxLabel_4" >
+       <property name="text" >
+        <string>250</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="5" >
+      <widget class="QCheckBox" name="showBox_4" >
+       <property name="text" >
+        <string>Show</string>
+       </property>
+       <property name="checked" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="6" >
+      <widget class="QToolButton" name="colorButton_4" >
+       <property name="text" >
+        <string/>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0" colspan="2" >
+    <layout class="QHBoxLayout" name="horizontalLayout_10" >
+     <item>
+      <widget class="QLabel" name="mapStylesLabel" >
+       <property name="layoutDirection" >
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="text" >
+        <string>Preset map styles:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="mapStylesComboBox" >
+       <item>
+        <property name="text" >
+         <string>Blue Map 1,2,3,4,5 sigma</string>
+        </property>
+       </item>
+       <item>
+        <property name="text" >
+         <string>Single Level Blue 1 sigma</string>
+        </property>
+       </item>
+       <item>
+        <property name="text" >
+         <string>Green Map 1,2,3,4,5 Level</string>
+        </property>
+       </item>
+       <item>
+        <property name="text" >
+         <string>Single Level Green 1 sigma</string>
+        </property>
+       </item>
+       <item>
+        <property name="text" >
+         <string>Difference Map -4, -3, 3, 4, 5 sigma</string>
+        </property>
+       </item>
+       <item>
+        <property name="text" >
+         <string>Difference Map -3 red, +3 blue sigma</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2" >
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="0" colspan="2" >
+    <layout class="QHBoxLayout" name="horizontalLayout_11" >
+     <item>
+      <widget class="QLabel" name="lineWidthLabel" >
+       <property name="text" >
+        <string>Map line width:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDoubleSpinBox" name="lineWidthSpinBox" >
+       <property name="maximum" >
+        <double>10.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_4" >
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0" >
+        <size>
+         <width>418</width>
+         <height>24</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="revertPushButton" >
+       <property name="text" >
+        <string>Revert to Defaults</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="0" >
+    <spacer name="verticalSpacer" >
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0" >
+      <size>
+       <width>20</width>
+       <height>0</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>contourSpinBox_1</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>contourSlider_1</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>80</x>
+     <y>201</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>321</x>
+     <y>199</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>contourSpinBox_2</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>contourSlider_2</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>83</x>
+     <y>240</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>317</x>
+     <y>238</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>contourSpinBox_3</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>contourSlider_3</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>89</x>
+     <y>279</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>350</x>
+     <y>277</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>contourSpinBox_4</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>contourSlider_4</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>98</x>
+     <y>318</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>313</x>
+     <y>316</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>contourSpinBox_0</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>contourSlider_0</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>88</x>
+     <y>162</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>327</x>
+     <y>160</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>contourSlider_1</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>contourSpinBox_1</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>390</x>
+     <y>199</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>82</x>
+     <y>201</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>contourSlider_2</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>contourSpinBox_2</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>405</x>
+     <y>238</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>71</x>
+     <y>240</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>contourSlider_3</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>contourSpinBox_3</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>403</x>
+     <y>277</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>98</x>
+     <y>279</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>contourSlider_4</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>contourSpinBox_4</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>395</x>
+     <y>316</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>98</x>
+     <y>318</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>contourSlider_0</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>contourSpinBox_0</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>452</x>
+     <y>160</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>95</x>
+     <y>162</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>maxRadiusSpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>maxRadiusLabel</receiver>
+   <slot>setNum(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>517</x>
+     <y>52</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>482</x>
+     <y>52</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radiusSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>radiusSpinBox</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>315</x>
+     <y>49</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>208</x>
+     <y>46</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radiusSpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>radiusSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>223</x>
+     <y>47</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>311</x>
+     <y>54</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

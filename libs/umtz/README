@@ -1,0 +1,75 @@
+MICRO MTZ LIBRARY
+
+This is a very small library to allow reading, writing and appending
+of mtz files. It consists of two parts: umtzlib and mmtzlib.
+
+ - umtzlib is a minimal low-level 'pass-through' i/o library.
+
+ - mmtzlib is a primitive user level library.
+
+
+The main features are:
+
+1. Extremely lightweight: < 600 loc. umtzlib < 400 loc.
+
+2. Pass-through design makes the library extensible.
+
+3. There are no internal limits: files may have up to 2 billion
+  reflections, columns, datasets, or crystals, up to the limit of
+  addressable memory.
+
+4. Low memory footprint. Typically a few K, in the worst case of a
+  large multi-record file this might rise to a few hundred K.
+
+
+Limitations include:
+
+1. Multi-record mtz files currently only supported at the umtz level.
+
+2. Primitive API.
+
+
+UMTZLIB (micro-mtzlib):
+
+The pass-through design of umtzlib means that it is maximally ignorant
+about the file format. It only understands the minimum or keywords
+recquired to correctly process a file, with everything else being
+passed straight through to other programs.
+
+In the case of reading an mtz file, the only keyword umtzlib
+understands is 'COLUMN'. Everything else is derived. For writing, a
+few other headers are rewritten to ensure the state of the file is
+consitent.
+
+Opening a file fills a 'umtzfile' data structure. This contains the
+unit number, number of columns, number of reflections, missing number
+flag, and the text of the headers and history. If the file is opened
+for reading, this datastructure will be filled from the file on
+disk. If it is opened for writing, it will initially be empty.
+
+Once a umtzfile datastructure exists, reflections may be read from the
+file.
+
+Alternatively, new headers may be added to the data structure. To
+start a new file, the headers must currently be constructed by hand,
+however for the mroe common task of appeanding to a file, the headers
+may simply be copied from the existing file. Once addition of headers
+is complete, new reflections may be written to the file.
+
+(The library actually allows new reflections to be added to an
+existing mtz file, but the practice in CCP4 has always been to
+copy-on-write, so it is not envisaged that this option will be used).
+
+
+MMTZLIB (mini-mtzlib):
+
+This is a minimal front-end to umtzlib. It provides a demo API for the
+basic operations of reading columns, datasets, and crystals from an
+MTZ, and writing columns, datasets and crystals to new files by
+copy+append. New files may also be written from scratch.
+
+
+EXAMPLES:
+
+See mmtztest.c for an example of reading a file, and adding a couple
+of columns, and a dataset.

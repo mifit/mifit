@@ -1,0 +1,43 @@
+Information on using pentamers with xfit.
+
+The environment variable XFITPENTDIR must be set to
+the directory this readme file is in.  
+Example:
+setenv XFITPENTDIR /asd/prog/XtalView/pdbvec
+
+This activates
+the pentamer menu item in the model.insert menu (i.e
+it goes from gray to black).  You can then pull up the
+pentamer menu by sliding the mouse to the right.
+Select in the residue list the first residue of a sequence
+of 5 to make it the focus residue.  When you then select
+insert.pentamers.find_best_pentamer then the software
+searches a list of CA-CA vectors and finds the best match.
+This pentamer is pulled out of the appropiate pdb file and
+loaded as the next model in xfit.  You can then choose 
+replace_middle_3 and replace the middle 3 residues of the
+pentamer into the active model.  The ends are discarded
+because there are no constraints on the first and last 
+peptide bonds.   At this point you can then skip ahead
+2 residues and repeat the process to grow the chain longer.
+The pentamer will have the sequence of the original pdb
+file. 
+
+The side chains then need to be fixed.  Select the residue to
+be changed.  Then change the amino acid type using the pull-down
+menu or by hand-editing.  (Note: a dictionary file needs to be
+loaded first - you can use xfit/dict.pdb or any other pdb format
+file that contains an instance of the residue.) The residue
+is then torsioned into place using the fitting commands.
+
+Hint: use a MRK residue (in xfit/dict.pdb) which is a single
+CA atom to mark the C alpha positions.  The residues must be 
+in the correct order in the model list.
+
+To change the pentamer database:
+the command file $XFITPENTDIR/genlist is used to generate
+the pentamer vectors.  You can add or delete pdb files to
+this list and then rerun genlist to change the pentamer
+database.  I have tried to supply a balanced list of structures
+of high quality. Feel free to add/delete as you wish.
+

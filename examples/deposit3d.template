@@ -1,0 +1,213 @@
+##################################################################
+# Template file for non-electronic deposition information        #
+#                                                                #
+# Information is entered in this file by replacing the ? with    #
+# user-data. Deposit3d may be run without this form but most of  #
+# this information will then require manual entry during the     #
+# RCSB/PDB ADIT session. By using this form you will create a    #
+# personal template that will save time retyping the information #
+# in future depositions.                                         #
+#                                                                #                            
+# Information for each tag is always provided on a single line.  # 
+# For example, multiple program names or crystallization         #
+# components should be given on one line separated by commas.    #                                          
+#                                                                #
+# The names of the tags used in this form resemble the names of  #
+# mmCIF data items but do not always have a one-to-one mapping   #
+# to mmCIF                                                       # 
+##################################################################
+
+############################
+# 1. CONTACTS AND CREDITS  #
+############################
+
+# The author names to appear in the PDB entry  
+# Example: A.Gradstudent, P.I.Bigshot
+audit_author_name: ?
+
+# Depositor contact name for the PDB for processing the entry
+# Example: Gradstudent, Artie
+audit_contact_author_name: ?
+
+# Depositor contact email for the PDB for processing the entry
+# Example: AGradstudent@abiguniversity.edu
+audit_contact_author_email: ?
+
+# Depositor contact address for the PDB for processing the entry
+# Example: Dept. of Living Things, 1 Long Ave., Euphoric State University, Stixtown, AA 12345
+audit_contact_author_address: ?
+
+# Depositor contact telephone number for the PDB for processing the entry
+# Example: 123 456 7890
+audit_contact_author_phone: ?
+
+# Depostitor Contact FAX number for the PDB for processing the entry
+# Example: 123 456 7890
+audit_contact_author_fax: ?
+
+# Title of journal article (if available)
+# Example: The structure of a very important protein at 1.0A resolution
+citation_title: ?
+
+# Name of journal (use UNPUBLISHED if not published) 
+# Example: J.Improbable Results
+citation_journal_abbrev: ?
+
+# Journal article volume number (if available)
+# Example: 1
+citation_journal_volume: ?
+
+# Initial page number for journal article (if available)
+# Example: 1
+citation_page_first: ?
+
+# Final page number for journal article (if available)
+# Example: 2
+citation_page_last: ?
+
+# Year of journal article citation (if available)
+# Example: 2005
+citation_year: ?
+
+# Names of authors for journal article citation (if available)
+# Example: A.Gradstudent, P.I.Bigshot
+citation_author_name: ?
+
+####################################
+# 2. DATA COLLECTION AND SOFTWARE  #
+####################################
+
+# X-ray wavelength(s) in Angstroms for data collection
+# Example: 1.00
+wavelengths: ?
+
+# Temperature in Kelvin for data collection
+# Example: 100
+data_collection_temp_K: ?
+
+# Date of data collection (yyyy-mm-dd)
+# Example: 2004-04-01
+data_collection_date: ?
+
+# Name of beamline used for data collection (if applicable)
+# Example: APS BEAMLINE 32ID
+beamline: ?
+
+# Detector type used for data collection
+# Example: CCD
+detector_type: ?
+
+# Maker of detector used for data collection
+# Example: MAR
+detector_maker: ?
+
+# Type of monochromator used for data collection
+# Example: graphite
+monochromator_type: ?
+
+# Method used to determine structure (choose one of MAD/SAD/IR)
+# Example: IR
+xray_method: ?
+
+# Software used to process the image (frame) data
+# Example: MOSFLM
+computing_data_collection: ?
+
+# Software used to reduce the integrated data
+# Example: SCALA, TRUNCATE
+computing_data_reduction: ?
+
+# Software used to solve the structure
+# Example: SHELXD, MLPHARE, DM
+computing_structure_solution: ?
+
+# Software used for interactive model-building
+# Example: XFIT
+computing_molecular_graphics: ? 
+
+# Software used for structure refinement 
+# (For PDB consistancy it may be necessary to include REFMAC5 in this list)
+# Example: REFMAC5
+computing_structure_refinement: ? 
+
+###################################
+# 3. SEQUENCE/FUNCTION ANNOTATION #
+###################################
+
+# Name of the protein 
+# Example: myprotein-methyl synthase
+protein_name: ?
+
+# Enzyme classification (EC) number for the protein (if available)
+# Example: 2.7.7.1
+protein_ec_number: ?
+
+# Structure title to appear in the final PDB file
+# Example: Structure of myprotein-methyl synthase complexed with buckminsterfullerine
+structure_title: ?
+
+# Classification of structure type (corresponds to EC number where applicable)
+# Example: Transferase
+structure_class: ?
+
+# Additional keywords for structure searching (if from a structural genomics project include "structural genomics")
+# Example: structural genomics
+structure_keywords: ?
+
+# Free text describing the relation of the biologically functional assembly to the crystal asymmetric unit
+# Example: There are 2 dimers in the asymmetric unit
+biological_unit: ?
+
+# Sequence database name for the protein (GB for GenBank etc)
+# Example: GB
+sequence_databasename: ?
+
+# Sequence database code for the protein
+# Example: NP_417227
+sequence_databasecode: ?
+
+# Common name for the protein source organism 
+# Example: bacteria
+source_common_name: ?
+
+# Scientific name for the protein source organism
+# Example: Escherichia coli
+source_scientific_name: ?
+
+# Gene name for the protein
+# Example: YgbP
+source_gene_name: ?
+
+# Common name for the protein expression vehicle (if applicable)
+# Example: bacteria
+source_host_common_name: ?
+
+# Scientific name for the protein expression vehicle (if applicable)
+# Example:  Escherichia coli
+source_host_scientific_name: ?
+
+######################
+# 4. CRYSTALLIZATION #
+######################
+
+# Method used to grow the crystals
+# Example: hanging drop
+exptl_crystal_grow_method: ?
+
+# pH at which the crystals were grown
+# Example: 8.5
+exptl_crystal_grow_pH: ?
+
+# Temperature in Kelvin at which crystals were grown
+# Example: 293.0
+exptl_crystal_grow_temp: ?
+
+# List of crystallization components
+# Example: protein, 0.1M NaCl
+exptl_crystal_grow_components: ?
+
+###########
+# The End #
+###########
+
+

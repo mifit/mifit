@@ -1,0 +1,11 @@
+
+Extensive manual testing
+Change version and copyright info
+Implement Viewpoint/Top view
+Implement OpenGL visual selection and test on variety of computer configurations
+Implement hardware stereo
+Jobs dialogs should disable (grey-out) controls on optional parts
+Sequence viewer (old wxWidgets code ifdef'ed out by USE_SEQ_WINDOW)
+Design and implement an embedded Python API.
+Build and test with open-source Qt and free compilers on Windows
+
