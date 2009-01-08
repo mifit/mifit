@@ -20,7 +20,7 @@ def makeDist():
     mkdir("dist/Windows")
     
     requiredDlls = [
-      "QtCore4.dll", "QtGui4.dll", "QtOpenGL4.dll", "QtXml4.dll", "boost_python-vc80-mt-1_36.dll",
+      "QtCore4.dll", "QtGui4.dll", "QtOpenGL4.dll", "QtXml4.dll", "boost_python-vc90-mt-1_36.dll",
 #      "QtNetwork4.dll",
     ]
     missingDlls = []
@@ -304,7 +304,7 @@ def main(argv=None):
               'QtGui4.dll': qtDir + "/bin/QtGui4.dll",
               'QtOpenGL4.dll': qtDir + "/bin/QtOpenGL4.dll",
               'QtXml.dll': qtDir + "/bin/QtXml4.dll",
-              'boost_python-vc80-mt-1_36.dll': "external/boost_1_36_0/stage/lib/boost_python-vc80-mt-1_36.dll",
+              'boost_python-vc90-mt-1_36.dll': "external/boost_1_36_0/stage/lib/boost_python-vc90-mt-1_36.dll",
 #              'QtNetwork4.dll': qtDir + "/bin/QtNetwork4.dll",
               }
       else:

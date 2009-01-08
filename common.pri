@@ -1,7 +1,7 @@
 TOP_SRCDIR = $$[mifitDir]
 ExternalDir = $$TOP_SRCDIR/external
 BoostDir = $$ExternalDir/boost_1_36_0
-PythonDir = $$ExternalDir/Python-2.5.2
+PythonDir = $$ExternalDir/Python-2.6.1
 
 CONFIG += $$[config]
 
@@ -92,13 +92,13 @@ win32 {
   LIBS += -L$$BoostDir/stage/lib
   CONFIG(debug, debug|release) {
     DEFINES += DEBUG
-    LIBS += $$PythonDir/PCbuild8/win32debug/python25_d.lib $$BoostDir/stage/lib/boost_python-vc80-mt-gyd-1_36.lib
+    LIBS += $$PythonDir/PCbuild//python26_d.lib $$BoostDir/stage/lib/boost_python-vc90-mt-gyd-1_36.lib
   }
   CONFIG(release, debug|release) {
-    LIBS += $$PythonDir/PCbuild8/win32release/python25.lib $$BoostDir/stage/lib/boost_python-vc80-mt-1_36.lib
+    LIBS += $$PythonDir/PCbuild/python26.lib $$BoostDir/stage/lib/boost_python-vc90-mt-1_36.lib
   }
 } else {
-  LIBS += $$BoostDir/libboost_signals.a $$BoostDir/libboost_python.a $$PythonDir/libpython2.5.a -lutil
+  LIBS += $$BoostDir/libboost_signals.a $$BoostDir/libboost_python.a $$PythonDir/libpython2.6.a -lutil
 }
 
 
