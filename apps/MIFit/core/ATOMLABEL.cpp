@@ -216,14 +216,14 @@ std::string ATOMLABEL::labelString(const RESIDUE* res, const MIAtom* atom, int s
     strcpy(id, "???");
     return (id);
   }
-  const char* t = res->type().c_str();
-  const char* r = res->name().c_str();
-  const char* a = atom->name();
+  const std::string& t = res->type();
+  const std::string& r = res->name();
+  const std::string& a = atom->name();
   char l = atom->altloc();
   char c = (char)(res->chain_id()&255);
   char s;
 
-  if (t == NULL || r == NULL || a == NULL) {
+  if (t.length() == 0 || r.length() == 0 || a.length() == 0) {
     strcpy(id, "???");
     return (id);
   }
@@ -233,54 +233,54 @@ std::string ATOMLABEL::labelString(const RESIDUE* res, const MIAtom* atom, int s
     case 0:
       if (c != ' ') {
         if (l == ' ') {
-          sprintf(id, "%s %s %c %s", t, r, c, a);
+          sprintf(id, "%s %s %c %s", t.c_str(), r.c_str(), c, a.c_str());
         } else {
-          sprintf(id, "%s %s %c %s_%c", t, r, c, a, l);
+          sprintf(id, "%s %s %c %s_%c", t.c_str(), r.c_str(), c, a.c_str(), l);
         }
       } else
       if (l == ' ') {
-        sprintf(id, "%s %s %s", t, r, a);
+        sprintf(id, "%s %s %s", t.c_str(), r.c_str(), a.c_str());
       } else {
-        sprintf(id, "%s %s %s_%c", t, r, a, l);
+        sprintf(id, "%s %s %s_%c", t.c_str(), r.c_str(), a.c_str(), l);
       }
       break;
     case 1:
       if (c != ' ') {
-        sprintf(id, "%s %s %c", t, r, c);
+        sprintf(id, "%s %s %c", t.c_str(), r.c_str(), c);
       } else {
-        sprintf(id, "%s %s", t, r);
+        sprintf(id, "%s %s", t.c_str(), r.c_str());
       }
       break;
     case 2:
-      sprintf(id, "%s %s", t, r);
+      sprintf(id, "%s %s", t.c_str(), r.c_str());
       break;
     case 3:
-      sprintf(id, "%s", t);
+      sprintf(id, "%s", t.c_str());
       break;
     case 4:
-      sprintf(id, "%s", r);
+      sprintf(id, "%s", r.c_str());
       break;
     case 5:
       if (l == ' ') {
-        sprintf(id, "%s", a);
+        sprintf(id, "%s", a.c_str());
       } else {
-        sprintf(id, "%s_%c", a, l);
+        sprintf(id, "%s_%c", a.c_str(), l);
       }
       break;
     case 6:
-      s = singleletter(t);
+      s = singleletter(t.c_str());
       if (c != ' ') {
-        sprintf(id, "%c%s %c", s, r, c);
+        sprintf(id, "%c%s %c", s, r.c_str(), c);
       } else {
-        sprintf(id, "%c%s", s, r);
+        sprintf(id, "%c%s", s, r.c_str());
       }
       break;
     case 7:
-      s = singleletter(t);
-      sprintf(id, "%c%s", s, r);
+      s = singleletter(t.c_str());
+      sprintf(id, "%c%s", s, r.c_str());
       break;
     case 8:
-      s = singleletter(t);
+      s = singleletter(t.c_str());
       sprintf(id, "%c", s);
       break;
   }
