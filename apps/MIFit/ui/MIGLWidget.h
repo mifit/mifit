@@ -734,6 +734,11 @@ public:
   void keyPressEvent(QKeyEvent *e);
   void enterEvent(QEvent *e);
   void leaveEvent(QEvent *e);
+
+  /*!
+   * \todo MIGLWidget::closeEvent does not get called. Close events only occur
+   * for top-level windows.
+   */
   void closeEvent(QCloseEvent *evt);
 
 

@@ -414,6 +414,10 @@ MIGLWidget::MIGLWidget() : MIEventHandler(MIMainWindow::instance()) {
 }
 
 MIGLWidget::~MIGLWidget() {
+
+  MIGetHistory()->RemoveFrame(this);
+  viewDeactivated(this);
+
   delete Models;
 
   delete frustum;
@@ -9283,6 +9287,10 @@ bool MIGLWidget::PlaybackMouseHistory(MIData& data) {
   return true;
 }
 
+/*!
+ * \todo MIGLWidget::closeEvent does not get called. Close events only occur
+ * for top-level windows.
+ */
 void MIGLWidget::closeEvent(QCloseEvent *event) {
   if (!OnSaveModified()) {
     event->ignore();
