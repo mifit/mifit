@@ -293,7 +293,15 @@ void BatchJob::ShowLog() {
   dlg.setSizeGripEnabled(true);
 
   QTextBrowser *browse = new QTextBrowser(&dlg);
-  browse->setSource(QUrl::fromLocalFile(LogFile.c_str()));
+  QFile logFileObj(LogFile.c_str());
+  if ( !logFileObj.open(QFile::ReadOnly | QFile::Text) ) {
+    browse->setPlainText(QObject::tr("ERROR: Log file %1 not found!")
+      .arg(LogFile.c_str()));
+  } else {
+    QTextStream logStream(&logFileObj);
+    browse->setPlainText(logStream.readAll());
+  }
+
   QDialogButtonBox *bb=new QDialogButtonBox(QDialogButtonBox::Ok, Qt::Horizontal, &dlg);
   dlg.connect(bb, SIGNAL(accepted()), &dlg, SLOT(accept()));
   
