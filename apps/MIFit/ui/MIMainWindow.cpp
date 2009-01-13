@@ -263,8 +263,6 @@ EVT_UPDATE_UI(ID_SHOW_UNDOCOLORRADIUS, MIGLWidget::OnUpdateShowUndocolorradius)
 EVT_MENU(ID_SHOW_LABELEVERYNTH, MIGLWidget::OnLabelEveryNth)
 EVT_UPDATE_UI(ID_SHOW_LABELEVERYNTH, MIGLWidget::OnUpdateLabelEveryNth)
 //refinemenu
-EVT_MENU(ID_REFICONFOMER, MIGLWidget::OnRefiConformer)
-EVT_UPDATE_UI(ID_REFICONFOMER, MIGLWidget::OnUpdateRefiConfomer)
 EVT_MENU(ID_REFI_RIGIDBODY, MIGLWidget::OnRefiRigidBody)
 EVT_UPDATE_UI(ID_REFI_RIGIDBODY, MIGLWidget::OnUpdateRefiRigidBody)
 EVT_MENU(ID_REFINE_LIGANDFIT, MIGLWidget::OnRefiLigandFit)
@@ -2138,7 +2136,6 @@ void MIMainWindow::createMenus()
   refi_menu->AppendSeparator();
   refi_menu->Append(ID_REFI_RIGIDBODY, "Ri&gid-Body Refine Current Atoms", "Rigid Body Refine the current atoms (cyan color)", false);
   refi_menu->Append(ID_REFINE_LIGANDFIT, "Fin&d Ligand Fit and Conformer", "Search for the best conformer ligand fit and torsion angles", false);
-  refi_menu->Append(ID_REFICONFOMER, "Find Best Confomer", "Search for the best confomer of torsion angles", false);
   refi_menu->AppendSeparator();
   action = refi_menu->Append(ID_REFI_ACCEPT, "&Accept Refine\tCtrl+Shift+R", "Accept the refinement and finalize the atoms positions", false);
   MIFitGeomRefiner()->isRefiningChanged.connect(boost::bind(&QAction::setEnabled, action, _1));

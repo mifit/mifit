@@ -339,7 +339,6 @@ MIGLWidget::MIGLWidget() : MIEventHandler(MIMainWindow::instance()) {
   deleteAtomAction = popup_menu->addAction(tr("Delete atom"), this, SLOT(OnDeleteAtom()), QKeySequence(QKeySequence::Delete));
   popup_menu->addSeparator();
   refineRegionAction = popup_menu->addAction(tr("Refine Local Region"), this, SLOT(OnRefiRegion()));
-  bestConformerAction = popup_menu->addAction(tr("Find Best Confomer"), this, SLOT(OnRefiConformer()));
   acceptRefineAction = popup_menu->addAction(tr("Accept Refine"), this, SLOT(OnRefiAccept()));
   cancelRefineAction = popup_menu->addAction(tr("Cancel Refine"), this, SLOT(OnRefiCancel()));
   popup_menu->addSeparator();
@@ -5824,10 +5823,6 @@ void MIGLWidget::OnNextBatonPosition() {
   ReDraw();
 }
 
-void MIGLWidget::OnRefiConformer() {
-  refineConformer();
-}
-
 void MIGLWidget::refineConformer() {
   if (MIBusyManager::instance()->Busy()) {
     return;
@@ -5881,10 +5876,6 @@ void MIGLWidget::refineConformer() {
   if (chi5) {
     free(chi5);
   }
-}
-
-void MIGLWidget::OnUpdateRefiConfomer(const MIUpdateEvent& pCmdUI) {
-  pCmdUI.Enable(IsFitting() && fitres != NULL && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::generateSymmAtoms() {
@@ -10650,7 +10641,6 @@ void MIGLWidget::updatePopupMenu() {
   deleteAtomAction->setEnabled(notEmptyStack);
 
   refineRegionAction->setEnabled(notEmptyStack && !isRefining && notBusy);
-  bestConformerAction->setEnabled(isFitting && fitres != NULL && notBusy);
   acceptRefineAction->setEnabled(isRefining && notBusy);
   cancelRefineAction->setEnabled(isRefining && notBusy);
   saveAction->setEnabled(true);

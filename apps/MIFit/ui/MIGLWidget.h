@@ -153,7 +153,6 @@ class MIGLWidget : public QGLWidget, public MIEventHandler {
   QAction* deleteResidueAction;
   QAction* deleteAtomAction;
   QAction* refineRegionAction;
-  QAction* bestConformerAction;
   QAction* acceptRefineAction;
   QAction* cancelRefineAction;
   QAction* saveAction;
@@ -1078,11 +1077,6 @@ public Q_SLOTS:
    * Callback for Model/Fit and Replace.
    */
   void OnFitReplaceAndFit();
-  void OnUpdateRefiConfomer(const MIUpdateEvent& pCmdUI);
-  /**
-   * Callback for Refi/Find Best Conformer.
-   */
-  void OnRefiConformer();
   void OnUpdateRefiRigidBody(const MIUpdateEvent& pCmdUI);
 
   /**
