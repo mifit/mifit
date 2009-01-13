@@ -230,7 +230,12 @@ void BindNGrind::on_removePushButton_clicked() {
 
 void BindNGrind::on_addPushButton_clicked() {
   static std::string path = "";
-  std::string file = MIFileSelector("Select intensity file", path, "", "", "Data files (*.ref,*.sca,*.mtz)|*.ref;*.sca;*.mtz|All files (*.*)|*.*", 0, 0);
+  std::string file = MIFileSelector("Select intensity file", path, "", "",
+    "Data files (*.ref, *.sca, *.mtz, *.img, *.osc)|*.ref;*.sca;*.mtz;*.img;*.osc"
+    "|CCP4 files (*.mtz)|*.mtz"
+    "|Reflection files (*.ref, *.sca)|*.ref;*.sca"
+    "|Image files (*.img, *.osc)|*.img;*.osc"
+    "|All files (*.*)|*.*", 0, 0);
   if (file.size() == 0) {
     return;
   }
