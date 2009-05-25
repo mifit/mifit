@@ -218,7 +218,7 @@ def mifitVersion():
   mifitVersionFile = "apps/MIFit/core/Version.cpp"
   if not os.path.exists(mifitVersionFile):
     f = open(mifitVersionFile, "w")
-    assert(f, "unable to open file '" + mifitVersionFile + "'")
+    assert f, "unable to open file '" + mifitVersionFile + "'"
     f.write('char MIFit_version[] = "' + version + '";\n')
     f.close()
 
@@ -287,6 +287,13 @@ def main(argv=None):
   else:
     external = "external"
   
+  if not os.path.exists('apps/MIFit/python/sipAPIPythonEngine.h'):
+    import PyQt4.pyqtconfig
+    config = PyQt4.pyqtconfig.Configuration()
+    execute([config.sip_bin] + config.pyqt_sip_flags.split() + [
+        "-I", config.pyqt_sip_dir, "-c", "apps/MIFit/python",
+        "apps/MIFit/python/*.sip"])
+
   if Windows:
     if qmake:
       cmd = "qmake.exe -r MI.pro"
