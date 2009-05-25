@@ -14,6 +14,7 @@
 #include "GLRenderer.h"
 #include "TargaImage.h"
 #include "EMap.h"
+#include <climits>
 #include <vector>
 #include <boost/foreach.hpp>
 #undef X

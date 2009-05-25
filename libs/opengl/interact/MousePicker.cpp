@@ -3,6 +3,8 @@
 #include <opengl/Frustum.h>
 #include <opengl/Renderable.h>
 
+#include <climits>
+
 namespace mi {
 namespace opengl {
 namespace interact {

@@ -3,7 +3,9 @@
 
 #include <math/IndexOutOfBoundsException.h>
 #include <math/mi_math.h>
+#include <cmath>
 #include <iostream>
+
 
 #undef absolute
 

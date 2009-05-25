@@ -12,6 +12,7 @@
 #include "ViewPoint.h"
 #include "ui/CMapHeader.h"
 
+#include <climits>
 #include <vector>
 #include <utility>
 

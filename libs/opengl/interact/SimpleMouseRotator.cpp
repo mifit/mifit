@@ -68,7 +68,7 @@ void SimpleMouseRotator::rotate(int x, int y) {
     xQuat.inverse();
   }
   xQuat.normalize();
-  int xDelta = std::abs(previousX - x);
+  int xDelta = static_cast<int>(std::abs(static_cast<float>(previousX - x)));
   for (int i = 0; i < xDelta; ++i) {
     rotationChange.multiply(xQuat);
   }
@@ -78,7 +78,7 @@ void SimpleMouseRotator::rotate(int x, int y) {
     yQuat.inverse();
   }
   yQuat.normalize();
-  int yDelta = std::abs(previousY - y);
+  int yDelta = static_cast<int>(std::abs(static_cast<float>(previousY - y)));
   for (int j = 0; j < yDelta; ++j) {
     rotationChange.multiply(yQuat);
   }

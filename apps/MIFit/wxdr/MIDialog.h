@@ -2,6 +2,7 @@
 #define MI_DIALOG_H
 
 #include "corelib.h"
+#include <climits>
 #include <vector>
 #include <string>
 

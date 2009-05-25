@@ -2,6 +2,8 @@
 #define mi_math_Tuple4_h
 
 #include <math/IndexOutOfBoundsException.h>
+#include <cmath>
+#include <limits>
 #include <iostream>
 
 #undef absolute

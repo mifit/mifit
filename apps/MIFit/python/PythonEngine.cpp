@@ -1,54 +1,84 @@
 #include "PythonEngine.h"
 
-#include <boost/python.hpp>
+#include <Python.h>
+#include <sip.h>
+#include "sipAPIPythonEngine.h"
+extern "C" void initPythonEngine();
 
-#include <QFile>
-#include <QTextStream>
-
-using namespace std;
-using namespace boost::python;
-
-extern "C" void initmi();
-
-BOOST_PYTHON_MODULE(PythonEngine) {
-  class_<PythonEngine, boost::noncopyable>("PythonEngine", no_init)
-    .def("write", &PythonEngine::write);
-}
+#include <qfile.h>
+#include <qstringlist.h>
+#include <qtextstream.h>
 
 QString PythonEngine::ps1(">>> ");
 QString PythonEngine::ps2("... ");
 
 PythonEngine::PythonEngine()
-  : main_dict(), currentPrompt(ps1), started(false) {
+  : currentPrompt(ps1), started(false) {
 }
 
 void PythonEngine::start() {
   started = true;
+  Py_SetProgramName("MIFit");
   Py_Initialize();
 
   // Initialize bindings to this class
   initPythonEngine();
 
-  initmi();
-
   try {
+    // Get a reference to the main module.
+    PyObject* main_module = PyImport_AddModule("__main__");
+    if (!main_module) {
+        throw PyErr_Occurred();
+    }
+
+    // Get the main module's dictionary
+    main_dict = PyModule_GetDict(main_module);
+    if (!main_dict) {
+        throw PyErr_Occurred();
+    }
+
+    PyObject* result = PyRun_String("import code\n"
+                                    "console = code.InteractiveConsole()",
+                                    Py_file_input, main_dict, main_dict);
+    if (!result) {
+        throw PyErr_Occurred();
+    }
+
+    PyObject* pythonEngine_module = PyImport_AddModule("PythonEngine");
+    if (!pythonEngine_module) {
+        throw PyErr_Occurred();
+    }
+
+    PyObject* pythonEngine_dict = PyModule_GetDict(pythonEngine_module);
+    if (!pythonEngine_dict) {
+        throw PyErr_Occurred();
+    }
+
+    PyObject* pythonEngine = sipConvertFromInstance(this, sipClass_PythonEngine, 0);
+    if (!pythonEngine) {
+        throw PyErr_Occurred();
+    }
+
+    int err = PyDict_SetItemString(pythonEngine_dict, "instance", pythonEngine);
+    if (err) {
+        throw PyErr_Occurred();
+    }
+
     // Redirect output and error messages to this object for
     // signaling via message signal
-    object sys = import("sys");
-    sys.attr("stdout") = boost::python::ptr(this);
-    sys.attr("stderr") = boost::python::ptr(this);
+    result = PyRun_String("import sys, PythonEngine\n"
+                            "sys.stdout = PythonEngine.instance\n"
+                            "sys.stderr = PythonEngine.instance",
+                            Py_file_input, main_dict, main_dict);
+    if (!result) {
+        throw PyErr_Occurred();
+    }
 
-    main_dict = import("__main__").attr("__dict__");
-
-    exec("import code\n"
-        "console = code.InteractiveConsole()",
-        main_dict, main_dict);
-
-  } catch(error_already_set const &) {
+  } catch (PyObject* err) {
     PyErr_Print();
   }
 
-  command("import mi");
+  command("import PythonEngine, PyQt4");
 }
 
 PythonEngine::~PythonEngine() {
@@ -58,15 +88,15 @@ PythonEngine::~PythonEngine() {
 }
 
 void PythonEngine::command(const QString& text) {
-  try {
-    string s = "console.push('''" + text.toStdString() + "''')";
-    object result = eval(s.c_str(), main_dict, main_dict);
-    if (extract<bool>(result)) {
+  QString s = QString("console.push('''") + text + "''')";
+  PyObject * result = PyRun_String(s.toAscii(), Py_eval_input, main_dict, main_dict);
+  if (result) {
+    if (result == Py_True) {
       currentPrompt = ps2;
     } else {
       currentPrompt = ps1;
     }
-  } catch(error_already_set const &) {
+  } else {
     PyErr_Print();
   }
   prompt(currentPrompt);
@@ -74,4 +104,11 @@ void PythonEngine::command(const QString& text) {
 
 void PythonEngine::write(const char* text) {
   message(QString(text));
+}
+
+void PythonEngine::writeln(const char* text) {
+  message(QString(text) + "\n");
+}
+
+void PythonEngine::flush(void) {
 }

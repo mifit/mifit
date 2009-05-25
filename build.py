@@ -20,7 +20,7 @@ def makeDist():
     mkdir("dist/Windows")
     
     requiredDlls = [
-      "QtCore4.dll", "QtGui4.dll", "QtOpenGL4.dll", "QtXml4.dll", "boost_python-vc90-mt-1_36.dll",
+      "QtCore4.dll", "QtGui4.dll", "QtOpenGL4.dll", "QtXml4.dll",
 #      "QtNetwork4.dll",
     ]
     missingDlls = []
@@ -91,6 +91,7 @@ def makeDist():
 
     requiredSos = [
       "libQtCore.so.4", "libQtGui.so.4", "libQtOpenGL.so.4", "libQtXml.so.4",
+      "libpython2.6.so.1.0",
 #      "libQtNetwork.so.4",
     ]
     missingSos = []
@@ -330,6 +331,7 @@ def main(argv=None):
       copyIfNeeded(".so", external, ".")
       if Linux:
         qtDir = os.getenv('QTDIR')
+        pythonDir = os.path.join(external, "python")
         if qtDir==None:
             qtDir="/usr"
         dlls = {
@@ -338,6 +340,7 @@ def main(argv=None):
           'libQtOpenGL.so.4': qtDir + "/lib/libQtOpenGL.so.4",
           'libQtXml.so.4': qtDir + "/lib/libQtXml.so.4",
 #           'libQtNetwork.so.4': qtDir + "/lib/libQtNetwork.so.4",
+          'libpython2.6.so.1.0': pythonDir + "/lib/libpython2.6.so.1.0",
           }
       elif Darwin:
         dlls = {}

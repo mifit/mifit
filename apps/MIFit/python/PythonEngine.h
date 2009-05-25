@@ -1,8 +1,8 @@
 #ifndef PythonEngine_h
 #define PythonEngine_h
 
-#include <boost/python.hpp>
-#include <QObject>
+#include <Python.h>
+#include <qobject.h>
 
 class PythonEngine : public QObject {
 
@@ -11,7 +11,7 @@ class PythonEngine : public QObject {
   static QString ps1;
   static QString ps2;
 
-  boost::python::object main_dict;
+  PyObject* main_dict;
   QString currentPrompt;
   bool started;
 
@@ -26,8 +26,10 @@ public:
   void start();
 
   void write(const char* text);
+  void writeln(const char* text);
+  void flush(void);
 
-private Q_SLOTS:
+public Q_SLOTS:
   void command(const QString& text);
 
 Q_SIGNALS:

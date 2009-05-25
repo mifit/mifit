@@ -1,11 +1,12 @@
 TOP_SRCDIR = $$[mifitDir]
 ExternalDir = $$TOP_SRCDIR/external
 BoostDir = $$ExternalDir/boost_1_36_0
-PythonDir = $$ExternalDir/Python-2.6.1
+PythonDir = $$ExternalDir/python
 
 CONFIG += $$[config]
 
 DEFINES += \
+    SIP_STATIC_MODULE \
     USE_ASPLOT \
     USE_NAV_WINDOW \
     USE_QT_RAMAPLOT \
@@ -70,8 +71,7 @@ INCLUDEPATH += . \
    $$TOP_SRCDIR/apps/MIFit/wxdr \
    $$TOP_SRCDIR/apps/MIFit/ui \
    $$TOP_SRCDIR/apps/MIFit/python \
-   $$PythonDir/Include \
-   $$PythonDir \
+   $$PythonDir/include/python2.6 \
    $$BoostDir
 
 USE_ASPLOT {
@@ -98,7 +98,7 @@ win32 {
     LIBS += $$PythonDir/PCbuild/python26.lib $$BoostDir/stage/lib/boost_python-vc90-mt-1_36.lib
   }
 } else {
-  LIBS += $$BoostDir/libboost_signals.a $$BoostDir/libboost_python.a $$PythonDir/libpython2.6.a -lutil
+  LIBS += $$BoostDir/libboost_signals.a -L$$PythonDir/lib/ -lpython2.6 -lutil
 }
 
 
