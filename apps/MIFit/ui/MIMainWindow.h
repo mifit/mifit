@@ -101,23 +101,15 @@ public:
 
     void OpenFiles(const std::vector<std::string> &files, bool newWindow=false);
 
-#ifdef MI_USE_JOBS
     BatchJobManager* GetJobManager();
     bool isJobLimit();
-#endif
 
-#ifdef USE_NAV_WINDOW
     void updateNavigator();
-#endif
-#ifdef USE_QT_RAMAPLOT
     RamaPlotMgr* RamaPlotManager();
-#endif
 
-#ifdef MI_USE_TREE
   ViewSyncedPanel* GetModelsTree() {
     return modelsView;
   }
-#endif
 
     void addRecentFileActions(MIMenu *);
     void setCurrentFile(const std::string &fname);
@@ -143,9 +135,7 @@ private Q_SLOTS:
     void OnLoadLigSmi();
     void OnLoadDictAppend();
     void OnLoadDictReplace();
-#ifdef USE_DICT_EDITOR
     void OnEditDictResidue();
-#endif
 
     void OnBackgroundColor();
     void OnSideChainTool();
@@ -237,15 +227,9 @@ private:
 
     GLOverviewCanvas *navigator;
 
-#ifdef MI_USE_JOBS
     BatchJobManager* JobManager;
-#endif
-#ifdef MI_USE_TREE
    ViewSyncedPanel *modelsView;
-#endif
-#ifdef USE_QT_RAMAPLOT
     RamaPlotMgr *ramaPlotMgr;
-#endif
 };
 
 //some shortcuts for MIMainWindow::instance()->Log, etc

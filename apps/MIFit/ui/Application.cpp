@@ -608,8 +608,6 @@ std::string Application::GetHistoryFilename()
   return HISTORY_TEMP_FILE->fileName().toStdString();
 }
 
-// #ifdef USE_WX_APPLICATION
-
 
 // static int StereoAttribs[] = {
 //   WX_GL_STEREO,

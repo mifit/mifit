@@ -1,5 +1,3 @@
-#ifdef USE_DICT_EDITOR
-
 #include "DictEditDialog.h"
 #include "uilib.h"
 
@@ -68,5 +66,3 @@ void DictEditDialog::reject() {
 
   QDialog::reject();
 }
-
-#endif // USE_DICT_EDITOR

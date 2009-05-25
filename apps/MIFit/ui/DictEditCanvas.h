@@ -1,5 +1,3 @@
-#ifdef USE_DICT_EDITOR
-
 #ifndef MIFIT_UI_DICTEDITCANVAS_H_
 #define MIFIT_UI_DICTEDITCANVAS_H_
 
@@ -263,5 +261,3 @@ private Q_SLOTS:
 
 
 #endif // MIFIT_UI_DICTEDITCANVAS_H_
-
-#endif // USE_DICT_EDITOR

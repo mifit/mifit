@@ -1,5 +1,3 @@
-#ifdef USE_DICT_EDITOR
-
 #include <math/Vector4.h>
 #include <opengl/Camera.h>
 #include <opengl/Frustum.h>
@@ -156,6 +154,3 @@ void DictEditScene::renderOverlay() {
 void DictEditScene::render2DOverlay() {
   renderer->DrawStack(atomStack, 5, 0);
 }
-
-
-#endif // USE_DICT_EDITOR

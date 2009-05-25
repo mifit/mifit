@@ -1,4 +1,3 @@
-#if defined(MI_USE_JOBS) && defined(MI_USE_TREE)
 #include <QApplication>
 #include <QVBoxLayout>
 
@@ -343,5 +342,3 @@ void JobsView::stylizeItem(QTreeWidgetItem* id, BatchJob* job) {
 
 
 #include "JobsView.moc"
-
-#endif //MI_USE_JOBS && MI_USE_TREE

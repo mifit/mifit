@@ -437,7 +437,6 @@ bool MIHistory::PlaybackCommand(const char* line) {
     StringToCommand(&line[5], data);
     if (view)
       result = view->PlaybackMouseHistory(data);
-#ifdef MI_USE_TREE
   } else if (strncmp("tree", line, 4) == 0) {
     MIData data;
     StringToCommand(&line[4], data);
@@ -445,8 +444,6 @@ bool MIHistory::PlaybackCommand(const char* line) {
     if (panel != NULL) {
       result = panel->HandleHistory(data);
     }
-#endif
-#ifdef USE_DICT_EDITOR
   } else if (strncmp("dict", line, 4) == 0) {
     MIFitGeomRefiner()->EditEntryCleanup(false);
     MIData data;
@@ -466,7 +463,6 @@ bool MIHistory::PlaybackCommand(const char* line) {
         }
       }
     }
-#endif
   } else if (strncmp("frame", line, 5) == 0) {
     MIData data;
     StringToCommand(&line[4], data);

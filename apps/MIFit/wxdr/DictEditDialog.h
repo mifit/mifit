@@ -1,5 +1,3 @@
-#ifdef USE_DICT_EDITOR
-
 #if !defined (__DictEditDialog_H__)
 #define __DictEditDialog_H__
 
@@ -32,5 +30,3 @@ private:
 };
 
 #endif
-
-#endif // USE_DICT_EDITOR

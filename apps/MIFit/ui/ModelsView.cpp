@@ -1,5 +1,3 @@
-#ifdef MI_USE_TREE
-
 #include <QTreeWidget>
 #include <QApplication>
 #include <QToolButton>
@@ -3904,5 +3902,3 @@ bool ModelsView::RandomTest() {
 }
 
 #include "ModelsView.moc"
-
-#endif // MI_USE_TREE

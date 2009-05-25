@@ -1,5 +1,3 @@
-#ifdef USE_NAV_WINDOW
-
 #ifndef MIFIT_UI_GLOVERVIEWCANVAS_H_
 #define MIFIT_UI_GLOVERVIEWCANVAS_H_
 
@@ -106,5 +104,3 @@ public:
 };
 
 #endif /*MIFIT_UI_GLNAVIGATORCANVAS_H_*/
-
-#endif // USE_NAV_WINDOW

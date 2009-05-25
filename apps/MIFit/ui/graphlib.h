@@ -1,5 +1,3 @@
-#ifdef USE_QT_RAMAPLOT
-
 #ifndef graph_HEADER
 #define graph_HEADER
 
@@ -196,5 +194,3 @@ private:
 
 
 #endif
-
-#endif // USE_QT_RAMAPLOT

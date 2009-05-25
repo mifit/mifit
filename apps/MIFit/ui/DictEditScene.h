@@ -1,5 +1,3 @@
-#ifdef USE_DICT_EDITOR
-
 #ifndef MIFIT_UI_DICTEDITSCENE_H_
 #define MIFIT_UI_DICTEDITSCENE_H_
 
@@ -84,5 +82,3 @@ public:
 };
 
 #endif
-
-#endif // USE_DICT_EDITOR

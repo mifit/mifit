@@ -21,17 +21,14 @@
 #include "id.h"
 #include "macafxwin.h"
 
-#ifdef MI_USE_TREE
 #include "ModelsView.h"
 #include "ViewSyncedPanel.h"
-#endif
 
 #include "MoleculeXmlHandler.h"
 #include "molw.h"
 #include "Application.h"
 #include "RenderStyle.h"
 #include "SaveModel.h"
-#include "Seqwin.h"
 #include "surf.h"
 #include "TargaImage.h"
 #include "tools.h"

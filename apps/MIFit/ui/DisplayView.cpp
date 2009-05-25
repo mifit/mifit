@@ -1,5 +1,3 @@
-#ifdef MI_USE_TREE
-
 #include <QApplication>
 #include <QVBoxLayout>
 
@@ -889,5 +887,3 @@ void DisplayView::destroyContentsForView(MIGLWidget*, QWidget*) {
 }
 
 #include "DisplayView.moc"
-
-#endif // MI_USE_TREE

@@ -1,5 +1,3 @@
-#ifdef USE_DICT_EDITOR
-
 #include "DictEditAnglePickingRenderable.h"
 
 #include "GLRenderer.h"
@@ -46,5 +44,3 @@ void DictEditAngleRenderable::render() {
   renderer->drawAngles(angles);
 }
 
-
-#endif // USE_DICT_EDITOR

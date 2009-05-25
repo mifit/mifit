@@ -8,8 +8,6 @@
 #ifndef MI_TOOLS_H
 #define MI_TOOLS_H
 
-#ifdef MI_USE_JOBS
-
 #include <QObject>
 #include "MIEventHandler.h"
 #include "MIMenu.h"
@@ -45,7 +43,5 @@ private Q_SLOTS:
   void OnIntegrate();
   void OnUpdateForJobLimit(const MIUpdateEvent &);
 };
-
-#endif // MI_USE_JOBS
 
 #endif

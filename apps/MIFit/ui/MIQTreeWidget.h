@@ -1,9 +1,6 @@
 #ifndef MIQTREEWIDGET_H
 #define MIQTREEWIDGET_H
 
-#ifdef MI_USE_TREE
-
-
 #include <QTreeWidget>
 #include <QList>
 #include <QIcon>
@@ -63,8 +60,5 @@ public:
 
 // this is required so that TreeData can be stored in a QVariant
 Q_DECLARE_METATYPE(TreeData*);
-
-
-#endif // MI_USE_TREE
 
 #endif

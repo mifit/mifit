@@ -1,5 +1,3 @@
-#ifdef USE_DICT_EDITOR
-
 #include "chemlib.h"
 
 #include <opengl/Frustum.h>
@@ -51,5 +49,3 @@ void DictEditAtomRenderable::render() {
   renderer->Draw2(displaylist, false, false);
 }
 
-
-#endif // USE_DICT_EDITOR

@@ -1,8 +1,6 @@
 #ifndef mifit_ui_JobsView_h
 #define mifit_ui_JobsView_h
 
-#if defined(MI_USE_JOBS) && defined(MI_USE_TREE)
-
 #include <QWidget>
 
 class BatchJob;
@@ -35,5 +33,4 @@ public:
   void update(BatchJobManager* batchJobManager);
 };
 
-#endif // MI_USE_JOBS
 #endif

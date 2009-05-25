@@ -1,5 +1,3 @@
-#ifdef MI_USE_TREE
-
 #include "TreeData.h"
 
 std::set<TreeData*> treeDataRegistry;
@@ -14,5 +12,3 @@ bool validTreeData(TreeData* data) {
 void invalidateTreeData(TreeData* data) {
   treeDataRegistry.erase(data);
 }
-
-#endif // MI_USE_TREE

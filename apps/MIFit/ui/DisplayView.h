@@ -1,5 +1,3 @@
-#ifdef MI_USE_TREE
-
 #ifndef mifit_ui_DisplayView_h
 #define mifit_ui_DisplayView_h
 
@@ -22,5 +20,3 @@ public:
 };
 
 #endif
-
-#endif // MI_USE_TREE

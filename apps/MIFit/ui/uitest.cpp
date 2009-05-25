@@ -68,10 +68,8 @@ static void SetupSkippedItems(bool skip_new_model=true, bool skip_clear_stack=fa
   // well, duh
   SKIPPED_MENU_ITEMS.push_back(ID_FILE_EXIT); // "Exit"
 
-#ifdef USE_ASPLOT
   // Changes wxView, so testing stops working
   SKIPPED_MENU_ITEMS.push_back(ID_SITEPLOT); // "Export Active Site Plot"
-#endif
 
   // possibly opens/closes windows.  
   // new windows don't have a model or map, so testing them is pointless
@@ -383,12 +381,10 @@ static void DoRandomEvents(MIMenuBar *mb, unsigned int iterations) {
       CreateRandomStack();
     }
 
-#ifdef MI_USE_TREE
     ViewSyncedPanel* panel = MIMainWindow::instance()->GetModelsTree();
     if (panel) {
       panel->RandomTest();
     }
-#endif
 
     LimitGrowth();
     if (!ValidateStack(view)) {

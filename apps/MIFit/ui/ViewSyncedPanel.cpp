@@ -1,5 +1,3 @@
-#ifdef MI_USE_TREE
-
 #include "ViewSyncedPanel.h"
 
 #include <boost/bind.hpp>
@@ -70,5 +68,3 @@ bool ViewSyncedPanel::panelForViewExists(MIGLWidget* view) {
   return viewToPanel.find(view) != viewToPanel.end();
 }
 
-
-#endif // MI_USE_TREE

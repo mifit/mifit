@@ -1,5 +1,3 @@
-#ifdef USE_DICT_EDITOR
-
 #include <math/Point3.h>
 #include <opengl/Camera.h>
 #include <opengl/Frustum.h>
@@ -2506,5 +2504,3 @@ void DictEditCanvas::SetPick(CHIRAL* c) {
 chemlib::MIMoleculeBase* DictEditCanvas::getMolecule() {
   return geomrefiner->GetCurrentModel();
 }
-
-#endif // USE_DICT_EDITOR

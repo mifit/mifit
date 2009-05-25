@@ -1,5 +1,3 @@
-#ifdef MI_USE_TREE
-
 #ifndef mifit_ui_ModelsView_h
 #define mifit_ui_ModelsView_h
 
@@ -61,5 +59,3 @@ public:
 };
 
 #endif
-
-#endif // MI_USE_TREE

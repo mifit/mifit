@@ -33,6 +33,8 @@ PRE_TARGETDEPS += \
         ..$${LIBPREFIX}ui$${LIB_EXTENSION} \
         ..$${LIBPREFIX}wxdr$${LIB_EXTENSION} \
         ..$${LIBPREFIX}mipython$${LIB_EXTENSION} \
+        ..$${LIBPREFIX}figurelib$${LIB_EXTENSION} \
+        ..$${LIBPREFIX}jobs$${LIB_EXTENSION} \
         $${LIBSPATH}$${LIBPREFIX}ligand$${LIB_EXTENSION} \
         $${LIBSPATH}$${LIBPREFIX}map$${LIB_EXTENSION} \
         $${LIBSPATH}$${LIBPREFIX}molopt$${LIB_EXTENSION} \
@@ -44,16 +46,7 @@ PRE_TARGETDEPS += \
         $${LIBSPATH}$${LIBPREFIX}jacgrid$${LIB_EXTENSION} \
         $${LIBSPATH}$${LIBPREFIX}umtz$${LIB_EXTENSION}
 
-USE_ASPLOT{ 
-  PRE_TARGETDEPS += ..$${LIBPREFIX}figurelib$${LIB_EXTENSION} 
-  FIGURELIB=-lfigurelib
-}
-MI_USE_JOBS{ 
-  PRE_TARGETDEPS += ..$${LIBPREFIX}jobs$${LIB_EXTENSION} 
-  JOBSLIB=-ljobs
-}
-
-MYLIBS=-L../ -lui $$FIGURELIB $$JOBSLIB -lwxdr -lcore -lmipython -L../../../libs -lligand -lmap -lmolopt -lconflib -lchemlib -lmiopengl -lmimath -lmiutil -ljacgrid -lumtz
+MYLIBS=-L../ -lui -lfigurelib -ljobs -lwxdr -lcore -lmipython -L../../../libs -lligand -lmap -lmolopt -lconflib -lchemlib -lmiopengl -lmimath -lmiutil -ljacgrid -lumtz
 LIBS =  $$MYLIBS $$MYLIBS $$LIBS
 
 unix:!mac{

@@ -1,5 +1,3 @@
-#ifdef USE_NAV_WINDOW
-
 #include <cmath>
 #include <math/Point3.h>
 #include <opengl/Camera.h>
@@ -418,5 +416,3 @@ void GLOverviewCanvas::keyPressEvent(QKeyEvent *e) {
 QSize GLOverviewCanvas::sizeHint() const {
   return QSize(200, 200);
 }
-
-#endif // USE_NAV_WINDOW

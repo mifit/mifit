@@ -1,5 +1,3 @@
-#ifdef MI_USE_JOBS
-
 #include <vector>
 
 #include "nonguilib.h"
@@ -935,7 +933,6 @@ Tools::Tools() : QObject(0),MIEventHandler(this) {
   _instance = this;
 
 BEGIN_EVENT_TABLE(this,none)
-#ifdef MI_USE_JOBS
 EVT_MENU(ID_TOOLS_CIF2SHELLX, Tools::OnCIF2Shellx)
 EVT_MENU(ID_TOOLS_CIF2CNS, Tools::OnCIF2CNS)
 EVT_MENU(ID_TOOLS_MOLREP, Tools::OnMolRep)
@@ -960,7 +957,6 @@ EVT_MENU(ID_TOOLS_CUSTOM, Tools::OnCustom)
 EVT_UPDATE_UI(ID_TOOLS_CUSTOM, Tools::OnUpdateForJobLimit)
 EVT_MENU(ID_RUN_TESTJOB, Tools::OnRunTestJob)
 EVT_UPDATE_UI(ID_RUN_TESTJOB, Tools::OnUpdateForJobLimit)
-#endif //MI_USE_JOBS
 END_EVENT_TABLE()
 
 }
@@ -971,7 +967,3 @@ Tools *Tools::instance() {
   new Tools(); // sets _instance
   return _instance;
 }
-
-
-
-#endif // MI_USE_JOBS

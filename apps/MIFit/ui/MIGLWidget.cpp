@@ -51,12 +51,8 @@
 #include "corelib.h"
 #include "utillib.h"
 
-#ifdef USE_ASPLOT
 #include "figurelib.h"
-#endif
-#ifdef MI_USE_JOBS
 #include "jobslib.h"
-#endif
 
 
 #include "CMolwViewScene.h"
@@ -65,9 +61,7 @@
 #include "CMolwViewBondPickingRenderable.h"
 #include "CMolwViewSlabPickingRenderable.h"
 
-#ifdef USE_QT_RAMAPLOT
 #include "RamaPlot.h"
-#endif
 
 #include "Application.h"
 #include "Displaylist.h"
@@ -81,7 +75,6 @@
 #include "MapSettings.h"
 #include "MoleculeXmlHandler.h"
 #include "MIGLWidget.h"
-#include "Seqwin.h"
 #include "Xguicryst.h"
 #include "asplib.h"
 #include "id.h"
@@ -260,9 +253,6 @@ MIGLWidget::MIGLWidget() : MIEventHandler(MIMainWindow::instance()) {
   AutoFit = false;
   SurfaceCurrent = NO_SURFACE;
   batonatom = NULL;
-#ifdef USE_SEQ_WINDOW
-  seqwin = (SequenceWindow*) NULL;
-#endif //USE_SEQ_WINDOW
   AtomStack = new Stack;
   IsFullScreen = false;
   SelectType = SINGLEATOM;
@@ -365,10 +355,6 @@ MIGLWidget::MIGLWidget() : MIEventHandler(MIMainWindow::instance()) {
 
   annotationPickingRenderable = new CMolwViewAnnotationPickingRenderable(stereoView, frustum, this);
   annotationPickingRenderable->setFontSize(12);
-
-#ifdef USE_SEQ_WINDOW
-  createSequenceWindow();
-#endif
 
   //printf("\n");
   // OnSize();
@@ -524,19 +510,12 @@ void MIGLWidget::moleculeToBeDeleted(MIMoleculeBase *model) {
 void MIGLWidget::doRefresh() {
   update();
   MIMainWindow::instance()->UpdateToolBar();
-#ifdef USE_NAV_WINDOW
   MIMainWindow::instance()->updateNavigator();
-#endif
 
-#ifdef USE_QT_RAMAPLOT
   if (RamaPlotMgr::instance()->IsShown()) {
     updateRamachandranPlot();
   }
-#endif
 
-#ifdef USE_SEQ_WINDOW
-  seqwin->update();
-#endif
 }
 
 void MIGLWidget::modelChanged(MIMoleculeBase*) {
@@ -608,12 +587,8 @@ void MIGLWidget::OnActivated() {
     MIMainWindowMiddleFooter("");
   }
 
-#ifdef USE_NAV_WINDOW
   MIMainWindow::instance()->updateNavigator();
-#endif
-#ifdef USE_QT_RAMAPLOT
   updateRamachandranPlot();
-#endif
 
   //NOTE: viewDeactivated is no longer sent (now handled by OnClose)
 }
@@ -633,27 +608,13 @@ void MIGLWidget::ReDraw() {
     iRedraw++;
   }
   if (iRedraw == 0) {
-#ifdef USE_NAV_WINDOW
     MIMainWindow::instance()->updateNavigator();
-#endif
   }
   if (displaylist->CurrentItem() != lastCurrentItem) {
     lastCurrentItem = displaylist->CurrentItem();
-#ifdef USE_SEQ_WINDOW
-    if (seqwin) {
-      seqwin->Refresh();
-    }
-#endif
   }
   if (PaletteChanged) {
-#ifdef USE_SEQ_WINDOW
-    if (seqwin) {
-      seqwin->Refresh();
-    }
-#endif
-#ifdef USE_NAV_WINDOW
     MIMainWindow::instance()->updateNavigator();
-#endif
     PaletteChanged = false;
   }
 }
@@ -1244,9 +1205,7 @@ void MIGLWidget::OnLButtonUp(unsigned short  /* nFlags */, CPoint point) {
   } else if (viewpoint->GetBallandStick() > ViewPoint::BALLANDSTICK) {
     ReDraw();
   }
-#ifdef USE_NAV_WINDOW
     MIMainWindow::instance()->updateNavigator();
-#endif
   doubleclicked = false;
   if (MouseCaptured) {
     MouseCaptured = false;
@@ -1300,9 +1259,7 @@ void MIGLWidget::OnRButtonUp(unsigned short  /* nFlags */, CPoint point) {
   }
   DragStart = false;
 
-#ifdef USE_NAV_WINDOW
     MIMainWindow::instance()->updateNavigator();
-#endif
 }
 
 void MIGLWidget::OnRButtonDown(unsigned short  /* nFlags */, CPoint point) {
@@ -1840,15 +1797,7 @@ void MIGLWidget::resizeEvent(QResizeEvent *evt) {
     NewSize = 1;
     viewpoint->SetWindow(0, 0, sx, sy);
   }
-#ifdef USE_SEQ_WINDOW
-  if (seqwin) {
-    wxSizeEvent evt;
-    seqwin->OnSize(evt);
-  }
-#endif
-#ifdef USE_NAV_WINDOW
     MIMainWindow::instance()->updateNavigator();
-#endif
   QWidget::resizeEvent(evt);
 }
 
@@ -3846,7 +3795,6 @@ void MIGLWidget::Purge(RESIDUE* res) {
   }
 }
 
-#ifdef USE_ASPLOT
 static void GenerateSitePlot(Molecule* mol, RESIDUE* lig) {
   bool result=false;
 
@@ -3898,7 +3846,6 @@ void MIGLWidget::OnSitePlot() {
 void MIGLWidget::OnUpdateSitePlot(const MIUpdateEvent& pCmdUI) {
   pCmdUI.Enable(!AtomStack->empty());
 }
-#endif //USE_ASPLOT
 
 void MIGLWidget::RemoveFileFromHistory(const std::string& /* pathname */) {
 #ifdef DO_ADD_TO_HISTORY
@@ -5612,11 +5559,9 @@ void MIGLWidget::UpdateCurrent() {
 
   Displaylist* displaylist = GetDisplaylist();
 
-#ifdef USE_QT_RAMAPLOT
   if (RamaPlotMgr::instance()->IsShown()) {
     RamaPlotMgr::instance()->Update(fitres, SelectType);
   }
-#endif
 
   if (CurrentAtoms.size() == 0) {
     return;
@@ -5659,39 +5604,6 @@ void MIGLWidget::UpdateCurrent() {
     }
   }
 }
-
-#ifdef USE_SEQ_WINDOW
-void MIGLWidget::createSequenceWindow() {
-  int width=size().width(), height=size().height();
-
-  // create the sequence view canvas
-  int seqheight = height-width/5;
-  int seqwidth = width/5;
-  splitter2 = new wxSplitterWindow(splitter, ID_SPLITTER2, wxPoint(0, 0), wxSize(seqwidth, height),
-                wxSP_3D);
-  splitter2->SetMinimumPaneSize(10);
-
-  seqwin = new SequenceWindow(this, splitter2, wxPoint(0, 0), wxSize(seqwidth, seqheight), 0);
-
-  // give it scroll bars
-  /* SeqScroller * seqwinscrollbar = */ new SeqScroller(seqwin, ID_SEQWINSCROLLBAR,
-    wxPoint(seqwidth-25, 0), wxSize(18, seqheight), wxSB_VERTICAL);
-
-  navigator = new GLOverviewCanvas(this, splitter2, wxPoint(0, seqheight), wxSize(seqwidth, seqwidth), 0);
-  navigator->setBackground(wxColour(0, 0, 0));
-
-  splitter->SplitVertically(this, splitter2, width*4/5);
-  splitter2->SplitHorizontally(seqwin, navigator->getWindow(), height-width/5);
-
-  bool showSeq = MIConfig::Instance()->GetProfileInt("View Parameters", "showSequence", 1) != 0;
-  bool showNav = MIConfig::Instance()->GetProfileInt("View Parameters", "showNavigation", 1) != 0;
-  if (!showSeq)
-    splitter->Unsplit();
-  if (!showNav)
-    splitter2->Unsplit();
-  doRefresh();
-}
-#endif // USE_SEQ_WINDOW
 
 void MIGLWidget::InsertMRK(RESIDUE* where, Molecule* model, bool before) {
   RESIDUE* m_res = GetDictRes("MRK");
@@ -6344,7 +6256,6 @@ void MIGLWidget::OnUpdateFitSurfaceProbe(const MIUpdateEvent& pCmdUI) {
   pCmdUI.Check(SurfaceCurrent == PROBE_SURFACE);
 }
 
-#ifdef USE_QT_RAMAPLOT
 void MIGLWidget::OnRamachandranPlotShowAllowed() {
   RamaPlotMgr::instance()->SetShowAllowed(!RamaPlotMgr::instance()->GetShowAllowed());
 }
@@ -6368,7 +6279,6 @@ void MIGLWidget::updateRamachandranPlot() {
   }
   RamaPlotMgr::instance()->Update(model, (model && model->Contains(focusres)?focusres:0), modelName);
 }
-#endif // USE_QT_RAMAPLOT
 
 
 
@@ -9293,10 +9203,6 @@ void MIGLWidget::closeEvent(QCloseEvent *event) {
   MIGetHistory()->RemoveFrame(this);
   viewDeactivated(this);
 
-#ifdef USE_SEQ_WINDOW
-    canvas->disable();
-    seqwin = NULL;
-#endif
 }
 
 void MIGLWidget::prepareAtomPicking() {

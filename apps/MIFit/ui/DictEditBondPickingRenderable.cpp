@@ -1,5 +1,3 @@
-#ifdef USE_DICT_EDITOR
-
 #include "DictEditBondPickingRenderable.h"
 
 #include "GLRenderer.h"
@@ -46,5 +44,3 @@ void DictEditBondRenderable::render() {
   renderer->drawBonds(bonds);
 }
 
-
-#endif // USE_DICT_EDITOR

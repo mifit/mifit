@@ -12,9 +12,7 @@
 
 #include "MIEventHandler.h"
 
-#ifdef USE_QT_RAMAPLOT
 #include "RamaPlot.h"
-#endif
 
 #ifdef _WIN32
 #include <time.h>
@@ -37,12 +35,7 @@ class CMolwViewScene;
 class GLRenderer;
 class QResizeEvent;
 class InterpBox;
-#ifdef USE_SEQNAV_WINDOW
-class SequenceWindow;
-#endif //USE_SEQ_WINDOW
-#ifdef USE_NAV_WINDOW
 class NavigatorCanvas;
-#endif //USE_NAV_WINDOW
 namespace mi {
 namespace opengl {
 class Camera;
@@ -179,14 +172,8 @@ class MIGLWidget : public QGLWidget, public MIEventHandler {
   unsigned int solidsurf_current_surface;
   int SelectType;
 
-#ifdef USE_NAV_WINDOW
   NavigatorCanvas* navigator;
   void createNavigatorWindow();
-#endif
-#ifdef USE_SEQ_WINDOW
-  void createSequenceWindow();
-#endif
-
   unsigned int DoingRange;
 
   unsigned int ClusterSize;
@@ -560,10 +547,6 @@ public:
   bool IsDrawing();
 
 
-#ifdef USE_SEQ_WINDOW
-  SequenceWindow* seqwin;
-#endif //USE_SEQ_WINDOW
-
   /**
    * Called by the system when the canvas needs drawing.
    */
@@ -763,9 +746,7 @@ public:
   void clearSymmAtoms();
   void saveSymmAtoms();
 
-#ifdef USE_QT_RAMAPLOT
   void updateRamachandranPlot();
-#endif
 
   void clearFitTorsion();
   void cancelFitting();
@@ -985,10 +966,8 @@ public Q_SLOTS:
   /**
    * Open a graph window with a phi-psi/Ramachandrn plot of the current model.
    */
-#ifdef USE_QT_RAMAPLOT
   void OnRamachandranPlotShowAllowed();
   void OnUpdateRamachandranPlotShowAllowed(const MIUpdateEvent& pCmdUI);
-#endif
   void OnUpdateFitSurfaceProbe(const MIUpdateEvent& pCmdUI);
   void OnUpdateFitSurfaceExtended(const MIUpdateEvent& pCmdUI);
   void OnUpdateFitSurfaceVdw(const MIUpdateEvent& pCmdUI);
@@ -1490,10 +1469,8 @@ public Q_SLOTS:
   void OnUpdateSequenceInsertlowergap(const MIUpdateEvent& pCmdUI);
   void OnSequenceDeletelowergap();
   void OnUpdateSequenceDeletelowergap(const MIUpdateEvent& pCmdUI);
-#ifdef USE_ASPLOT
   void OnSitePlot();
   void OnUpdateSitePlot(const MIUpdateEvent& pCmdUI);
-#endif
 
   void OnInvertChiralCenter();
   void OnUpdateInvertChiralCenter(const MIUpdateEvent& pCmdUI);

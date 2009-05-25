@@ -12,10 +12,8 @@
 #include "Console.h"
 #include "PythonEngine.h"
 
-#ifdef MI_USE_JOBS
 #include "jobslib.h"
 #include "JobsView.h"
-#endif
 
 #include "utillib.h"
 #include "corelib.h"
@@ -62,12 +60,8 @@
 
 #include <boost/python.hpp>
 
-#ifdef USE_NAV_WINDOW
 #include "GLOverviewCanvas.h"
-#endif
-#ifdef USE_QT_RAMAPLOT
 #include "RamaPlot.h"
-#endif
 
 
 
@@ -129,9 +123,7 @@ EVT_MENU(ID_ABOUT, MIMainWindow::OnAbout)
 EVT_MENU(ID_HELP, MIMainWindow::OnHelp)
 EVT_MENU(ID_LOAD_DICT_REPLACE, MIMainWindow::OnLoadDictReplace)
 EVT_MENU(ID_LOAD_DICT_APPEND, MIMainWindow::OnLoadDictAppend)
-#ifdef USE_DICT_EDITOR
 EVT_MENU(ID_EDIT_DICT_RESIDUE, MIMainWindow::OnEditDictResidue)
-#endif
 EVT_MENU(ID_LOAD_DICT_CIF, MIMainWindow::OnLoadLigCif)
 EVT_MENU(ID_LOAD_DICT_MOL, MIMainWindow::OnLoadLigMol)
 EVT_MENU(ID_LOAD_DICT_PDB, MIMainWindow::OnLoadLigPdb)
@@ -487,7 +479,6 @@ EVT_UPDATE_UI(ID_LINETHICKNESS_FOUR, MIGLWidget::OnUpdateLinethicknessFour)
 EVT_UPDATE_UI(ID_LINETHICKNESS_ONE, MIGLWidget::OnUpdateLinethicknessOne)
 EVT_UPDATE_UI(ID_LINETHICKNESS_THREE, MIGLWidget::OnUpdateLinethicknessThree)
 EVT_UPDATE_UI(ID_LINETHICKNESS_TWO, MIGLWidget::OnUpdateLinethicknessTwo)
-#ifdef USE_SEQ_WINDOW
 EVT_MENU(ID_SEQU_SETCHAIN, MIGLWidget::OnSequencePositionChain)
 EVT_UPDATE_UI(ID_SEQU_SETCHAIN, MIGLWidget::OnUpdateSequencePositionChain)
 EVT_MENU(ID_SEQU_SETPOSITION, MIGLWidget::OnSequencePosition)
@@ -508,7 +499,6 @@ EVT_MENU(ID_SEQUENCE_INSERTLOWERGAP, MIGLWidget::OnSequenceInsertlowergap)
 EVT_UPDATE_UI(ID_SEQUENCE_INSERTLOWERGAP, MIGLWidget::OnUpdateSequenceInsertlowergap)
 EVT_MENU(ID_SEQUENCE_DELETELOWERGAP, MIGLWidget::OnSequenceDeletelowergap)
 EVT_UPDATE_UI(ID_SEQUENCE_DELETELOWERGAP, MIGLWidget::OnUpdateSequenceDeletelowergap)
-#endif // USE_SEQ_WINDOW
 EVT_MENU(ID_OBJECT_RADIUSIS_BALL, MIGLWidget::OnObjectRadiusisBall)
 EVT_MENU(ID_OBJECT_RADIUSIS_CPK, MIGLWidget::OnObjectRadiusisCpk)
 EVT_MENU(ID_OBJECT_RADIUSIS_CYLINDER, MIGLWidget::OnObjectRadiusisCylinder)
@@ -574,14 +564,10 @@ EVT_UPDATE_UI(ID_OBJECT_RESIDUE_RADIUS, MIGLWidget::OnUpdateObjectResidueRadius)
 EVT_MENU(ID_OBJECT_RESIDUE_TURNOFF, MIGLWidget::OnObjectResidueTurnoff)
 EVT_UPDATE_UI(ID_OBJECT_RESIDUE_TURNOFF, MIGLWidget::OnUpdateObjectResidueTurnoff)
 //
-#ifdef USE_QT_RAMAPLOT
 EVT_MENU(ID_RAMAPLOT_ALLOWED, MIGLWidget::OnRamachandranPlotShowAllowed)
 EVT_UPDATE_UI(ID_RAMAPLOT_ALLOWED, MIGLWidget::OnUpdateRamachandranPlotShowAllowed)
-#endif
-#ifdef USE_ASPLOT
 EVT_MENU(ID_SITEPLOT, MIGLWidget::OnSitePlot)
 EVT_UPDATE_UI(ID_SITEPLOT, MIGLWidget::OnUpdateSitePlot)
-#endif
 EVT_MENU(ID_INVERTCHIRAL, MIGLWidget::OnInvertChiralCenter)
 EVT_UPDATE_UI(ID_INVERTCHIRAL, MIGLWidget::OnUpdateInvertChiralCenter)
 EVT_MENU(ID_VIEWCHIRAL, MIGLWidget::OnViewChiralCenters)
@@ -650,10 +636,8 @@ MIMainWindow::MIMainWindow()
     rightFooter=new QLabel(statusBar());
     statusBar()->addPermanentWidget(rightFooter, 2);
 
-#ifdef USE_NAV_WINDOW
     navigator = new GLOverviewCanvas(this);
     navigatorDock = AddAsDockWidget(navigator, "Navigator", Qt::BottomDockWidgetArea);
-#endif
 
     memset(cursors,0,(imhWait6+1)*sizeof(QCursor*));
 
@@ -661,13 +645,9 @@ MIMainWindow::MIMainWindow()
     restoreState(settings->value("WindowLayout",saveState()).toByteArray());
     setGeometry(settings->value("WindowGeometry",geometry()).toRect());
 
-#ifdef MI_USE_TREE
     tabifyDockWidget(modelsDock, displayDock);
-#ifdef MI_USE_JOBS
     tabifyDockWidget(displayDock, jobsDock);
-#endif
     modelsDock->raise();
-#endif
 
     tabifyDockWidget(logDock, pythonDock);
     logDock->raise();
@@ -702,9 +682,7 @@ MIMainWindow::~MIMainWindow() {
   delete cursors[imhWait5];
   delete cursors[imhWait6];
   MIMapFreeScatteringFactorTables();
-#ifdef MI_USE_JOBS
   delete JobManager;
-#endif
 }
 
 static QWidget *dying_widget=0;
@@ -864,9 +842,7 @@ void MIMainWindow::OnFileOpenNew() {
 //   if (m.GetCount() != ndocs) {
 //     ndocs = m.GetCount();
 //     if (ndocs == 0) {
-// #ifdef MI_USE_TOOLBAR
 //       EnableToolBar(0);
-// #endif
 //     }
 //   }
 //   if (MIBusyManager::instance()->Busy()) {
@@ -984,7 +960,6 @@ void MIMainWindow::OnLoadDictReplace() {
   }
 }
 
-#ifdef USE_DICT_EDITOR
 void MIMainWindow::ShowDictEditor(const char* type) {
 
   //FIXME: this is essentially a ShowModal, and should be converted to
@@ -1007,7 +982,6 @@ void MIMainWindow::ShowDictEditor(const char* type) {
   dlg->setModal(true);
   dlg->exec();
 }
-#endif
 
 void MIMainWindow::OnLoadDictAppend() {
   const std::string& s = MIFileSelector("Choose a dictionary file", "", "",
@@ -1020,7 +994,6 @@ void MIMainWindow::OnLoadDictAppend() {
 }
 
 
-#ifdef USE_DICT_EDITOR
 void MIMainWindow::OnEditDictResidue() {
   std::string type;
   std::vector<std::string> choices = MIFitDictionary()->GetDictResList();
@@ -1052,7 +1025,6 @@ void MIMainWindow::OnEditDictResidue() {
     Logger::message(rplc_warn);
   }
 }
-#endif
 
 void MIMainWindow::OnLoadLigMol() {
   std::string filename = MIFileSelector("Pick a MOL file", "", "", "", "MDL file formats (*.mol, *.sdf, *.sd)|*.mol;*.sdf;*.sd|MOL files (*.mol)|*.mol|SD files (*.sdf, *.sd)|*.sdf;*.sd|All files (*.*)|*.*", 0);
@@ -1078,9 +1050,7 @@ void MIMainWindow::OnLoadLigMol() {
     }
   }
   OnLoadLigand("*.mol", filename.c_str(), "", code.c_str());
-#ifdef USE_DICT_EDITOR
   ShowDictEditor(code.c_str());
-#endif
 }
 
 void MIMainWindow::OnLoadLigPdb() {
@@ -1090,9 +1060,7 @@ void MIMainWindow::OnLoadLigPdb() {
   }
   std::string code = OnLoadLigand("*.pdb", filename.c_str(), "", "");
   if (code.size()) {
-#ifdef USE_DICT_EDITOR
     ShowDictEditor(code.c_str());
-#endif
   }
 
 }
@@ -1150,9 +1118,7 @@ void MIMainWindow::OnLoadLigSmi() {
   if (res==std::string(""))
     return;
 
-#ifdef USE_DICT_EDITOR
   ShowDictEditor(data["code"].str.c_str());
-#endif
   return;
 }
 
@@ -1163,9 +1129,7 @@ void MIMainWindow::OnLoadLigCif() {
   }
   std::string code = OnLoadLigand("*.cif", filename.c_str(), "", "");
   if (code.size()) {
-#ifdef USE_DICT_EDITOR
     ShowDictEditor(code.c_str());
-#endif
   }
 }
 
@@ -1355,14 +1319,12 @@ void MIMainWindow::OnSaveDict() {
   Application::instance()->saveDict();
 }
 
-#ifdef MI_USE_JOBS
 BatchJobManager* MIMainWindow::GetJobManager() {
   return JobManager;
 }
 bool MIMainWindow::isJobLimit() {
   return JobManager->numberOfRunningJobs() >= Application::instance()->concurrentJobLimit;
 }
-#endif
 
 void MIMainWindow::UpdateToolBar()
 {
@@ -1465,13 +1427,10 @@ void MIMainWindow::createDockWindows()
   //  logWindow->document()->setMaximumBlockCount(1000);
   logDock = AddAsDockWidget(logWindow, "Log", Qt::BottomDockWidgetArea);
 
-#ifdef USE_QT_RAMAPLOT
   // add rama plot
   QWidget *graphwin = RamaPlotMgr::instance()->getGraphWin();
   ramaDock = AddAsDockWidget(graphwin, "Ramachandran plot", Qt::BottomDockWidgetArea);
-#endif
 
-#ifdef MI_USE_TREE
   //add Models tree
   modelsView = new ModelsView(modelsDock);
   modelsDock = AddAsDockWidget(modelsView, "Models", Qt::LeftDockWidgetArea);
@@ -1480,13 +1439,10 @@ void MIMainWindow::createDockWindows()
   QWidget *displayView = new DisplayView(displayDock);
   displayDock = AddAsDockWidget(displayView, "Display", Qt::LeftDockWidgetArea);
 
-#ifdef MI_USE_JOBS
   // add Jobs tree
   JobsView *jobsView = new JobsView(jobsDock);
   jobsView->update(JobManager);
   jobsDock = AddAsDockWidget(jobsView, "Jobs", Qt::LeftDockWidgetArea);
-#endif
-#endif
 }
 
 static bool is_valid_extension(const char *ext)
@@ -1665,11 +1621,9 @@ void MIMainWindow::SetCursor(int id, QWidget *w)
     w->setCursor(QCursor());
 }
 
-#ifdef USE_NAV_WINDOW
 void MIMainWindow::updateNavigator() {
   navigator->updateGL();
 }
-#endif
 
 void MIMainWindow::Debug(const std::string &msg)
 {
@@ -1825,9 +1779,7 @@ static void fill_file_menu(MIMenu* file_menu, int type) {
     file_menu->AppendSeparator();
     file_menu->Append(ID_EDIT_COPY, "Copy Canvas\tCtrl+C", "Copy the canvas to the clipboard to paste into other programs", false);
     file_menu->Append(ID_EXPORTIMAGE, "Export Image As...", "Export view to a graphics file");
-#ifdef USE_ASPLOT
     file_menu->Append(ID_SITEPLOT, "E&xport Active Site Plot", "Export EPS of 2-Dimensional interaction diagram");
-#endif
   }
   if (type == ID_MOLWVIEW || type == 0) {
     file_menu->AppendSeparator();
@@ -1845,7 +1797,6 @@ static void fill_file_menu(MIMenu* file_menu, int type) {
 
 
 
-#ifdef USE_SEQ_WINDOW
 static void fill_seq_menu(MIMenu* seq_menu) {
   seq_menu->Append(ID_FIT_MARK_ALPHA, "&Mark Range As Helix", "Mark the range as alpha helix", false);
   seq_menu->Append(ID_FIT_MARK_BETA, "Mar&k Range As Sheet", "Mark the range as beta sheet", false);
@@ -1868,7 +1819,6 @@ static void fill_seq_menu(MIMenu* seq_menu) {
   //seq_menu->Append(ID_SEQUENCE_UNSPLIT, "Hide Sequence View", "Hides the sequence window", false);
   //seq_menu->Append(ID_SEQUENCE_UNSPLIT, "Hide Navigation View", "Hides the navigation window", false);
 }
-#endif // USE_SEQ_WINDOW
 
 static void fill_help_menu(MIMenu* help_menu) {
   help_menu->Append(ID_ABOUT, "&About...");
@@ -1958,9 +1908,7 @@ void MIMainWindow::createMenus()
   ligImportMenu->Append(ID_LOAD_DICT_SMI, "&Smiles", "Load ligand from a Smiles string / file", false);
 
   di_menu->Append(ID_SAVE_DICT, "&Save Dictionary...", "Save dictionary to a file", false);
-#ifdef USE_DICT_EDITOR
   di_menu->Append(ID_EDIT_DICT_RESIDUE, "&Edit Residue...", "Edit the specficications of a monomer or ligand", false);
-#endif
 
   MIMenu* surf_menu = new MIMenu(*this);
   fill_surf_menu(surf_menu);
@@ -2107,10 +2055,8 @@ void MIMainWindow::createMenus()
   analyze_menu->Append(ID_GEOMETRY_DISTANCE, "Measure &Distance", "Measure the distance between last two picked atoms", false);
   analyze_menu->Append(ID_GEOMETRY_ANGLE, "Measure &Angle", "Measure the angle of last three picked atoms", false);
   analyze_menu->Append(ID_GEOMETRY_TORSION, "Measure D&ihedral", "Measure the dihedral/torsion of last four picked atoms", false);
-#ifdef USE_QT_RAMAPLOT
   analyze_menu->AppendSeparator();
   analyze_menu->AppendCheckItem(ID_RAMAPLOT_ALLOWED, "Detailed Ramachandran plot", "Show allowed regions in Ramachandran plot, too");
-#endif
   analyze_menu->AppendSeparator();
   analyze_menu->Append(ID_GEOM_FINDGEOMERRORS, "A&nalyze Geometry Errors", "Find all the geometry errors above a threshold in the model", false);
   analyze_menu->Append(ID_GEOM_CLEARGEOMERRORS, "Clear &Geometry Errors", "Clear all the Annotation of geometry errors in the model", false);
@@ -2241,20 +2187,16 @@ void MIMainWindow::createMenus()
   menu_bar->Append(fit_menu, "F&it");
   menu_bar->Append(refi_menu, "&Refine");
 
-#ifdef USE_SEQ_WINDOW
   MIMenu* seq_menu = new MIMenu(*this);
   fill_seq_menu(seq_menu);
   menu_bar->Append(seq_menu, "S&equence");
-#endif
 
   menu_bar->Append(analyze_menu, "&Analyze");
 
-#ifdef MI_USE_JOBS
   JobManager = new BatchJobManager();
   MIMenu* job_menu = new MIMenu(*Tools::instance());
   Tools::instance()->FillToolsMenu(job_menu, true);
   menu_bar->Append(job_menu, "&Job");
-#endif
 
 
   hide_menu = new MIMenu(*this);
@@ -2495,11 +2437,9 @@ void MIMainWindow::updateRecentFileActions()
     recentFileActs[j]->setVisible(false);
 }
 
-#ifdef USE_QT_RAMAPLOT
 RamaPlotMgr *MIMainWindow::RamaPlotManager() {
   return ramaPlotMgr;
 }
-#endif
 
 void MIMainWindow::HasCurrentMIGLWidget(const MIUpdateEvent &pCmdUI) {
   pCmdUI.Enable(currentMIGLWidget() != 0);

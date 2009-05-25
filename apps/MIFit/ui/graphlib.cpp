@@ -1,5 +1,3 @@
-#ifdef USE_QT_RAMAPLOT
-
 #include <cfloat>
 #include <cstdio>
 #include <cstdlib>
@@ -752,5 +750,3 @@ void GraphWindow::paintGL() {
 
   glPopAttrib();
 }
-
-#endif // USE_QT_RAMAPLOT

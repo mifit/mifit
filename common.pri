@@ -5,29 +5,12 @@ PythonDir = $$ExternalDir/python
 
 CONFIG += $$[config]
 
-DEFINES += \
-    SIP_STATIC_MODULE \
-    USE_ASPLOT \
-    USE_NAV_WINDOW \
-    USE_QT_RAMAPLOT \
-    MI_USE_JOBS \
-    USE_DICT_EDITOR \
-    MI_USE_TREE
-
 CONFIG(debug, debug|release) {
   DEFINES += DEBUG
 }
 
-CONFIG += \
-    USE_ASPLOT \
-    USE_NAV_WINDOW \
-    USE_QT_RAMAPLOT \
-    MI_USE_JOBS \
-    USE_DICT_EDITOR \
-    MI_USE_TREE
-
 QT += opengl xml
-CONFIG += no_keywords USE_ASPLOT MI_USE_JOBS opengl ordered
+CONFIG += no_keywords opengl ordered
 
 !USE_SHARED_LIBS {
   CONFIG += staticlib 
@@ -71,15 +54,10 @@ INCLUDEPATH += . \
    $$TOP_SRCDIR/apps/MIFit/wxdr \
    $$TOP_SRCDIR/apps/MIFit/ui \
    $$TOP_SRCDIR/apps/MIFit/python \
+   $$TOP_SRCDIR/apps/MIFit/figurelib \
+   $$TOP_SRCDIR/apps/MIFit/jobs \
    $$PythonDir/include/python2.6 \
    $$BoostDir
-
-USE_ASPLOT {
-  INCLUDEPATH += $$TOP_SRCDIR/apps/MIFit/figurelib
-}
-MI_USE_JOBS {
-  INCLUDEPATH += $$TOP_SRCDIR/apps/MIFit/jobs
-}
 
 DEFINES += BOOST_PYTHON_NO_LIB
 CONFIG(debug, debug|release) {

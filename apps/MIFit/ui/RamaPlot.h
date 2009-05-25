@@ -1,11 +1,7 @@
 #ifndef mifit_ui_RamaPlot_h
 #define mifit_ui_RamaPlot_h
 
-#if defined(USE_QT_RAMAPLOT)
-
-#ifdef USE_QT_RAMAPLOT
 #include "graphlib.h"
-#endif
 
 #include <boost/signal.hpp>
 
@@ -18,9 +14,7 @@ class MIAtom;
 class GraphWindow;
 class RamaPlotDialog;
 class RamaDataBase;
-#ifdef USE_QT_RAMAPLOT
 class MIGLWidget;
-#endif
 
 class RamaPlotMgr : public GraphPickHandlerBase, public GraphKeyHandlerBase, public GraphMouseoverHandlerBase {
 private:
@@ -47,11 +41,9 @@ public:
   void operator()(int keycode, bool shift);
   void Mouseover(int id);
 
-#ifdef USE_QT_RAMAPLOT
   void SetView(MIGLWidget* v) {
     _view = v;
   }
-#endif
   // object changed slots
   void atomChanged(chemlib::MIMoleculeBase* mol, std::vector<chemlib::MIAtom*>& atom);
   void moleculeChanged(chemlib::MIMoleculeBase* mol);
@@ -83,9 +75,7 @@ private:
   GraphColor cols[4];
   std::string _modelname;
   unsigned int contour_end;
-#ifdef USE_QT_RAMAPLOT
   MIGLWidget* _view;
-#endif
   bool _atom_changed;
   int _last_mouseover_id;
 
@@ -98,7 +88,5 @@ private:
 
   static RamaPlotMgr *_instance;
 };
-
-#endif // USE_QT_RAMAPLOT
 
 #endif

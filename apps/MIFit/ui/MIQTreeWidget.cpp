@@ -1,5 +1,3 @@
-#ifdef MI_USE_TREE
-
 #include "MIQTreeWidget.h"
 #include "TreeData.h"
 
@@ -104,5 +102,3 @@ QIcon &MIQTreeWidget::GetIcon(unsigned int id) {
   return _imageList[id];
 }
 
-
-#endif // MI_USE_TREE

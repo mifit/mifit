@@ -1,4 +1,3 @@
-#if defined(USE_QT_RAMAPLOT)
 #include <cstdio>
 #include <cmath>
 
@@ -9,11 +8,9 @@
 #include "nonguilib.h"
 #include "RESIDUE_.h"
 
-#ifdef USE_QT_RAMAPLOT
 #include "MIMainWindow.h"
 #include "MIGLWidget.h"
 #include <QDockWidget>
-#endif
 
 #include "rama.h"
 #include "RamaPlot.h"
@@ -511,9 +508,7 @@ void RamaPlotMgr::Update(MIMoleculeBase* mol,
 
 
 bool RamaPlotMgr::IsShown() {
-#ifdef USE_QT_RAMAPLOT
   return _gw->isVisible();
-#endif
 }
 
 void RamaPlotMgr::Update(RESIDUE* focusres, unsigned int select_type) {
@@ -605,9 +600,7 @@ RamaPlotMgr::RamaPlotMgr(bool allowed) : _inited(false), _gw(NULL), _mol(0), _fo
     }
   }
 
-#ifdef USE_QT_RAMAPLOT
   _gw = new GraphWindow(MIMainWindow::instance());
-#endif
 
   _gw->RegisterMouseoverHandler(this);
   _gw->RegisterPickHandler(this);
@@ -645,11 +638,7 @@ void RamaPlotMgr::modelObjectDeleted(chemlib::MIMoleculeBase* ) {
 }
 
 void RamaPlotMgr::moleculeDeleted(chemlib::MIMoleculeBase*) {
-#ifdef USE_QT_RAMAPLOT
   _gw->show();
-#endif
   _focusres=0;
   Update(0, 0, "");  // clear
 }
-
-#endif //USE_QT_RAMAPLOT

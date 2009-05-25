@@ -1,5 +1,3 @@
-#ifdef USE_DICT_EDITOR
-
 #include <opengl/Frustum.h>
 #include <opengl/StereoView.h>
 
@@ -53,5 +51,3 @@ void DictEditAnnotationRenderable::render() {
   renderer->DrawAnnotations(displaylist->getMolecules());
 }
 
-
-#endif // USE_DICT_EDITOR
