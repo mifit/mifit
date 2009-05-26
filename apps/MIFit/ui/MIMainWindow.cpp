@@ -1703,16 +1703,11 @@ void MIMainWindow::updateWindowMenu()
 
 QWidget *MIMainWindow::createMIGLWidget()
 {
-  QWidget *container = new QWidget;
-  QVBoxLayout *layout = new QVBoxLayout;
-  layout->setMargin(0);
-  container->setLayout(layout);
   QWidget *w = new MIGLWidget;
   w->setObjectName("MIGLWidget");
-  layout->addWidget(w);
-  mdiArea->addSubWindow(container);
-  container->showMaximized();
-  return container;
+  mdiArea->addSubWindow(w);
+  w->showMaximized();
+  return w;
 }
 
 void MIMainWindow::createActions()
@@ -2339,7 +2334,7 @@ void MIMainWindow::createStatusBar()
 MIGLWidget *MIMainWindow::currentMIGLWidget()
 {
   if (QMdiSubWindow *activeSubWindow = mdiArea->activeSubWindow()) {
-    return firstChildWithName<MIGLWidget*>(activeSubWindow->widget(), "MIGLWidget");
+    return dynamic_cast<MIGLWidget*>(activeSubWindow->widget());
   }
   return 0;
 }
