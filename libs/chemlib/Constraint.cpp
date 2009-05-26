@@ -598,8 +598,8 @@ float ConstraintList::GetBondLength(const MIAtom* a1, const MIAtom* a2) const {
 
   bnd = Bonds.begin();
   while (bnd != end) {
-    if (bnd->getAtom1() == a1 && bnd->getAtom2() == a2
-        || bnd->getAtom2() == a1 && bnd->getAtom1() == a2) {
+    if ((bnd->getAtom1() == a1 && bnd->getAtom2() == a2)
+        || (bnd->getAtom2() == a1 && bnd->getAtom1() == a2)) {
       return bnd->ideal_dist;
     }
     ++bnd;
@@ -612,8 +612,8 @@ float ConstraintList::GetAngleLength(const MIAtom* a1, const MIAtom* a2, const M
 
   ang = Angles.begin();
   while (ang != end) {
-    if (ang->getAtom1() == a1 && ang->getAtom2() == a2 && ang->atom3 == a3
-        || ang->atom3 == a1 && ang->getAtom2() == a2 && ang->getAtom1() == a3) {
+    if ((ang->getAtom1() == a1 && ang->getAtom2() == a2 && ang->atom3 == a3)
+        || (ang->atom3 == a1 && ang->getAtom2() == a2 && ang->getAtom1() == a3)) {
       return ang->ideal_angle;
     }
     ++ang;

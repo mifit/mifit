@@ -242,7 +242,7 @@ void Tools::OnBindNGrind() {
 #ifndef _WIN32 //Unix pathnames are needed
     s=::format("%s \"%s/%s\"", buildPath(Application::instance()->HTMLBrowser).c_str(),
                buildAbsPath(data["bngsummary"].str).c_str(),
-               buildPath(htmlName.c_str()));
+               buildPath(htmlName).c_str());
 #else
     s=::format("start \"%s\" \"%s\\%s\"",
                buildPath(Application::instance()->HTMLBrowser).c_str(),

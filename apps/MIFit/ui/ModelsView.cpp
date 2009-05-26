@@ -2801,7 +2801,7 @@ void ModelsTree::InsertItem() {
       }
       unsigned char c = chainId.c_str()[0];
       RESIDUE* buffer = Application::instance()->GetResidueBuffer();
-      model->InsertResidues(model->getResidues(), buffer, 3, c&255 + 1*256);
+      model->InsertResidues(model->getResidues(), buffer, 3, (c&255) + 1*256);
       model->Build();
       model->SortChains();
       addChains(model);

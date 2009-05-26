@@ -171,8 +171,8 @@ void Stack::ExpandTop2AllAtoms() {
     return;
   }
 
-  if (a1 && a1->type() & AtomType::SYMMATOM ||
-      a2 && a2->type() & AtomType::SYMMATOM) {
+  if ((a1 && a1->type() & AtomType::SYMMATOM) ||
+      (a2 && a2->type() & AtomType::SYMMATOM)) {
     Logger::message("Can't expand symmetry atom(s) on stack");
     Push(a2, r2, m2);
     Push(a1, r1, m1);
@@ -235,8 +235,8 @@ void Stack::ExpandTop2Range() {
     return;
   }
 
-  if (a1 && a1->type() & AtomType::SYMMATOM ||
-      a2 && a2->type() & AtomType::SYMMATOM) {
+  if ((a1 && a1->type() & AtomType::SYMMATOM) ||
+      (a2 && a2->type() & AtomType::SYMMATOM)) {
     Logger::message("Can't expand symmetry atom(s) on stack");
     Push(a2, r2, m2);
     Push(a1, r1, m1);

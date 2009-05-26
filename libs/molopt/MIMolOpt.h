@@ -34,10 +34,10 @@ public:
   void TorsionOptimize(std::vector<chemlib::MIAtom*>& CurrentAtoms, chemlib::MIMoleculeBase* fitmol, EMapBase* emap,
                        std::vector<chemlib::TORSION>& torsions, bool do_setup = true);
   void FullOptimize(std::vector<chemlib::MIAtom*>& CurrentAtoms, chemlib::MIMoleculeBase* fitmol, EMapBase* emap,
-                    const float* center, InterpBox& box, int refine_options,
+                    const float* center, InterpBox& box, unsigned int refine_level,
                     MIMolOptCheckPoint* checkpoint = 0);
   void LigandOptimize(std::vector<chemlib::MIAtom*>& CurrentAtoms, chemlib::MIMoleculeBase* fitmol, EMapBase* emap,
-                      const float* center, InterpBox& box, int refine_options, chemlib::GeomSaver& conformations,
+                      const float* center, InterpBox& box, unsigned int refine_level, chemlib::GeomSaver& conformations,
                       MIMolOptCheckPoint* checkpoint = 0);
   void MolecularReplace(chemlib::MIMoleculeBase* fitmol, EMapBase* emap);
   void RefiAllTorsions(chemlib::RESIDUE* reslist);

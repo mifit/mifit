@@ -1,5 +1,5 @@
 /* XPM */
-static char * atom_xpm[] = {
+static const char * atom_xpm[] = {
 "16 16 95 2",
 "  	c None",
 ". 	c #FFFFFF",

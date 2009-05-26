@@ -1,5 +1,5 @@
 /* XPM */
-static char * annotHiddenSelected_xpm[] = {
+static const char * annotHiddenSelected_xpm[] = {
 "16 16 44 1",
 " 	c None",
 ".	c #FFFFFF",

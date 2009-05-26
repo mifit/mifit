@@ -18,7 +18,8 @@ PythonEngine::PythonEngine()
 
 void PythonEngine::start() {
   started = true;
-  Py_SetProgramName("MIFit");
+  char programName[] = "MIFit";
+  Py_SetProgramName(programName);
   Py_Initialize();
 
   // Initialize bindings to this class

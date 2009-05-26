@@ -994,8 +994,8 @@ float IdealBondLength(int element1, int element2, unsigned char bnd_order) {
   //
   //***Carbon-Nitrogen Bonds***//
   //
-  if (element1 == 6 && element2 == 7
-      || element1 == 7 && element2 == 6) {
+  if ((element1 == 6 && element2 == 7)
+      || (element1 == 7 && element2 == 6)) {
     switch (bnd_order) {
       case SINGLEBOND:    return 1.47F;
       case PARTIALDOUBLEBOND: return 1.35F;
@@ -1007,8 +1007,8 @@ float IdealBondLength(int element1, int element2, unsigned char bnd_order) {
   //
   //***Carbon-Oxygen Bonds***//
   //
-  if (element1 == 6 && element2 == 8
-      || element1 == 8 && element2 == 6) {
+  if ((element1 == 6 && element2 == 8)
+      || (element1 == 8 && element2 == 6)) {
     switch (bnd_order) {
       case SINGLEBOND:    return 1.40F;
       case PARTIALDOUBLEBOND: return 1.30F;
@@ -1019,8 +1019,8 @@ float IdealBondLength(int element1, int element2, unsigned char bnd_order) {
   //
   //***Carbon-Sulfur Bonds***//
   //
-  if (element1 == 6 && element2 == 16
-      || element1 == 16 && element2 == 6) {
+  if ((element1 == 6 && element2 == 16)
+      || (element1 == 16 && element2 == 6)) {
     switch (bnd_order) {
       case SINGLEBOND:    return 1.79F;
       case PARTIALDOUBLEBOND: return 1.72F;
@@ -1031,8 +1031,8 @@ float IdealBondLength(int element1, int element2, unsigned char bnd_order) {
   //
   //***Carbon-Fluorine Bonds***//
   //
-  if (element1 == 6 && element2 == 9
-      || element1 == 9 && element2 == 6) {
+  if ((element1 == 6 && element2 == 9)
+      || (element1 == 9 && element2 == 6)) {
     switch (bnd_order) {
       case SINGLEBOND:    return 1.34F;
     }
@@ -1041,8 +1041,8 @@ float IdealBondLength(int element1, int element2, unsigned char bnd_order) {
   //
   //***Carbon-Chlorine Bonds***//
   //
-  if (element1 == 6 && element2 == 17
-      || element1 == 17 && element2 == 6) {
+  if ((element1 == 6 && element2 == 17)
+      || (element1 == 17 && element2 == 6)) {
     switch (bnd_order) {
       case SINGLEBOND:    return 1.76F;
     }
@@ -1051,8 +1051,8 @@ float IdealBondLength(int element1, int element2, unsigned char bnd_order) {
   //
   //***Carbon-Bromine Bonds***//
   //
-  if (element1 == 6 && element2 == 35
-      || element1 == 35 && element2 == 6) {
+  if ((element1 == 6 && element2 == 35)
+      || (element1 == 35 && element2 == 6)) {
     switch (bnd_order) {
       case SINGLEBOND:    return 1.89F;
     }
@@ -1061,8 +1061,8 @@ float IdealBondLength(int element1, int element2, unsigned char bnd_order) {
   //
   //***Carbon-Iodine Bonds***//
   //
-  if (element1 == 6 && element2 == 53
-      || element1 == 53 && element2 == 6) {
+  if ((element1 == 6 && element2 == 53)
+      || (element1 == 53 && element2 == 6)) {
     switch (bnd_order) {
       case SINGLEBOND:    return 2.13F;
     }
@@ -1071,8 +1071,8 @@ float IdealBondLength(int element1, int element2, unsigned char bnd_order) {
   //
   //***Carbon-Hydrogen bonds***//
   //
-  if (element1 == 6 && element2 == 1
-      || element1 == 1 && element2 == 6) {
+  if ((element1 == 6 && element2 == 1)
+      || (element1 == 1 && element2 == 6)) {
     switch (bnd_order) {
       case SINGLEBOND:    return 1.09F;
     }
@@ -1081,8 +1081,8 @@ float IdealBondLength(int element1, int element2, unsigned char bnd_order) {
   //
   //***Carbon-Phosphorous bonds**//
   //
-  if (element1 == 6 && element2 == 15
-      || element1 == 15 && element2 == 6) {
+  if ((element1 == 6 && element2 == 15)
+      || (element1 == 15 && element2 == 6)) {
     switch (bnd_order) {
       case SINGLEBOND:    return 1.83F;
     }
@@ -1103,8 +1103,8 @@ float IdealBondLength(int element1, int element2, unsigned char bnd_order) {
   //
   //***Nitrogen-Oxygen Bonds***//
   //
-  if (element1 == 7 && element2 == 8
-      || element1 == 8 && element2 == 7) {
+  if ((element1 == 7 && element2 == 8)
+      || (element1 == 8 && element2 == 7)) {
     switch (bnd_order) {
       case SINGLEBOND:    return 1.42F;
       case PARTIALDOUBLEBOND: return 1.41F;
@@ -1115,8 +1115,8 @@ float IdealBondLength(int element1, int element2, unsigned char bnd_order) {
   //
   //***Nitrogen-Sulfur Bonds***//
   //
-  if (element1 == 7 && element2 == 16
-      || element1 == 16 && element2 == 7) {
+  if ((element1 == 7 && element2 == 16)
+      || (element1 == 16 && element2 == 7)) {
     switch (bnd_order) {
       case SINGLEBOND:    return 1.65F;
       case PARTIALDOUBLEBOND: return 1.73F;
@@ -1127,8 +1127,8 @@ float IdealBondLength(int element1, int element2, unsigned char bnd_order) {
   //
   //***Nitrogen-Phosphorus Bonds***//
   //
-  if (element1 == 7 && element2 == 15
-      || element1 == 15 && element2 == 7) {
+  if ((element1 == 7 && element2 == 15)
+      || (element1 == 15 && element2 == 7)) {
     switch (bnd_order) {
       case SINGLEBOND:    return 1.68F;
       case PARTIALDOUBLEBOND: return 1.59F;
@@ -1139,8 +1139,8 @@ float IdealBondLength(int element1, int element2, unsigned char bnd_order) {
   //
   //***Nitrogen-Hydrogen bonds***//
   //
-  if (element1 == 7 && element2 == 1
-      || element1 == 1 && element2 == 7) {
+  if ((element1 == 7 && element2 == 1)
+      || (element1 == 1 && element2 == 7)) {
     switch (bnd_order) {
       case SINGLEBOND:    return 1.02F;
     }
@@ -1158,8 +1158,8 @@ float IdealBondLength(int element1, int element2, unsigned char bnd_order) {
   //
   //***Oxygen-Sulfur bonds***//
   //
-  if (element1 == 8 && element2 == 16
-      || element1 == 16 && element2 == 8) {
+  if ((element1 == 8 && element2 == 16)
+      || (element1 == 16 && element2 == 8)) {
     switch (bnd_order) {
       case SINGLEBOND:    return 1.57F;
       case PARTIALDOUBLEBOND: return 1.47F;
@@ -1171,8 +1171,8 @@ float IdealBondLength(int element1, int element2, unsigned char bnd_order) {
   //
   //***Oxygen-Hydrogen bonds***//
   //
-  if (element1 == 8 && element2 == 1
-      || element1 == 1 && element2 == 8) {
+  if ((element1 == 8 && element2 == 1)
+      || (element1 == 1 && element2 == 8)) {
     switch (bnd_order) {
       case SINGLEBOND:    return 0.97F;
     }
@@ -1181,8 +1181,8 @@ float IdealBondLength(int element1, int element2, unsigned char bnd_order) {
   //
   //***Oxygen-Phosphorus bonds***//
   //
-  if (element1 == 8 && element2 == 15
-      || element1 == 15 && element2 == 8) {
+  if ((element1 == 8 && element2 == 15)
+      || (element1 == 15 && element2 == 8)) {
     switch (bnd_order) {
       case SINGLEBOND:    return 1.50F;
       case PARTIALDOUBLEBOND: return 1.50F;
@@ -1203,8 +1203,8 @@ float IdealBondLength(int element1, int element2, unsigned char bnd_order) {
   //
   //***Sulfur-Hydrogen bonds***//
   //
-  if (element1 == 16 && element2 == 1
-      || element1 == 1 && element2 == 16) {
+  if ((element1 == 16 && element2 == 1)
+      || (element1 == 1 && element2 == 16)) {
     switch (bnd_order) {
       case SINGLEBOND:    return 1.33F;
     }
@@ -1213,8 +1213,8 @@ float IdealBondLength(int element1, int element2, unsigned char bnd_order) {
   //
   //***Sulfur-Phosphorus bonds***//
   //
-  if (element1 == 16 && element2 == 15
-      || element1 == 15 && element2 == 16) {
+  if ((element1 == 16 && element2 == 15)
+      || (element1 == 15 && element2 == 16)) {
     switch (bnd_order) {
       case DOUBLEBOND:    return 1.93F;
     }
@@ -1255,8 +1255,8 @@ unsigned char PredictBondOrder(int element1, int element2, float distance) {
   //
   //***Carbon-Nitrogen Bonds***//
   //
-  if (element1 == 6 && element2 == 7
-      || element1 == 7 && element2 == 6) {
+  if ((element1 == 6 && element2 == 7)
+      || (element1 == 7 && element2 == 6)) {
     if (distance < 1.21F) {
       return TRIPLEBOND;
     }
@@ -1272,8 +1272,8 @@ unsigned char PredictBondOrder(int element1, int element2, float distance) {
   //
   //***Carbon-Oxygen Bonds***//
   //
-  if (element1 == 6 && element2 == 8
-      || element1 == 8 && element2 == 6) {
+  if ((element1 == 6 && element2 == 8)
+      || (element1 == 8 && element2 == 6)) {
     if (distance < 1.27F) {
       return DOUBLEBOND;
     }
@@ -1285,16 +1285,16 @@ unsigned char PredictBondOrder(int element1, int element2, float distance) {
   //
   //***Carbon-Phosphorous bonds**//
   //
-  if (element1 == 6 && element2 == 15
-      || element1 == 15 && element2 == 6) {
+  if ((element1 == 6 && element2 == 15)
+      || (element1 == 15 && element2 == 6)) {
     return SINGLEBOND;
   }
 
   //
   //***Carbon-Sulfur Bonds***//
   //
-  if (element1 == 6 && element2 == 16
-      || element1 == 16 && element2 == 6) {
+  if ((element1 == 6 && element2 == 16)
+      || (element1 == 16 && element2 == 6)) {
     if (distance < 1.70F) {
       return DOUBLEBOND;
     }
@@ -1320,8 +1320,8 @@ unsigned char PredictBondOrder(int element1, int element2, float distance) {
   //
   //***Nitrogen-Oxygen Bonds***//
   //
-  if (element1 == 7 && element2 == 8
-      || element1 == 8 && element2 == 7) {
+  if ((element1 == 7 && element2 == 8)
+      || (element1 == 8 && element2 == 7)) {
     if (distance < 1.30F) {
       return DOUBLEBOND;
     }
@@ -1334,8 +1334,8 @@ unsigned char PredictBondOrder(int element1, int element2, float distance) {
   //
   //***Nitrogen-Phosphorus Bonds***//
   //
-  if (element1 == 7 && element2 == 15
-      || element1 == 15 && element2 == 7) {
+  if ((element1 == 7 && element2 == 15)
+      || (element1 == 15 && element2 == 7)) {
     if (distance < 1.59F) {
       return DOUBLEBOND;
     }
@@ -1345,8 +1345,8 @@ unsigned char PredictBondOrder(int element1, int element2, float distance) {
   //
   //***Nitrogen-Sulfur Bonds***//
   //
-  if (element1 == 7 && element2 == 16
-      || element1 == 16 && element2 == 7) {
+  if ((element1 == 7 && element2 == 16)
+      || (element1 == 16 && element2 == 7)) {
     if (distance < 1.57F) {
       return DOUBLEBOND;
     }
@@ -1368,8 +1368,8 @@ unsigned char PredictBondOrder(int element1, int element2, float distance) {
   //
   //***Oxygen-Phosphorus bonds***//
   //
-  if (element1 == 8 && element2 == 15
-      || element1 == 15 && element2 == 8) {
+  if ((element1 == 8 && element2 == 15)
+      || (element1 == 15 && element2 == 8)) {
     if (distance < 1.52F) {
       return DOUBLEBOND;
     }
@@ -1379,8 +1379,8 @@ unsigned char PredictBondOrder(int element1, int element2, float distance) {
   //
   //***Oxygen-Sulfur bonds***//
   //
-  if (element1 == 8 && element2 == 16
-      || element1 == 16 && element2 == 8) {
+  if ((element1 == 8 && element2 == 16)
+      || (element1 == 16 && element2 == 8)) {
     if (distance < 1.53F) {
       return DOUBLEBOND;
     }
@@ -1400,8 +1400,8 @@ unsigned char PredictBondOrder(int element1, int element2, float distance) {
   //
   //***Sulfur-Phosphorus bonds***//
   //
-  if (element1 == 16 && element2 == 15
-      || element1 == 15 && element2 == 16) {
+  if ((element1 == 16 && element2 == 15)
+      || (element1 == 15 && element2 == 16)) {
     if (distance < 1.98F) {
       return DOUBLEBOND;
     }

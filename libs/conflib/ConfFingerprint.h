@@ -4,7 +4,7 @@
 #include <vector>
 
 namespace chemlib {
-class chemlib::Bond;
+class Bond;
 }
 
 namespace conflib {

@@ -1,5 +1,5 @@
 /* XPM */
-static char *MW_SCALE[] = {
+static const char *MW_SCALE[] = {
 /* columns rows colors chars-per-pixel */
 "32 32 3 1",
 "  c black",

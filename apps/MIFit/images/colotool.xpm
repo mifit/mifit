@@ -1,5 +1,5 @@
 /* XPM */
-static char * colotool_xpm[] = {
+static const char * colotool_xpm[] = {
 "16 15 5 1",
 " 	c None",
 ".	c #000000",

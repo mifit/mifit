@@ -1,5 +1,5 @@
 /* XPM */
-static char * bitmap1_xpm[] = {
+static const char * bitmap1_xpm[] = {
 "16 15 2 1",
 " 	c None",
 ".	c #000000",

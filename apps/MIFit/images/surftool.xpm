@@ -1,5 +1,5 @@
 /* XPM */
-static char * surftool_xpm[] = {
+static const char * surftool_xpm[] = {
 "16 15 3 1",
 " 	c None",
 ".	c #FFFF00",

@@ -1,5 +1,5 @@
 /* XPM */
-static char *MW_ZROTA[] = {
+static const char *MW_ZROTA[] = {
 /* columns rows colors chars-per-pixel */
 "32 32 3 1",
 "  c black",

@@ -1,5 +1,5 @@
 /* XPM */
-static char *mifit_icon[] = {
+static const char *mifit_icon[] = {
 /* columns rows colors chars-per-pixel */
 "128 128 256 2",
 "   c #00010000000C",

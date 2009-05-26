@@ -1,5 +1,5 @@
 /* XPM */
-static char * openDisabled_xpm[] = {
+static const char * openDisabled_xpm[] = {
 "16 16 5 1",
 " 	c None",
 ".	c #9D9D9D",

@@ -404,7 +404,9 @@ bool MIMenu::DoRandomItem(const std::vector<unsigned int> &exclusion_list) {
 
     i=random()%_actionToId.size();
     std::map<QAction*, unsigned int>::iterator j=_actionToId.begin();
-    for (unsigned tmp=0; tmp < i && j!=_actionToId.end(); ++tmp, ++j);
+    for (unsigned tmp=0; tmp < i && j!=_actionToId.end(); ++tmp, ++j) {
+      ;
+    }
 
     if (std::find(exclusion_list.begin(), exclusion_list.end(), j->second) == exclusion_list.end()) {
       // i.e. not in exclusion list

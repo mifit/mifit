@@ -66,11 +66,13 @@ static double arrowFlat_data[6][3] =   {{2.0, 0.5, 0.0},
                                         {-2.0, 0.5, 0.0},
                                         {0.0, 0.5, 2.0},
                                         {0.0, -0.5, 2.0}};
+/*
 static double arrowFlat_norm[5][3] =   {{0.0, 0.0, -1.0},
                                         {c45, 0.0, c45},
                                         {-c45, 0.0, c45},
                                         {0.0, 1.0, 0.0},
                                         {0.0, -1.0, 0.0}};
+*/
 
 static bool ribbon_flip[4] = {false, false, false, false}; // Control for ribbon flipping to avoid 180 twists
 

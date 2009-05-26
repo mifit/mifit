@@ -1,5 +1,5 @@
 /* XPM */
-static char * crystalSelected_xpm[] = {
+static const char * crystalSelected_xpm[] = {
 "16 16 136 2",
 "  	c None",
 ". 	c #FFFFFF",

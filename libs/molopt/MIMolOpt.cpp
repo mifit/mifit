@@ -1779,8 +1779,8 @@ int MIMolOpt::getbonddist(RESIDUE* res, Bond* bond) {
   int i;
   //char buf[100];
   /* special case N - C peptide bond */
-  if (!strcmp(bond->getAtom1()->name(), "C") && !strcmp(bond->getAtom2()->name(), "N")
-      || !strcmp(bond->getAtom1()->name(), "N") && !strcmp(bond->getAtom2()->name(), "C")) {
+  if ((!strcmp(bond->getAtom1()->name(), "C") && !strcmp(bond->getAtom2()->name(), "N"))
+      || (!strcmp(bond->getAtom1()->name(), "N") && !strcmp(bond->getAtom2()->name(), "C"))) {
     bond->ideal_length = 1.32F;
     bond->tolerance = 1.32F*0.20F;
     return (1);
@@ -2491,7 +2491,7 @@ float BumpScore(vector<Bond>& bumps) {
 }
 
 void MIMolOpt::FullOptimize(MIAtomList& CurrentAtoms, MIMoleculeBase* fitmol, EMapBase* emap, const float* center,
-                            InterpBox& box, int refine_level,
+                            InterpBox& box, unsigned int refine_level,
                             MIMolOptCheckPoint* checkpoint) {
 
   // Full optimize - optimize all angles, translations and torsions
@@ -2853,7 +2853,7 @@ void MIMolOpt::FullOptimize(MIAtomList& CurrentAtoms, MIMoleculeBase* fitmol, EM
 }
 
 void MIMolOpt::LigandOptimize(MIAtomList& CurrentAtoms, MIMoleculeBase* fitmol, EMapBase* emap, const float* center,
-                              InterpBox& box, int refine_level, GeomSaver& confs,
+                              InterpBox& box, unsigned int refine_level, GeomSaver& confs,
                               MIMolOptCheckPoint* checkpoint) {
 
   // Full optimize - optimize all angles, translations and torsions

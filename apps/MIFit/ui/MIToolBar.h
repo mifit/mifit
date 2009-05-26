@@ -13,7 +13,7 @@ class MIToolBar {
     MIToolBar(MIMenuBar *mb, QMainWindow* parent=0);
     ~MIToolBar() {}
 
-    void AddTool(unsigned int id, char **xpm_data);
+    void AddTool(unsigned int id, const char **xpm_data);
     void AddSeparator();
     void show();
 

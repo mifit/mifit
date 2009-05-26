@@ -10,18 +10,18 @@ namespace opengl {
 namespace interact {
 
 MouseArcBall::MouseArcBall(Viewpoint* viewpoint, Point3<float>& center, float radius)
-  : historicalQuat(0.0f, 0.0f, 0.0f, 1.0f), currentQuat(0.0f, 0.0f, 0.0f, 1.0f),
-  currentVector(0.0f, 0.0f, 0.0f), relativeToViewpoint(NULL), relativeStartQuat(0.0f, 0.0f, 0.0f, 1.0f),
-  startVector(NULL), invertRotation(false) {
+  : relativeToViewpoint(NULL), invertRotation(false) , historicalQuat(0.0f, 0.0f, 0.0f, 1.0f),
+  currentQuat(0.0f, 0.0f, 0.0f, 1.0f), currentVector(0.0f, 0.0f, 0.0f), startVector(NULL),
+  relativeStartQuat(0.0f, 0.0f, 0.0f, 1.0f){
 
   this->viewpoint = viewpoint;
   setPlace(center, radius);
 }
 
 MouseArcBall::MouseArcBall(Viewpoint* viewpoint)
-  : historicalQuat(0.0f, 0.0f, 0.0f, 1.0f), currentQuat(0.0f, 0.0f, 0.0f, 1.0f),
-  currentVector(0.0f, 0.0f, 0.0f), relativeToViewpoint(NULL), relativeStartQuat(0.0f, 0.0f, 0.0f, 1.0f),
-  startVector(NULL) {
+  : relativeToViewpoint(NULL), invertRotation(false) , historicalQuat(0.0f, 0.0f, 0.0f, 1.0f),
+  currentQuat(0.0f, 0.0f, 0.0f, 1.0f), currentVector(0.0f, 0.0f, 0.0f), startVector(NULL),
+  relativeStartQuat(0.0f, 0.0f, 0.0f, 1.0f){
 
   this->viewpoint = viewpoint;
   setPlace(Point3<float>(0.0f, 0.0f, 0.0f), 1.0f);

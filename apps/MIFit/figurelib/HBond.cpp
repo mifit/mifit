@@ -71,11 +71,11 @@ bool IsKnownDonor(const MIAtom& atom, const Residue& res) {
     return true;
   }
   if (strcmp(atom.name(), "ND2") == 0
-      && i == 11 || i == 12) {
+      && (i == 11 || i == 12)) {
     return true;
   }
   if (strcmp(atom.name(), "NE2") == 0
-      && i == 14 || i == 15) {
+      && (i == 14 || i == 15)) {
     return true;
   }
   if (strcmp(atom.name(), "NH1") == 0
@@ -103,7 +103,7 @@ bool IsKnownDonor(const MIAtom& atom, const Residue& res) {
     return true;
   }
   if (strcmp(atom.name(), "O") == 0
-      && i == 22 || i == 23) {
+      && (i == 22 || i == 23)) {
     return true;
   }
 

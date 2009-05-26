@@ -1029,7 +1029,7 @@ bool mmCIF::SlurpTorsions(CifLoop& loop, map<std::string, TORSDICT>& torsion_map
 
     col++;
     if (col == nCols) {
-      if (found_angle && (found_tolerance && tolerance == 0     //Is it an improper?
+      if (found_angle && ((found_tolerance && tolerance == 0)     //Is it an improper?
                           || (!found_period || period == 0))) {
         if (found_period && period == 2) {                      //Improper with 2 possibles
           torsion.ideal[0] = angle;

@@ -33,7 +33,7 @@ const char *z_errmsg[10] = {
 #  endif
 int z_verbose = verbose;
 
-void z_error (char* m)
+void z_error (const char* m)
 {
     fprintf(stderr, "%s\n", m);
     exit(1);

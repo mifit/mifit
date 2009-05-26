@@ -1,5 +1,5 @@
 /* XPM */
-static char *noentry[] = {
+static const char *noentry[] = {
 /* columns rows colors chars-per-pixel */
 "32 32 3 1",
 "  c black",

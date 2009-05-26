@@ -35,7 +35,6 @@ using namespace chemlib;
 
 static const bool useClockwiseFrontFaces = false;
 static float white[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-static float black[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 static void logOpenGLErrors(const char* file, int line) {
   int error = glGetError();

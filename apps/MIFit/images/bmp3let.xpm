@@ -1,5 +1,5 @@
 /* XPM */
-static char * bmp3let_xpm[] = {
+static const char * bmp3let_xpm[] = {
 "16 15 2 1",
 " 	c None",
 ".	c #000000",

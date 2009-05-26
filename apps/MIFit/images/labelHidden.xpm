@@ -1,5 +1,5 @@
 /* XPM */
-static char * labelHidden_xpm[] = {
+static const char * labelHidden_xpm[] = {
 "16 16 14 1",
 " 	c None",
 ".	c #FFFFFF",

@@ -1,5 +1,5 @@
 /* XPM */
-static char * rballDisabled_xpm[] = {
+static const char * rballDisabled_xpm[] = {
 "16 16 3 1",
 " 	c None",
 ".	c #9D9D9D",

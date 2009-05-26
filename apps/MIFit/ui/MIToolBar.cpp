@@ -17,7 +17,7 @@ MIToolBar::MIToolBar(MIMenuBar *mb, QMainWindow *parent) : _mb(mb) {
   _tb->setIconSize(QSize(20,20));
 }
 
-void MIToolBar::AddTool(unsigned int id, char **xpm_data) {
+void  MIToolBar::AddTool(unsigned int id, const char **xpm_data) {
   QAction *act=findAction(id);
   if (!act) {
     std::string foo=::format("Action %d not found in AddTool",id);

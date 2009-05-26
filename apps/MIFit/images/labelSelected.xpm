@@ -1,5 +1,5 @@
 /* XPM */
-static char * labelSelected_xpm[] = {
+static const char * labelSelected_xpm[] = {
 "16 16 14 1",
 " 	c None",
 ".	c #FFFFFF",

@@ -131,8 +131,8 @@ bool ValidateSmiles(const std::string& smi, std::string& smi_err) {
       return false;
     }
 
-    if (bracket_count == 0
-        && *cur_pos == '-'
+    if ((bracket_count == 0
+        && *cur_pos == '-')
         || *cur_pos == '='
         || *cur_pos == '#'
         || *cur_pos == ':'

@@ -91,6 +91,7 @@ bool MIDatum::WriteDatum(std::string& dat_str) const {
 
 unsigned int MIDatum::ReadDatum(const std::string& dat) {
   char buf[1024];
+  int intColor[3];
   memset(buf, 0, 1024);
 
   // scan char-by-char until we get semicolon
@@ -136,13 +137,17 @@ unsigned int MIDatum::ReadDatum(const std::string& dat) {
       }
       break;
     case 'c':
-      if (sscanf(buf, "c %d %d %d", &color[0], &color[1], &color[2]) == 3) {
+      if (sscanf(buf, "c %d %d %d", &intColor[0], &intColor[1], &intColor[2]) == 3) {
+        color[0] = intColor[0];
+        color[1] = intColor[1];
+        color[2] = intColor[2];
         isColor=true;
         return count;
       }
       break;
     case 'C':
-      if (sscanf(buf, "C %d", &color[0]) == 1) {
+      if (sscanf(buf, "C %d", &intColor[0]) == 1) {
+        color[0] = intColor[0];
         isColorIndex=true;
         return count;
       }

@@ -39,7 +39,7 @@ using namespace chemlib;
 
 // keep these all in sync!
 const unsigned int MAP_TYPE_COUNT=11;
-static char *maptypes[MAP_TYPE_COUNT] = {"Fo", "Fc", "2Fo-Fc", "Fo-Fc", "Fo*Fo", "Fo*fom",
+static const char *maptypes[MAP_TYPE_COUNT] = {"Fo", "Fc", "2Fo-Fc", "Fo-Fc", "Fo*Fo", "Fo*fom",
                                          "3Fo-2Fc", "5Fo-3Fc", "2mFo-DFc(SigmaA)", "Fo-DFc(SigmaA)",
                                          "Direct FFT"};
 static bool regular_maptype[MAP_TYPE_COUNT] = {true, true, true, false, true, true,
@@ -3071,7 +3071,7 @@ bool parseCoefficients(const char* str, int& mapType) {
   // Match map type string
   size_t len = coeffEnd - coeff;
   if (len > 0) {
-    for (int i = 0; i < MAP_TYPE_COUNT; i++) {
+    for (unsigned int i = 0; i < MAP_TYPE_COUNT; i++) {
       if (strncasecmp(coeff, maptypes[i], len) == 0 && len == strlen(maptypes[i])) {
         mapType = i;
         break;

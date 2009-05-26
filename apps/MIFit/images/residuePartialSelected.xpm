@@ -1,5 +1,5 @@
 /* XPM */
-static char * residuePartialSelected_xpm[] = {
+static const char * residuePartialSelected_xpm[] = {
 "16 16 93 2",
 "  	c None",
 ". 	c #FFFFFF",

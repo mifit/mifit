@@ -1,5 +1,5 @@
 /* XPM */
-static char *hand[] = {
+static const char *hand[] = {
 /* columns rows colors chars-per-pixel */
 "32 32 3 1",
 "  c black",

@@ -209,10 +209,10 @@ void LigDictionary::GenDoubleBondImpropers() {
           continue;                                         //fix for cyclopropenes
 
         }
-        if (bnd1->stereo == STEREO_UP
-            && bnd2->stereo == STEREO_UP
-            || bnd1->stereo == STEREO_DOWN
-            && bnd2->stereo == STEREO_DOWN) {
+        if ((bnd1->stereo == STEREO_UP
+            && bnd2->stereo == STEREO_UP)
+            || (bnd1->stereo == STEREO_DOWN
+            && bnd2->stereo == STEREO_DOWN)) {
           imp.AddAtom(*atm1);
           imp.AddAtom(atom2);
           imp.AddAtom(atom3);
@@ -221,10 +221,10 @@ void LigDictionary::GenDoubleBondImpropers() {
           imp.SetIndex(impropers.size()+1);
           AddImproper(imp, false);
           imp.Clear();
-        } else if (bnd1->stereo == STEREO_DOWN
-                   && bnd2->stereo == STEREO_UP
-                   || bnd1->stereo == STEREO_UP
-                   && bnd2->stereo == STEREO_DOWN) {
+        } else if ((bnd1->stereo == STEREO_DOWN
+                   && bnd2->stereo == STEREO_UP)
+                   || (bnd1->stereo == STEREO_UP
+                   && bnd2->stereo == STEREO_DOWN)) {
           imp.AddAtom(*atm1);
           imp.AddAtom(atom2);
           imp.AddAtom(atom3);

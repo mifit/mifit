@@ -1,5 +1,5 @@
 /* XPM */
-static char * centerDisabled_xpm[] = {
+static const char * centerDisabled_xpm[] = {
 "16 16 2 1",
 " 	c None",
 ".	c #9D9D9D",

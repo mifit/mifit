@@ -108,8 +108,8 @@ public:
   int AddPlane(const PLANEDICT& plane);
   int AddChiral(const CHIRALDICT& chiral);
 
-  int AddConstraint(MIAtom* a1, char* sigma);
-  int AddConstraint(MIAtom* a1, MIAtom* a2, char* d, char* s);
+  int AddConstraint(MIAtom* a1, const char* sigma);
+  int AddConstraint(MIAtom* a1, MIAtom* a2, const char* d, const char* s);
   void ConstrainCalpha(RESIDUE *, int);
   void RestrainEnds(RESIDUE *, int);
   void RemoveConstraints();

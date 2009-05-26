@@ -1,5 +1,5 @@
 /* XPM */
-static char *pntright[] = {
+static const char *pntright[] = {
 /* columns rows colors chars-per-pixel */
 "32 32 3 1",
 "  c black",

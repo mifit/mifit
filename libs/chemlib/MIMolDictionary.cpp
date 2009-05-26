@@ -1306,7 +1306,7 @@ void MIMolDictionary::ConstrainCalpha(RESIDUE* RefiRes, int nRefiRes) {
   }
 }
 
-int MIMolDictionary::AddConstraint(MIAtom* a1, char* sigma) {
+int MIMolDictionary::AddConstraint(MIAtom* a1, const char* sigma) {
   float tol, d;
   Bond bond;
 
@@ -1335,7 +1335,7 @@ int MIMolDictionary::AddConstraint(MIAtom* a1, char* sigma) {
   return 1;
 }
 
-int MIMolDictionary::AddConstraint(MIAtom* a1, MIAtom* a2, char* target, char* sigma) {
+int MIMolDictionary::AddConstraint(MIAtom* a1, MIAtom* a2, const char* target, const char* sigma) {
   float tol, d;
   Bond bond;
 

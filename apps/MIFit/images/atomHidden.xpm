@@ -1,5 +1,5 @@
 /* XPM */
-static char * atomHidden_xpm[] = {
+static const char * atomHidden_xpm[] = {
 "16 16 82 1",
 " 	c None",
 ".	c #FFFFFF",

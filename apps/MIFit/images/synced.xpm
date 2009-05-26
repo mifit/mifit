@@ -1,5 +1,5 @@
 /* XPM */
-static char * synced_xpm[] = {
+static const char * synced_xpm[] = {
 "16 16 16 1",
 " 	c None",
 ".	c #BD8416",

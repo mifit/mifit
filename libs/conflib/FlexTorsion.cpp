@@ -275,8 +275,8 @@ MIAtom* SetUpTorsion(const RESIDUE* res,
     //Don't put in the central bond of the torsion...removing
     //this bond splits the graph into two parts, which allows
     //us to search the subgraph on each side of the torsion
-    if (bonds[i].getAtom1() == atom1 && bonds[i].getAtom2() == atom2
-        || bonds[i].getAtom1() == atom2 && bonds[i].getAtom2() == atom1) {
+    if ((bonds[i].getAtom1() == atom1 && bonds[i].getAtom2() == atom2)
+        || (bonds[i].getAtom1() == atom2 && bonds[i].getAtom2() == atom1)) {
       continue;
     }
 

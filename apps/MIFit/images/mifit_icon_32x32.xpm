@@ -1,5 +1,5 @@
 /* XPM */
-static char * mifit_icon[] = {
+static const char * mifit_icon[] = {
 "32 32 595 2",
 "  	c None",
 ". 	c #000000",

@@ -4,8 +4,9 @@
 #include <math/Vector3.h>
 #include <vector>
 
-
-class chemlib::Bond;
+namespace chemlib {
+class Bond;
+}
 
 namespace mi {
 namespace opengl {

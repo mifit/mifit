@@ -100,13 +100,15 @@
 /*  Include library.h                                                       */
 #include "library.h"
 
+#include <stdlib.h>
+
 static void vaxF2ieeeF (union float_uint_uchar *, int);
 static void ieeeF2vaxF (union float_uint_uchar *, int);
 static void convexF2ieeeF (union float_uint_uchar *, int);
 static void ieeeF2convexF (union float_uint_uchar *, int);
 
 /* <global variables>=                                                      */
-static char rcsid[] = "$Id: library.c,v 1.7 2001/06/25 10:22:08 ccb Exp $";
+/* static char rcsid[] = "$Id: library.c,v 1.7 2001/06/25 10:22:08 ccb Exp $"; */
 static int initialised =  0;    /* flag to initialise data and file streams */
 /*  These DISKIO file modes used to include a [[b]] since they're           */
 /* binary.  This caused serious lossage when reading a (scratch) file       */

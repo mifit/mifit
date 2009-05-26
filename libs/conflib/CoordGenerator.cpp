@@ -293,7 +293,7 @@ double CoordGenerator::GenMolStruct(std::string& log) {
     if (atom->search_flag() == 0) {
       PlaceAtom(atom);
       char buf[1024];
-      sprintf("Placed atom %d at %f %f %f\n", atom->name(), atom->x(), atom->y(), atom->z());
+      sprintf(buf, "Placed atom %s at %f %f %f\n", atom->name(), atom->x(), atom->y(), atom->z());
       log += buf;
     }
 
@@ -306,7 +306,7 @@ double CoordGenerator::GenMolStruct(std::string& log) {
 
             PlaceAtom(*nabor);
             char buf[1024];
-            sprintf("Placed atom %d at %f %f %f\n", (*nabor)->name(), (*nabor)->x(), (*nabor)->y(), (*nabor)->z());
+            sprintf(buf, "Placed atom %s at %f %f %f\n", (*nabor)->name(), (*nabor)->x(), (*nabor)->y(), (*nabor)->z());
             log += buf;
           }
         }

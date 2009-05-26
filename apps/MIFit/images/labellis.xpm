@@ -1,5 +1,5 @@
 /* XPM */
-static char * labellis_xpm[] = {
+static const char * labellis_xpm[] = {
 /* columns rows colors chars-per-pixel */
 "16 15 2 1",
 "  c black",
