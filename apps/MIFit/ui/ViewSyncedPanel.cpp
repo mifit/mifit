@@ -11,6 +11,7 @@
 ViewSyncedPanel::ViewSyncedPanel(QWidget* parent) : QWidget(parent), currentPanel(NULL) {
 
   layout = new QVBoxLayout(this);
+  layout->setContentsMargins(0, 0, 0, 0);
   setLayout(layout);
 
   createDefaultNullPanel();

@@ -264,7 +264,7 @@ JobsView::JobsView(QWidget* parent) : QWidget(parent), listeningToBatchJobManage
 
   jobsTree = new JobsTree(this);
   QVBoxLayout *vbox=new QVBoxLayout();
-  vbox->setContentsMargins(2,2,2,2);
+  vbox->setContentsMargins(0, 0, 0, 0);
   vbox->setSpacing(2);
   vbox->addWidget(jobsTree);
   setLayout(vbox);

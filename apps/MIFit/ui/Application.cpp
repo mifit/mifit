@@ -43,8 +43,6 @@
 
 #include "Version.h"
 
-char Copyright[] = "Copyright 2008, Rigaku Americas Corporation. All Rights Reserved.";
-
 int PaletteChanged = true;
 #define GLOBAL
 

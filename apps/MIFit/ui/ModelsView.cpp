@@ -3692,15 +3692,14 @@ public:
 
 
 QWidget* ModelsView::createPanelForView(MIGLWidget* view, QWidget* parent) {
-  parent->layout()->setContentsMargins(2,2,2,2);
+  parent->layout()->setContentsMargins(0, 0, 0, 0);
 
   ModelsViewPanel* panel = new ModelsViewPanel(parent);
 
   // create vertical layout
   QHBoxLayout *hlayout=new QHBoxLayout();
-  hlayout->setContentsMargins(2,2,2,2);
+  hlayout->setContentsMargins(0, 0, 0, 0);
   hlayout->setSpacing(2);
-
 
   QLineEdit* goToResidueLineEdit = new MyLineEdit("Go to residue", panel);
   goToResidueLineEdit->setToolTip("Go to residue (A 123)");
@@ -3728,10 +3727,11 @@ QWidget* ModelsView::createPanelForView(MIGLWidget* view, QWidget* parent) {
 
   QVBoxLayout *vbox=new QVBoxLayout(panel);
   vbox->addLayout(hlayout);
-  vbox->setContentsMargins(2,2,2,2);
+  vbox->setContentsMargins(0, 0, 0, 0);
   vbox->setSpacing(2);
 
   QSplitter *splitter=new QSplitter(Qt::Vertical, panel);
+  splitter->setContentsMargins(0, 0, 0, 0);
   vbox->addWidget(splitter);
 
   panel->setLayout(vbox);

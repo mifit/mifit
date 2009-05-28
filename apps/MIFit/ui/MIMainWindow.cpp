@@ -719,7 +719,7 @@ void MIMainWindow::OnExit() {
 
 void MIMainWindow::OnAbout()
 {
-  std::string s=::format("MIFit %s\n\n%s", MIFit_version, Copyright);
+  std::string s=::format("MIFit %s\n", MIFit_version);
   MIMessageBox(s.c_str(), "About MIFit");
 }
 
@@ -1682,11 +1682,13 @@ void MIMainWindow::updateWindowMenu()
     QList<QMdiSubWindow *> windows = mdiArea->subWindowList();
 
     for (int i = 0; i < windows.size(); ++i) {
-        MIGLWidget *child = firstChildWithName<MIGLWidget*>(windows.at(i)->widget(), "MIGLWidget");
+        MIGLWidget *child = dynamic_cast<MIGLWidget*>(windows.at(i)->widget());
         if (!child)
           continue;
 
         QString text;
+        if (i == 0)
+            windowMenu->addSeparator();
         if (i < 9) {
             text = tr("&%1 %2").arg(i + 1)
               .arg(child->GetTitle().c_str());
@@ -1792,29 +1794,6 @@ static void fill_file_menu(MIMenu* file_menu, int type) {
 }
 
 
-
-static void fill_seq_menu(MIMenu* seq_menu) {
-  seq_menu->Append(ID_FIT_MARK_ALPHA, "&Mark Range As Helix", "Mark the range as alpha helix", false);
-  seq_menu->Append(ID_FIT_MARK_BETA, "Mar&k Range As Sheet", "Mark the range as beta sheet", false);
-  seq_menu->AppendSeparator();
-  seq_menu->Append(ID_SEQUENCE_ENTER, "Enter Lower Sequence...", "Opens a text box into which a sequence can be pasted or typed", false);
-  seq_menu->Append(ID_SEQUENCE_READ, "Read Lower Sequence...", "Read a file to set the lower sequence", false);
-  seq_menu->Append(ID_SEQUENCE_SAVE, "Save Lower Sequence...", "Save the sequence on the lower line in FASTA format", false);
-  seq_menu->AppendSeparator();
-  seq_menu->Append(ID_SEQU_SAVEPROTEIN, "Save Model Sequence...", "Save the model sequence in FASTA format", false);
-  seq_menu->AppendSeparator();
-  seq_menu->Append(ID_SEQU_SETPOSITION, "Set Sequence Range", "Set the sequence number of the range", false);
-  seq_menu->Append(ID_SEQU_SETCHAIN, "Set Sequence Chain", "Set the sequence number of the whole chain with the selection", false);
-  seq_menu->Append(ID_SEQUENCE_INSERTGAP, "Insert Gap", "Inserts a gap in the upper sequence", false);
-  seq_menu->Append(ID_SEQUENCE_DELETEGAP, "Delete Gap", "Deletes the gap in the upper sequence", false);
-  seq_menu->Append(ID_SEQUENCE_INSERTLOWERGAP, "Insert Gap Lower", "Inserts a gap in the lower sequence", false);
-  seq_menu->Append(ID_SEQUENCE_DELETELOWERGAP, "Delete Gap Lower", "Deletes a gap in the lower sequence", false);
-  seq_menu->AppendSeparator();
-  seq_menu->Append(ID_SEQUENCE_SPLIT, "Sequence View", "Shows/hides the sequence window", true);
-  seq_menu->Append(ID_NAVIGATION_SPLIT, "Navigation View", "Shows/hides the navigation window", true);
-  //seq_menu->Append(ID_SEQUENCE_UNSPLIT, "Hide Sequence View", "Hides the sequence window", false);
-  //seq_menu->Append(ID_SEQUENCE_UNSPLIT, "Hide Navigation View", "Hides the navigation window", false);
-}
 
 static void fill_help_menu(MIMenu* help_menu) {
   help_menu->Append(ID_ABOUT, "&About...");
@@ -2182,11 +2161,6 @@ void MIMainWindow::createMenus()
   menu_bar->Append(model_menu, "&Model");
   menu_bar->Append(fit_menu, "F&it");
   menu_bar->Append(refi_menu, "&Refine");
-
-  MIMenu* seq_menu = new MIMenu(*this);
-  fill_seq_menu(seq_menu);
-  menu_bar->Append(seq_menu, "S&equence");
-
   menu_bar->Append(analyze_menu, "&Analyze");
 
   JobManager = new BatchJobManager();
@@ -2210,7 +2184,7 @@ void MIMainWindow::createMenus()
     updateWindowMenu();
     connect(windowMenu, SIGNAL(aboutToShow()), this, SLOT(updateWindowMenu()));
 
-    viewMenu = menuBar()->addMenu(tr("&View"));
+    viewMenu = menuBar()->addMenu(tr("View"));
 
     menu_bar->Append(help_menu, "Help");
 
@@ -2347,7 +2321,7 @@ QMdiArea* MIMainWindow::getMdiArea() {
 void MIMainWindow::setActiveMIGLWidget(MIGLWidget *w)
 {
   Q_FOREACH (QMdiSubWindow *window, mdiArea->subWindowList()) {
-    if (firstChildWithName<MIGLWidget*>(window->widget(), "MIGLWidget") == w)
+    if (window->widget() == w)
       mdiArea->setActiveSubWindow(window);
   }
 }
@@ -2358,8 +2332,8 @@ QMdiSubWindow *MIMainWindow::findMIGLWidget(const QString &fileName)
     QString canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
 
     Q_FOREACH (QMdiSubWindow *window, mdiArea->subWindowList()) {
-        MIGLWidget *mdiChild = firstChildWithName<MIGLWidget *>(window->widget(), "MIGLWidget");
-        if (QString(mdiChild->GetFilename().c_str()) == canonicalFilePath)
+        MIGLWidget *mdiChild = dynamic_cast<MIGLWidget*>(window->widget());
+        if (mdiChild && QString(mdiChild->GetFilename().c_str()) == canonicalFilePath)
             return window;
     }
     return 0;

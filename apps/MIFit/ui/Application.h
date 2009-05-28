@@ -9,9 +9,6 @@ class MIConfig;
 #include "maplib.h"
 #include "corelib.h"
 
-
-extern char Copyright[];
-
 class MISingleInstanceChecker;
 class GeomRefiner;
 class QSettings;
