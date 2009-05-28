@@ -1562,6 +1562,7 @@ void MIMainWindow::AfterInit() {
   }
 #endif
 
+  args.pop_front();
   Q_FOREACH(QString str, args) {
     arglist.push_back(str.toStdString());
   }
