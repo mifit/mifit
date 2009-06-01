@@ -262,10 +262,9 @@ void GLRenderer::DrawSecondaryStructure(SecondaryStructure* secondaryStructure) 
     pNextRSeg = pNextRSeg->m_pNext;
   }
 
-  Helix* pHelix = secondaryStructure->m_pHelixList;
-  while (pHelix) {
-    DrawHelix(pHelix);
-    pHelix = pHelix->m_pNext;
+  std::vector<Helix*>::iterator pHelix = secondaryStructure->m_pHelixList.begin();
+  for (; pHelix != secondaryStructure->m_pHelixList.end(); ++pHelix) {
+    DrawHelix(*pHelix);
   }
 
   pNextRSeg = secondaryStructure->m_pSheetList;

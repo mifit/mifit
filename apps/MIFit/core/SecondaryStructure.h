@@ -34,8 +34,7 @@ private:
   MIData options;
   RibbonSegment* m_pRibbonSegmentList;
   RibbonSegment* m_pRibbonSegmentLast;
-  Helix* m_pHelixList;
-  Helix* m_pHelixLast;
+  std::vector<Helix*> m_pHelixList;
   RibbonSegment* m_pSheetList;
   RibbonSegment* m_pSheetLast;
   RibbonSegment* m_pTurnList;

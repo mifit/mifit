@@ -11,8 +11,6 @@ using namespace chemlib;
 SecondaryStructure::SecondaryStructure() {
   m_pRibbonSegmentList = NULL;
   m_pRibbonSegmentLast = NULL;
-  m_pHelixList = NULL;
-  m_pHelixLast = NULL;
   m_pSheetList = NULL;
   m_pSheetLast = NULL;
   m_pTurnList = NULL;
@@ -67,6 +65,7 @@ bool SecondaryStructure::AddSchematic(chemlib::MIMoleculeBase *mol,
       std::vector<std::pair<chemlib::RESIDUE*, chemlib::RESIDUE*> >& pSheet,
       std::vector<std::pair<chemlib::RESIDUE*, chemlib::RESIDUE*> >& pTurn,
       std::vector<std::pair<chemlib::RESIDUE*, chemlib::RESIDUE*> >& pRandom) {
+
   //First do the helices
   unsigned int i;
   double radius;
@@ -79,17 +78,13 @@ bool SecondaryStructure::AddSchematic(chemlib::MIMoleculeBase *mol,
   MIConfig::Instance()->Read("Secondary Structure/helix/blue", &blue, 0);
   for (i = 0; i < pHelix.size(); i++) {
     Helix* pNewHelix = new Helix(radius);
-    pNewHelix->MakeHelix(mol, pHelix[i].first, pHelix[i].second);
-    pNewHelix->SetColor(
-        (unsigned char)CLAMP(red, 0, 255),
-        (unsigned char)CLAMP(green, 0, 255),
-        (unsigned char)CLAMP(blue, 0, 255));
-    if (m_pHelixLast == NULL) {
-      m_pHelixList = pNewHelix;
-    } else {
-      m_pHelixLast->m_pNext = pNewHelix;
+    if (pNewHelix->MakeHelix(mol, pHelix[i].first, pHelix[i].second)) {
+      pNewHelix->SetColor(
+          (unsigned char)CLAMP(red, 0, 255),
+          (unsigned char)CLAMP(green, 0, 255),
+          (unsigned char)CLAMP(blue, 0, 255));
+      m_pHelixList.push_back(pNewHelix);
     }
-    m_pHelixLast = pNewHelix;
   }
 
   //Now do the beta sheets
@@ -203,7 +198,7 @@ bool SecondaryStructure::AddSchematic(chemlib::MIMoleculeBase *mol,
       delete pNewRSeg;
     }
   }
-
+  
   return true;
 }
 #undef CLAMP
@@ -221,14 +216,10 @@ bool SecondaryStructure::DeleteAllRibbonSegments() {
 }
 
 bool SecondaryStructure::DeleteAllSchematic() {
-  Helix* pHelix = m_pHelixList;
-  while (pHelix) {
-    Helix*  pNextHelix = pHelix->m_pNext;
-    delete pHelix;
-    pHelix = pNextHelix;
+  std::vector<Helix*>::iterator pHelix = m_pHelixList.begin();
+  for (; pHelix != m_pHelixList.end(); ++pHelix) {
+    delete *pHelix;
   }
-  m_pHelixList = NULL;
-  m_pHelixLast = NULL;
 
   RibbonSegment* pCurrRSeg = m_pSheetList;
   while (pCurrRSeg) {

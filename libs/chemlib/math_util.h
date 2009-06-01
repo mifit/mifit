@@ -28,10 +28,10 @@ inline double DotVect(const double lhx,
 inline double CosVectorAngle(double v1[3], double v2[3]) {
   double d1d2;
 
-  d1d2 = (double)sqrt((v1[1]*v1[1]+v1[2]*v1[2]+v1[3]*v1[3])*
-           (v2[1]*v2[1]+v2[2]*v2[2]+v2[3]*v2[3]));
+  d1d2 = (double)sqrt((v1[0]*v1[0]+v1[1]*v1[1]+v1[2]*v1[2])*
+           (v2[0]*v2[0]+v2[1]*v2[1]+v2[2]*v2[2]));
 
-  return (v1[1]*v2[1] + v1[2]*v2[2] + v1[3]*v2[3]) / d1d2;
+  return (v1[0]*v2[0] + v1[1]*v2[1] + v1[2]*v2[2]) / d1d2;
 }
 
 inline void CrossVects(double a[3], double b[3], double c[3]) {

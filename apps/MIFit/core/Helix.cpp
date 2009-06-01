@@ -9,8 +9,7 @@
 
 using namespace chemlib;
 
-Helix::Helix(double radius) : m_dRadius(radius) {
-  m_pNext = NULL;
+Helix::Helix(double radius) : m_pNext(NULL), m_dRadius(radius) {
 }
 
 Helix::~Helix() {
@@ -391,5 +390,5 @@ void Helix::SetColor(unsigned char red, unsigned char green, unsigned char blue)
   rgb[0] = red;
   rgb[1] = green;
   rgb[2] = blue;
-  rgb[4] = 255;
+  rgb[3] = 255;
 }
