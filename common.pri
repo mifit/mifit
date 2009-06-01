@@ -3,6 +3,7 @@ ExternalDir = $$TOP_SRCDIR/external
 BoostDir = $$ExternalDir/boost_1_36_0
 PythonDir = $$ExternalDir/python
 
+CONFIG -= debug release
 CONFIG += $$[config]
 
 CONFIG(debug, debug|release) {
