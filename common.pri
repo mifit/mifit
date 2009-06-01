@@ -1,7 +1,7 @@
 TOP_SRCDIR = $$[mifitDir]
 ExternalDir = $$TOP_SRCDIR/external
 BoostDir = $$ExternalDir/boost_1_36_0
-PythonDir = $$ExternalDir/python
+PythonDir = $$TOP_SRCDIR/python
 
 CONFIG -= debug release
 CONFIG += $$[config]
