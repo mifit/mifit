@@ -9,7 +9,7 @@
 #include <QPushButton>
 #include <QSettings>
 #include <QActionGroup>
-
+#include <QStackedLayout>
 
 #include <set>
 #include <boost/bind.hpp>
@@ -3838,7 +3838,7 @@ void ModelsView::OnGoToResidueReturnPressed() {
 }
 
 ModelsTree* ModelsView::GetCurrentModelsTree() const {
-  ModelsViewPanel* panel = dynamic_cast<ModelsViewPanel*>(currentPanel);
+  ModelsViewPanel* panel = dynamic_cast<ModelsViewPanel*>(stackedLayout->currentWidget());
   if (panel == NULL) {
     return NULL;
   }
@@ -3846,7 +3846,7 @@ ModelsTree* ModelsView::GetCurrentModelsTree() const {
 }
 
 ResiduesTree* ModelsView::GetCurrentResiduesTree() const {
-  ModelsViewPanel* panel = dynamic_cast<ModelsViewPanel*>(currentPanel);
+  ModelsViewPanel* panel = dynamic_cast<ModelsViewPanel*>(stackedLayout->currentWidget());
   if (panel == NULL) {
     return NULL;
   }
@@ -3854,7 +3854,7 @@ ResiduesTree* ModelsView::GetCurrentResiduesTree() const {
 }
 
 AtomsTree* ModelsView::GetCurrentAtomsTree() const {
-  ModelsViewPanel* panel = dynamic_cast<ModelsViewPanel*>(currentPanel);
+  ModelsViewPanel* panel = dynamic_cast<ModelsViewPanel*>(stackedLayout->currentWidget());
   if (panel == NULL) {
     return NULL;
   }

@@ -3,16 +3,16 @@
 #include <boost/bind.hpp>
 #include <boost/signal.hpp>
 
-#include <QVBoxLayout>
+#include <QStackedLayout>
 
 #include "MIGLWidget.h"
 
 
-ViewSyncedPanel::ViewSyncedPanel(QWidget* parent) : QWidget(parent), currentPanel(NULL) {
+ViewSyncedPanel::ViewSyncedPanel(QWidget* parent) : QWidget(parent) {
 
-  layout = new QVBoxLayout(this);
-  layout->setContentsMargins(0, 0, 0, 0);
-  setLayout(layout);
+  stackedLayout = new QStackedLayout(this);
+  stackedLayout->setContentsMargins(0, 0, 0, 0);
+  setLayout(stackedLayout);
 
   createDefaultNullPanel();
   setViewPanel(NULL);
@@ -28,14 +28,13 @@ ViewSyncedPanel::~ViewSyncedPanel() {
 void ViewSyncedPanel::createDefaultNullPanel() {
   QWidget* panel = new QWidget(this);
   viewToPanel[NULL] = panel;
-  layout->addWidget(panel);
+  stackedLayout->addWidget(panel);
 }
 
 void ViewSyncedPanel::createViewPanel(MIGLWidget* view) {
   QWidget* panel = createPanelForView(view, this);
-
   viewToPanel[view] = panel;
-  layout->addWidget(panel);
+  stackedLayout->addWidget(panel);
 }
 
 void ViewSyncedPanel::viewActivated(MIGLWidget* view) {
@@ -43,26 +42,23 @@ void ViewSyncedPanel::viewActivated(MIGLWidget* view) {
 }
 
 void ViewSyncedPanel::viewDeactivated(MIGLWidget* view) {
-  setViewPanel(NULL);
   if (panelForViewExists(view)) {
-    QWidget* viewPanel = viewToPanel[view];
-    destroyContentsForView(view, viewPanel);
+    QWidget* panel = viewToPanel[view];
+    if (stackedLayout->currentWidget() == panel) {
+      setViewPanel(NULL);
+    }
     viewToPanel.erase(view);
-    layout->removeWidget(viewPanel);
-    delete viewPanel;
+    stackedLayout->removeWidget(panel);
+    destroyContentsForView(view, panel);
+    delete panel;
   }
 }
 
 void ViewSyncedPanel::setViewPanel(MIGLWidget* view) {
-  if (currentPanel != NULL) {
-    currentPanel->setVisible(false);
-  }
   if (!panelForViewExists(view)) {
     createViewPanel(view);
   }
-  currentPanel = viewToPanel[view];
-  currentPanel->setVisible(true);
-  //layout->update();
+  stackedLayout->setCurrentWidget(viewToPanel[view]);
 }
 
 bool ViewSyncedPanel::panelForViewExists(MIGLWidget* view) {

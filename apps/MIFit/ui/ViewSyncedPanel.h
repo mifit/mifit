@@ -7,13 +7,13 @@
 #include "core/MIData.h"
 
 class MIGLWidget;
+class QStackedLayout;
 
 class ViewSyncedPanel : public QWidget {
   Q_OBJECT
 
 protected:
-  QLayout *layout;
-  QWidget* currentPanel;
+  QStackedLayout* stackedLayout;
   typedef std::map<MIGLWidget*, QWidget*> ViewToPanelMap;
   ViewToPanelMap viewToPanel;
 
