@@ -2308,7 +2308,8 @@ void MIMainWindow::createStatusBar()
 
 MIGLWidget *MIMainWindow::currentMIGLWidget()
 {
-  if (QMdiSubWindow *activeSubWindow = mdiArea->activeSubWindow()) {
+  QMdiSubWindow *activeSubWindow = mdiArea->currentSubWindow();
+  if (activeSubWindow) {
     return dynamic_cast<MIGLWidget*>(activeSubWindow->widget());
   }
   return 0;
