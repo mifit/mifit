@@ -9843,6 +9843,9 @@ bool MIGLWidget::OnSaveModified() {
   if (_modified)
   {
     std::string title= GetTitle();
+    if (endsWith(title, "[*]")) {
+      title = title.substr(0, title.size()-3);
+    }
     std::string msgTitle="MIFit: Warning";
     std::string prompt = ::format("Do you want to save changes to document %s?",title.c_str());
 
@@ -10473,7 +10476,7 @@ void MIGLWidget::OpenAnyFile(const std::string &fname) {
         _filename=fname;
         _filename.erase(_filename.size() - 4);  // remove 4 chars in ".pdb"
         _filename+=".mlw";
-        parentWidget()->setWindowTitle(_filename.c_str());
+        SetTitle(_filename);
       }
     }
     return;
