@@ -877,7 +877,6 @@ void Molecule::GenSymmAtoms(ViewPoint* viewpoint) {
   symm_center[0] = viewpoint->getcenter(0);
   symm_center[1] = viewpoint->getcenter(1);
   symm_center[2] = viewpoint->getcenter(2);
-  //WaitCursor wait;
   ClearSymmList();
   symm_radius = (float)viewpoint->xmax/((float)viewpoint->getscale()/10.0F)*0.7F;
   SymmResidues = SymmResidue(getResidues(), mapheader, symm_center, symm_radius);
@@ -1561,8 +1560,6 @@ long Molecule::SolventSurface(ViewPoint*, float dotsper) {
   long maxadots = 0;
   void* hdots = NULL;
 
-  WaitCursor wait("Solvent Surface");
-
   std::vector<SURFDOT>().swap(dots); // was dots.clear();
   spacing = dotsper;
 
@@ -1604,9 +1601,6 @@ long Molecule::SolventSurface(ViewPoint*, float dotsper) {
         }
       }
     }
-    if (wait.CheckForAbort()) {
-      SurfResult = 0;
-    }
   }
   if (hdots != NULL) {
     free(hdots);
@@ -1622,7 +1616,6 @@ long Molecule::SurfaceResidues(float dotsper, ViewPoint* vp, bool ignore_hidden)
   extern int SurfResult;
   SurfResult = 1;
   srfdotsper = dotsper;
-  WaitCursor wait("Residue Surface");
   //ndots = 0;
   for (MIIter<RESIDUE> res = GetResidues(); (bool)res && SurfResult != 0; ++res) {
     if (res->flags()&128) {
@@ -1630,15 +1623,12 @@ long Molecule::SurfaceResidues(float dotsper, ViewPoint* vp, bool ignore_hidden)
         if (!IsOnScreen(res->atom(i), vp)) {
           continue;
         }
-        Surface(res->atom(i), ignore_hidden, false, false);
+        Surface(res->atom(i), ignore_hidden, false);
         if (SurfResult == 0) {
           break;
         }
       }
       res->setFlags(res->flags()&(!128));
-    }
-    if (wait.CheckForAbort()) {
-      SurfResult = 0;
     }
   }
   surfaceChanged(this);
@@ -1653,7 +1643,6 @@ long Molecule::SurfaceResidue(RESIDUE* res, float dotsper, ViewPoint* vp, bool i
   SURFDOT* adots;
 
   float r1;
-  WaitCursor wait("Residue Surface");
   srfdotsper = dotsper;
   extern int SurfResult;
   SurfResult = 1;
@@ -1685,9 +1674,6 @@ long Molecule::SurfaceResidue(RESIDUE* res, float dotsper, ViewPoint* vp, bool i
       }
       for (int l = 0; l < nadots; l++) {
         dots.push_back(adots[l]);
-      }
-      if (wait.CheckForAbort()) {
-        SurfResult = 0;
       }
     }
   }
@@ -1724,7 +1710,7 @@ long Molecule::SurfaceAroundAtom(MIAtom* atom, float dotsper, float radius) {
   return (dots.size());
 }
 
-long Molecule::Surface(MIAtom* atom, bool ignore_hidden, bool send_signal, bool do_abort_check) {
+long Molecule::Surface(MIAtom* atom, bool ignore_hidden, bool send_signal) {
   int i;
   MIAtom* b[100];
   int nb = 0;
@@ -1733,7 +1719,6 @@ long Molecule::Surface(MIAtom* atom, bool ignore_hidden, bool send_signal, bool 
   long nadots = 0;
   long maxadots = 0;
   void* hdots = NULL;
-  WaitCursor wait("Surface Atom");
 
   for (MIIter<RESIDUE> res = GetResidues(); res; ++res) {
     for (i = 0; i < res->atomCount(); i++) {
@@ -1745,9 +1730,6 @@ long Molecule::Surface(MIAtom* atom, bool ignore_hidden, bool send_signal, bool 
           }
         }
       }
-    }
-    if (do_abort_check && wait.CheckForAbort()) {
-      res.Last();
     }
   }
   nadots = 0;
@@ -1780,7 +1762,6 @@ void Molecule::ShowHydrogens(bool Show) {
 }
 
 long Molecule::SurfaceCenter(ViewPoint* viewpoint, float dotsper, float boxsize, bool ignore_hidden) {
-  WaitCursor wait("Surface");
   long cx = (long)viewpoint->getcenteri(0);
   long cy = (long)viewpoint->getcenteri(1);
   long cz = (long)viewpoint->getcenteri(2);
@@ -1803,14 +1784,11 @@ long Molecule::SurfaceCenter(ViewPoint* viewpoint, float dotsper, float boxsize,
       y -= cy;
       z -= cz;
       if (x*x + y*y + z*z < radius) {
-        Surface(res->atom(i), ignore_hidden, false, false);
+        Surface(res->atom(i), ignore_hidden, false);
       }
       if (SurfResult == 0) {
         break;
       }
-    }
-    if (wait.CheckForAbort()) {
-      SurfResult = 0;
     }
   }
   surfaceChanged(this);

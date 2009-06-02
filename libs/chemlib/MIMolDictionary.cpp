@@ -339,7 +339,6 @@ int MIMolDictionary::FindGeom(RESIDUE* reslist, int nres, RESIDUE* ResActiveMode
   if (EmptyDictCheck() == false) {
     return 0;
   }
-  WaitCursor wait("Find Geometry");
   ANGLE angle;
   Bond bond;
   PLANE plane;
@@ -1283,9 +1282,6 @@ int MIMolDictionary::FindGeom(RESIDUE* reslist, int nres, RESIDUE* ResActiveMode
     prev = reslist;
 
     reslist = reslist->next();
-    if (wait.CheckForAbort()) {
-      reslist = NULL;
-    }
   }
   return 1;
 }

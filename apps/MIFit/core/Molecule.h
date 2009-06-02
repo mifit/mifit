@@ -266,7 +266,7 @@ public:
   long SurfaceAroundAtom(chemlib::MIAtom*, float, float);
   long SurfaceResidue(chemlib::RESIDUE*, float, ViewPoint *vp, bool ignore_hidden = true);
   long SurfaceResidues(float, ViewPoint *vp, bool ignore_hidden = true);
-  long Surface(chemlib::MIAtom*, bool ignore_hidden = true, bool send_signal = true, bool do_abort_check=true);
+  long Surface(chemlib::MIAtom*, bool ignore_hidden = true, bool send_signal = true);
   void Save(XMLArchive&);
   void Load(FILE* fp);
 

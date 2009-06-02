@@ -107,7 +107,6 @@ void InterpBox::ZeroModel(RESIDUE* res) {
   int iix, iiy, iiz;
   int index;
   float r;
-  WaitCursor wait("Zero Model Density");
   while (Residue::isValid(res)) {
     for (int i = 0; i < res->atomCount(); i++) {
       a = res->atom(i);
@@ -145,9 +144,6 @@ void InterpBox::ZeroModel(RESIDUE* res) {
       }
     }
     res = res->next();
-    if (wait.CheckForAbort()) {
-      break;
-    }
   }
 }
 

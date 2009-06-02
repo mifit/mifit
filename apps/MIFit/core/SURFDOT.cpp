@@ -149,7 +149,6 @@ atomsurfradius(MIAtom* a, float r, SURFDOT** dots,
   int obscured = 0;
   size_t nbytes;
   SurfResult = 1;
-  WaitCursor wait("Surface Atoms");
   SurfaceSphere sphere;
   sphere.build(r, dotsper);
   std::vector<APOINT>& points = sphere.getPoints();
@@ -190,11 +189,6 @@ atomsurfradius(MIAtom* a, float r, SURFDOT** dots,
       (*dots)[ndots].w = 1;
       (*dots)[ndots].color = abs(a->color());
       ndots++;
-      if (ndots%100 == 0) {
-        if (wait.CheckForAbort() == true) {
-          return (ndots);
-        }
-      }
     }
   }
   return (ndots);

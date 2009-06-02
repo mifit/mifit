@@ -1799,7 +1799,7 @@ ModelsTree::ModelsTree(QWidget* parent)
   _menu->Append(ID_MODELSVIEW_MODELSTREE_INSERT, "Insert", "Insert", false);
   _menu->Append(ID_MODELSVIEW_MODELSTREE_MAPPROPERTIES, "Properties", "Properties", false);
   _menu->Append(ID_MAP_CONTOUR,"Contour","Contour this map", false);
-  _menu->Append(ID_MAP_CONTOURLEVELS,"Contour options","Contour options for this map", false);
+  _menu->Append(ID_MAP_CONTOURLEVELS,"Contour options...","Contour options for this map", false);
   _menu->Append(ID_MAP_FFT, "FFT Phases...", "re-FFT the map from the phases to change resolution, coefficients, etc.", false);
   _menu->Append(ID_MAP_SFCALC, "Calculate Structure Factors...", "Calculate structure factors from the model", false);
   _menu->Append(ID_MAP_REINDEX, "Reindex Reflections", "Change to an alternate indexing of the data", false);

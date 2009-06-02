@@ -305,7 +305,6 @@ bool outside_sphere(float p[3], float radius, float InclusionCenter[3]) {
 
 RESIDUE* SymmResidue(const RESIDUE* Model, CMapHeaderBase* mh, float center[3], float r, int color) {
   /* set unity to true if operator = x,y,z to avoid looking at 0,0,0 position */
-  WaitCursor wait("Symmetry Residues");
   const RESIDUE* model;
   RESIDUE* res = NULL, * newres, * Res = NULL;
   char label[MAXNAME];

@@ -2200,7 +2200,6 @@ void MIGLWidget::OnSurfaceSolvent() {
   dlg.label("dotsper","Dots/Angstrom (1-10):");
   if (dlg.GetResults(data) &&
       data["dotsper"].f >= 1.0f && data["dotsper"].f <=10.0f) {
-    WaitCursor wait("Solvent Surface");
     message = "Number of dots: ";
     message += ftoa(lastnode->SolventSurface(viewpoint,1.0f/data["dotsper"].f));
     viewpoint->setchanged();
@@ -3374,7 +3373,6 @@ void MIGLWidget::OnGeomHbonds() {
   if (!node) {
     return;
   }
-  WaitCursor wait("Build H-bonds");
   node->BuildHBonds();
   //  message = "Built ";
   //  message += ftoa((long)node->hbonds.size());
@@ -3564,7 +3562,6 @@ void MIGLWidget::OnObjectBackboneribbon() {
     }
   }
   clear = MIMessageBox("Do you want to hide residue atoms?", "Make Ribbons", MIDIALOG_YES_NO, this) == MI_YES;
-  WaitCursor wait("Ribbons");
   std::string resshow;
   std::string at("*");
   if (do_single == MI_NO) {
@@ -3592,7 +3589,6 @@ void MIGLWidget::OnObjectBackboneribbon() {
 }
 
 void MIGLWidget::OnObjectClearribbon() {
-  WaitCursor wait("Clear Ribbon");
   std::list<Molecule*>::iterator node = GetDisplaylist()->begin();
   std::list<Molecule*>::iterator end = GetDisplaylist()->end();
   while (node != end) {
@@ -3826,7 +3822,6 @@ void MIGLWidget::OnSitePlot() {
   if (MIBusyManager::instance()->Busy()) {
     return;
   }
-  WaitCursor("Building Active Site plot");
   Displaylist* Models = GetDisplaylist();
 
   MIAtom* a;
@@ -6644,26 +6639,21 @@ void MIGLWidget::OnBuildCBRange() {
   if (!SaveModelFile(model, "before adding CB's")) {
     Logger::message("Warning: Unable to save model - will not be able to Undo");
   }
-  WaitCursor wait("Build CB's");
   res = start;
-  while ((res != NULL) && !wait.CheckForAbort() && res != end) {
+  while ((res != NULL) && res != end) {
     model->BuildCB(res);
     res = res->next();
   }
   model->Build();
   MIAtom* a1 = atom_from_name("CA", *start);
   MIAtom* a2 = atom_from_name("CA", *end);
-  if (a1 && a2 && !wait.CheckForAbort()) {
+  if (a1 && a2) {
     AtomStack->Push(a2, end, model);
     AtomStack->Push(a1, start, model);
-    if (!wait.CheckForAbort()) {
-      OnRefiRange();
-    }
+    OnRefiRange();
     AtomStack->Push(a2, end, model);
     AtomStack->Push(a1, start, model);
-    if (!wait.CheckForAbort()) {
-      OnRefiRange();
-    }
+    OnRefiRange();
     OnRefiAccept();
   }
   PaletteChanged = true;
@@ -6695,13 +6685,12 @@ void MIGLWidget::OnBuildMainchainRange() {
     Logger::message("Can't find the start");
     return;
   }
-  WaitCursor wait("Build Mainchain");
   // save model
   if (!SaveModelFile(model, "before building mainchain")) {
     Logger::message("Warning: Unable to save model - will not be able to Undo");
   }
   res = start;
-  while ((res != NULL) && !wait.CheckForAbort()) {
+  while (res != NULL) {
     MIFitGeomRefiner()->BuildMainchain(res, model, currentmap, res->next() != end);
     if (res == end) {
       break;
@@ -7543,7 +7532,6 @@ void MIGLWidget::findLigandFit() {
 
   if (IsFitting() && CurrentAtoms.size() > 0) {
     // refine into position
-    WaitCursor wait("Refine Ligand");
     if (!BoundingBox) {
       BoundingBox = new InterpBox(CurrentAtoms, currentmap);
     }
@@ -9587,13 +9575,11 @@ bool MIGLWidget::OnOpenDocument(const std::string& path) {
   std::auto_ptr<io> ioObj(io::defaultIo());
   io& file = *ioObj;
   int nmap;
-  WaitCursor wait("Load Document");
   std::string initPath = QDir::currentPath().toStdString();
   QDir::setCurrent(QFileInfo(pathname).path());
   try {
     if (IsXMLDocument(pathname)) {
       LoadPDBFile(pathname);
-      wait.CheckForAbort();
       if (!file.open(pathname, "r")) {
         std::string s("MIGLWidget::OnOpenDocument:Can't open file: ");
         s += pathname;
@@ -9604,7 +9590,6 @@ bool MIGLWidget::OnOpenDocument(const std::string& path) {
       viewpoint->Do();
       viewpoint->Load(file.fp());
       file.rewind();
-      wait.CheckForAbort();
       // scan for maps
       std::string col_names("");
       while (file.gets(buf, sizeof buf) != NULL) {
@@ -9620,11 +9605,9 @@ bool MIGLWidget::OnOpenDocument(const std::string& path) {
         }
       }
       file.close();
-      wait.CheckForAbort();
 
       ReadStack(pathname, false);
       SetDocumentSaved(true);
-      wait.CheckForAbort();
     } else if (strcmp(&pathname[strlen(pathname)-3], ".VP")
                && strcmp(&pathname[strlen(pathname)-3], ".vp")
                && strcmp(&pathname[strlen(pathname)-4], ".mlw")
@@ -9666,7 +9649,6 @@ bool MIGLWidget::OnOpenDocument(const std::string& path) {
           int nmodel;
           sscanf(buf, "%*s%d %[^\r\n]", &nmodel, fileBuf);
           LoadPDBFile(fileBuf);
-          wait.CheckForAbort();
           QDir::setCurrent(oldpath.c_str());
         }
       }
@@ -9675,10 +9657,8 @@ bool MIGLWidget::OnOpenDocument(const std::string& path) {
         file.rewind();
         (*node)->Load(file.fp());
         node++;
-        wait.CheckForAbort();
       }
 
-      wait.CheckForAbort();
       file.rewind();
       viewpoint->Do();
       viewpoint->Load(file.fp());
@@ -9727,7 +9707,6 @@ bool MIGLWidget::OnOpenDocument(const std::string& path) {
             }
           } else {delete map;}
         }
-        wait.CheckForAbort();
       }
 
       // Read the script for general stuff
@@ -9756,7 +9735,6 @@ bool MIGLWidget::OnOpenDocument(const std::string& path) {
       filename = newpath;
       Modify(true);
     }
-    wait.CheckForAbort();
     SetTitle(filename);
     SetFilename(filename);
     QDir::setCurrent(initPath.c_str());
@@ -9907,7 +9885,6 @@ void MIGLWidget::Serialize(XMLArchive& ar) {
 
   if (ar.IsStoring()) {
     s=::format("CreationDate=\"%s\"", date.c_str());
-    WaitCursor wait("Save Document");
     s += " version=\"1.1\"";
     ar.BeginTag("wxFitDocument", (const char*)s.c_str());
     while (node != Models->end()) {

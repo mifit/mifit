@@ -1567,7 +1567,6 @@ long MIMolOpt::SetRefiRes(RESIDUE* res1, RESIDUE* res2, MIMoleculeBase* node, EM
   if (dict.EmptyDictCheck() == false) {
     return 0;
   }
-  WaitCursor wait("Set up refinement residues");
 
   if (!res1 || !res2) {
     return (0);
@@ -2026,7 +2025,6 @@ void MIMolOpt::RigidOptimize(MIAtomList& CurrentAtoms, MIMoleculeBase* fitmol, E
   trial t;
   unsigned int p1, p2, p3;
   trial* ti, * ta, * tb, * tc, * t2;
-  WaitCursor wait("Rigid-body optimize");
   float F = 0.7F;
   float CR = 0.8F;
   int D = 6;
@@ -2119,9 +2117,6 @@ void MIMolOpt::RigidOptimize(MIAtomList& CurrentAtoms, MIMoleculeBase* fitmol, E
     best_r = population[0].score;
     worst_r = population[population.size()-1].score;
     //Logger::log("Generation %d: best=%0.2f worst=%0.2f", igen, best_r, worst_r);
-    if (wait.CheckForAbort()) {
-      break;
-    }
   }
 
   if (best_r > rdens_start) {
@@ -2267,7 +2262,6 @@ void MIMolOpt::TorsionOptimize(MIAtomList& CurrentAtoms, MIMoleculeBase* fitmol,
   trial t;
   unsigned int p1, p2, p3;
   trial* ti, * ta, * tb, * tc, * t2;
-  WaitCursor wait("Torsion Optimize");
   double rdens_start;
   float F = 0.7F;
   float CR = 0.8F;
@@ -2386,9 +2380,6 @@ void MIMolOpt::TorsionOptimize(MIAtomList& CurrentAtoms, MIMoleculeBase* fitmol,
     best_r = population[0].score;
     worst_r = population[population.size()-1].score;
     //Logger::log("Generation %d: best=%0.2f worst=%0.2f", igen, best_r, worst_r);
-    if (wait.CheckForAbort()) {
-      break;
-    }
   }
 
   if (best_r > rdens_start) {
@@ -2602,7 +2593,6 @@ void MIMolOpt::FullOptimize(MIAtomList& CurrentAtoms, MIMoleculeBase* fitmol, EM
     //		maxgen = 200;  JB decreased back from 700 to 150
     what = "Full Search:";
   }
-  WaitCursor wait(what.c_str());
   Logger::log("Found %d atoms and %d torsions to be optimized",
     (int)CurrentAtoms.size(), (int)torsions.size());
 
@@ -2830,10 +2820,6 @@ void MIMolOpt::FullOptimize(MIAtomList& CurrentAtoms, MIMoleculeBase* fitmol, EM
     if (best_r >= good_enough) {
       break;
     }
-    if (wait.CheckForAbort()) {
-      Logger::log("Execution aborted by user");
-      break;
-    }
   }
 
 
@@ -2994,7 +2980,6 @@ void MIMolOpt::LigandOptimize(MIAtomList& CurrentAtoms, MIMoleculeBase* fitmol, 
     //		maxgen = 200; JB decreased back to 150 JBtest 100
     what = "Full Search:";
   }
-  WaitCursor wait(what.c_str());
   Logger::log("Found %d atoms and %d torsions to be optimized",
     //		(int)CurrentAtoms.size(), (int)torsions.size());
     (int)CurrentAtoms.size(), (int)torsions.size());
@@ -3247,10 +3232,6 @@ void MIMolOpt::LigandOptimize(MIAtomList& CurrentAtoms, MIMoleculeBase* fitmol, 
     population2.clear();
     // Original code
     if (best_r >= good_enough) {
-      break;
-    }
-    if (wait.CheckForAbort()) {
-      Logger::log("Execution aborted by user");
       break;
     }
   }  //End of loop over trials
@@ -3620,7 +3601,6 @@ void MIMolOpt::MolecularReplace(MIMoleculeBase* model, EMapBase* emap) {
   trial t;
   unsigned int p1, p2, p3;
   trial* ti, * ta, * tb, * tc, * t2;
-  WaitCursor wait("Molecular replacement");
   float F = 0.8F;
   float CR = 0.9F;
   int D = 6;
@@ -3715,9 +3695,6 @@ void MIMolOpt::MolecularReplace(MIMoleculeBase* model, EMapBase* emap) {
     molrep_score(*p, CurrentAtoms, emap);
     score_sum += (float) (p->score*p->score);
     geomsaver.Restore(SaveToken);
-    if (wait.CheckForAbort()) {
-      goto endnow;
-    }
   }
   sort(population.begin(), population.end(), trial_compare);
   best_r = population[0].score;
@@ -3753,9 +3730,6 @@ void MIMolOpt::MolecularReplace(MIMoleculeBase* model, EMapBase* emap) {
       } else {
         copy_trial(t2, ti, D);
       }
-      if (wait.CheckForAbort()) {
-        break;
-      }
     }
     for (i = 0; i < npop; i++) {
       copy_trial(&population[i], &population2[i], D);
@@ -3766,9 +3740,6 @@ void MIMolOpt::MolecularReplace(MIMoleculeBase* model, EMapBase* emap) {
     Logger::footer("Generation %d: best=%0.2f worst=%0.2f rms=%0.2f", igen, best_r, worst_r, rms);
     if (best_r > 5.0 * rms) {
       Logger::log("Ended after generation %d with score 5*rms", igen);
-      break;
-    }
-    if (wait.CheckForAbort()) {
       break;
     }
   }
@@ -3782,7 +3753,6 @@ void MIMolOpt::MolecularReplace(MIMoleculeBase* model, EMapBase* emap) {
 
   Logger::log("RFinal=%0.2f\nRot: %0.2f %0.2f %0.2f Trans: %0.2f %0.2f %0.2f", best_r,
     population[0].p[0], population[0].p[1], population[0].p[2], population[0].p[3], population[0].p[4], population[0].p[5]);
-endnow:
   for (i = 0; i < population.size(); i++) {
     delete[] population[i].p;
     delete[] population2[i].p;

@@ -438,7 +438,7 @@ static void addrho(MIAtom* atom, micomplex* cmap, int nx, int ny, int nz, CMapHe
   }
 }
 
-static micomplex* buildrho(RESIDUE* reslist, CMapHeaderBase* mh, WaitCursor& wait) {
+static micomplex* buildrho(RESIDUE* reslist, CMapHeaderBase* mh) {
   micomplex* cmap;
   int nx, ny, nz;
   int i, doingsym;
@@ -446,9 +446,6 @@ static micomplex* buildrho(RESIDUE* reslist, CMapHeaderBase* mh, WaitCursor& wai
   MIAtom* a;
   int n = 0;
   sfinit();
-  if (wait.CheckForAbort()) {
-    return NULL;
-  }
 
   Bscale = std::max(exp(mh->resmin+.1)/2.0, 0.0) + 2.0;
 
@@ -490,10 +487,6 @@ static micomplex* buildrho(RESIDUE* reslist, CMapHeaderBase* mh, WaitCursor& wai
   Logger::log("sfFFT: A B-value of %0.1f will be added", Bscale);
   Logger::log("sfFFT: FFT grid: nx, ny, nz = %d %d %d", nx, ny, nz);
 
-  if (wait.CheckForAbort()) {
-    return NULL;
-  }
-
   cmap = (micomplex*)malloc(nx*ny*nz*sizeof(micomplex));
   if (cmap == NULL) {
     Logger::log("sfFFT: unable to allocate map space");
@@ -519,10 +512,6 @@ static micomplex* buildrho(RESIDUE* reslist, CMapHeaderBase* mh, WaitCursor& wai
     //printf(".");
     //fflush(stdout);
     res = res->next();
-    if (wait.CheckForAbort()) {
-      free((void*)cmap);
-      return NULL;
-    }
   }
 
   Logger::log("sfFFT: built rho for %d atoms", n);
@@ -991,7 +980,6 @@ bool EMapBase::GetPossibleMapTypes(const std::string& pathname,
 
 
 float EMapBase::CalcRMS() {
-  WaitCursor wait("Calc RMS Density of Map");
   float sum = 0.0F, rms = 0.0F;
   predictedAsDifferenceMap = false;
   if (map_points.size() == 0) {
@@ -1025,7 +1013,6 @@ float EMapBase::CalcRMS() {
 }
 
 void EMapBase::ScaleMap(float rms) {
-  WaitCursor wait("Scale Density Map");
   if (rms > 0.0) {
     scale = 50.0F/rms;
     for (unsigned int i = 0; i < map_points.size(); i++) {
@@ -1073,7 +1060,6 @@ long EMapBase::LoadMap(const char* pathname, int type) {
   PhicsValid = false;
 
   memset(&refl, 0, sizeof(refl));
-  WaitCursor wait("Load Reflections File");
   if (type == EMapBase::HKL_scaI || type == EMapBase::HKL_scaF) {
     char SymInfoString[200];
     float a, b, c, al, be, ga;
@@ -1411,7 +1397,6 @@ long EMapBase::SaveCCP4Phase(const char* pathname) {
   float fdata[20];
   int flags[20];
   char hdr[200];
-  WaitCursor wait("Save MTZ Map Reflections");
   if (refls.size() == 0) {
     Logger::message("SaveCCP4Phase:: Error:: No reflections to write out - aborting");
     return 0;
@@ -1680,7 +1665,6 @@ long EMapBase::LoadMTZMap(const char* pathname, bool require_fo) {
   unsigned int i;
   int Valm = (int)NAN;  //missing value indicator
   std::string s;
-  WaitCursor wait("Load MTZ Map");
   int hindex = (-1), kindex = (-1), lindex = (-1), freeRindex = (-1),
       foindex = (-1), fcindex = (-1), phsindex = (-1), fomindex = (-1), sigfindex = (-1);
   if ((filein  = mmtz_open(pathname, "r")) == NULL) {
@@ -1951,7 +1935,6 @@ long EMapBase::LoadCIFMap(const char* pathname, int datablock) {
     return 0;
   } else {pathName = pathname;}
 
-  WaitCursor wait("Load CIF Map");
   /* find the correct datablock's start and end line numbers*/
   while (fgetsl(buf, sizeof buf, fp) != NULL) {
     if (strstr(buf, "data_")) {
@@ -2337,7 +2320,6 @@ bool EMapBase::FFTMap(int maptype, int gridlevel,
 }
 
 bool EMapBase::FFTCalc() {
-  WaitCursor wait("Fast Fourier Transform");
   mapheader->hmax = (int)(mapheader->a/mapheader->resmin);
   mapheader->kmax = (int)(mapheader->b/mapheader->resmin);
   mapheader->lmax = (int)(mapheader->c/mapheader->resmin);
@@ -2434,7 +2416,6 @@ long EMapBase::LoadCNSMap(const char* pathname) {
   Logger::log("Loading CNS format...");
   char buf[4096];
   std::string ubuf, mess;
-  WaitCursor wait("Load CNS Map");
   long nmap = 0;
   int im;
   int NA, AMIN, AMAX, NB, BMIN, BMAX, NC, CMIN, CMAX;
@@ -2584,7 +2565,6 @@ long EMapBase::LoadCCP4Map(const char* pathname, float* rms, float* min, float* 
   if (!fp) {
     return 0;
   } else {pathName = pathname;}
-  WaitCursor wait("Load CCP4 Map");;
   nc = 0;
   rewind(fp);
   fread(buf, 1, 4*52, fp);
@@ -2855,7 +2835,6 @@ long EMapBase::LoadFSFOURMapFile(const char* pathname) {
     return 0;
   } else {pathName = pathname;}
 
-  WaitCursor wait("Load FSFOUR Map");
   unsigned int nmap = 0;
   std::vector<int> rho;
   int swab;
@@ -2894,7 +2873,6 @@ long EMapBase::LoadFSFOURMapFile(const char* pathname) {
 }
 
 bool EMapBase::SavePhases(const char* pathname, int type) {
-  WaitCursor wait("Save Phase File");
   FILE* fp = fopen(pathname, "w");
   bool result = false;
   if (fp) {
@@ -2993,7 +2971,6 @@ bool EMapBase::IsCCP4MTZFile(const char* pathname) {
 
 bool EMapBase::SFCalc(RESIDUE* res) {
   float fft_scale;
-  //WaitCursor wait;
   bool result = false;
   if (Residue::isValid(res)) {
     result = sfFFT(res, fft_scale) != 0;
@@ -3006,14 +2983,13 @@ int EMapBase::sfFFT(RESIDUE* res, float& scale) {
   float sc;
   int i, nx, ny, nz;
   CMapHeaderBase* mh = mapheader;
-  WaitCursor wait("FFT Model");
 
   /* save nx ny nz  res limits */
   ny = mapheader->ny;
   nx = mapheader->nx;
   nz = mapheader->nz;
   Logger::log("Building rho...");
-  if ((rho = buildrho(res, mh, wait)) == NULL) {
+  if ((rho = buildrho(res, mh)) == NULL) {
     return (0);
   }
   Logger::log("Inverting rho...");
@@ -3771,7 +3747,6 @@ int EMapBase::HydrateMap(int minlevel, int maxadd, int add_water, MIMoleculeBase
     Logger::log("There is no map at position %d\n", mapnumber+1);
     return 0;
   }
-  WaitCursor wait("Hydrate Map");
   if (minlevel < 1) {
     minlevel = 1;
   }
@@ -3852,10 +3827,6 @@ int EMapBase::HydrateMap(int minlevel, int maxadd, int add_water, MIMoleculeBase
       symatoms.push_back(symatom);
     }
   }
-  if (wait.CheckForAbort()) {
-    goto cleanup;
-  }
-
   sx = ROUND(xmin * mh->nx);
   sy = ROUND(ymin * mh->ny);
   sz = ROUND(zmin * mh->nz);
@@ -3865,9 +3836,6 @@ int EMapBase::HydrateMap(int minlevel, int maxadd, int add_water, MIMoleculeBase
   Logger::log("Search volume x=%0.2f,%0.2f y=%0.2f,%0.2f z=%0.2f,%0.2f\n", xmin, xmax, ymin, ymax, zmin, zmax);
   Logger::footer("Search volume x=%0.2f,%0.2f y=%0.2f,%0.2f z=%0.2f,%0.2f\n", xmin, xmax, ymin, ymax, zmin, zmax);
   for (ix = sx; ix < ex; ix++) {
-    if (wait.CheckForAbort()) {
-      goto cleanup;
-    }
     for (iy = sy; iy < ey; iy++) {
       for (iz = sz; iz < ez; iz++) {
         fx = (float)ix/(float)mh->nx;
@@ -3893,9 +3861,6 @@ int EMapBase::HydrateMap(int minlevel, int maxadd, int add_water, MIMoleculeBase
     qsort(&peaks[0], peaks.size(), sizeof(PEAK), dcompare);
   }
 
-  if (wait.CheckForAbort()) {
-    goto cleanup;
-  }
   /* work our way through the peak list */
   /* and find the unique peaks */
   dsquared = dmin * dmin;
@@ -3921,11 +3886,6 @@ int EMapBase::HydrateMap(int minlevel, int maxadd, int add_water, MIMoleculeBase
         }
       }
     }
-    if (i%100 == 0) {
-      if (wait.CheckForAbort()) {
-        goto cleanup;
-      }
-    }
   }
   for (i = 0; (unsigned int)i < peaks.size(); i++) {
     if (peaks[i].rho > 0) {
@@ -3935,9 +3895,6 @@ int EMapBase::HydrateMap(int minlevel, int maxadd, int add_water, MIMoleculeBase
   Logger::log("Kept %d peaks after sorting\n", kept);
   Logger::footer("Kept %d peaks after sorting\n", kept);
 
-  if (wait.CheckForAbort()) {
-    goto cleanup;
-  }
   /* evaluate peaks for wateryness */
   RESIDUE* focusres;
 
@@ -3992,9 +3949,6 @@ int EMapBase::HydrateMap(int minlevel, int maxadd, int add_water, MIMoleculeBase
                 goto cleanup;
               }
             }
-            if (wait.CheckForAbort()) {
-              goto cleanup;
-            }
           }
         }
       }
@@ -4013,7 +3967,6 @@ cleanup:
 }
 
 bool EMapBase::CalcSolventMask(float percentSolvent, float radius) {
-  WaitCursor wait("Solvent Mask");
   if (SigmaMap()) {
     if (SmoothMap(radius)) {
       if (ScaleSolventPercent(percentSolvent)) {
@@ -4073,7 +4026,6 @@ bool EMapBase::SigmaMap() {
 
 bool EMapBase::SmoothMap(float radius) {
   int i, ix, iy, iz;
-  WaitCursor wait("Smooth Map");
   float sum = 0.0;
   int nx = mapheader->nx;
   int ny = mapheader->ny;
@@ -4120,9 +4072,6 @@ bool EMapBase::SmoothMap(float radius) {
       }
     }
     copy(map2.begin(), map2.end(), map_points.begin());
-    if (wait.CheckForAbort()) {
-      break;
-    }
   }
   return true;
 }

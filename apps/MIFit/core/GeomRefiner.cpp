@@ -78,7 +78,6 @@ unsigned long GeomRefiner::FindGeomErrors(Molecule* model, float error_threshold
   double rmsangle, rmsdist, rmsplane;
   double sumangle = 0, sumdist = 0, sumplane = 0;
   // find bad bonds and list
-  WaitCursor wait("Find geometry errors");
   Logger::footer("Analyzing bonds...");
   for (i = 0; i < dict.RefiBonds.size(); i++) {
     d = AtomDist(*dict.RefiBonds[i].getAtom1(), *dict.RefiBonds[i].getAtom2());
@@ -97,9 +96,6 @@ unsigned long GeomRefiner::FindGeomErrors(Molecule* model, float error_threshold
       model->addAnnotation(ann);
       nadd++;
     }
-  }
-  if (wait.CheckForAbort()) {
-    return nadd;
   }
   // find bad angles and list
   Logger::footer("Analyzing angles...");
@@ -120,9 +116,6 @@ unsigned long GeomRefiner::FindGeomErrors(Molecule* model, float error_threshold
       model->addAnnotation(ann);
       nadd++;
     }
-  }
-  if (wait.CheckForAbort()) {
-    return nadd;
   }
   // find bad planes and list
   Logger::footer("Analyzing planes...");
@@ -160,9 +153,6 @@ unsigned long GeomRefiner::FindGeomErrors(Molecule* model, float error_threshold
       nadd++;
     }
   }
-  if (wait.CheckForAbort()) {
-    return nadd;
-  }
   // analyze torsions
   Logger::footer("Analyzing torsions...");
   float chi, dchi;
@@ -198,9 +188,6 @@ unsigned long GeomRefiner::FindGeomErrors(Molecule* model, float error_threshold
       model->addAnnotation(ann);
       nadd++;
     }
-  }
-  if (wait.CheckForAbort()) {
-    return nadd;
   }
   float phi, psi, omega, omegap;
   for (i = 0; i < dict.RefiPhiPsis.size(); i += 4) {
@@ -274,9 +261,6 @@ unsigned long GeomRefiner::FindGeomErrors(Molecule* model, float error_threshold
       model->addAnnotation(ann);
       nadd++;
     }
-  }
-  if (wait.CheckForAbort()) {
-    return nadd;
   }
   // find bad bumps and list
   for (i = 0; i < dict.RefiBumps.size(); i++) {
