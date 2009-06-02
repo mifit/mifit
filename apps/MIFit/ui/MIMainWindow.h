@@ -47,6 +47,8 @@ const unsigned int imhWait3 =11; // Animated wait cursor.
 const unsigned int imhWait4 =12; // Animated wait cursor.
 const unsigned int imhWait5 =13; // Animated wait cursor.
 const unsigned int imhWait6 =14; // Animated wait cursor.
+const unsigned int imhSlabDrag =15; // Slab drag operation
+const unsigned int imhCount =16; // Number of cursors
 
 
 class ViewSyncedPanel;
@@ -222,7 +224,7 @@ private:
     QLabel *middleFooter;
     QLabel *rightFooter;
 
-    QCursor *cursors[imhWait6+1];
+    QCursor *cursors[imhCount];
 
 
     GLOverviewCanvas *navigator;

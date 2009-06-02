@@ -981,15 +981,18 @@ void MIGLWidget::RightMouseDrag(CPoint d, float xang, float yang, float zang) {
     default:
       {
         int x = 0, y = 0, z = 0;
-        SetCursor(imhCenter);
         if (!TopView) {
           if (mousestart.y < 30) {
-            z = (int)d.x;
+            SetCursor(imhSlabDrag);
+            viewpoint->slab(d.x);
+            break;
           } else {
+            SetCursor(imhCenter);
             x = (int)d.x;
             y = (int)d.y;
           }
         } else {
+          SetCursor(imhCenter);
           x = (int)d.x;
           z = -(int)d.y;
         }

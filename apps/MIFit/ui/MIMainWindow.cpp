@@ -681,6 +681,7 @@ MIMainWindow::~MIMainWindow() {
   delete cursors[imhWait4];
   delete cursors[imhWait5];
   delete cursors[imhWait6];
+  delete cursors[imhSlabDrag];
   MIMapFreeScatteringFactorTables();
   delete JobManager;
 }
@@ -1586,6 +1587,7 @@ void MIMainWindow::OnMenuValidate()
 #include "../images/cursors/MW_CENTE.xpm"
 #include "../images/cursors/MW_SCALE.xpm"
 #include "../images/cursors/MW_SLAB.xpm"
+#include "../images/cursors/slabDrag.xpm"
 #include "../images/cursors/mw_wait1.xpm"
 #include "../images/cursors/mw_wait2.xpm"
 #include "../images/cursors/mw_wait3.xpm"
@@ -1611,12 +1613,13 @@ void MIMainWindow::SetCursor(int id, QWidget *w)
     cursors[imhWait4]=new QCursor(QPixmap(mw_wait4));
     cursors[imhWait5]=new QCursor(QPixmap(mw_wait5));
     cursors[imhWait6]=new QCursor(QPixmap(mw_wait6));
+    cursors[imhSlabDrag]=new QCursor(QPixmap(slabDrag));
   }
 
   if (!w)
     w=this;
 
-  if (id >=0 && id <= (int)imhWait6)
+  if (id >=0 && id <= (int)imhCount)
     w->setCursor(*cursors[id]);
   else
     w->setCursor(QCursor());
