@@ -3019,7 +3019,11 @@ void MIGLWidget::replaceResidue(const char* residueType) {
   // move a onto b
   if (MoveOnto(res, fitres)) {
     // now replace the residue with new type
+    RESIDUE* saveRes = fitres;
+    Molecule* saveMol = fitmol;
     fitmol->ReplaceRes(fitres, res);
+    fitmol = saveMol;
+    fitres = saveRes;
     fitres->setConfomer(confomer);
 
     int nlinks = fitmol->getnlinks();
