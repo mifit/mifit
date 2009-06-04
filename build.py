@@ -338,7 +338,7 @@ def main(argv=None):
       copyIfNeeded(".so", external, ".")
       if Linux:
         qtDir = os.getenv('QTDIR')
-        pythonDir = os.path.join(external, "python")
+        pythonDir = "python"
         if qtDir==None:
             qtDir="/usr"
         dlls = {
