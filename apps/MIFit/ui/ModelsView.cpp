@@ -1997,6 +1997,10 @@ void ModelsTree::contextMenuEvent(QContextMenuEvent* event) {
     clearSelection();
     item->setSelected(true);
   }
+  TreeData* data = (TreeData*) GetItemData(item);
+  if (data && data->map) {
+    displaylist()->SetCurrentMap(data->map);
+  }
   if (selectedItems().size()) {
     SelectionToHistory(*this, "models");
 
