@@ -1,0 +1,15 @@
+*.o
+*.pyc
+Makefile
+lib*.so.*
+python/
+external/PyQt-x11-gpl-4.4.4/
+external/Python-2.6.2/
+external/boost_1_36_0/
+external/sip-4.7.9/
+libs/*.a
+ui_*.h
+moc_*.cpp
+*.moc
+apps/MIFit/core/Version.cpp
+MIFit
