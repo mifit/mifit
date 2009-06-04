@@ -3265,38 +3265,36 @@ std::string ModelsTree::truncateLeft(const std::string& name, int shorter) {
   if (!name.size())
     return name;
 
-  QFontMetrics fm(font(),0);
-  int charWidth=fm.width(name.c_str()) / name.size();
-  size_t len = name.size();
-  size_t stringWidth = charWidth * len;
+  QFontMetrics fm = fontMetrics();
   size_t width = truncateWidth - shorter;
-  if (stringWidth > width) {
-    len = width / charWidth;
-    if (len > 10)
-      len -= 4;
-    return std::string("...") + std::string(&name[name.size()-len]);
+  std::string prefix("...");
+  std::string result = name;
+  size_t stringWidth = fm.width(result.c_str());
+  for (size_t i = 1; stringWidth > width && i < name.size(); ++i) {
+    result = prefix + &name[i];
+    stringWidth = fm.width(result.c_str());
   }
-  return name;
+
+  return result;
 }
 
 std::string ModelsTree::truncateRight(const std::string& name, int shorter) {
   if (!name.size())
     return name;
 
-  QFontMetrics fm(font(),0);
-  int charWidth=fm.width(name.c_str()) / name.size();
-  size_t len = name.size();
-  size_t stringWidth = charWidth * len;
+  QFontMetrics fm = fontMetrics();
   size_t width = truncateWidth - shorter;
-  if (stringWidth > width) {
-    len = width / charWidth;
-    if (len > 10)
-      len -= 4;
-    std::string retval=name;
-    retval.resize(len);
-    return retval + "...";
+  std::string suffix("...");
+  std::string shorterName(name);
+  std::string result(name);
+  size_t stringWidth = fm.width(result.c_str());
+  for (size_t i = 1; stringWidth > width && i < name.size(); ++i) {
+    shorterName.resize(name.size() - i);
+    result = shorterName + suffix;
+    stringWidth = fm.width(result.c_str());
   }
-  return name;
+
+  return result;
 }
 
 void ModelsTree::stylizeModel(Molecule* model) {
