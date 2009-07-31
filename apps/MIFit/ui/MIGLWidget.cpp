@@ -6181,22 +6181,22 @@ void MIGLWidget::OnFlipPeptide() {
   if (N) {
     N->getPosition(pos);
     rotate(&pos[0], &pos[1], &pos[2], mat);
-    N->setPosition(pos[0], pos[1], pos[3]);
+    N->setPosition(pos[0], pos[1], pos[2]);
   }
   if (HN) {
     HN->getPosition(pos);
     rotate(&pos[0], &pos[1], &pos[2], mat);
-    HN->setPosition(pos[0], pos[1], pos[3]);
+    HN->setPosition(pos[0], pos[1], pos[2]);
   }
   if (C) {
     C->getPosition(pos);
     rotate(&pos[0], &pos[1], &pos[2], mat);
-    C->setPosition(pos[0], pos[1], pos[3]);
+    C->setPosition(pos[0], pos[1], pos[2]);
   }
   if (O) {
     O->getPosition(pos);
     rotate(&pos[0], &pos[1], &pos[2], mat);
-    O->setPosition(pos[0], pos[1], pos[3]);
+    O->setPosition(pos[0], pos[1], pos[2]);
   }
   m->SetCoordsChanged();
   Modify(true);
