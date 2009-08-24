@@ -3,6 +3,7 @@
 #include <opengl/OpenGL.h>
 #include <mathlib.h>
 #include <cmath>
+#include <cstdlib>
 
 namespace mi {
 namespace opengl {
@@ -35,7 +36,7 @@ int Circle::getDetail() {
 }
 
 void Circle::setDetail(int detail) {
-  detail = std::abs((double)detail);
+  detail = std::abs(detail);
   if (detail < 6) {
     detail = 6;
   }

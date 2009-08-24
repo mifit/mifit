@@ -1,7 +1,7 @@
 #ifndef MI_NONGUI_H
 #define MI_NONGUI_H
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 // Disable the warning about "conversion ... possible loss of data"
 // until use of size_t is implemented
 #pragma warning(disable:4267)

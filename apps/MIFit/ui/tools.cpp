@@ -247,7 +247,7 @@ void Tools::OnBindNGrind() {
     s=::format("start \"%s\" \"%s\\%s\"",
                buildPath(Application::instance()->HTMLBrowser).c_str(),
                buildAbsPath(data["bngsummary"].str).c_str(),
-               buildPath(htmlName.c_str()));
+               buildPath(htmlName.c_str()).c_str());
 #endif
     job->WriteCommand(s.c_str());
   }

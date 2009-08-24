@@ -8,6 +8,7 @@
 // Define used in format_arg_list
 #ifdef _WIN32
 #include <windows.h>
+#undef PATH_MAX
 const int PATH_MAX = MAX_PATH;
 #define vsnprintf _vsnprintf
 // vsnprintf returns negative value indicating truncation

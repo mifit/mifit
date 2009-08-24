@@ -74,7 +74,7 @@ unsigned long GeomRefiner::FindGeomErrors(Molecule* model, float error_threshold
   unsigned int i, j;
   unsigned long nadd = 0;
   std::string s;
-  double d, ideal, diff;
+  double d, ideal = 0, diff;
   double rmsangle, rmsdist, rmsplane;
   double sumangle = 0, sumdist = 0, sumplane = 0;
   // find bad bonds and list

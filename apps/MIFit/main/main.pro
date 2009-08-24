@@ -19,7 +19,7 @@ unix {
 }
 win32 {
   LIBSPATH = ../../../libs
-  LIBPREFIX = /
+  LIBPREFIX = /lib
   RC_FILE=mifit.rc
 }
 
@@ -32,7 +32,6 @@ PRE_TARGETDEPS += \
         ..$${LIBPREFIX}core$${LIB_EXTENSION} \
         ..$${LIBPREFIX}ui$${LIB_EXTENSION} \
         ..$${LIBPREFIX}wxdr$${LIB_EXTENSION} \
-        ..$${LIBPREFIX}mipython$${LIB_EXTENSION} \
         ..$${LIBPREFIX}figurelib$${LIB_EXTENSION} \
         ..$${LIBPREFIX}jobs$${LIB_EXTENSION} \
         $${LIBSPATH}$${LIBPREFIX}ligand$${LIB_EXTENSION} \
@@ -46,7 +45,7 @@ PRE_TARGETDEPS += \
         $${LIBSPATH}$${LIBPREFIX}jacgrid$${LIB_EXTENSION} \
         $${LIBSPATH}$${LIBPREFIX}umtz$${LIB_EXTENSION}
 
-MYLIBS=-L../ -lui -lfigurelib -ljobs -lwxdr -lcore -lmipython -L../../../libs -lligand -lmap -lmolopt -lconflib -lchemlib -lmiopengl -lmimath -lmiutil -ljacgrid -lumtz
+MYLIBS=-L../ -lui -lfigurelib -ljobs -lwxdr -lcore -L../../../libs -lligand -lmap -lmolopt -lconflib -lchemlib -lmiopengl -lmimath -lmiutil -ljacgrid -lumtz
 LIBS =  $$MYLIBS $$MYLIBS $$LIBS
 
 unix:!mac{

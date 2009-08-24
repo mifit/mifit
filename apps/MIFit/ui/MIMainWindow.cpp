@@ -4,13 +4,11 @@
 #include <ctype.h> // for alanum
 
 #include <QtGui>
-
+#include <boost/bind.hpp>
 
 #include "chemlib.h"
 #include "RESIDUE_.h"
 #include "conflib.h"
-#include "Console.h"
-#include "PythonEngine.h"
 
 #include "jobslib.h"
 #include "JobsView.h"
@@ -57,8 +55,6 @@
 #include "surf.h"
 #include "MIMolIO.h"
 #include "molw.h"
-
-#include <boost/python.hpp>
 
 #include "GLOverviewCanvas.h"
 #include "RamaPlot.h"
@@ -587,12 +583,10 @@ MIMainWindow *MIMainWindow::_instance = NULL;
 
 MIMainWindow::MIMainWindow()
   : MIEventHandler(this),
-    pythonWindow(NULL),
     modelsDock(NULL),
     displayDock(NULL),
     jobsDock(NULL),
     logDock(NULL),
-    pythonDock(NULL),
     ramaDock(NULL),
     logWindow(NULL),
     solidSurfMenuAction(NULL) {
@@ -613,14 +607,6 @@ MIMainWindow::MIMainWindow()
     createActions();
     createMenus();
     createDockWindows();
-
-    pythonEngine = new PythonEngine;
-
-    QObject::connect(pythonWindow, SIGNAL(command(const QString&)), pythonEngine, SLOT(command(const QString&)));
-    QObject::connect(pythonEngine, SIGNAL(message(const QString&)), pythonWindow, SLOT(message(const QString&)));
-    QObject::connect(pythonEngine, SIGNAL(prompt(const QString&)), pythonWindow, SLOT(prompt(const QString&)));
-
-    pythonEngine->start();
 
     createToolBars();
     createStatusBar();
@@ -649,8 +635,6 @@ MIMainWindow::MIMainWindow()
     tabifyDockWidget(displayDock, jobsDock);
     modelsDock->raise();
 
-    tabifyDockWidget(logDock, pythonDock);
-    logDock->raise();
     tabifyDockWidget(navigatorDock, ramaDock);
     navigatorDock->raise();
 
@@ -932,16 +916,16 @@ void MIMainWindow::OnDefineBValueColors() {
   Colors::BValueColors[8] = data["color9"].i;
   Colors::BValueColors[9] = data["color10"].i;
 
-  Colors::BValueRanges[0] = data["level1"].f*100.0f;
-  Colors::BValueRanges[1] = data["level2"].f*100.0f;
-  Colors::BValueRanges[2] = data["level3"].f*100.0f;
-  Colors::BValueRanges[3] = data["level4"].f*100.0f;
-  Colors::BValueRanges[4] = data["level5"].f*100.0f;
-  Colors::BValueRanges[5] = data["level6"].f*100.0f;
-  Colors::BValueRanges[6] = data["level7"].f*100.0f;
-  Colors::BValueRanges[7] = data["level8"].f*100.0f;
-  Colors::BValueRanges[8] = data["level9"].f*100.0f;
-  Colors::BValueRanges[9] = data["level10"].f*100.0f;
+  Colors::BValueRanges[0] = static_cast<int>(data["level1"].f*100.0f);
+  Colors::BValueRanges[1] = static_cast<int>(data["level2"].f*100.0f);
+  Colors::BValueRanges[2] = static_cast<int>(data["level3"].f*100.0f);
+  Colors::BValueRanges[3] = static_cast<int>(data["level4"].f*100.0f);
+  Colors::BValueRanges[4] = static_cast<int>(data["level5"].f*100.0f);
+  Colors::BValueRanges[5] = static_cast<int>(data["level6"].f*100.0f);
+  Colors::BValueRanges[6] = static_cast<int>(data["level7"].f*100.0f);
+  Colors::BValueRanges[7] = static_cast<int>(data["level8"].f*100.0f);
+  Colors::BValueRanges[8] = static_cast<int>(data["level9"].f*100.0f);
+  Colors::BValueRanges[9] = static_cast<int>(data["level10"].f*100.0f);
 
   if (data["save"].b) {
     Application::instance()->Write();
@@ -1420,9 +1404,6 @@ QDockWidget *MIMainWindow::AddAsDockWidget(QWidget *w, const std::string &name, 
 
 void MIMainWindow::createDockWindows()
 {
-  pythonWindow = new Console(pythonDock);
-  pythonDock = AddAsDockWidget(pythonWindow, "Python", Qt::BottomDockWidgetArea);
-
   logWindow = new QTextEdit(logDock);
   logWindow->setReadOnly(true);
   //  logWindow->document()->setMaximumBlockCount(1000);

@@ -8,4 +8,3 @@ INCLUDEPATH += ..
 
 # Directories
 SUBDIRS += libs apps
-

@@ -8,7 +8,9 @@
 
 #ifdef _WIN32
 #define _MVS
+#ifndef i386
 #define i386
+#endif
 #include <mmtzlib.h>
 #undef _MVS
 #else

@@ -15,8 +15,6 @@ class QDockWidget;
 class QLabel;
 class QCursor;
 
-class Console;
-class PythonEngine;
 class MIActionEvent;
 class MIMenuBar;
 class MIToolBar;
@@ -60,14 +58,10 @@ class MIMainWindow : public QMainWindow, public MIEventHandler
     static MIMainWindow *_instance;
     MIMainWindow();
 
-    Console* pythonWindow;
-    PythonEngine* pythonEngine;
-
     QDockWidget* modelsDock;
     QDockWidget* displayDock;
     QDockWidget* jobsDock;
     QDockWidget* logDock;
-    QDockWidget* pythonDock;
     QDockWidget* navigatorDock;
     QDockWidget* ramaDock;
 
