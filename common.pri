@@ -1,5 +1,7 @@
 TOP_SRCDIR = $$PWD
-BoostDir = $$TOP_SRCDIR/../external/boost_1_39_0
+win32 {
+  BoostDir = $$TOP_SRCDIR/../external/boost_1_39_0
+}
 
 libsDir = $$TOP_SRCDIR/libs
 
@@ -75,7 +77,7 @@ win32 {
     LIBS += -L$$BoostDir/stage/lib -llibboost_signals-mgw34-mt
   }
 } else {
-  LIBS += -L$$BoostDir/stage/lib -lboost_signals-gcc43-mt
+  LIBS += -lboost_signals
 }
 
 
