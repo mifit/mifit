@@ -1,7 +1,7 @@
 #ifndef LIG_REFINER_H
 #define LIG_REFINER_H
 
-#include "chemlib.h"
+#include <chemlib/chemlib.h>
 
 #include <vector>
 

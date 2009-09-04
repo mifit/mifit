@@ -2,10 +2,10 @@
 #include <sstream>
 #include <fstream>
 
-#include "mathlib.h"
-#include "chemlib.h"
-#include "conflib.h"
-#include "utillib.h"
+#include <math/mathlib.h>
+#include <chemlib/chemlib.h>
+#include <conflib/conflib.h>
+#include <util/utillib.h>
 
 #include "HBond.h"
 

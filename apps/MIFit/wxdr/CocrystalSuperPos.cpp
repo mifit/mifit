@@ -1,8 +1,8 @@
 #include "CocrystalSuperPos.h"
 #include "MIBrowsePair.h"
 
-#include "corelib.h"
-#include "maplib.h"
+#include "core/corelib.h"
+#include <map/maplib.h>
 
 #include <vector>
 #include <string>

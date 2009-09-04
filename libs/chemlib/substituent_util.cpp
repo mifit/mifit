@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <cmath>
 
-#include "mathlib.h"
+#include <math/mathlib.h>
 
 #include "substituent_util.h"
 

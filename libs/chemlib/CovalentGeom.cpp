@@ -2,7 +2,7 @@
 #include <sstream>
 #include <fstream>
 
-#include "mathlib.h"
+#include <math/mathlib.h>
 
 #include "CovalentGeom.h"
 #include "RingSystem.h"

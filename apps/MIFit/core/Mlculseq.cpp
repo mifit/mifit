@@ -3,14 +3,14 @@
 #include <climits>
 #include <cstring>
 
-#include "nonguilib.h"
-#include "mathlib.h"
-#include "chemlib.h"
+#include <nongui/nonguilib.h>
+#include <math/mathlib.h>
+#include <chemlib/chemlib.h>
 
 #include "Molecule.h"
 #include "seqtypes.h"
 #include "RESIDUE.h"
-#include "RESIDUE_.h"
+#include <chemlib/RESIDUE_.h>
 
 using namespace chemlib;
 

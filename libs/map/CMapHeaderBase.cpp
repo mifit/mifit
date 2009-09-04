@@ -1,20 +1,20 @@
-#include "nonguilib.h"
-#include "mathlib.h"
+#include <nongui/nonguilib.h>
+#include <math/mathlib.h>
 
 #include "maplib_private.h"
 #include "CMapHeaderBase.h"
 #include "fft.h"
-#include <utillib.h>
+#include <util/utillib.h>
 
 #ifdef _WIN32
 #define _MVS
 #ifndef i386
 #define i386
 #endif
-#include <mmtzlib.h>
+#include <umtz/mmtzlib.h>
 #undef _MVS
 #else
-#include <mmtzlib.h>
+#include <umtz/mmtzlib.h>
 #endif
 
 extern char syminfo[][28];

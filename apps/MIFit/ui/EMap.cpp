@@ -1,16 +1,15 @@
-#include "nonguilib.h"
-#include "chemlib.h"
-#include "maplib.h"
-#include "MIDialog.h"
+#include <nongui/nonguilib.h>
+#include <chemlib/chemlib.h>
+#include <map/maplib.h>
+#include "wxdr/MIDialog.h"
 
-#include "corelib.h"
+#include "core/corelib.h"
 #include "EMap.h"
 #include "id.h"
 #include "macafxwin.h"
 #include "Application.h"
 
 #include "uitest.h"
-#include "MIDialog.h"
 #include "MapSettings.h"
 
 struct mmtz_column_;
@@ -18,10 +17,10 @@ struct mmtz_column_;
 #ifdef _WIN32
 #define _MVS
 #define i386
-#include <mmtzlib.h>
+#include <umtz/mmtzlib.h>
 #undef _MVS
 #else
-#include <mmtzlib.h>
+#include <umtz/mmtzlib.h>
 #endif
 
 

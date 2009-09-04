@@ -1,10 +1,10 @@
 #include <stdio.h>
 
-#include "nonguilib.h"
-#include "mathlib.h"
+#include <nongui/nonguilib.h>
+#include <math/mathlib.h>
 
 
-#include "RESIDUE_.h"
+#include <chemlib/RESIDUE_.h>
 #include "MIMolIOBase.h"
 #include "PDB.h"
 #include "mol_util.h"

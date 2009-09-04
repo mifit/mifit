@@ -2,14 +2,14 @@
 #include <set>
 #include <algorithm>
 
-#include "corelib.h"
+#include "core/corelib.h"
 #include "uilib.h"
-#include "RESIDUE_.h"
+#include <chemlib/RESIDUE_.h>
 
 //#include <GL/gl.h>
 //#include <GL/glu.h>
 
-#include "jacgrid.h"
+#include <jacgrid/jacgrid.h>
 #include "surf.h"
 
 #include <math/Matrix4.h>

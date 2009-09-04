@@ -1,7 +1,7 @@
 TOP_SRCDIR = $$PWD
-ExternalDir = $$TOP_SRCDIR/external
-BoostDir = $$ExternalDir/boost_1_39_0
-PythonDir = F:/Python26
+BoostDir = $$TOP_SRCDIR/../external/boost_1_39_0
+
+libsDir = $$TOP_SRCDIR/libs
 
 CONFIG -= debug release
 CONFIG += release
@@ -37,6 +37,9 @@ USE_SHARED_LIBS {
   }
 }
 
+INCLUDEPATH += $$BoostDir
+
+foo {
 INCLUDEPATH += . \
    $$TOP_SRCDIR/libs \
    $$TOP_SRCDIR/libs/chemlib \
@@ -57,29 +60,22 @@ INCLUDEPATH += . \
    $$TOP_SRCDIR/apps/MIFit/python \
    $$TOP_SRCDIR/apps/MIFit/figurelib \
    $$TOP_SRCDIR/apps/MIFit/jobs \
-   $$PythonDir/include \
    $$BoostDir
-
-DEFINES += BOOST_PYTHON_NO_LIB
-CONFIG(debug, debug|release) {
-  DEFINES += BOOST_DEBUG_PYTHON
 }
 
 win32 {
   DEFINES -= UNICODE
   DEFINES += _CRT_SECURE_NO_DEPRECATE _CRT_NONSTDC_NO_DEPRECATE
-  LIBS += -lopengl32 -lglu32 -L$$BoostDir/stage/lib
+  LIBS += -lglu32 -lopengl32 -L$$BoostDir/stage/lib
   CONFIG(debug, debug|release) {
     DEFINES += DEBUG
-    #LIBS += $$PythonDir/PCbuild//python26_d.lib $$BoostDir/stage/lib/boost_python-vc90-mt-gyd-1_36.lib
-    LIBS += $$BoostDir/stage/lib/libboost_signals-mgw34-mt-d.lib
+    LIBS += -L$$BoostDir/stage/lib -llibboost_signals-mgw34-mt-d
   }
   CONFIG(release, debug|release) {
-    #LIBS += $$PythonDir/PCbuild/python26.lib $$BoostDir/stage/lib/boost_python-vc90-mt-1_36.lib
-    LIBS += $$BoostDir/stage/lib/libboost_signals-mgw34-mt.lib
+    LIBS += -L$$BoostDir/stage/lib -llibboost_signals-mgw34-mt
   }
 } else {
-  LIBS += $$BoostDir/libboost_signals.a -L$$PythonDir/lib/ -lpython2.6 -lutil
+  LIBS += -L$$BoostDir/stage/lib -lboost_signals-gcc43-mt
 }
 
 

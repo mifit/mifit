@@ -8,7 +8,7 @@
 #include <QFontDialog>
 #include <QFileDialog>
 
-#include "maplib.h"
+#include <map/maplib.h>
 
 #include "ui/MIMainWindow.h"
 #include "ui/MIHistory.h" // from ui

@@ -4,7 +4,7 @@
 #include <opengl/Renderable.h>
 #include <vector>
 
-#include "chemlib.h"
+#include <chemlib/chemlib.h>
 class GLRenderer;
 
 namespace mi {

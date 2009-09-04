@@ -1,4 +1,4 @@
-#include "chemlib.h"
+#include <chemlib/chemlib.h>
 #include "sdg.h"
 #include "sdg_parms.h"
 #include <algorithm>

@@ -4,7 +4,7 @@
 #include <vector>
 #include <utility>
 
-#include <core/MIData.h>
+#include "MIData.h"
 
 class RibbonSegment;
 class Helix;

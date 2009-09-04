@@ -2,8 +2,8 @@
 #include <cmath>
 #include <algorithm>
 
-#include "mathlib.h"
-#include "RESIDUE_.h"
+#include <math/mathlib.h>
+#include <chemlib/RESIDUE_.h>
 
 #include "mol_util.h"
 #include "atom_util.h"

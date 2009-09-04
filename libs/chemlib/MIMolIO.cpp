@@ -1,10 +1,10 @@
-#include "nonguilib.h"
+#include <nongui/nonguilib.h>
 #include "MIMolIOBase.h"
 #include "mmCIF.h"
 #include "PDB.h"
 #include "molfile.h"
 #include "SMILES.h"
-#include "system.h"
+#include <util/system.h>
 
 using namespace std;
 

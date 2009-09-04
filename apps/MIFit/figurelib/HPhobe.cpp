@@ -1,4 +1,4 @@
-#include "chemlib.h"
+#include <chemlib/chemlib.h>
 #include "HPhobe.h"
 
 using namespace moldraw;

@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "corelib.h"
+#include "core/corelib.h"
 
 #include "ui_BindNGrind.h"
 

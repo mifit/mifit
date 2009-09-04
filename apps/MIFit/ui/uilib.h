@@ -27,7 +27,7 @@
 #include "MoleculeXmlHandler.h"
 #include "molw.h"
 #include "Application.h"
-#include "RenderStyle.h"
+#include "core/RenderStyle.h"
 #include "SaveModel.h"
 #include "surf.h"
 #include "TargaImage.h"

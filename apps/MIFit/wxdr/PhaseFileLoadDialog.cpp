@@ -1,5 +1,5 @@
 #include "PhaseFileLoadDialog.h"
-#include "maplib.h"
+#include <map/maplib.h>
 #include "MIDialog.h"
 
 static const char* F_TEXT = "F = ";

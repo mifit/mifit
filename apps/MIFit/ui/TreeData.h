@@ -2,12 +2,12 @@
 #define mifit_ui_TreeData_h
 
 #include <set>
-#include "chemlib.h"
-#include "maplib.h"
-#include "corelib.h"
+#include <chemlib/chemlib.h>
+#include <map/maplib.h>
+#include "core/corelib.h"
 #include "EMap.h"
-#include "Annotation.h"
-#include "ATOMLABEL.h"
+#include "core/Annotation.h"
+#include "core/ATOMLABEL.h"
 
 class TreeData;
 

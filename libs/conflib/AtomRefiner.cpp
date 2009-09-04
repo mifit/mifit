@@ -1,10 +1,10 @@
-#include "nonguilib.h"
+#include <nongui/nonguilib.h>
 #include <vector>
 #include <fstream>
 #include <sstream>
 
 #include "AtomRefiner.h"
-#include "chemlib.h"
+#include <chemlib/chemlib.h>
 #include "CoordGenerator.h"
 #include <cmath>
 

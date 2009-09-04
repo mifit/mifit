@@ -1,7 +1,7 @@
 #ifndef MI_HISTORY_H
 #define MI_HISTORY_H
 
-#include "corelib.h"
+#include "core/corelib.h"
 #include <map>
 #include <deque>
 #include "core/MIData.h"

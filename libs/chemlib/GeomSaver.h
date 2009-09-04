@@ -2,7 +2,7 @@
 #define mifit_model_GeomSaver_h
 
 #include "SaveItem.h"
-#include "nonguilib.h"
+#include <nongui/nonguilib.h>
 #include "MIAtom_fwd.h"
 
 namespace chemlib {

@@ -6,8 +6,8 @@
 #include <cstring>
 #include <vector>
 #include <map>
-#include <utillib.h>
-#include <mathlib.h>
+#include <util/utillib.h>
+#include <math/mathlib.h>
 
 #include "MIAtom_fwd.h"
 

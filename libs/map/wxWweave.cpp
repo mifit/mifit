@@ -1,9 +1,9 @@
-#include "nonguilib.h"
+#include <nongui/nonguilib.h>
 #include <cmath>
 #include <cstdio>
 
 #include "maplib.h"
-#include "mathlib.h"
+#include <math/mathlib.h>
 
 using namespace chemlib;
 

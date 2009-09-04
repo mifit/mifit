@@ -1,9 +1,9 @@
 #include <algorithm>
 
-#include "nonguilib.h"
-#include "mathlib.h"
+#include <nongui/nonguilib.h>
+#include <math/mathlib.h>
 
-#include "RESIDUE_.h"
+#include <chemlib/RESIDUE_.h>
 #include "MIMoleculeBase.h"
 
 #include "PDB.h"

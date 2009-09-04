@@ -1,4 +1,4 @@
-#include "nonguilib.h"
+#include <nongui/nonguilib.h>
 #include "TestJob.h"
 
 TestJob::TestJob() {

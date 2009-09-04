@@ -1,10 +1,10 @@
-#include "mathlib.h"
+#include <math/mathlib.h>
 
 #include "CovalentGeom.h"
 #include "atom_util.h"
 #include "math_util.h"
 #include "mol_util.h"
-#include "RESIDUE_.h"
+#include <chemlib/RESIDUE_.h>
 #include "Matrix.h"
 
 using namespace std;

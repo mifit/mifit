@@ -5,7 +5,7 @@
 #include <cstdlib>
 #include <cmath>
 
-#include "chemlib.h"
+#include <chemlib/chemlib.h>
 
 #define SINGLEATOM 0
 #define ATOMS 1

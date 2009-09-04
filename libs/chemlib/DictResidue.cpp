@@ -1,4 +1,4 @@
-#include "RESIDUE_.h"
+#include <chemlib/RESIDUE_.h>
 #include "Bond.h"
 #include "ANGLE.h"
 #include "DictResidue.h"

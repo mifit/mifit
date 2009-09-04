@@ -3,8 +3,8 @@
 
 #include <vector>
 
-#include "chemlib.h"
-#include "corelib.h"
+#include <chemlib/chemlib.h>
+#include "core/corelib.h"
 
 class Molecule;
 class Displaylist;

@@ -3,13 +3,13 @@
 #include <errno.h>
 
 
-#include "nonguilib.h"
+#include <nongui/nonguilib.h>
 
-#include "chemlib.h"
-#include "RESIDUE_.h"
-#include "conflib.h"
-#include "utillib.h"
-#include "corelib.h"
+#include <chemlib/chemlib.h>
+#include <chemlib/RESIDUE_.h>
+#include <conflib/conflib.h>
+#include <util/utillib.h>
+#include "core/corelib.h"
 
 
 #include "Application.h"
@@ -17,8 +17,8 @@
 #include "DictEditCanvas.h"
 
 #include "uitest.h"
-#include "MIDialog.h"
-#include "FileIo.h"
+#include "wxdr/MIDialog.h"
+#include <util/FileIo.h>
 #include "MIHistory.h"
 #include "MIMainWindow.h"
 #include "molw.h" // for cursors
@@ -41,7 +41,7 @@
 #define strncasecmp strnicmp
 #endif
 
-#include "Version.h"
+#include "core/Version.h"
 
 int PaletteChanged = true;
 #define GLOBAL

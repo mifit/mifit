@@ -3,8 +3,8 @@
 
 #include <map>
 
-#include "chemlib.h"
-#include "corelib.h"
+#include <chemlib/chemlib.h>
+#include "core/corelib.h"
 
 class DictEditAnglePickingRenderable;
 class DictEditAnnotationPickingRenderable;

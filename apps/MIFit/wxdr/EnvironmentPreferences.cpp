@@ -1,6 +1,6 @@
 #include "EnvironmentPreferences.h"
-#include "corelib.h"
-#include "uilib.h"
+#include "core/corelib.h"
+#include "ui/uilib.h"
 
 #include <QFileDialog>
 

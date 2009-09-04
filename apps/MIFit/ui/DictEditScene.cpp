@@ -11,7 +11,7 @@
 #include <opengl/interact/MouseTranslator.h>
 #include <opengl/interact/TargetFeedback.h>
 
-#include "nonguilib.h"
+#include <nongui/nonguilib.h>
 
 #include "DictEditScene.h"
 #include "Displaylist.h"

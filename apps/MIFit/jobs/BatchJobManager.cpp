@@ -1,9 +1,9 @@
-#include "nonguilib.h"
+#include <nongui/nonguilib.h>
 #include "BatchJobManager.h"
 
 #include "BatchJob.h"
 #include "CustomJob.h"
-#include "corelib.h"
+#include "core/corelib.h"
 #include <boost/bind.hpp>
 
 using namespace std;

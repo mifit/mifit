@@ -1,8 +1,8 @@
 #include "LigPostProcessor.h"
 
-#include "conflib.h"
-#include "chemlib.h"
-#include "RESIDUE_.h"
+#include <conflib/conflib.h>
+#include <chemlib/chemlib.h>
+#include <chemlib/RESIDUE_.h>
 
 using namespace std;
 using namespace chemlib;

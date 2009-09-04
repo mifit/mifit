@@ -1,5 +1,5 @@
-#include "nongui.h"
-#include "utillib.h"
+#include <nongui/nongui.h>
+#include <util/utillib.h>
 #include "MIMenuBar.h"
 #include "MIMenu.h"
 

@@ -2,7 +2,7 @@
 #include "MIMenu.h"
 #include "MIMainWindow.h"
 
-#include "utillib.h"
+#include <util/utillib.h>
 
 #include <utility>
 #include <QMetaObject>

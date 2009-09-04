@@ -1,9 +1,9 @@
 #include "JobReport.h"
 #include "MIBrowsePair.h"
 
-#include "corelib.h"
-#include "maplib.h"
-#include "uilib.h"
+#include "core/corelib.h"
+#include <map/maplib.h>
+#include "ui/uilib.h"
 #include "MIDialog.h"
 
 #include <vector>

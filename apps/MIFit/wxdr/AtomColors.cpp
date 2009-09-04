@@ -1,6 +1,6 @@
 #include "AtomColors.h"
 #include "MIDialog.h"
-#include "uilib.h"
+#include "ui/uilib.h"
 
 #include <QInputDialog>
 

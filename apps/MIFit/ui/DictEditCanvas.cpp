@@ -21,12 +21,12 @@
 #include <QTime>
 #include <QTimer>
 
-#include "nonguilib.h"
-#include "chemlib.h"
-#include "RESIDUE_.h"
-#include "conflib.h"
-#include "corelib.h"
-#include "utillib.h"
+#include <nongui/nonguilib.h>
+#include <chemlib/chemlib.h>
+#include <chemlib/RESIDUE_.h>
+#include <conflib/conflib.h>
+#include <core/corelib.h>
+#include <util/utillib.h>
 
 #include "DictEditAnglePickingRenderable.h"
 #include "DictEditAnnotationPickingRenderable.h"
@@ -42,8 +42,8 @@
 
 #include "molw.h"
 #include "uitest.h"
-#include "MIDialog.h"
-#include "../wxdr/DictEditDialog.h"
+#include "wxdr/MIDialog.h"
+#include "wxdr/DictEditDialog.h"
 #include "MIMenuBar.h"
 #include "MIMenu.h"
 #include "MIEventHandlerMacros.h"

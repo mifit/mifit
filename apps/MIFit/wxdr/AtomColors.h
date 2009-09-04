@@ -1,7 +1,7 @@
 #ifndef __AtomColors_H__
 #define __AtomColors_H__
 
-#include "corelib.h"
+#include "core/corelib.h"
 #include "ui_AtomColors.h"
 
 // variables: atomNames.strList, atomColors.strList,

@@ -1,7 +1,7 @@
 #ifndef SMILESDIALOG_H
 #define SMILESDIALOG_H
 
-#include "corelib.h" // for MIData
+#include "core/corelib.h" // for MIData
 
 #include "ui_SmilesDialog.h"
 

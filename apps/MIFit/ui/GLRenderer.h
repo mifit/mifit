@@ -1,7 +1,7 @@
 #ifndef mifit_ui_GLRenderer_h
 #define mifit_ui_GLRenderer_h
 
-#include "corelib.h"
+#include "core/corelib.h"
 
 #include <math/Vector3.h>
 

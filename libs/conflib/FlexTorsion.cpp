@@ -1,6 +1,6 @@
-#include "mathlib.h"
-#include "chemlib.h"
-#include "RESIDUE_.h"
+#include <math/mathlib.h>
+#include <chemlib/chemlib.h>
+#include <chemlib/RESIDUE_.h>
 
 #include "FlexTorsion.h"
 

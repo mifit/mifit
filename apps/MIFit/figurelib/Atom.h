@@ -1,7 +1,7 @@
 #ifndef mifit_figurelib_Atom_h
 #define mifit_figurelib_Atom_h
 
-#include "corelib.h"
+#include "core/corelib.h"
 #include "Shape.h"
 
 namespace moldraw {

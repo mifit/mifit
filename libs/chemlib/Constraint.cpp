@@ -1,4 +1,4 @@
-#include "mathlib.h"
+#include <math/mathlib.h>
 
 #include "Constraint.h"
 #include "Dictionary.h"

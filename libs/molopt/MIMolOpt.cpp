@@ -2,13 +2,13 @@
 #include <algorithm>
 #include <cfloat>
 
-#include "nonguilib.h"
-#include "mathlib.h"
-#include "chemlib.h"
-#include "RESIDUE_.h"
-#include "MIMoleculeBase.h"
-#include "conflib.h"
-#include "maplib.h"
+#include <nongui/nonguilib.h>
+#include <math/mathlib.h>
+#include <chemlib/chemlib.h>
+#include <chemlib/RESIDUE_.h>
+#include <chemlib/MIMoleculeBase.h>
+#include <conflib/conflib.h>
+#include <map/maplib.h>
 
 #include "MIMolOpt.h"
 

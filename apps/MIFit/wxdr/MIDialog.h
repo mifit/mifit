@@ -1,7 +1,7 @@
 #ifndef MI_DIALOG_H
 #define MI_DIALOG_H
 
-#include "corelib.h"
+#include "core/corelib.h"
 #include <climits>
 #include <vector>
 #include <string>

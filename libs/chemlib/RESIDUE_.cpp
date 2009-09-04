@@ -1,10 +1,10 @@
-#include "nonguilib.h"
-#include "mathlib.h"
+#include <nongui/nonguilib.h>
+#include <math/mathlib.h>
 #include "model.h"
 
 #include "atom_util.h"
 #include "mol_util.h"
-#include "RESIDUE_.h"
+#include <chemlib/RESIDUE_.h>
 
 namespace chemlib {
 

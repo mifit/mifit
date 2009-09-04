@@ -5,8 +5,8 @@
 #include <boost/signal.hpp>
 #include <cmath>
 
-#include "corelib.h"
-#include "chemlib.h"
+#include "core/corelib.h"
+#include <chemlib/chemlib.h>
 #include "macafxwin.h"
 #include "SaveModel.h"
 

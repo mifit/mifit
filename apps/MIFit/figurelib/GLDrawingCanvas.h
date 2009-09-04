@@ -2,7 +2,7 @@
 #include "Drawing.h"
 
 
-#include "../ui/MIEventHandler.h"
+#include "ui/MIEventHandler.h"
 #include <QGLWidget>
 #include <QMouseEvent>
 

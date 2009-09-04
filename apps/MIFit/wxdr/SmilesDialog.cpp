@@ -1,4 +1,4 @@
-#include "corelib.h"
+#include "core/corelib.h"
 #include "SmilesDialog.h"
 
 #include <QFileDialog>

@@ -15,10 +15,10 @@
 #include <boost/bind.hpp>
 #include <boost/signal.hpp>
 
-#include "maplib.h"
-#include "corelib.h"
-#include "nonguilib.h"
-#include "RESIDUE_.h"
+#include <map/maplib.h>
+#include "core/corelib.h"
+#include <nongui/nonguilib.h>
+#include <chemlib/RESIDUE_.h>
 
 #include "ModelsView.h"
 #include "EMap.h"
@@ -36,7 +36,7 @@
 #include "MIQTreeWidget.h"
 
 #include "uitest.h"
-#include "MIDialog.h"
+#include "wxdr/MIDialog.h"
 
 #include "surf.h"
 

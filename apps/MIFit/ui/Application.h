@@ -6,8 +6,8 @@
  */
 class MIConfig;
 
-#include "maplib.h"
-#include "corelib.h"
+#include <map/maplib.h>
+#include "core/corelib.h"
 
 class MISingleInstanceChecker;
 class GeomRefiner;

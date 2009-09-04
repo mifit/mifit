@@ -1,7 +1,7 @@
 #include "bumps.h"
 
-#include "chemlib.h"
-#include "RESIDUE_.h"
+#include <chemlib/chemlib.h>
+#include <chemlib/RESIDUE_.h>
 
 using namespace chemlib;
 

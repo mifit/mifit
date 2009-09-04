@@ -1,7 +1,7 @@
 #ifndef ATOM_REFINER_H
 #define ATOM_REFINER_H
 
-#include "chemlib.h"
+#include <chemlib/chemlib.h>
 
 namespace conflib {
 class CoordGenerator;

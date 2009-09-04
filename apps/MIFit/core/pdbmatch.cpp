@@ -1,6 +1,6 @@
-#include "nonguilib.h"
-#include "chemlib.h"
-#include "RESIDUE_.h"
+#include <nongui/nonguilib.h>
+#include <chemlib/chemlib.h>
+#include <chemlib/RESIDUE_.h>
 #include "corelib.h"
 
 #include "rotlsq.h"

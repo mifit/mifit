@@ -3,7 +3,7 @@
 #include <cstring>
 #include <cassert>
 
-#include "mathlib.h"
+#include <math/mathlib.h>
 
 /* Finds rotation matrix r and vector t such that       */
 /* SUM ( sqr (w* (b - r*a + t))) is minimized, where    */

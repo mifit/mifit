@@ -6,33 +6,33 @@
 #include <QtGui>
 #include <boost/bind.hpp>
 
-#include "chemlib.h"
-#include "RESIDUE_.h"
-#include "conflib.h"
+#include <chemlib/chemlib.h>
+#include <chemlib/RESIDUE_.h>
+#include <conflib/conflib.h>
 
-#include "jobslib.h"
+#include "jobs/jobslib.h"
 #include "JobsView.h"
 
-#include "utillib.h"
-#include "corelib.h"
-#include "ligandlib.h"
-#include "maplib.h"
-#include "nonguilib.h"
-#include "wxdrlib.h"
+#include <util/utillib.h>
+#include "core/corelib.h"
+#include <ligand/ligandlib.h>
+#include <map/maplib.h>
+#include <nongui/nonguilib.h>
+#include "wxdr/wxdrlib.h"
 
 #include "DictEditCanvas.h"
 #include "DisplayView.h"
 #include "EMap.h"
 #include "Displaylist.h"
 
-#include "ManageCrystals.h"
+#include "wxdr/ManageCrystals.h"
 #include "ModelsView.h"
 #include "MIMolIO.h"
 #include "molw.h"
 #include "MIHistory.h"
 
 #include "uitest.h"
-#include "MIDialog.h"
+#include "wxdr/MIDialog.h"
 
 //#include "preferences/MapPreferencesPanel.h"
 //#include "preferences/EnvironmentPreferencesPanel.h"
@@ -46,7 +46,7 @@
 #include "MIToolBar.h"
 #include "MIGLWidget.h"
 
-#include "MIDialog.h" // for file dialog
+#include "wxdr/MIDialog.h" // for file dialog
 #include "MIHistory.h"
 
 #include "Application.h"
@@ -61,10 +61,10 @@
 
 
 
-#include "DictEditDialog.h"
+#include "wxdr/DictEditDialog.h"
 
 #include "MIEventHandlerMacros.h"
-#include "Version.h"
+#include "core/Version.h"
 
 #include "tools.h"
 
@@ -1612,7 +1612,9 @@ void MIMainWindow::updateNavigator() {
 
 void MIMainWindow::Debug(const std::string &msg)
 {
+#ifdef DEBUG
   Log(msg);
+#endif
 }
 
 void MIMainWindow::closeEvent(QCloseEvent *event)

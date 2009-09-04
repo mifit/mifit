@@ -1,7 +1,7 @@
-#include "nonguilib.h"
-#include "chemlib.h"
-#include "RESIDUE_.h"
-#include "maplib.h"
+#include <nongui/nonguilib.h>
+#include <chemlib/chemlib.h>
+#include <chemlib/RESIDUE_.h>
+#include <map/maplib.h>
 
 #include "xmlarchive.h"
 #include "Annotation.h"

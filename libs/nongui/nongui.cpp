@@ -3,7 +3,7 @@
 #include <stdarg.h>
 #include <string>
 #include "nongui.h"
-#include "utillib.h"
+#include "util/utillib.h"
 
 // things in this file provide non-gui implementations of Logger, emess,
 // WaitCursor, etc

@@ -12,7 +12,7 @@
 #include "substituent_util.h"
 #include "LigandPerceiver.h"
 #include "atom_util.h"
-#include "RESIDUE_.h"
+#include <chemlib/RESIDUE_.h>
 
 using namespace std;
 

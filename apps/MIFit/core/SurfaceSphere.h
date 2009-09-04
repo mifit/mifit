@@ -2,7 +2,7 @@
 #define mifit_model_SurfaceSphere_h
 
 #include <vector>
-#include "mathlib.h"
+#include <math/mathlib.h>
 
 class SurfaceSphere {
 

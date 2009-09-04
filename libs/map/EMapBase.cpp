@@ -1,10 +1,10 @@
 #include <algorithm>
 
-#include "nonguilib.h"
-#include "chemlib.h"
-#include "RESIDUE_.h"
-#include "MIMoleculeBase.h"
-#include "mathlib.h"
+#include <nongui/nonguilib.h>
+#include <chemlib/chemlib.h>
+#include <chemlib/RESIDUE_.h>
+#include <chemlib/MIMoleculeBase.h>
+#include <math/mathlib.h>
 
 #include "EMapBase.h"
 #include "MINATOM.h"
@@ -26,11 +26,11 @@ typedef struct
 #ifdef _WIN32
 #define _MVS
 #define i386
-#include <mmtzlib.h>
+#include <umtz/mmtzlib.h>
 #undef _MVS
 #define strncasecmp strnicmp
 #else
-#include <mmtzlib.h>
+#include <umtz/mmtzlib.h>
 #endif
 
 using namespace std;

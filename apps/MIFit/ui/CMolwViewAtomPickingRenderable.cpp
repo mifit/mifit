@@ -3,11 +3,11 @@
 #include <opengl/StereoView.h>
 #include <list>
 
-#include "chemlib.h"
+#include <chemlib/chemlib.h>
 
 #include "CMolwViewAtomPickingRenderable.h"
 #include "GLRenderer.h"
-#include "RenderStyle.h"
+#include "core/RenderStyle.h"
 #include "Displaylist.h"
 
 

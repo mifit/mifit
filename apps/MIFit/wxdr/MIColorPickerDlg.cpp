@@ -1,6 +1,6 @@
 #include "MIColorPickerDlg.h"
-#include "corelib.h"
-#include "uilib.h"
+#include "core/corelib.h"
+#include "ui/uilib.h"
 
 #include <QButtonGroup>
 #include <QPushButton>

@@ -3,7 +3,7 @@
 
 #include <opengl/Scene.h>
 
-#include "chemlib.h"
+#include <chemlib/chemlib.h>
 
 class Displaylist;
 class GLRenderer;

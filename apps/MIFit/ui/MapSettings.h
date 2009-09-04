@@ -1,7 +1,7 @@
 #ifndef mifit_ui_MapSettings_h
 #define mifit_ui_MapSettings_h
 
-#include "maplib.h"
+#include <map/maplib.h>
 
 class MapSettings : public MapSettingsBase {
 public:

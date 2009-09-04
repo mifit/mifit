@@ -1,7 +1,7 @@
 #ifndef CONFLIB_CONFORMATION_ITERATOR_H
 #define CONFLIB_CONFORMATION_ITERATOR_H
 
-#include "chemlib.h"
+#include <chemlib/chemlib.h>
 
 #include "FlexTorsion.h"
 #include "ConfFingerprint.h"

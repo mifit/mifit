@@ -4,9 +4,9 @@
 #include <boost/bind.hpp>
 #include <boost/signal.hpp>
 
-#include "mathlib.h"
-#include "nonguilib.h"
-#include "RESIDUE_.h"
+#include <math/mathlib.h>
+#include <nongui/nonguilib.h>
+#include <chemlib/RESIDUE_.h>
 
 #include "MIMainWindow.h"
 #include "MIGLWidget.h"

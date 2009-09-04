@@ -5,11 +5,11 @@
 #include <boost/bind.hpp>
 #include <boost/signal.hpp>
 
-#include "corelib.h"
-#include "chemlib.h"
-#include "RESIDUE_.h"
+#include "core/corelib.h"
+#include <chemlib/chemlib.h>
+#include <chemlib/RESIDUE_.h>
 
-#include "MIDialog.h"
+#include "wxdr/MIDialog.h"
 
 #include "Displaylist.h"
 #include "DisplayView.h"

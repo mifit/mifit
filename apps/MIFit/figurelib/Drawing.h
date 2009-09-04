@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-#include "corelib.h"
+#include "core/corelib.h"
 
 #ifndef RAD2DEG
 #define RAD2DEG (57.295779513082320876798154814105)     /* 180 / PI */

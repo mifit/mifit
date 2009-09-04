@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "core/MIData.h"
-#include "uilib.h"
+#include "ui/uilib.h"
 
 #include "ui_PhaseFileLoadDialog.h"
 

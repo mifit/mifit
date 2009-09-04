@@ -1,6 +1,6 @@
 #include "SelectCrystal.h"
 
-#include "uilib.h"
+#include "ui/uilib.h"
 
 #include <QDir>
 #include <QFileInfo>

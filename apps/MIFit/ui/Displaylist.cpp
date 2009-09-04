@@ -6,12 +6,12 @@
 #include <boost/bind.hpp>
 #include <boost/signal.hpp>
 
-#include "nonguilib.h"
-#include "chemlib.h"
-#include "RESIDUE_.h"
-#include "maplib.h"
-#include "corelib.h"
-#include "MIDialog.h"
+#include <nongui/nonguilib.h>
+#include <chemlib/chemlib.h>
+#include <chemlib/RESIDUE_.h>
+#include <map/maplib.h>
+#include "core/corelib.h"
+#include "wxdr/MIDialog.h"
 
 #include "EMap.h"
 #include "id.h"

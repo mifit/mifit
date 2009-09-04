@@ -1,4 +1,4 @@
-#include <math/IndexOutOfBoundsException.h>
+#include "IndexOutOfBoundsException.h"
 #include <cstring>
 
 namespace mi {

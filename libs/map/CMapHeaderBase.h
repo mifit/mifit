@@ -5,7 +5,7 @@
 #include <vector>
 #include <boost/signal.hpp>
 
-#include "chemlib.h"
+#include <chemlib/chemlib.h>
 
 #include "MAP_POINT.h"
 

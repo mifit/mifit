@@ -22,13 +22,13 @@
 #include <opengl/ViewportRelativeViewpoint.h>
 #include <opengl/interact/TargetFeedback.h>
 
-#include "nonguilib.h"
+#include <nongui/nonguilib.h>
 #include "uitest.h"
 #include "Displaylist.h"
 #include "CMolwViewScene.h"
 #include "Application.h"
 #include "GLRenderer.h"
-#include "ViewPoint.h"
+#include "core/ViewPoint.h"
 #include "surf.h"
 
 using namespace mi::math;

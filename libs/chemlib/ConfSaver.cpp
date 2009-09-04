@@ -1,6 +1,6 @@
 #include "ConfSaver.h"
 #include "MIAtom.h"
-#include "RESIDUE_.h"
+#include <chemlib/RESIDUE_.h>
 
 using namespace std;
 

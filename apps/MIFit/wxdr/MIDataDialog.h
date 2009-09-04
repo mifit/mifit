@@ -5,7 +5,7 @@
 #include <QGridLayout>
 #include <string>
 #include <map>
-#include "MIData.h"
+#include "core/MIData.h"
 
 class MIDataDialog : public QDialog {
   Q_OBJECT

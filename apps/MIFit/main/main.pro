@@ -1,5 +1,6 @@
 
 include(../../../common.pri)
+include(../MIFit.pri)
 
 TEMPLATE = app
 TARGET = MIFit
@@ -13,49 +14,37 @@ INSTALLS += target
 CONFIG += no_lflags_merge
 CONFIG -= staticlib
 
-unix { 
-  LIBPREFIX = /lib
-  LIBSPATH = ../../../libs
-}
 win32 {
-  LIBSPATH = ../../../libs
-  LIBPREFIX = /lib
   RC_FILE=mifit.rc
 }
 
 mac {
-ICON=../images/mifit.icns
+  ICON=../images/mifit.icns
 }
 
-# specify library dependencies
-PRE_TARGETDEPS += \
-        ..$${LIBPREFIX}core$${LIB_EXTENSION} \
-        ..$${LIBPREFIX}ui$${LIB_EXTENSION} \
-        ..$${LIBPREFIX}wxdr$${LIB_EXTENSION} \
-        ..$${LIBPREFIX}figurelib$${LIB_EXTENSION} \
-        ..$${LIBPREFIX}jobs$${LIB_EXTENSION} \
-        $${LIBSPATH}$${LIBPREFIX}ligand$${LIB_EXTENSION} \
-        $${LIBSPATH}$${LIBPREFIX}map$${LIB_EXTENSION} \
-        $${LIBSPATH}$${LIBPREFIX}molopt$${LIB_EXTENSION} \
-        $${LIBSPATH}$${LIBPREFIX}conflib$${LIB_EXTENSION} \
-        $${LIBSPATH}$${LIBPREFIX}chemlib$${LIB_EXTENSION} \
-        $${LIBSPATH}$${LIBPREFIX}miopengl$${LIB_EXTENSION} \
-        $${LIBSPATH}$${LIBPREFIX}mimath$${LIB_EXTENSION} \
-        $${LIBSPATH}$${LIBPREFIX}miutil$${LIB_EXTENSION} \
-        $${LIBSPATH}$${LIBPREFIX}jacgrid$${LIB_EXTENSION} \
-        $${LIBSPATH}$${LIBPREFIX}umtz$${LIB_EXTENSION}
+include(../ui/ui.pri)
+include(../figurelib/figurelib.pri)
+include(../jobs/jobs.pri)
+include(../wxdr/wxdr.pri)
+LIBS += -lui
+include(../core/core.pri)
+include($${libsDir}/nongui/nongui.pri)
+include($${libsDir}/ligand/ligand.pri)
+include($${libsDir}/map/map.pri)
+include($${libsDir}/molopt/molopt.pri)
+include($${libsDir}/conflib/conflib.pri)
+include($${libsDir}/chemlib/chemlib.pri)
+include($${libsDir}/opengl/opengl.pri)
+include($${libsDir}/math/math.pri)
+include($${libsDir}/util/util.pri)
+include($${libsDir}/jacgrid/jacgrid.pri)
+include($${libsDir}/umtz/umtz.pri)
 
-MYLIBS=-L../ -lui -lfigurelib -ljobs -lwxdr -lcore -L../../../libs -lligand -lmap -lmolopt -lconflib -lchemlib -lmiopengl -lmimath -lmiutil -ljacgrid -lumtz
-LIBS =  $$MYLIBS $$MYLIBS $$LIBS
-
-unix:!mac{
-  QMAKE_LFLAGS += -Wl,--rpath=\\\$\$ORIGIN
-  QMAKE_LFLAGS += -Wl,--rpath=\\\$\$ORIGIN/libs
-  QMAKE_RPATH=
+win32 {
+  LIBS -= -lglu32 -lopengl32 -llibboost_signals-mgw34-mt
+  LIBS += -lglu32 -lopengl32 -llibboost_signals-mgw34-mt
 }
 
-mac {
-  QMAKE_LFLAGS+=-Wl,-search_paths_first
-}
+include(../../../rpath.pri)
 
 SOURCES += *.cpp

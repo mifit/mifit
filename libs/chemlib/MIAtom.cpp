@@ -1,8 +1,8 @@
 #include <vector>
 #include <string>
 
-#include "nonguilib.h"
-#include "utillib.h"
+#include <nongui/nonguilib.h>
+#include <util/utillib.h>
 
 #include "model.h"
 #include "MIAtom.h"

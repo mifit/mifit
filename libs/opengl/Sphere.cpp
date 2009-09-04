@@ -2,7 +2,7 @@
 
 #include <opengl/OpenGL.h>
 #include <cmath>
-#include <mi_math.h>
+#include <math/mi_math.h>
 
 using namespace std;
 

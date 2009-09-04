@@ -1,7 +1,7 @@
 #ifndef mifit_model_SURFDOT_h
 #define mifit_model_SURFDOT_h
 
-#include "chemlib.h"
+#include <chemlib/chemlib.h>
 
 #ifdef TESTING
 extern float spacing;

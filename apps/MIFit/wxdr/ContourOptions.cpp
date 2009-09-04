@@ -1,6 +1,6 @@
 #include "ContourOptions.h"
 #include "MIDialog.h"
-#include "uilib.h"
+#include "ui/uilib.h"
 
 ContourOptions::ContourOptions(QWidget *parent, bool prefsMode) : QWidget(parent) {
   setupUi(this);

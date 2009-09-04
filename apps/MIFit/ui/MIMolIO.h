@@ -1,7 +1,7 @@
 #ifndef mifit_mimolio_h
 #define mifit_mimolio_h
 
-#include "chemlib.h"
+#include <chemlib/chemlib.h>
 
 class MIMolIO : public chemlib::MIMolIOBase {
 public:

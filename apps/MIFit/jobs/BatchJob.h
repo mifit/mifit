@@ -4,7 +4,7 @@
 #include <string>
 #include <boost/signal.hpp>
 
-#include "corelib.h"
+#include "core/corelib.h"
 
 class MIGLWidget;
 

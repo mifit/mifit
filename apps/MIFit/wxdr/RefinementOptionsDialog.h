@@ -1,7 +1,7 @@
 #ifndef REFINEMENTOPTIONSDIALOG_H
 #define REFINEMENTOPTIONSDIALOG_H
 
-#include "corelib.h" // for MIData
+#include "core/corelib.h" // for MIData
 
 #include "ui_RefinementOptionsDialog.h"
 

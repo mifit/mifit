@@ -1,7 +1,7 @@
 #ifndef MI_CMapHeader_H
 #define MI_CMapHeader_H
 
-#include "maplib.h"
+#include <map/maplib.h>
 
 class CMapHeader : public CMapHeaderBase {
 public:

@@ -4,7 +4,7 @@
 #include <fstream>
 #include <functional>
 
-#include "mathlib.h"
+#include <math/mathlib.h>
 
 
 #include "MIAtom_fwd.h"

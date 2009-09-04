@@ -1,7 +1,7 @@
 #ifndef GENERAL_PREFERENCES_H
 #define GENERAL_PREFERENCES_H
 
-#include "corelib.h"
+#include "core/corelib.h"
 
 #include "ui_GeneralPreferences.h"
 

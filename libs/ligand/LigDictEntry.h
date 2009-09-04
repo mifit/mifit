@@ -2,7 +2,7 @@
 #define mifit_ligand_LigDictEntry_h
 
 #include <vector>
-#include "chemlib.h"
+#include <chemlib/chemlib.h>
 
 class LigDictEntry {
 public:

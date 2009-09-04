@@ -4,7 +4,7 @@
 #include "CifData.h"
 #include "CifParser.h"
 #include "model.h"
-#include "system.h"
+#include <util/system.h>
 
 using namespace std;
 

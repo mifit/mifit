@@ -7,10 +7,10 @@
 #include <opengl/OpenGL.h>
 #include <opengl/GLFont.h>
 
-#include "nonguilib.h"
-#include "maplib.h"
-#include "corelib.h"
-#include "RESIDUE_.h"
+#include <nongui/nonguilib.h>
+#include <map/maplib.h>
+#include "core/corelib.h"
+#include <chemlib/RESIDUE_.h>
 #include "GLRenderer.h"
 #include "TargaImage.h"
 #include "EMap.h"

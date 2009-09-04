@@ -1,7 +1,7 @@
 #ifndef MI_EMap_H
 #define MI_EMap_H
 
-#include "corelib.h"
+#include "core/corelib.h"
 #include "CMapHeader.h"
 
 class CArchive;

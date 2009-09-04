@@ -1,4 +1,4 @@
-#include "chemlib.h"
+#include <chemlib/chemlib.h>
 
 namespace conflib {
 

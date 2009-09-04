@@ -1,6 +1,6 @@
 #include "GeneralPreferences.h"
-#include "corelib.h"
-#include "uilib.h"
+#include "core/corelib.h"
+#include "ui/uilib.h"
 
 
 GeneralPreferences::GeneralPreferences(QWidget *parent) : QWidget(parent) {

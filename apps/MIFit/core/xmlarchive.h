@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-#include "chemlib.h"
+#include <chemlib/chemlib.h>
 
 #include "ATOMLABEL.h"
 #include "SURFDOT.h"

@@ -1,11 +1,11 @@
-#include "nonguilib.h"
+#include <nongui/nonguilib.h>
 #include "LSQFitDialog.h"
 
-#include "corelib.h"
-#include "mathlib.h"
-#include "uilib.h"
+#include "core/corelib.h"
+#include <math/mathlib.h>
+#include "ui/uilib.h"
 #include "MIDialog.h"
-#include "RESIDUE_.h"
+#include <chemlib/RESIDUE_.h>
 
 // for getting current displaylist
 #include "ui/MIMainWindow.h"

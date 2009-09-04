@@ -1,7 +1,7 @@
 #ifndef ENVIRONMENT_PREFERENCES_H
 #define ENVIRONMENT_PREFERENCES_H
 
-#include "corelib.h"
+#include "core/corelib.h"
 
 #include "ui_EnvironmentPreferences.h"
 

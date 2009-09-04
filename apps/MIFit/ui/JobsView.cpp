@@ -6,8 +6,8 @@
 #include <boost/bind.hpp>
 #include <boost/signal.hpp>
 
-#include "nonguilib.h"
-#include "jobslib.h"
+#include <nongui/nonguilib.h>
+#include "jobs/jobslib.h"
 #include "core/MIData.h"
 
 #include "MIEventHandler.h"
@@ -17,7 +17,7 @@
 #include "MIQTreeWidget.h"
 
 #include "uitest.h"
-#include "MIDialog.h"
+#include "wxdr/MIDialog.h"
 #include "id.h"
 
 #include <images/jobsList.xpm>

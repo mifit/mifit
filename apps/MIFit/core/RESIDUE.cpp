@@ -1,10 +1,10 @@
 #define NOMINMAX
-#include "nonguilib.h"
-#include "chemlib.h"
-#include "RESIDUE_.h"
-#include "utillib.h"
-#include "maplib.h"
-#include "mathlib.h"
+#include <nongui/nonguilib.h>
+#include <chemlib/chemlib.h>
+#include <chemlib/RESIDUE_.h>
+#include <util/utillib.h>
+#include <map/maplib.h>
+#include <math/mathlib.h>
 
 #include "RESIDUE.h"
 #include "Cfiles.h"

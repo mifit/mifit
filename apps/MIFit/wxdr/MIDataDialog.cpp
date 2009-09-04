@@ -12,10 +12,10 @@
 #include <QColorDialog>
 #include <QComboBox>
 
-#include "nongui.h"
-#include "utillib.h"
-#include "corelib.h"
-#include "uilib.h"
+#include <nongui/nongui.h>
+#include <util/utillib.h>
+#include "core/corelib.h"
+#include "ui/uilib.h"
 
 MIDataDialog::MIDataDialog(QWidget* parent, Qt::WindowFlags f)
 : QDialog(parent, f), data(NULL) {

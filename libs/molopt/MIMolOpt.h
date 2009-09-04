@@ -6,8 +6,8 @@
 #include <list>
 #include <map>
 
-#include "mathlib.h"
-#include "chemlib.h"
+#include <math/mathlib.h>
+#include <chemlib/chemlib.h>
 
 
 class EMapBase;

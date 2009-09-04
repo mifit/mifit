@@ -2,8 +2,8 @@
 
 #include "RandomTesting.h"
 #include <cmath>
-#include "nonguilib.h"
-#include "utillib.h"
+#include <nongui/nonguilib.h>
+#include <util/utillib.h>
 #include <limits.h>
 #include <string.h>
 

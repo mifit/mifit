@@ -9,13 +9,13 @@
 #include <string.h>
 #include <limits.h>
 
-#include "nonguilib.h"
-#include "maplib.h"
-#include "corelib.h"
+#include <nongui/nonguilib.h>
+#include <map/maplib.h>
+#include "core/corelib.h"
 
 #include "macafxwin.h"
 #include "Application.h"
-#include "MIDialog.h"
+#include "wxdr/MIDialog.h"
 
 WaitCursor::WaitCursor(const char* op) {
   op_name = op;

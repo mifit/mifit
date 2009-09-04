@@ -1,5 +1,5 @@
-#include "chemlib.h"
-#include "RESIDUE_.h"
+#include <chemlib/chemlib.h>
+#include <chemlib/RESIDUE_.h>
 
 #include "ConfIterator.h"
 #include "bumps.h"

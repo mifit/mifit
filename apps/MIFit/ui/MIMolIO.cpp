@@ -1,7 +1,7 @@
 #include "MIMolIO.h"
 #include "macafxwin.h"
 #include "uitest.h"
-#include "MIDialog.h"
+#include "wxdr/MIDialog.h"
 
 using namespace chemlib;
 

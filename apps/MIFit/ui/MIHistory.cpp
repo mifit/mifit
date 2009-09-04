@@ -1,9 +1,9 @@
 #include <cstdarg>
 
-#include "nonguilib.h"
-#include "utillib.h"
+#include <nongui/nonguilib.h>
+#include <util/utillib.h>
 #include "Application.h"
-#include "RESIDUE_.h"
+#include <chemlib/RESIDUE_.h>
 #include "molw.h"
 #include "MIHistory.h"
 #include "Displaylist.h"
@@ -12,7 +12,7 @@
 #include "uitest.h"
 
 #include "DictEditCanvas.h"
-#include "DictEditDialog.h"
+#include "wxdr/DictEditDialog.h"
 
 #include "MIMenuBar.h"
 #include "MIMenu.h"

@@ -1,10 +1,10 @@
 #include <cmath>
 #include <cstdio>
 
-#include "mathlib.h"
-#include "chemlib.h"
-#include "RESIDUE_.h"
-#include "MIMoleculeBase.h"
+#include <math/mathlib.h>
+#include <chemlib/chemlib.h>
+#include <chemlib/RESIDUE_.h>
+#include <chemlib/MIMoleculeBase.h>
 
 #include "ViewPoint.h"
 #include "Cfiles.h"

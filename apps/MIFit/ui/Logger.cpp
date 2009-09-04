@@ -1,10 +1,10 @@
 #include <cstdarg>
 #include <string>
 
-#include "nonguilib.h"
-#include "utillib.h"
+#include <nongui/nonguilib.h>
+#include <util/utillib.h>
 
-#include "MIDialog.h"
+#include "wxdr/MIDialog.h"
 #include "MIMainWindow.h"
 
 void Logger::log(const char* format, ...) {

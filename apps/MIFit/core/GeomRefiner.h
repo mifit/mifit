@@ -1,7 +1,7 @@
 #ifndef MI_GEOM_REFINER_H
 #define MI_GEOM_REFINER_H
 
-#include "moloptlib.h"
+#include <molopt/moloptlib.h>
 
 class Molecule;
 

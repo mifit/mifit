@@ -1,8 +1,8 @@
 #include <stdio.h>
 
-#include "nonguilib.h"
-#include "chemlib.h"
-#include "RESIDUE_.h"
+#include <nongui/nonguilib.h>
+#include <chemlib/chemlib.h>
+#include <chemlib/RESIDUE_.h>
 
 #include "Stack.h"
 #include "RESIDUE.h"

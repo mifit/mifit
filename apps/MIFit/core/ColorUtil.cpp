@@ -1,8 +1,8 @@
 #include <string>
 
-#include "chemlib.h" // for MIToUpper
+#include <chemlib/chemlib.h>
 
-#include "mathlib.h"
+#include <math/mathlib.h>
 
 #include "Colors.h"
 #include "ColorUtil.h"

@@ -1,10 +1,10 @@
-#include "chemlib.h"
-#include "utillib.h"
+#include <chemlib/chemlib.h>
+#include <util/utillib.h>
 
 #include "RibbonSegment.h"
 #include "RibbonSpan.h"
 #include "RESIDUE.h"
-#include "RESIDUE_.h"
+#include <chemlib/RESIDUE_.h>
 
 using namespace chemlib;
 

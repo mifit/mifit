@@ -1,8 +1,8 @@
-#include "nonguilib.h"
+#include <nongui/nonguilib.h>
 
 #include "CMapHeader.h"
 #include "Application.h"
-#include "MIDialog.h"
+#include "wxdr/MIDialog.h"
 
 #include <QFileInfo>
 

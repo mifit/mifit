@@ -1,5 +1,5 @@
-#include "nonguilib.h"
-#include "chemlib.h"
+#include <nongui/nonguilib.h>
+#include <chemlib/chemlib.h>
 
 using namespace std;
 using namespace chemlib;
@@ -8,7 +8,7 @@ using namespace chemlib;
 #define Y 1
 #define Z 2
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 #pragma optimize( "g", on )
 #endif
 

@@ -1,7 +1,7 @@
 #include <opengl/Circle.h>
 
 #include <opengl/OpenGL.h>
-#include <mathlib.h>
+#include <math/mathlib.h>
 #include <cmath>
 #include <cstdlib>
 

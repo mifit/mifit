@@ -1,9 +1,9 @@
-#include "nonguilib.h"
+#include <nongui/nonguilib.h>
 #include <vector>
 #include <fstream>
 #include <sstream>
 
-#include "chemlib.h"
+#include <chemlib/chemlib.h>
 
 #include "LigRefiner.h"
 

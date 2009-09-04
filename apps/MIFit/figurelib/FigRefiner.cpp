@@ -1,5 +1,5 @@
 #include "FigRefiner.h"
-#include "chemlib.h"
+#include <chemlib/chemlib.h>
 
 using namespace chemlib;
 using namespace moldraw;

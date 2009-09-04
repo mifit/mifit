@@ -1,20 +1,20 @@
 #include <vector>
 
-#include "nonguilib.h"
-#include "mathlib.h"
-#include "chemlib.h"
-#include "RESIDUE_.h"
-#include "conflib.h"
-#include "maplib.h"
-#include "utillib.h"
-#include "jobslib.h"
+#include <nongui/nonguilib.h>
+#include <math/mathlib.h>
+#include <chemlib/chemlib.h>
+#include <chemlib/RESIDUE_.h>
+#include <conflib/conflib.h>
+#include <map/maplib.h>
+#include <util/utillib.h>
+#include <jobs/jobslib.h>
 
 #include "tools.h"
 #include "macafxwin.h"
 #include "id.h"
 #include "Application.h"
 #include "uitest.h"
-#include "MIDialog.h"
+#include "wxdr/MIDialog.h"
 #include "MIMainWindow.h"
 #include "MIEventHandlerMacros.h"
 #include "MIGLWidget.h"

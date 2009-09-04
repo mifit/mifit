@@ -1,4 +1,4 @@
-#include "corelib.h"
+#include "core/corelib.h"
 #include "RefinementOptionsDialog.h"
 
 #include <QFileDialog>

@@ -1,7 +1,7 @@
 #ifndef COORD_GENERATOR_H
 #define COORD_GENERATOR_H
 
-#include "chemlib.h"
+#include <chemlib/chemlib.h>
 
 namespace conflib {
 class sdgDistance;

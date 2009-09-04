@@ -1,6 +1,6 @@
 #include "BValueColors.h"
 #include "MIDialog.h"
-#include "uilib.h"
+#include "ui/uilib.h"
 
 BValueColors::BValueColors(QWidget *parent)
     : QDialog(parent)

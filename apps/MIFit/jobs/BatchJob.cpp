@@ -6,10 +6,10 @@
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
 
-#include "nonguilib.h"
-#include "utillib.h"
-#include "uilib.h"
-#include "MIDialog.h"
+#include <nongui/nonguilib.h>
+#include <util/utillib.h>
+#include "ui/uilib.h"
+#include "wxdr/MIDialog.h"
 
 #include "BatchJob.h"
 #include "OpenJobResults.h"

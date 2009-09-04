@@ -1,7 +1,7 @@
 #include "ManageCrystals.h"
 
-#include "uilib.h"
-#include "maplib.h"
+#include "ui/uilib.h"
+#include <map/maplib.h>
 #include "MIDialog.h"
 
 #include <QDir>

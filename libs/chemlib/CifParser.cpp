@@ -1,7 +1,7 @@
 #include <cstdio>
 #include <cstring>
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 //Disable annoying warning about max size of symbol being 255 char
 #pragma warning(disable: 4786)
 

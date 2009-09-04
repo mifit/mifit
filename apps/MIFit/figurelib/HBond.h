@@ -1,7 +1,7 @@
 #ifndef HBOND_H
 #define HBOND_H
 
-#include "chemlib.h"
+#include <chemlib/chemlib.h>
 
 #include <vector>
 #include <string>

@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "chemlib.h"
+#include <chemlib/chemlib.h>
 
 /**
  * An atom label structure.

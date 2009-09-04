@@ -42,7 +42,7 @@ namespace chemlib {
 #include "mol_util.h"
 #include "Residue.h"
 #include "SmilesReader.h"
-#include "system.h"
+#include <util/system.h>
 #include "transform_util.h"
 #include "util.h"
 

@@ -1,7 +1,7 @@
 #include <cmath>
 #include <cstdio>
-#include "mathlib.h"
-#include "nonguilib.h"
+#include <math/mathlib.h>
+#include <nongui/nonguilib.h>
 
 #include "RibbonSpan.h"
 

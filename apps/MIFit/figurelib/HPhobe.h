@@ -1,7 +1,7 @@
 #ifndef HPHOBE_H
 #define HPHOBE_H
 
-#include "chemlib.h"
+#include <chemlib/chemlib.h>
 
 
 #include <vector>

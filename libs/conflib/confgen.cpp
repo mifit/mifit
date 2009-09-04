@@ -1,6 +1,6 @@
 #include <vector>
-#include "chemlib.h"
-#include "RESIDUE_.h"
+#include <chemlib/chemlib.h>
+#include <chemlib/RESIDUE_.h>
 
 #include "CoordGenerator.h"
 #include "ConfIterator.h"

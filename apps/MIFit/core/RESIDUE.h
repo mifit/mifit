@@ -2,7 +2,7 @@
 #define MIFIT_MODEL_RESIDUE_H_
 
 #include <string>
-#include "chemlib.h"
+#include <chemlib/chemlib.h>
 #include "corelib.h"
 
 

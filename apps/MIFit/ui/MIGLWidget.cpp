@@ -42,17 +42,17 @@
 #include <QMessageBox>
 #include <QLabel>
 
-#include "nonguilib.h"
-#include "mathlib.h"
-#include "chemlib.h"
-#include "RESIDUE_.h"
-#include "conflib.h"
-#include "maplib.h"
-#include "corelib.h"
-#include "utillib.h"
+#include <nongui/nonguilib.h>
+#include <math/mathlib.h>
+#include <chemlib/chemlib.h>
+#include <chemlib/RESIDUE_.h>
+#include <conflib/conflib.h>
+#include <map/maplib.h>
+#include "core/corelib.h"
+#include <util/utillib.h>
 
-#include "figurelib.h"
-#include "jobslib.h"
+#include <figurelib/figurelib.h>
+#include "jobs/jobslib.h"
 
 
 #include "CMolwViewScene.h"
@@ -68,7 +68,7 @@
 #include "EMap.h"
 #include "GLOverviewCanvas.h"
 #include "GLRenderer.h"
-#include "MIDialog.h"
+#include "wxdr/MIDialog.h"
 #include "MIHistory.h"
 #include "MIMenu.h"
 #include "MIMainWindow.h"

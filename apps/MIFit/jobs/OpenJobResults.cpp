@@ -1,7 +1,7 @@
 #include "OpenJobResults.h"
 
-#include "utillib.h"
-#include "uilib.h"
+#include <util/utillib.h>
+#include "ui/uilib.h"
 #include "ui/MIMainWindow.h"
 
 #include "wxdr/MIDialog.h"

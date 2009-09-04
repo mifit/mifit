@@ -1,7 +1,7 @@
-#include "nonguilib.h"
-#include "chemlib.h"
-#include "RESIDUE_.h"
-#include "corelib.h"
+#include <nongui/nonguilib.h>
+#include <chemlib/chemlib.h>
+#include <chemlib/RESIDUE_.h>
+#include "core/corelib.h"
 
 
 #include "MIMenuBar.h"
@@ -10,7 +10,7 @@
 
 #include "Displaylist.h"
 #include "uitest.h"
-#include "MIDialog.h"
+#include "wxdr/MIDialog.h"
 #include "MIHistory.h"
 #include "id.h"
 

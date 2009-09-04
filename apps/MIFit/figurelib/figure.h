@@ -1,7 +1,7 @@
 #ifndef FIGURE_H
 #define FIGURE_H
 
-#include "chemlib.h"
+#include <chemlib/chemlib.h>
 
 
 namespace moldraw {

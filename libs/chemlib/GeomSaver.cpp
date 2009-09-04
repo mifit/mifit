@@ -2,7 +2,7 @@
 #include "Bond.h"
 #include "MIMoleculeBase.h"
 #include "GeomSaver.h"
-#include "RESIDUE_.h"
+#include <chemlib/RESIDUE_.h>
 
 
 using namespace std;

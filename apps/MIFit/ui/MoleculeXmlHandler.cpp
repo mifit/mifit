@@ -1,10 +1,10 @@
 #include "MoleculeXmlHandler.h"
 
-#include "chemlib.h"
-#include "maplib.h"
-#include "corelib.h"
-#include "utillib.h"
-#include "RESIDUE_.h"
+#include <chemlib/chemlib.h>
+#include <map/maplib.h>
+#include "core/corelib.h"
+#include <util/utillib.h>
+#include <chemlib/RESIDUE_.h>
 
 #include "EMap.h"
 

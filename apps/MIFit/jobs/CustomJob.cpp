@@ -1,12 +1,12 @@
 #include <QDir>
 
 
-#include "nonguilib.h"
+#include <nongui/nonguilib.h>
 
 
-#include "utillib.h"
+#include <util/utillib.h>
 
-#include "uilib.h"
+#include "ui/uilib.h"
 #include "CustomJob.h"
 #include "ui/MIMainWindow.h"
 #include "ui/MIGLWidget.h"

@@ -1,7 +1,7 @@
 #ifndef ASPLIB_H_
 #define ASPLIB_H_
 
-#include "chemlib.h"
+#include <chemlib/chemlib.h>
 
 class asplib {
 public:

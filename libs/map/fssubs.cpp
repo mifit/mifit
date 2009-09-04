@@ -2,8 +2,8 @@
 #include <cstring>
 #include <cmath>
 
-#include "nonguilib.h"  // for Logger::log
-#include "mathlib.h"
+#include <nongui/nonguilib.h>
+#include <math/mathlib.h>
 
 #include "fssubs.h"
 #include "CMapHeaderBase.h"

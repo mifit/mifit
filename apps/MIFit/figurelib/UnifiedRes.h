@@ -1,7 +1,7 @@
 #ifndef UNIRES_H
 #define UNIRES_H
 
-#include "chemlib.h"
+#include <chemlib/chemlib.h>
 #include "Drawing.h"
 
 #include <vector>

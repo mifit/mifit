@@ -6,7 +6,7 @@ class Displaylist;
 #include <cmath>
 #include <boost/signal.hpp>
 
-#include "corelib.h"
+#include "core/corelib.h"
 #include "macafxwin.h"
 #include "Xguicryst.h"
 

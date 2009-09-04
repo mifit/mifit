@@ -1,7 +1,7 @@
 #ifndef CONTOUR_OPTIONS_H
 #define CONTOUR_OPTIONS_H
 
-#include "corelib.h"
+#include "core/corelib.h"
 
 #include "ui_ContourOptions.h"
 

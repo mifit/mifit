@@ -1,5 +1,5 @@
-#include "nonguilib.h"
-#include "chemlib.h"
+#include <nongui/nonguilib.h>
+#include <chemlib/chemlib.h>
 
 #include "SURFDOT.h"
 #include "SurfaceSphere.h"

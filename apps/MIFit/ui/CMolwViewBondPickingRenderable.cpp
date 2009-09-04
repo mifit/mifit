@@ -1,8 +1,8 @@
 #include "CMolwViewBondPickingRenderable.h"
 
-#include "chemlib.h"
+#include <chemlib/chemlib.h>
 #include "GLRenderer.h"
-#include "RenderStyle.h"
+#include "core/RenderStyle.h"
 #include <opengl/Camera.h>
 #include <opengl/Frustum.h>
 #include <opengl/StereoView.h>

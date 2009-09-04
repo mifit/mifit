@@ -9,7 +9,7 @@
 #include "ANGLE.h"
 #include "Residue.h"
 #include "iterator.h"
-#include "utillib.h"
+#include <util/utillib.h>
 
 namespace chemlib {
 

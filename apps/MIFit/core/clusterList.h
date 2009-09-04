@@ -1,7 +1,7 @@
 #if !defined (AFX_CLUSTERLIST_H_)
 #define AFX_CLUSTERLIST_H_
 
-#include "chemlib.h"
+#include <chemlib/chemlib.h>
 
 class Cluster {
 public:

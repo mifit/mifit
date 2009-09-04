@@ -1,9 +1,9 @@
-#include "corelib.h"
+#include "core/corelib.h"
 #include "MapSettings.h"
 
 #include "core/MIConfig.h"
 #include "core/Colors.h"
-#include "utillib.h"
+#include <util/utillib.h>
 
 
 static bool GetHardcodedDefaults(MapSettingsBase &settings, int styleno)

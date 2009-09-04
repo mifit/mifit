@@ -1,7 +1,7 @@
 #include "RefmacType.h"
 #include "RefmacAtomTyper.h"
 #include "atom_util.h"
-#include "RESIDUE_.h"
+#include <chemlib/RESIDUE_.h>
 #include "mol_util.h"
 
 using namespace std;

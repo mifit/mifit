@@ -1,12 +1,12 @@
 #include <vector>
 #include <algorithm>
 
-#include "nonguilib.h"
-#include "mathlib.h"
+#include <nongui/nonguilib.h>
+#include <math/mathlib.h>
 
-#include "system.h"
+#include <util/system.h>
 #include "Residue.h"
-#include "RESIDUE_.h"
+#include <chemlib/RESIDUE_.h>
 #include "MIMolDictionary.h"
 #include "mol_util.h"
 #include "mol_util_private.h"

@@ -1,4 +1,4 @@
-#include "nonguilib.h"
+#include <nongui/nonguilib.h>
 #include <stdio.h>
 #include <string>
 
@@ -6,8 +6,8 @@
 #include "CifParser.h"
 #include "CifData.h"
 #include "RefmacAtomTyper.h"
-#include "system.h"
-#include "RESIDUE_.h"
+#include <util/system.h>
+#include <chemlib/RESIDUE_.h>
 #include "mol_util.h"
 #include "atom_util.h"
 

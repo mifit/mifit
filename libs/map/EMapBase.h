@@ -4,7 +4,7 @@
 #include <string>
 
 #include <boost/signal.hpp>
-#include "mathlib.h" // for PLINE
+#include <math/mathlib.h> // for PLINE
 
 #include "CMapHeaderBase.h"
 #include "MapSettingsBase.h"
