@@ -4,7 +4,6 @@
 #include <ctype.h> // for alanum
 
 #include <QtGui>
-#include <boost/bind.hpp>
 
 #include <chemlib/chemlib.h>
 #include <chemlib/RESIDUE_.h>
@@ -2034,9 +2033,9 @@ void MIMainWindow::createMenus()
   // when the menu displays.
   QAction* action;
   refi_menu = new MIMenu(*this);
-  action = refi_menu->Append(ID_REFI_RESIDUE, "R&efine Residue\tCtrl+R", "Real-space refine the last picked residue", false);
-  MIFitGeomRefiner()->isRefiningChanged.connect(boost::bind(&QAction::setEnabled,
-    action, boost::bind(std::logical_not<bool>(), _1)));
+  refineResidueAction = refi_menu->Append(ID_REFI_RESIDUE, "R&efine Residue\tCtrl+R", "Real-space refine the last picked residue", false);
+  connect(MIFitGeomRefiner(), SIGNAL(isRefiningChanged(bool)),
+          this, SLOT(updateRefiningChanged(bool)));
   refi_menu->Append(ID_REFI_REGION, "Re&fine Local Region", "Real-space refine the last picked residue and its 2 neighbours", false);
   refi_menu->Append(ID_REFI_RANGE, "Ref&ine Range", "Real-space refine the last 2 picks and the intervening residues", false);
   refi_menu->Append(ID_REFI_MOLECULE, "Refi&ne Molecule", "Real-space refine the entire molecule in all 6 dimensions", false);
@@ -2044,8 +2043,7 @@ void MIMainWindow::createMenus()
   refi_menu->Append(ID_REFI_RIGIDBODY, "Ri&gid-Body Refine Current Atoms", "Rigid Body Refine the current atoms (cyan color)", false);
   refi_menu->Append(ID_REFINE_LIGANDFIT, "Fin&d Ligand Fit and Conformer", "Search for the best conformer ligand fit and torsion angles", false);
   refi_menu->AppendSeparator();
-  action = refi_menu->Append(ID_REFI_ACCEPT, "&Accept Refine\tCtrl+Shift+R", "Accept the refinement and finalize the atoms positions", false);
-  MIFitGeomRefiner()->isRefiningChanged.connect(boost::bind(&QAction::setEnabled, action, _1));
+  acceptRefineAction = refi_menu->Append(ID_REFI_ACCEPT, "&Accept Refine\tCtrl+Shift+R", "Accept the refinement and finalize the atoms positions", false);
   refi_menu->Append(ID_REFI_RESET, "&Reset Refine", "Reset the current real-space refinement by putting atoms back where they were", false);
   refi_menu->Append(ID_REFI_CANCEL, "&Cancel Refine", "Cancel the current real-space refinement by putting atoms back where they were", false);
   refi_menu->AppendSeparator();
@@ -2439,4 +2437,9 @@ void MIMainWindow::updateShowMenu() {
     solidSurfMenuAction->setText(tr("Solid surface"));
   }
   show_menu->insertAction(canvas_menu->menuAction(), solidSurfMenuAction);
+}
+
+void MIMainWindow::updateIsRefining(bool isRefining) {
+  refineResidueAction->setEnabled(!isRefining);
+  acceptRefineAction->setEnabled(isRefining);
 }

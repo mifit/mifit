@@ -166,6 +166,7 @@ private Q_SLOTS:
     void openRecentFile();
 
     void updateShowMenu();
+    void updateIsRefining(bool isRefining);
 
 private:
     enum { MaxRecentFiles = 6 };
@@ -214,6 +215,9 @@ private:
     //QAction *cutAct;
     //QAction *copyAct;
     //QAction *pasteAct;
+
+    QAction *refineResidueAction;
+    QAction *acceptRefineAction;
 
     QLabel *middleFooter;
     QLabel *rightFooter;

@@ -2,7 +2,6 @@
 #define mifit_ui_MIGLWidget_h
 
 #include <math/Quaternion.h>
-#include <boost/signal.hpp>
 #include <cmath>
 
 #include "core/corelib.h"
@@ -666,10 +665,11 @@ public:
 
   void moveTo(float x, float y, float z);
 
-  static boost::signal1<void, MIGLWidget*> viewActivated;
-  static boost::signal1<void, MIGLWidget*> viewDeactivated;
+Q_SIGNALS:
+  void viewActivated(MIGLWidget*);
+  void viewDeactivated(MIGLWidget*);
 
-
+public Q_SLOTS:
   void connectToModel(Molecule* model);
   void modelAdded(Molecule* model);
   void currentModelChanged(Molecule* oldModel, Molecule* newModel);
@@ -692,12 +692,14 @@ public:
 
   void symmetryToBeCleared(chemlib::MIMoleculeBase* mol);
 
-
+public:
   void recenter(chemlib::RESIDUE* residue, chemlib::MIAtom* atom);
 
   void select(Molecule* model, chemlib::RESIDUE* residue, chemlib::MIAtom* atom, bool label = true);
 
-  boost::signal1<void, chemlib::RESIDUE*> focusResidueChanged;
+Q_SIGNALS:
+  void focusResidueChanged(chemlib::RESIDUE*);
+public:
 
   bool HandleHistory(MIData& data);
   bool PlaybackMouseHistory(MIData& data);

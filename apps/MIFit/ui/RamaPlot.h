@@ -3,8 +3,6 @@
 
 #include "graphlib.h"
 
-#include <boost/signal.hpp>
-
 namespace chemlib {
 class RESIDUE;
 class MIMoleculeBase;
@@ -16,7 +14,8 @@ class RamaPlotDialog;
 class RamaDataBase;
 class MIGLWidget;
 
-class RamaPlotMgr : public GraphPickHandlerBase, public GraphKeyHandlerBase, public GraphMouseoverHandlerBase {
+class RamaPlotMgr : public QObject, public GraphPickHandlerBase, public GraphKeyHandlerBase, public GraphMouseoverHandlerBase {
+  Q_OBJECT
 private:
   RamaPlotMgr(bool show_allowed = false);
 public:
@@ -44,6 +43,8 @@ public:
   void SetView(MIGLWidget* v) {
     _view = v;
   }
+
+public Q_SLOTS:
   // object changed slots
   void atomChanged(chemlib::MIMoleculeBase* mol, std::vector<chemlib::MIAtom*>& atom);
   void moleculeChanged(chemlib::MIMoleculeBase* mol);
@@ -78,13 +79,6 @@ private:
   MIGLWidget* _view;
   bool _atom_changed;
   int _last_mouseover_id;
-
-  boost::signals::connection moleculeDeletedConnection;
-  boost::signals::connection residuesDeletedConnection;
-  boost::signals::connection atomsDeletedConnection;
-
-  boost::signals::connection atomChangedConnection;
-  boost::signals::connection moleculeChangedConnection;
 
   static RamaPlotMgr *_instance;
 };

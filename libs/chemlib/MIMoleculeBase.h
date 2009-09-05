@@ -1,6 +1,9 @@
 #ifndef MI_MOLECULEBASE_H
 #define MI_MOLECULEBASE_H
 
+#include <QObject>
+#include <map>
+
 #include "model.h"
 #include "Bond.h"
 #include "RESIDUE_fwd.h"
@@ -8,7 +11,8 @@
 
 namespace chemlib {
 
-class MIMoleculeBase {
+class MIMoleculeBase : public QObject {
+    Q_OBJECT
 
   typedef std::map<MIMoleculeBase*, size_t> MoleculeRefCountMap;
 
@@ -245,27 +249,29 @@ public:
   //       // Do real work here.
   //     }
 
+Q_SIGNALS:
   // sent when a [group of] atoms, but not an entire residue, is deleted
-  boost::signal2<void, MIMoleculeBase*, const MIAtomList& > atomsToBeDeleted;
-  boost::signal1<void, MIMoleculeBase*> atomsDeleted;
+  void atomsToBeDeleted(MIMoleculeBase*, const MIAtomList&);
+  void atomsDeleted(MIMoleculeBase*);
 
   // sent when residue[s] deleted
-  boost::signal2<void, MIMoleculeBase*, std::vector<RESIDUE*>& > residuesToBeDeleted;
-  boost::signal1<void, MIMoleculeBase*> residuesDeleted;
+  void residuesToBeDeleted(MIMoleculeBase*, std::vector<RESIDUE*>&);
+  void residuesDeleted(MIMoleculeBase*);
 
   // sent when molecule is deleted
-  boost::signal1<void, MIMoleculeBase*> moleculeToBeDeleted;
-  boost::signal1<void, MIMoleculeBase*> moleculeDeleted;
+  void moleculeToBeDeleted(MIMoleculeBase*);
+  void moleculeDeleted(MIMoleculeBase*);
 
   // sent when symmetry residues are about to be cleared
-  boost::signal1<void, MIMoleculeBase*> symmetryToBeCleared;
+  void symmetryToBeCleared(MIMoleculeBase*);
 
   // sent when atoms shown/hidden, bvalue/occ changed, or color changed
-  boost::signal2<void, MIMoleculeBase*, MIAtomList& > atomChanged;
+  void atomChanged(MIMoleculeBase*, MIAtomList&);
 
   // sent when Build called, res inserted, id changed, renumber
-  boost::signal1<void, MIMoleculeBase*> moleculeChanged;
+  void moleculeChanged(MIMoleculeBase*);
 
+public:
   std::vector<Bond> hbonds;
 
 protected:

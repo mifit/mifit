@@ -14,7 +14,6 @@
 #include <opengl/Viewport.h>
 #include <opengl/interact/MousePicker.h>
 #include <opengl/interact/TargetFeedback.h>
-#include <boost/bind.hpp>
 
 #ifndef _WIN32
 #include <unistd.h>
@@ -122,10 +121,6 @@ private:
   MIGLWidget* _parent;
   ViewPoint* _viewpoint;
 };
-
-boost::signal1<void, MIGLWidget*> MIGLWidget::viewActivated;
-boost::signal1<void, MIGLWidget*> MIGLWidget::viewDeactivated;
-
 
 class ViewPointUI : public ViewPoint {
 public:
@@ -362,8 +357,10 @@ MIGLWidget::MIGLWidget() : MIEventHandler(MIMainWindow::instance()) {
   TimerOn=true;
 
   Displaylist* displaylist = GetDisplaylist();
-  displaylist->modelAdded.connect(boost::bind(&MIGLWidget::modelAdded, this, _1));
-  displaylist->currentMoleculeChanged.connect(boost::bind(&MIGLWidget::currentModelChanged, this, _1, _2));
+  connect(displaylist, SIGNAL(modelAdded(Molecule*)),
+          this, SLOT(modelAdded(Molecule*)));
+  connect(displaylist, SIGNAL(currentMoleculeChanged(Molecule*,Molecule*)),
+          this, SLOT(currentModelChanged(Molecule*,Molecule*)));
   Displaylist::ModelList::iterator modelIter = displaylist->begin();
   while (modelIter != displaylist->end()) {
     Molecule* model = *modelIter;
@@ -371,7 +368,9 @@ MIGLWidget::MIGLWidget() : MIEventHandler(MIMainWindow::instance()) {
     connectToModel(model);
   }
 
-  displaylist->mapAdded.connect(boost::bind(&MIGLWidget::mapAdded, this, _1));
+  connect(displaylist, SIGNAL(mapAdded(EMap*)),
+          this, SLOT(mapAdded(EMapBase*)));
+
   Displaylist::MapList& maps = displaylist->getMaps();
   Displaylist::MapList::iterator mapIter = maps.begin();
   while (mapIter != maps.end()) {
@@ -434,27 +433,41 @@ MIGLWidget::~MIGLWidget() {
 
 
 void MIGLWidget::connectToModel(Molecule* model) {
-  model->annotationDeleted.connect(boost::bind(&MIGLWidget::annotationDeleted, this, _1));
-  model->annotationAdded.connect(boost::bind(&MIGLWidget::annotationAdded, this, _1, _2));
+  connect(model, SIGNAL(annotationDeleted(Molecule*)),
+          this, SLOT(annotationDeleted(Molecule*)));
+  connect(model, SIGNAL(annotationAdded(Molecule*,Annotation*)),
+          this, SLOT(annotationAdded(Molecule*,Annotation*)));
   Molecule::AnnotationList::iterator iter = model->getAnnotations().begin();
   while (iter != model->getAnnotations().end()) {
     Annotation* annotation = *iter;
     ++iter;
-    annotation->annotationChanged.connect(boost::bind(&MIGLWidget::annotationChanged, this, _1));
+    connect(annotation, SIGNAL(annotationChanged(Annotation*)),
+            this, SLOT(annotationChanged(Annotation*)));
   }
-  model->atomLabelChanged.connect(boost::bind(&MIGLWidget::atomLabelChanged, this, _1, _2));
-  model->atomLabelDeleted.connect(boost::bind(&MIGLWidget::annotationDeleted, this, _1));
-  model->surfaceChanged.connect(boost::bind(&MIGLWidget::surfaceChanged, this, _1));
+  connect(model, SIGNAL(atomLabelChanged(Molecule*,ATOMLABEL*)),
+          this, SLOT(atomLabelChanged(Molecule*,ATOMLABEL*)));
+  // TODO check correctness of this connection
+  connect(model, SIGNAL(atomLabelDeleted(Molecule*)),
+          this, SLOT(annotationDeleted(Molecule*)));
+  connect(model, SIGNAL(surfaceChanged(Molecule*)),
+          this, SLOT(surfaceChanged(Molecule*)));
 
-  model->atomChanged.connect(boost::bind(&MIGLWidget::atomChanged, this, _1, _2));
-  model->atomsDeleted.connect(boost::bind(&MIGLWidget::atomsDeleted, this, _1));
-  model->moleculeChanged.connect(boost::bind(&MIGLWidget::modelChanged, this, _1));
+  connect(model, SIGNAL(atomChanged(MIMoleculeBase*,MIAtomList&)),
+          this, SLOT(atomChanged(chemlib::MIMoleculeBase*,std::vector<chemlib::MIAtom*>&)));
+  connect(model, SIGNAL(atomsDeleted(MIMoleculeBase*)),
+          this, SLOT(atomsDeleted(chemlib::MIMoleculeBase*)));
+  connect(model, SIGNAL(moleculeChanged(MIMoleculeBase*)),
+          this, SLOT(modelChanged(chemlib::MIMoleculeBase*)));
 
-  model->atomsToBeDeleted.connect(boost::bind(&MIGLWidget::modelAtomsToBeDeleted, this, _1, _2));
-  model->residuesToBeDeleted.connect(boost::bind(&MIGLWidget::modelResiduesToBeDeleted, this, _1, _2));
-  model->moleculeToBeDeleted.connect(boost::bind(&MIGLWidget::moleculeToBeDeleted, this, _1));
+  connect(model, SIGNAL(atomsToBeDeleted(MIMoleculeBase*,MIAtomList)),
+          this, SLOT(modelAtomsToBeDeleted(chemlib::MIMoleculeBase*,std::vector<chemlib::MIAtom*>)));
+  connect(model, SIGNAL(residuesToBeDeleted(MIMoleculeBase*,std::vector<RESIDUE*>&)),
+          this, SLOT(modelResiduesToBeDeleted(chemlib::MIMoleculeBase*,std::vector<chemlib::RESIDUE*>&)));
+  connect(model, SIGNAL(moleculeToBeDeleted(MIMoleculeBase*)),
+          this, SLOT(moleculeToBeDeleted(chemlib::MIMoleculeBase*)));
 
-  model->symmetryToBeCleared.connect(boost::bind(&MIGLWidget::symmetryToBeCleared, this, _1));
+  connect(model, SIGNAL(symmetryToBeCleared(MIMoleculeBase*)),
+          this, SLOT(symmetryToBeCleared(chemlib::MIMoleculeBase*)));
 }
 
 void MIGLWidget::symmetryToBeCleared(MIMoleculeBase* mol) {
@@ -537,8 +550,10 @@ void MIGLWidget::currentModelChanged(Molecule*, Molecule* newModel) {
 }
 
 void MIGLWidget::connectToMap(EMapBase* emap) {
-  emap->mapContourLevelsChanged.connect(boost::bind(&MIGLWidget::mapContourLevelsChanged, this, _1));
-  emap->mapVisibilityChanged.connect(boost::bind(&MIGLWidget::mapVisibilityChanged, this, _1));
+  connect(emap, SIGNAL(mapContourLevelsChanged(EMapBase*)),
+          this, SLOT(mapContourLevelsChanged(EMapBase*)));
+  connect(emap, SIGNAL(mapVisibilityChanged(EMapBase*)),
+          this, SLOT(mapVisibilityChanged(EMapBase*)));
 }
 
 void MIGLWidget::mapAdded(EMapBase* emap) {
@@ -546,7 +561,8 @@ void MIGLWidget::mapAdded(EMapBase* emap) {
 }
 
 void MIGLWidget::annotationAdded(Molecule*, Annotation* annotation) {
-  annotation->annotationChanged.connect(boost::bind(&MIGLWidget::annotationChanged, this, _1));
+    connect(annotation, SIGNAL(annotationChanged(Annotation*)),
+            this, SLOT(annotationChanged(Annotation*)));
   doRefresh();
 }
 

@@ -6,8 +6,7 @@
 #pragma GCC system_header
 #endif
 
-
-#include <boost/signal.hpp>
+#include <QObject>
 #include <vector>
 #include <deque>
 
@@ -37,6 +36,8 @@ void MISetMolPrefsHandler(MolPrefsHandler* mph);
 
 
 class Molecule : public chemlib::MIMoleculeBase {
+  Q_OBJECT
+
 public:
   typedef std::vector<Annotation*> AnnotationList;
   typedef std::vector<ATOMLABEL*> AtomLabelList;
@@ -155,11 +156,13 @@ public:
   void setAtomLabelColor(ATOMLABEL* label, unsigned char red, unsigned char green, unsigned char blue);
   void setAtomLabelText(ATOMLABEL* label, const char* text);
 
-  boost::signal2<void, Molecule*, ATOMLABEL*> atomLabelAdded;
-  boost::signal2<void, Molecule*, ATOMLABEL*> atomLabelChanged;
-  boost::signal2<void, Molecule*, AtomLabelList> atomLabelToBeDeleted;
-  boost::signal1<void, Molecule*> atomLabelDeleted;
+Q_SIGNALS:
+  void atomLabelAdded(Molecule*, ATOMLABEL*);
+  void atomLabelChanged(Molecule*, ATOMLABEL*);
+  void atomLabelToBeDeleted(Molecule*, AtomLabelList);
+  void atomLabelDeleted(Molecule*);
 
+public:
   AnnotationList& getAnnotations();
 
   /**
@@ -185,10 +188,12 @@ public:
    */
   void clearAnnotations();
 
-  boost::signal2<void, Molecule*, Annotation*> annotationAdded;
-  boost::signal2<void, Molecule*, Annotation*> annotationToBeDeleted;
-  boost::signal1<void, Molecule*> annotationDeleted;
+Q_SIGNALS:
+  void annotationAdded(Molecule*, Annotation*);
+  void annotationToBeDeleted(Molecule*, Annotation*);
+  void annotationDeleted(Molecule*);
 
+public:
   void ShowAnnotations();
   void HideAnnotations();
   int AnnotationsVisible();
@@ -234,8 +239,10 @@ public:
   SURFDOT* GetDots();
   SurfaceDots& getDots();
   void setDotsColor(int color);
-  boost::signal1<void, Molecule*> surfaceChanged;
+Q_SIGNALS:
+  void surfaceChanged(Molecule*);
 
+public:
   long getnribboatomCount();
   void GetPDBInfo(FILE*);
 

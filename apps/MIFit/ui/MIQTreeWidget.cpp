@@ -1,13 +1,7 @@
 #include "MIQTreeWidget.h"
 #include "TreeData.h"
 
-using namespace boost::signals;
-
 MIQTreeWidget::~MIQTreeWidget() {
-  SignalConnectionList::iterator iter;
-  for (iter = signalConnections.begin(); iter != signalConnections.end(); ++iter) {
-    iter->disconnect();
-  }
 }
 
 
@@ -88,11 +82,6 @@ QTreeWidgetItem *MIQTreeWidget::prependItem(QTreeWidgetItem *parent,
   QTreeWidgetItem *item = new QTreeWidgetItem(parent);
   itemInit(item,name,image,data);
   return item;
-}
-
-void MIQTreeWidget::addSignalConnection(connection c) {
-  c.set_controlling(false);
-  signalConnections.push_back(c);
 }
 
 QIcon &MIQTreeWidget::GetIcon(unsigned int id) {

@@ -133,10 +133,6 @@ void MIMenu::triggered(bool state)
   if (MIGetHistory())
     MIGetHistory()->AddMenuEvent(id);
 
-  char buf[128];
-  sprintf(buf, "Got event %d, state %d", id, state);
-  MIMainWindowLog(buf);
-
   // send enhanced signal to registered receiver or main window
   MIActionEvent ae(action,id,state);
   _receiver.handleAction(ae);

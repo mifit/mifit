@@ -3,8 +3,6 @@
 
 #include <vector>
 #include <map>
-#include <boost/bind.hpp>
-#include <boost/signal.hpp>
 
 #include <nongui/nonguilib.h>
 #include "jobs/jobslib.h"
@@ -275,7 +273,8 @@ JobsView::~JobsView() {
 
 void JobsView::jobAdded(BatchJob* job) {
   addJobToTree(job);
-  job->jobChanged.connect(boost::bind(&JobsView::jobChanged, this, _1));
+  connect(job, SIGNAL(jobChanged(BatchJob*)),
+          this, SLOT(jobChanged(BatchJob*)));
 }
 
 void JobsView::jobDeleted(BatchJob* job) {
@@ -293,8 +292,10 @@ void JobsView::jobChanged(BatchJob* job) {
 void JobsView::update(BatchJobManager* batchJobManager) {
   if (!listeningToBatchJobManager) {
     listeningToBatchJobManager = true;
-    batchJobManager->jobAdded.connect(boost::bind(&JobsView::jobAdded, this, _1));
-    batchJobManager->jobDeleted.connect(boost::bind(&JobsView::jobDeleted, this, _1));
+    connect(batchJobManager, SIGNAL(jobAdded(BatchJob*)),
+            this, SLOT(jobAdded(BatchJob*)));
+    connect(batchJobManager, SIGNAL(jobDeleted(BatchJob*)),
+            this, SLOT(jobDeleted(BatchJob*)));
     jobsTree->batchJobManager = batchJobManager;
   }
   std::vector<BatchJob*>& jobList = *batchJobManager->GetJobList();

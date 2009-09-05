@@ -3,7 +3,8 @@
 
 #include <QObject>
 #include <QTimer>
-#include <boost/signal.hpp>
+#include <string>
+#include <vector>
 
 class BatchJob;
 class CustomJob;
@@ -13,14 +14,13 @@ class CustomJob;
  * It can start a job but the user has to pick the output up manually
  * and there is no way to track jobs currently.
  */
-class BatchJobManager : QObject {
+class BatchJobManager : public QObject {
   Q_OBJECT
 
   QTimer* timer;
   std::vector<BatchJob*> JobList;
   std::string workdir;
 
-  void jobChanged(BatchJob* job);
   void checkAllJobs();
   void startTimer();
   void stopTimer();
@@ -89,11 +89,13 @@ public:
 
   int numberOfRunningJobs();
 
-  boost::signal1<void, BatchJob*> jobAdded;
-  boost::signal1<void, BatchJob*> jobDeleted;
+Q_SIGNALS:
+  void jobAdded(BatchJob*);
+  void jobDeleted(BatchJob*);
 
 private Q_SLOTS:
   void OnTimer();
+  void jobChanged(BatchJob* job);
 };
 
 #endif

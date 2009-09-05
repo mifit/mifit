@@ -2,8 +2,6 @@
 #include <QVBoxLayout>
 
 #include <set>
-#include <boost/bind.hpp>
-#include <boost/signal.hpp>
 
 #include "core/corelib.h"
 #include <chemlib/chemlib.h>
@@ -34,8 +32,6 @@
 #include <images/surf.xpm>
 #include <images/surfHidden.xpm>
 #include <images/surfGreyed.xpm>
-
-using namespace boost::signals;
 
 const int ID_DISPLAYVIEW_IMPORTERRORS = 10000;
 const int ID_DISPLAYVIEW_AUTOSHOW_IMPORTED_ERRORS = 10001;
@@ -74,6 +70,7 @@ private:
   void addAtomLabel(Molecule* model, ATOMLABEL* label);
   void addSurface(Molecule* model);
 
+private Q_SLOTS:
   void modelAdded(Molecule* model);
   void modelToBeDeleted(chemlib::MIMoleculeBase* model);
   void currentModelChanged(Molecule* oldModel, Molecule* newModel);
@@ -85,6 +82,7 @@ private:
   void atomLabelChanged(Molecule* model, ATOMLABEL* label);
   void surfaceChanged(Molecule* model);
 
+private:
   void stylizeItem(QTreeWidgetItem* item, Annotation* annotation);
   void stylizeItem(QTreeWidgetItem* item, ATOMLABEL* label);
   void stylizeSurfaceItem(QTreeWidgetItem* item, Molecule* model);
@@ -167,10 +165,6 @@ END_EVENT_TABLE()
 }
 
 DisplayTree::~DisplayTree() {
-  SignalConnectionList::iterator iter;
-  for (iter = signalConnections.begin(); iter != signalConnections.end(); ++iter) {
-    iter->disconnect();
-  }
 }
 
 void DisplayTree::OnItemClicked(QTreeWidgetItem *, int) {
@@ -568,8 +562,10 @@ void DisplayTree::addModels(Displaylist* displaylist) {
     Molecule* model = *modelIter;
     addModel(model);
   }
-  addSignalConnection(displaylist->modelAdded.connect(boost::bind(&DisplayTree::modelAdded, this, _1)));
-  addSignalConnection(displaylist->currentMoleculeChanged.connect(boost::bind(&DisplayTree::currentModelChanged, this, _1, _2)));
+  connect(displaylist, SIGNAL(modelAdded(Molecule*)),
+          this, SLOT(modelAdded(Molecule*)));
+  connect(displaylist, SIGNAL(currentMoleculeChanged(Molecule*,Molecule*)),
+          this, SLOT(currentModelChanged(Molecule*,Molecule*)));
 }
 
 void DisplayTree::addModel(Molecule* model) {
@@ -581,15 +577,20 @@ void DisplayTree::addModel(Molecule* model) {
   addAtomLabels(model);
   addSurface(model);
 
-  addSignalConnection(model->moleculeToBeDeleted.connect(boost::bind(&DisplayTree::modelToBeDeleted, this, _1)));
-  addSignalConnection(model->annotationAdded.connect(boost::bind(&DisplayTree::annotationAdded, this, _1, _2)));
-  addSignalConnection(model->annotationToBeDeleted.connect(boost::bind(&DisplayTree::annotationToBeDeleted, this, _1, _2)));
-
-  addSignalConnection(model->atomLabelAdded.connect(boost::bind(&DisplayTree::atomLabelAdded, this, _1, _2)));
-  addSignalConnection(model->atomLabelToBeDeleted.connect(boost::bind(&DisplayTree::atomLabelToBeDeleted, this, _1, _2)));
-  addSignalConnection(model->atomLabelChanged.connect(boost::bind(&DisplayTree::atomLabelChanged, this, _1, _2)));
-
-  addSignalConnection(model->surfaceChanged.connect(boost::bind(&DisplayTree::surfaceChanged, this, _1)));
+  connect(model, SIGNAL(moleculeToBeDeleted(MIMoleculeBase*)),
+          this, SLOT(modelToBeDeleted(MIMoleculeBase*)));
+  connect(model, SIGNAL(annotationAdded(Molecule*,Annotation*)),
+          this, SLOT(annotationAdded(Molecule*,Annotation*)));
+  connect(model, SIGNAL(annotationToBeDeleted(Molecule*,Annotation*)),
+          this, SLOT(annotationToBeDeleted(Molecule*,Annotation*)));
+  connect(model, SIGNAL(atomLabelAdded(Molecule*,ATOMLABEL*)),
+          this, SLOT(atomLabelAdded(Molecule*,ATOMLABEL*)));
+  connect(model, SIGNAL(atomLabelToBeDeleted(Molecule*,AtomLabelList)),
+          this, SLOT(atomLabelToBeDeleted(Molecule*,Molecule::AtomLabelList)));
+  connect(model, SIGNAL(atomLabelChanged(Molecule*,ATOMLABEL*)),
+          this, SLOT(atomLabelChanged(Molecule*,ATOMLABEL*)));
+  connect(model, SIGNAL(surfaceChanged(Molecule*)),
+          this, SLOT(surfaceChanged(Molecule*)));
 
   item->setExpanded(true);
 }
@@ -634,7 +635,8 @@ void DisplayTree::addAnnotation(Molecule* model, Annotation* annotation) {
   data->annotationModel = model;
   QTreeWidgetItem* item = appendItem(listId, annotation->GetText(), 2, 3, data);
   annotationToData[annotation] = data;
-  addSignalConnection(annotation->annotationChanged.connect(boost::bind(&DisplayTree::annotationChanged, this, _1)));
+  connect(annotation, SIGNAL(annotationChanged(Annotation*)),
+          this, SLOT(annotationChanged(Annotation*)));
   stylizeItem(item, annotation);
 }
 

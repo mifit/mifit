@@ -1,8 +1,5 @@
 #include "ViewSyncedPanel.h"
 
-#include <boost/bind.hpp>
-#include <boost/signal.hpp>
-
 #include <QStackedLayout>
 
 #include "MIGLWidget.h"
@@ -17,8 +14,9 @@ ViewSyncedPanel::ViewSyncedPanel(QWidget* parent) : QWidget(parent) {
   createDefaultNullPanel();
   setViewPanel(NULL);
 
-  MIGLWidget::viewActivated.connect(boost::bind(&ViewSyncedPanel::viewActivated, this, _1));
-  MIGLWidget::viewDeactivated.connect(boost::bind(&ViewSyncedPanel::viewDeactivated, this, _1));
+  // TODO Create and connect to singleton object
+//  MIGLWidget::viewActivated.connect(boost::bind(&ViewSyncedPanel::viewActivated, this, _1));
+//  MIGLWidget::viewDeactivated.connect(boost::bind(&ViewSyncedPanel::viewDeactivated, this, _1));
 
 }
 

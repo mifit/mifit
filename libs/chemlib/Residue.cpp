@@ -103,7 +103,9 @@ Residue::~Residue() {
 }
 
 void Residue::setAtoms(const MIAtomList& a) {
-  for_each(atoms_.begin(), atoms_.end(), boost::checked_deleter<MIAtom>());
+  MIAtomList::iterator iter = atoms_.begin();
+  for (; iter != atoms_.end(); ++iter)
+      delete *iter;
   atoms_.clear();
   atoms_ = a;
 }

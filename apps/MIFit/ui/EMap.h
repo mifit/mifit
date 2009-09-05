@@ -1,6 +1,7 @@
 #ifndef MI_EMap_H
 #define MI_EMap_H
 
+#include <QObject>
 #include "core/corelib.h"
 #include "CMapHeader.h"
 
@@ -10,6 +11,7 @@ struct mmtz_column_;
 class ViewPoint;
 
 class EMap : public EMapBase {
+    Q_OBJECT
 public:
   EMap();
 
@@ -44,7 +46,8 @@ public:
 
   int CenterVisibleEdges(float& x, float& y, float& z, ViewPoint* vp);
   
-  boost::signal1<void, EMap*> mapFftRecalculated;
+Q_SIGNALS:
+  void mapFftRecalculated(EMap*);
 
 };
 

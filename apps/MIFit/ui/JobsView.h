@@ -21,6 +21,7 @@ class JobsView : public QWidget {
   bool jobInTree(BatchJob* job);
   void stylizeItem(QTreeWidgetItem* id, BatchJob* job);
 
+public Q_SLOTS:
   void jobAdded(BatchJob* job);
   void jobDeleted(BatchJob* job);
   void jobChanged(BatchJob* job);

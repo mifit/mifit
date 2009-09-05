@@ -4,7 +4,7 @@
 class Displaylist;
 
 #include <cmath>
-#include <boost/signal.hpp>
+#include <QObject>
 
 #include "core/corelib.h"
 #include "macafxwin.h"
@@ -15,7 +15,8 @@ class EMap;
 /**
  * List of objects to be drawn on the canvas.
  */
-class Displaylist {
+class Displaylist : public QObject {
+    Q_OBJECT
 
   typedef std::map<Displaylist*, size_t> DisplaylistRefCountMap;
 
@@ -29,8 +30,6 @@ class Displaylist {
   Displaylist(const Displaylist& /* list */) {}
   Displaylist& operator=(const Displaylist& /* list */) { return *((Displaylist*)0); } // NOTE: broken implementation just to avoid compiler warning, do not use!
 
-  std::vector<boost::signals::connection> connections;
-  
 public:
 
   /**
@@ -254,14 +253,15 @@ public:
   std::vector<PLINE>& getLines();
   std::vector<SURFDOT>& getCurrentDots();
 
-  boost::signal1<void, Molecule*> modelAdded;
-  boost::signal2<void, Molecule* /*old*/, Molecule* /*new*/> currentMoleculeChanged;
-  boost::signal1<void, EMap*> mapAdded;
-  boost::signal1<void, EMap*> mapToBeDeleted;
-  boost::signal2<void, EMap* /*old*/, EMap* /*new*/> currentMapChanged;
-  boost::signal3<void, Molecule*, chemlib::RESIDUE*, chemlib::MIAtom*> selectionChanged;
+Q_SIGNALS:
+  void modelAdded(Molecule*);
+  void currentMoleculeChanged(Molecule* oldMol, Molecule* newMol);
+  void mapAdded(EMap*);
+  void mapToBeDeleted(EMap*);
+  void currentMapChanged(EMap* oldMap, EMap* newMap);
+  void selectionChanged(Molecule*, chemlib::RESIDUE*, chemlib::MIAtom*);
 
-
+private Q_SLOTS:
   void atomsToBeDeleted(chemlib::MIMoleculeBase* model, const std::vector<chemlib::MIAtom*> &atoms);
   void residuesToBeDeleted(chemlib::MIMoleculeBase* model, std::vector<chemlib::RESIDUE*> &res);
   void moleculeToBeDeleted(chemlib::MIMoleculeBase *model);

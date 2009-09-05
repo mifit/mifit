@@ -1,9 +1,6 @@
 #include <cstdio>
 #include <cmath>
 
-#include <boost/bind.hpp>
-#include <boost/signal.hpp>
-
 #include <math/mathlib.h>
 #include <nongui/nonguilib.h>
 #include <chemlib/RESIDUE_.h>
@@ -478,20 +475,23 @@ void RamaPlotMgr::Update(MIMoleculeBase* mol,
                          std::string modelname) {
 
   if (_mol != mol) {
-    atomChangedConnection.disconnect();
-    moleculeChangedConnection.disconnect();
-
-    moleculeDeletedConnection.disconnect();
-    residuesDeletedConnection.disconnect();
-    atomsDeletedConnection.disconnect();
+    disconnect(_mol, SIGNAL(atomChanged(MIMoleculeBase*,MIAtomList&)));
+    disconnect(_mol, SIGNAL(moleculeChanged(MIMoleculeBase*)));
+    disconnect(_mol, SIGNAL(moleculeDeleted(MIMoleculeBase*)));
+    disconnect(_mol, SIGNAL(residuesDeleted(MIMoleculeBase*)));
+    disconnect(_mol, SIGNAL(atomsDeleted(MIMoleculeBase*)));
 
     if (MIMoleculeBase::isValid(mol)) {
-      atomChangedConnection = mol->atomChanged.connect(boost::bind(&RamaPlotMgr::atomChanged, this, _1, _2));
-      moleculeChangedConnection = mol->moleculeChanged.connect(boost::bind(&RamaPlotMgr::moleculeChanged, this, _1));
-
-      moleculeDeletedConnection = mol->moleculeDeleted.connect(boost::bind(&RamaPlotMgr::moleculeDeleted, this, _1));
-      residuesDeletedConnection = mol->residuesDeleted.connect(boost::bind(&RamaPlotMgr::modelObjectDeleted, this, _1));
-      atomsDeletedConnection = mol->atomsDeleted.connect(boost::bind(&RamaPlotMgr::modelObjectDeleted, this, _1));
+      connect(mol, SIGNAL(atomChanged(MIMoleculeBase*,MIAtomList&)),
+              this, SLOT(atomChanged(chemlib::MIMoleculeBase*,std::vector<chemlib::MIAtom*>&)));
+      connect(mol, SIGNAL(moleculeChanged(MIMoleculeBase*)),
+              this, SLOT(moleculeChanged(chemlib::MIMoleculeBase*)));
+      connect(mol, SIGNAL(moleculeDeleted(MIMoleculeBase*)),
+              this, SLOT(moleculeDeleted(chemlib::MIMoleculeBase*)));
+      connect(mol, SIGNAL(residuesDeleted(MIMoleculeBase*)),
+              this, SLOT(residuesDeleted(MIMoleculeBase*)));
+      connect(mol, SIGNAL(atomsDeleted(MIMoleculeBase*)),
+              this, SLOT(modelObjectDeleted(chemlib::MIMoleculeBase*)));
     }
   }
 

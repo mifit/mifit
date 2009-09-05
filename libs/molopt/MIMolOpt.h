@@ -1,6 +1,7 @@
 #ifndef mifit_legacy_MIMolOPt_h
 #define mifit_legacy_MIMolOPt_h
 
+#include <QObject>
 #include <set>
 #include <vector>
 #include <list>
@@ -24,7 +25,8 @@ public:
 };
 
 
-class MIMolOpt {
+class MIMolOpt : public QObject {
+    Q_OBJECT
 public:
   MIMolOpt();
   virtual ~MIMolOpt();
@@ -164,7 +166,8 @@ public:
 
   chemlib::MIMolDictionary dict;
 
-  boost::signal1<void, bool> isRefiningChanged;
+Q_SIGNALS:
+  void isRefiningChanged(bool);
 
 protected:
   // these belong here
@@ -212,9 +215,8 @@ protected:
   float StdevAngles();
   float StdevBonds();
 
-  // Signalling
+public Q_SLOTS:
   void ConnectTo(chemlib::MIMoleculeBase *mol);
-  std::set<chemlib::MIMoleculeBase*> _connected_to;
   void atomsToBeDeleted(chemlib::MIMoleculeBase* model, const std::vector<chemlib::MIAtom*> &atoms);
   void residuesToBeDeleted(chemlib::MIMoleculeBase* model, std::vector<chemlib::RESIDUE*> &res);
   void moleculeToBeDeleted(chemlib::MIMoleculeBase* molecule);

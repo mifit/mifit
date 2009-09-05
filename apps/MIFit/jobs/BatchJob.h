@@ -2,13 +2,15 @@
 #define mifit_jobs_BatchJob_h
 
 #include <string>
-#include <boost/signal.hpp>
+#include <QObject>
 
 #include "core/corelib.h"
 
 class MIGLWidget;
 
-class BatchJob {
+class BatchJob : public QObject {
+  Q_OBJECT
+
 public:
   void ShowLog();
   virtual std::string Info();
@@ -87,9 +89,11 @@ public:
   void setSettings(const MIData& jobSettings);
   MIData& getSettings();
 
-  boost::signal1<void, BatchJob*> jobChanged;
-
   void openResults();
+
+Q_SIGNALS:
+  void jobChanged(BatchJob*);
+
   
 protected:
 

@@ -4,7 +4,6 @@
 #include "BatchJob.h"
 #include "CustomJob.h"
 #include "core/corelib.h"
-#include <boost/bind.hpp>
 
 using namespace std;
 
@@ -27,7 +26,8 @@ BatchJob* BatchJobManager::CreateJob() {
   BatchJob* job = new BatchJob(workdir.c_str());
   JobList.push_back(job);
   jobAdded(job);
-  job->jobChanged.connect(boost::bind(&BatchJobManager::jobChanged, this, _1));
+  connect(job, SIGNAL(jobChanged(BatchJob*)),
+          this, SLOT(jobChanged(BatchJob*)));
   return job;
 }
 
@@ -35,7 +35,8 @@ CustomJob* BatchJobManager::CreateCustomJob() {
   CustomJob* job = new CustomJob;
   JobList.push_back(job);
   jobAdded(job);
-  job->jobChanged.connect(boost::bind(&BatchJobManager::jobChanged, this, _1));
+  connect(job, SIGNAL(jobChanged(BatchJob*)),
+          this, SLOT(jobChanged(BatchJob*)));
   return job;
 }
 

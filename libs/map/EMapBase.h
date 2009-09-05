@@ -1,9 +1,9 @@
 #ifndef mifit_map_EMapBase_h
 #define mifit_map_EMapBase_h
 
+#include <QObject>
 #include <string>
 
-#include <boost/signal.hpp>
 #include <math/mathlib.h> // for PLINE
 
 #include "CMapHeaderBase.h"
@@ -30,7 +30,8 @@ struct mmtz_column_;
 // to contour, load and save maps.
 // Probably suffering a bit from feature bloat...
 //@}
-class EMapBase {
+class EMapBase : public QObject {
+    Q_OBJECT
   
   /**
    * Copy constructor declared only to prevent access.
@@ -585,8 +586,9 @@ public:
     return false;
   }
 
-  boost::signal1<void, EMapBase*> mapContourLevelsChanged;
-  boost::signal1<void, EMapBase*> mapVisibilityChanged;
+Q_SIGNALS:
+  void mapContourLevelsChanged(EMapBase*);
+  void mapVisibilityChanged(EMapBase*);
 
 };
 

@@ -5,7 +5,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include <boost/signal.hpp>
+#include <QObject>
 #include "xmlarchive.h"
 
 extern char ann_typenames[][25];
@@ -15,7 +15,8 @@ extern char ann_typenames[][25];
  * They get saved with the session and can be used to add arbitrary information
  * in a positional way.
  */
-class Annotation {
+class Annotation : public QObject {
+  Q_OBJECT
 
   static const float NO_COORD;
 
@@ -149,7 +150,8 @@ public:
     m_subject.clear();
   }
 
-  boost::signal1<void, Annotation*> annotationChanged;
+Q_SIGNALS:
+  void annotationChanged(Annotation*);
 
 };
 

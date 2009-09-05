@@ -12,8 +12,6 @@
 #include <QStackedLayout>
 
 #include <set>
-#include <boost/bind.hpp>
-#include <boost/signal.hpp>
 
 #include <map/maplib.h>
 #include "core/corelib.h"
@@ -74,7 +72,6 @@ const int ID_MODELSVIEW_MODELSTREE_INSERT = ID_MODELSVIEW_OFFSET+5;
 const int ID_MODELSVIEW_RESIDUESTREE_PASTE = ID_MODELSVIEW_OFFSET+6;
 
 using namespace chemlib;
-using namespace boost::signals;
 
 bool syncView;
 typedef std::map<const char*, int> ImageIndexMap;
@@ -191,8 +188,6 @@ class AtomsTree : public MIQTreeWidget, public MIEventHandler {
   QTreeWidgetItem* rootId;
   MIGLWidget* view;
   Molecule* model;
-  connection modelAtomChangedConnection;
-  connection modelAtomsToBeDeletedConnection;
   RESIDUE* residue;
   MIAtom* currentAtom;
 
@@ -219,17 +214,13 @@ public:
   MIAtom* getCurrentAtom();
   void stylizeAtom(MIAtom* atom);
 
-  void atomChanged(MIMoleculeBase* model, MIAtomList& atom);
-  void atomsToBeDeleted(MIMoleculeBase* model, const MIAtomList& atoms);
-
-
-
   bool HandleHistory(MIData& data);
   bool RandomTest();
 
-
-
 private Q_SLOTS:
+  void atomChanged(MIMoleculeBase* model, MIAtomList& atom);
+  void atomsToBeDeleted(MIMoleculeBase* model, const MIAtomList& atoms);
+
   void OnItemClicked(QTreeWidgetItem *item, int column); // single click
   void OnItemActivated(QTreeWidgetItem *item, int column); // double click
 
@@ -302,8 +293,6 @@ AtomsTree::~AtomsTree() {
   setVisible(false);
   MIGetHistory()->RemoveMenu(_menu);
   delete _menu;
-  modelAtomChangedConnection.disconnect();
-  modelAtomsToBeDeletedConnection.disconnect();
 }
 
 static QAction* solidsurf_menu_action(QMenu* menu, QActionGroup* group, int actionId, const char* text) {
@@ -371,13 +360,15 @@ void AtomsTree::atomsToBeDeleted(MIMoleculeBase*, const MIAtomList& atoms) {
 
 void AtomsTree::setModel(Molecule* model) {
   if (this->model != NULL) {
-    modelAtomChangedConnection.disconnect();
-    modelAtomsToBeDeletedConnection.disconnect();
+    disconnect(this->model, SIGNAL(atomChanged(MIMoleculeBase*,MIAtomList&)));
+    disconnect(this->model, SIGNAL(atomsToBeDeleted(MIMoleculeBase*,MIAtomList)));
   }
   this->model = model;
   if (model != NULL) {
-    modelAtomChangedConnection = model->atomChanged.connect(boost::bind(&AtomsTree::atomChanged, this, _1, _2));
-    modelAtomsToBeDeletedConnection = model->atomsToBeDeleted.connect(boost::bind(&AtomsTree::atomsToBeDeleted, this, _1, _2));
+    connect(model, SIGNAL(atomChanged(MIMoleculeBase*,MIAtomList&)),
+            this, SLOT(atomChanged(MIMoleculeBase*,MIAtomList&)));
+    connect(model, SIGNAL(atomsToBeDeleted(MIMoleculeBase*,MIAtomList)),
+            this, SLOT(atomsToBeDeleted(MIMoleculeBase*,MIAtomList)));
   }
 }
 
@@ -782,8 +773,6 @@ class ResiduesTree : public MIQTreeWidget, public MIEventHandler {
   MIGLWidget* view;
   Molecule* model;
   RESIDUE* currentResidue;
-  connection modelResiduesToBeDeletedConnection;
-  connection modelAtomChangedConnection;
 
   ImageIndexMap imageIndex;
   typedef std::map<RESIDUE*, TreeData*> ResidueToDataMap;
@@ -809,14 +798,14 @@ public:
   void setCurrentResidue(RESIDUE* residue);
   RESIDUE* getCurrentResidue();
   void stylizeResidue(RESIDUE* residue);
-  void residuesToBeDeleted(MIMoleculeBase* model, std::vector<RESIDUE*>& residues);
-  void atomChanged(MIMoleculeBase* model, MIAtomList& atoms);
 
   bool HandleHistory(MIData& data);
   bool RandomTest();
 
-
 private Q_SLOTS:
+  void residuesToBeDeleted(MIMoleculeBase* model, std::vector<RESIDUE*>& residues);
+  void atomChanged(MIMoleculeBase* model, MIAtomList& atoms);
+
   void OnItemClicked(QTreeWidgetItem *item, int column); // single click
   void OnItemActivated(QTreeWidgetItem *item, int column); // double click
 
@@ -908,8 +897,6 @@ ResiduesTree::~ResiduesTree() {
   setVisible(false);
   MIGetHistory()->RemoveMenu(_menu);
   delete _menu;
-  modelResiduesToBeDeletedConnection.disconnect();
-  modelAtomChangedConnection.disconnect();
 }
 
 void ResiduesTree::setView(MIGLWidget* view) {
@@ -932,13 +919,15 @@ void ResiduesTree::setAtomsTree(AtomsTree* tree) {
 
 void ResiduesTree::setModel(Molecule* model) {
   if (this->model != NULL) {
-    modelResiduesToBeDeletedConnection.disconnect();
-    modelAtomChangedConnection.disconnect();
+    disconnect(this->model, SIGNAL(residuesToBeDeleted(MIMoleculeBase*,std::vector<RESIDUE*>&)));
+    disconnect(this->model, SIGNAL(atomChanged(MIMoleculeBase*,MIAtomList&)));
   }
   this->model = model;
   if (model != NULL) {
-    modelResiduesToBeDeletedConnection = model->residuesToBeDeleted.connect(boost::bind(&ResiduesTree::residuesToBeDeleted, this, _1, _2));
-    modelAtomChangedConnection = model->atomChanged.connect(boost::bind(&ResiduesTree::atomChanged, this, _1, _2));
+    connect(model, SIGNAL(residuesToBeDeleted(MIMoleculeBase*,std::vector<RESIDUE*>&)),
+            this, SLOT(residuesToBeDeleted(MIMoleculeBase*,std::vector<RESIDUE*>&)));
+    connect(model, SIGNAL(atomChanged(MIMoleculeBase*,MIAtomList&)),
+            this, SLOT(atomChanged(MIMoleculeBase*,MIAtomList&)));
   }
 }
 
@@ -1687,6 +1676,7 @@ public:
   std::string truncateRight(const std::string& name, int shorter = 0);
   void goToResidue(const std::string& name);
 
+private Q_SLOTS:
   void modelAdded(Molecule* model);
   void moleculeChanged(MIMoleculeBase* model);
   void atomChanged(MIMoleculeBase* model, MIAtomList& atoms);
@@ -1702,10 +1692,11 @@ public:
   void focusResidueChanged(RESIDUE* residue);
   void selectionChanged(Molecule* model, RESIDUE* residue, MIAtom* atom);
 
-
+public:
   bool HandleHistory(MIData& data);
   bool RandomTest();
 
+private:
   QTreeWidgetItem* rootId;
   QTreeWidgetItem* FindLastModelItem();
 
@@ -2901,7 +2892,8 @@ void ModelsTree::setView(MIGLWidget* view) {
     return;
   }
   this->view = view;
-  addSignalConnection(view->focusResidueChanged.connect(boost::bind(&ModelsTree::focusResidueChanged, this, _1)));
+  connect(view, SIGNAL(focusResidueChanged(chemlib::RESIDUE*)),
+          this, SLOT(focusResidueChanged(RESIDUE*)));
   addModels(displaylist());
   addMaps(displaylist());
   solidSurfMenu->clear();
@@ -3004,9 +2996,12 @@ void ModelsTree::addModels(Displaylist* displaylist) {
     ++modelIter;
     addModel(model);
   }
-  addSignalConnection(displaylist->modelAdded.connect(boost::bind(&ModelsTree::modelAdded, this, _1)));
-  addSignalConnection(displaylist->currentMoleculeChanged.connect(boost::bind(&ModelsTree::currentModelChanged, this, _1, _2)));
-  addSignalConnection(displaylist->selectionChanged.connect(boost::bind(&ModelsTree::selectionChanged, this, _1, _2, _3)));
+  connect(displaylist, SIGNAL(modelAdded(Molecule*)),
+          this, SLOT(modelAdded(Molecule*)));
+  connect(displaylist, SIGNAL(currentMoleculeChanged(Molecule*,Molecule*)),
+          this, SLOT(currentModelChanged(Molecule*,Molecule*)));
+  connect(displaylist, SIGNAL(selectionChanged(Molecule*,chemlib::RESIDUE*,chemlib::MIAtom*)),
+          this, SLOT(selectionChanged(Molecule*,RESIDUE*,MIAtom*)));
 }
 
 void ModelsTree::addMaps(Displaylist* displaylist) {
@@ -3016,9 +3011,12 @@ void ModelsTree::addMaps(Displaylist* displaylist) {
     ++mapIter;
     addMap(map);
   }
-  addSignalConnection(displaylist->mapAdded.connect(boost::bind(&ModelsTree::mapAdded, this, _1)));
-  addSignalConnection(displaylist->mapToBeDeleted.connect(boost::bind(&ModelsTree::mapToBeDeleted, this, _1)));
-  addSignalConnection(displaylist->currentMapChanged.connect(boost::bind(&ModelsTree::currentMapChanged, this, _1, _2)));
+  connect(displaylist, SIGNAL(mapAdded(EMap*)),
+          this, SLOT(mapAdded(EMap*)));
+  connect(displaylist, SIGNAL(mapToBeDeleted(EMap*)),
+          this, SLOT(mapToBeDeleted(EMap*)));
+  connect(displaylist, SIGNAL(currentMapChanged(EMap*,EMap*)),
+          this, SLOT(currentMapChanged(EMap*,EMap*)));
 }
 
 void ModelsTree::addModel(Molecule* model) {
@@ -3041,11 +3039,16 @@ void ModelsTree::addModel(Molecule* model) {
   addModelCrystal(model);
   addChains(model);
 
-  addSignalConnection(model->moleculeToBeDeleted.connect(boost::bind(&ModelsTree::modelToBeDeleted, this, _1)));
-  addSignalConnection(model->residuesToBeDeleted.connect(boost::bind(&ModelsTree::residuesToBeDeleted, this, _1, _2)));
-  addSignalConnection(model->residuesDeleted.connect(boost::bind(&ModelsTree::residuesDeleted, this, _1)));
-  addSignalConnection(model->moleculeChanged.connect(boost::bind(&ModelsTree::moleculeChanged, this, _1)));
-  addSignalConnection(model->atomChanged.connect(boost::bind(&ModelsTree::atomChanged, this, _1, _2)));
+  connect(model, SIGNAL(moleculeToBeDeleted(MIMoleculeBase*)),
+          this, SLOT(modelToBeDeleted(MIMoleculeBase*)));
+  connect(model, SIGNAL(residuesToBeDeleted(MIMoleculeBase*,std::vector<RESIDUE*>&)),
+          this, SLOT(residuesToBeDeleted(MIMoleculeBase*,std::vector<RESIDUE*>&)));
+  connect(model, SIGNAL(residuesDeleted(MIMoleculeBase*)),
+          this, SLOT(residuesToBeDeleted(MIMoleculeBase*,std::vector<RESIDUE*>&)));
+  connect(model, SIGNAL(moleculeChanged(MIMoleculeBase*)),
+          this, SLOT(moleculeChanged(MIMoleculeBase*)));
+  connect(model, SIGNAL(atomChanged(MIMoleculeBase*,MIAtomList&)),
+          this, SLOT(atomChanged(MIMoleculeBase*,MIAtomList&)));
 
   expandItem(item);
 }
@@ -3098,7 +3101,8 @@ void ModelsTree::addModelCrystal(Molecule* model) {
     return;
   }
   CMapHeaderBase& mapHeader = model->GetMapHeader();
-  addSignalConnection(mapHeader.mapHeaderChanged.connect(boost::bind(&ModelsTree::mapHeaderChanged, this, _1)));
+  connect(&mapHeader, SIGNAL(mapHeaderChanged(CMapHeaderBase*)),
+          this, SLOT(mapHeaderChanged(CMapHeaderBase*)));
   TreeData* data = new TreeData;
   data->mapHeader = &mapHeader;
   QTreeWidgetItem* item = insertItem(modelItem, 0, mapHeader.Label().c_str(), 4, 4, data);
@@ -3441,7 +3445,8 @@ void ModelsTree::addMap(EMap* map) {
     return;
   }
   mapToData[map] = data;
-  addSignalConnection(map->mapFftRecalculated.connect(boost::bind(&ModelsTree::mapFftRecalculated, this, _1)));
+  connect(map, SIGNAL(mapFftRecalculated(EMap*)),
+          this, SLOT(mapFftRecalculated(EMap*)));
   stylizeMap(map);
 
   addMapCrystal(map);
@@ -3452,7 +3457,8 @@ void ModelsTree::addMap(EMap* map) {
 void ModelsTree::addMapCrystal(EMap* map) {
   CMapHeaderBase* mapHeader = map->GetMapHeader();
   if (mapHeader != NULL) {
-    addSignalConnection(mapHeader->mapHeaderChanged.connect(boost::bind(&ModelsTree::mapHeaderChanged, this, _1)));
+    connect(mapHeader, SIGNAL(mapHeaderChanged(CMapHeaderBase*)),
+            this, SLOT(mapHeaderChanged(CMapHeaderBase*)));
     TreeData* mapData = mapToData[map];
     if (mapData == NULL || !validTreeData(mapData)) {
       mapToData.erase(map);

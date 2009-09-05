@@ -4,7 +4,6 @@
 #include <cmath>
 #include <vector>
 #include <string>
-#include <boost/signal.hpp>
 
 
 namespace chemlib {

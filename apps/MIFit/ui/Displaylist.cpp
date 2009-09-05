@@ -3,9 +3,6 @@
 #include <cmath>
 #include <cstring>
 
-#include <boost/bind.hpp>
-#include <boost/signal.hpp>
-
 #include <nongui/nonguilib.h>
 #include <chemlib/chemlib.h>
 #include <chemlib/RESIDUE_.h>
@@ -44,19 +41,6 @@ Displaylist::Displaylist() { // create a NULL list
 }
 
 Displaylist::~Displaylist() {
-
-  // disconnect all this objects slots, we're dying
-  for (size_t i=0;i<connections.size(); ++i)
-    connections[i].disconnect();
-
-  //disconnect all signals from their slots; we're dying
-  modelAdded.disconnect_all_slots();
-  currentMoleculeChanged.disconnect_all_slots();
-  mapAdded.disconnect_all_slots();
-  mapToBeDeleted.disconnect_all_slots();
-  currentMapChanged.disconnect_all_slots();
-  selectionChanged.disconnect_all_slots();
-  
 
   // delete all items in list
   std::list<Molecule*>::iterator node;
@@ -268,10 +252,14 @@ int Displaylist::AddItem(Molecule* node) { //  add a new node in displaylist
     return (0);
   } else {
 
-    connections.push_back(node->atomsToBeDeleted.connect(boost::bind(&Displaylist::atomsToBeDeleted, this, _1, _2)));
-    connections.push_back(node->residuesToBeDeleted.connect(boost::bind(&Displaylist::residuesToBeDeleted, this, _1, _2)));
-    connections.push_back(node->moleculeToBeDeleted.connect(boost::bind(&Displaylist::moleculeToBeDeleted, this, _1)));
-    connections.push_back(node->symmetryToBeCleared.connect(boost::bind(&Displaylist::symmetryToBeCleared, this, _1)));
+    connect(node, SIGNAL(atomsToBeDeleted(MIMoleculeBase*,MIAtomList)),
+            this, SLOT(atomsToBeDeleted(chemlib::MIMoleculeBase*,std::vector<chemlib::MIAtom*>)));
+    connect(node, SIGNAL(residuesToBeDeleted(MIMoleculeBase*,std::vector<RESIDUE*>&)),
+            this, SLOT(residuesToBeDeleted(chemlib::MIMoleculeBase*,std::vector<chemlib::RESIDUE*>&)));
+    connect(node, SIGNAL(moleculeToBeDeleted(MIMoleculeBase*)),
+            this, SLOT(moleculeToBeDeleted(chemlib::MIMoleculeBase*)));
+    connect(node, SIGNAL(symmetryToBeCleared(MIMoleculeBase*)),
+            this, SLOT(symmetryToBeCleared(chemlib::MIMoleculeBase*)));
 
     Models.push_back(node);
     modelAdded(node);

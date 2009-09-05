@@ -8,8 +8,6 @@
 #include <vector>
 #include <string>
 
-#include <boost/signal.hpp>
-
 class TreeData;
 
 class MIQTreeWidget : public QTreeWidget {
@@ -47,9 +45,6 @@ public:
     QIcon &GetIcon(unsigned int image_num);
 
   protected:
-    typedef std::vector<boost::signals::connection> SignalConnectionList;
-    SignalConnectionList signalConnections;
-    void addSignalConnection(boost::signals::connection c);
 
     std::vector<QIcon> _imageList;
 

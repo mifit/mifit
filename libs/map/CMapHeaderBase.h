@@ -1,11 +1,10 @@
 #ifndef mifit_map_CMapHeaderBase_h
 #define mifit_map_CMapHeaderBase_h
 
+#include <chemlib/chemlib.h>
+#include <QObject>
 #include <string>
 #include <vector>
-#include <boost/signal.hpp>
-
-#include <chemlib/chemlib.h>
 
 #include "MAP_POINT.h"
 
@@ -20,7 +19,8 @@ namespace MISymmop {
 //@}
 struct umtzfile_;
 
-class CMapHeaderBase {
+class CMapHeaderBase : public QObject {
+    Q_OBJECT
 public:
   std::string crystal_name;
   float a, b, c, alpha, beta, gamma;
@@ -114,7 +114,8 @@ public:
 
   void EchoCrystal();
 
-  boost::signal1<void, CMapHeaderBase*> mapHeaderChanged;
+Q_SIGNALS:
+  void mapHeaderChanged(CMapHeaderBase*);
 
 };
 

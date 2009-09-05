@@ -15,8 +15,6 @@
 
 //#include "mifit_algorithm.h"
 
-#include <boost/bind.hpp>
-
 using namespace std;
 using namespace chemlib;
 
@@ -1550,13 +1548,14 @@ int MIMolOpt::applyderivatives() {
 }
 
 void MIMolOpt::ConnectTo(MIMoleculeBase *mol) {
-  if (std::find(_connected_to.begin(), _connected_to.end(), mol)==_connected_to.end()) {
-    mol->moleculeDeleted.connect(boost::bind(&MIMolOpt::moleculeDeleted, this, _1));
-    mol->moleculeToBeDeleted.connect(boost::bind(&MIMolOpt::moleculeToBeDeleted, this, _1));
-    mol->residuesToBeDeleted.connect(boost::bind(&MIMolOpt::residuesToBeDeleted, this, _1, _2));
-    mol->atomsToBeDeleted.connect(boost::bind(&MIMolOpt::atomsToBeDeleted, this, _1, _2));
-    _connected_to.insert(mol);
-  }
+  connect(mol, SIGNAL(moleculeDeleted(MIMoleculeBase*)),
+          this, SLOT(moleculeDeleted(chemlib::MIMoleculeBase*)));
+  connect(mol, SIGNAL(moleculeToBeDeleted(MIMoleculeBase*)),
+          this, SLOT(moleculeToBeDeleted(chemlib::MIMoleculeBase*)));
+  connect(mol, SIGNAL(residuesToBeDeleted(MIMoleculeBase*,std::vector<RESIDUE*>&)),
+          this, SLOT(residuesToBeDeleted(chemlib::MIMoleculeBase*,std::vector<chemlib::RESIDUE*>&)));
+  connect(mol, SIGNAL(atomsToBeDeleted(MIMoleculeBase*,MIAtomList)),
+          this, SLOT(atomsToBeDeleted(chemlib::MIMoleculeBase*,std::vector<chemlib::MIAtom*>)));
 }
 
 
@@ -1642,7 +1641,6 @@ long MIMolOpt::SetRefiRes(RESIDUE* res1, RESIDUE* res2, MIMoleculeBase* node, EM
 }
 
 void MIMolOpt::moleculeDeleted(MIMoleculeBase* molecule) {
-  _connected_to.erase(molecule);
 }
 
 void MIMolOpt::moleculeToBeDeleted(MIMoleculeBase* molecule) {

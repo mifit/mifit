@@ -5,7 +5,7 @@ class Stack;
 
 #include <stack>
 #include <deque>
-
+#include <QObject>
 #include "CRect.h"
 #include "Molecule.h"
 
@@ -19,7 +19,9 @@ typedef struct {
 /**
  * Implements an atom stack for storing atom picks.
  */
-class Stack {
+class Stack : public QObject {
+  Q_OBJECT
+
 public:
   typedef std::deque<StackItem> DataContainer;
 
@@ -80,7 +82,8 @@ public:
   void atomsToBeDeleted(chemlib::MIMoleculeBase* model, const std::vector<chemlib::MIAtom*>& atoms);
   void moleculeToBeDeleted(chemlib::MIMoleculeBase* model);
 
-  boost::signal1<void, bool> emptyChanged;
+Q_SIGNALS:
+  void emptyChanged(bool);
 };
 
 inline bool Stack::isMinimized() {
