@@ -16,7 +16,6 @@
 #include "EMap.h"
 #include <climits>
 #include <vector>
-#include <boost/foreach.hpp>
 #undef X
 #undef Y
 #undef Z
@@ -465,7 +464,7 @@ void GLRenderer::DrawLabels(std::list<Molecule*>& molecules) {
   }
   Molecule::AtomLabelList labels;
   labels.reserve(order.size());
-  BOOST_FOREACH(const LabelOrderMap::value_type& l, order) {
+  Q_FOREACH(const LabelOrderMap::value_type& l, order) {
     labels.push_back(l.second);
   }
   drawLabels(labels);
