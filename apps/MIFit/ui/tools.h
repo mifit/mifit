@@ -26,7 +26,7 @@ public:     //Event handles for the tools menu
   static bool VerifyCCP4();
   void FillToolsMenu(MIMenu*, bool havedoc = false);
 
-private Q_SLOTS:
+private slots:
   void OnBindNGrind();
   void OnRunTestJob();
 

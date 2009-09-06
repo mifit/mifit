@@ -54,7 +54,7 @@ class MIColorPickerDlg : public QDialog
 
     unsigned int GetResult() const { return result; }
 
- public Q_SLOTS:
+ public slots:
     virtual void colorPicked(int i);
 
   private:

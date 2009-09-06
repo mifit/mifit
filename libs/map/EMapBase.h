@@ -586,7 +586,7 @@ public:
     return false;
   }
 
-Q_SIGNALS:
+signals:
   void mapContourLevelsChanged(EMapBase*);
   void mapVisibilityChanged(EMapBase*);
 

@@ -22,7 +22,7 @@ public:
     void InitializeFromData(const MIData &dat);
     bool GetData(MIData &data);
 
-  private Q_SLOTS:
+  private slots:
     void on_removePushButton_clicked();
     void on_addPushButton_clicked();
     void validateTimeout();

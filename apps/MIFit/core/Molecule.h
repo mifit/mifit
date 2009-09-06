@@ -188,7 +188,7 @@ public:
    */
   void clearAnnotations();
 
-Q_SIGNALS:
+signals:
   void annotationAdded(Molecule*, Annotation*);
   void annotationToBeDeleted(Molecule*, Annotation*);
   void annotationDeleted(Molecule*);
@@ -239,7 +239,7 @@ public:
   SURFDOT* GetDots();
   SurfaceDots& getDots();
   void setDotsColor(int color);
-Q_SIGNALS:
+signals:
   void surfaceChanged(Molecule*);
 
 public:

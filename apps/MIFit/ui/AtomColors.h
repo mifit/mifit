@@ -14,7 +14,7 @@ public:
     void InitializeFromData(const MIData &dat);
     void GetData(MIData &dat);
 
-private Q_SLOTS:
+private slots:
     void on_deleteTypePushButton_clicked();
     void on_editNamePushButton_clicked();
     void on_addTypePushButton_clicked();

@@ -12,7 +12,7 @@ CONFIG(debug, debug|release) {
 }
 
 QT += opengl xml
-CONFIG += no_keywords opengl ordered
+CONFIG += opengl ordered
 
 !USE_SHARED_LIBS {
   CONFIG += staticlib 

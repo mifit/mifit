@@ -449,7 +449,7 @@ bool MIHistory::PlaybackCommand(const char* line) {
     MIData data;
     StringToCommand(&line[4], data);
 
-    Q_FOREACH (QWidget *w, QApplication::topLevelWidgets()) {
+    foreach (QWidget *w, QApplication::topLevelWidgets()) {
       DictEditDialog *dlg=dynamic_cast<DictEditDialog*>(w);
       if (dlg) {
         if (data["state"].str=="ok") {

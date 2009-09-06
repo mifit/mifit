@@ -13,7 +13,7 @@ public:
     SmilesDialog(QWidget *parent = 0);
     void GetResults(MIData &data);
 
-public Q_SLOTS:
+public slots:
     void on_browseButton_clicked();
 };
 

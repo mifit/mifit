@@ -15,7 +15,7 @@ public:
     ManageCrystals(QWidget *parent = 0);
     ~ManageCrystals();
 
-  private Q_SLOTS:
+  private slots:
     void on_crystalListBox_itemClicked(QListWidgetItem *);
     void on_newCrystalButton_clicked();
     void on_copyCrystalButton_clicked();

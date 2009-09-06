@@ -89,11 +89,11 @@ public:
 
   int numberOfRunningJobs();
 
-Q_SIGNALS:
+signals:
   void jobAdded(BatchJob*);
   void jobDeleted(BatchJob*);
 
-private Q_SLOTS:
+private slots:
   void OnTimer();
   void jobChanged(BatchJob* job);
 };

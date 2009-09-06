@@ -46,7 +46,7 @@ public:
   void label(const std::string& key, const std::string& label);
 
 
-public Q_SLOTS:
+public slots:
   void accepted();
   void colorButtonPressed();
   void colorIndexButtonPressed();

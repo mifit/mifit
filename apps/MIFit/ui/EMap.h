@@ -46,7 +46,7 @@ public:
 
   int CenterVisibleEdges(float& x, float& y, float& z, ViewPoint* vp);
   
-Q_SIGNALS:
+signals:
   void mapFftRecalculated(EMap*);
 
 };

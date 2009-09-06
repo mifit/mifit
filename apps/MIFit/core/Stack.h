@@ -82,7 +82,7 @@ public:
   void atomsToBeDeleted(chemlib::MIMoleculeBase* model, const std::vector<chemlib::MIAtom*>& atoms);
   void moleculeToBeDeleted(chemlib::MIMoleculeBase* model);
 
-Q_SIGNALS:
+signals:
   void emptyChanged(bool);
 };
 

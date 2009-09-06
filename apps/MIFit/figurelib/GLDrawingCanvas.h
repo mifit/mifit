@@ -29,7 +29,7 @@ class GLDrawingCanvas : public QGLWidget, public Drawing, public MIEventHandler
     void resizeGL(int width, int height);
     void paintGL();
 
-  private Q_SLOTS:
+  private slots:
     void OnEditCopy();
     void OnPrint();
     void OnExportImage();

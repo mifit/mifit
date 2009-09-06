@@ -44,7 +44,7 @@ public:
     _view = v;
   }
 
-public Q_SLOTS:
+public slots:
   // object changed slots
   void atomChanged(chemlib::MIMoleculeBase* mol, std::vector<chemlib::MIAtom*>& atom);
   void moleculeChanged(chemlib::MIMoleculeBase* mol);

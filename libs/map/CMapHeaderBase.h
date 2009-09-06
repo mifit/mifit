@@ -114,7 +114,7 @@ public:
 
   void EchoCrystal();
 
-Q_SIGNALS:
+signals:
   void mapHeaderChanged(CMapHeaderBase*);
 
 };

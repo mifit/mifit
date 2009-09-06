@@ -150,7 +150,7 @@ public:
     m_subject.clear();
   }
 
-Q_SIGNALS:
+signals:
   void annotationChanged(Annotation*);
 
 };

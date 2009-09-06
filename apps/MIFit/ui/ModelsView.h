@@ -33,7 +33,7 @@ class ModelsView : public ViewSyncedPanel {
   typedef std::map<QWidget*, QPushButton*> PanelToButtonCtrlMap;
   static PanelToButtonCtrlMap panelToButtonCtrl;
 
-private Q_SLOTS:
+private slots:
   void OnGoToResidueReturnPressed();
   void OnSplitterChanged(int, int);
   void updateSyncView(bool state);

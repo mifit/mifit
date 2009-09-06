@@ -50,7 +50,7 @@ public:
   virtual ~DisplayTree();
   void setView(MIGLWidget* view);
 
-private Q_SLOTS:
+private slots:
   void OnItemClicked(QTreeWidgetItem *item, int column); // single click
   void OnItemActivated(QTreeWidgetItem *item, int column); // double click
   void OnItemPressed(QTreeWidgetItem *item, int column); // possible right click
@@ -70,7 +70,7 @@ private:
   void addAtomLabel(Molecule* model, ATOMLABEL* label);
   void addSurface(Molecule* model);
 
-private Q_SLOTS:
+private slots:
   void modelAdded(Molecule* model);
   void modelToBeDeleted(chemlib::MIMoleculeBase* model);
   void currentModelChanged(Molecule* oldModel, Molecule* newModel);

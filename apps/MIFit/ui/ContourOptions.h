@@ -17,7 +17,7 @@ public:
     void GetData(MIData &dat);
     void savePreferences();
 
-public Q_SLOTS:
+public slots:
     void on_maxRadiusSpinBox_valueChanged(int i);
     void colorButtonPressed();
     void on_mapStylesComboBox_currentIndexChanged(int styleNum);

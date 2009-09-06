@@ -665,11 +665,11 @@ public:
 
   void moveTo(float x, float y, float z);
 
-Q_SIGNALS:
+signals:
   void viewActivated(MIGLWidget*);
   void viewDeactivated(MIGLWidget*);
 
-public Q_SLOTS:
+public slots:
   void connectToModel(Molecule* model);
   void modelAdded(Molecule* model);
   void currentModelChanged(Molecule* oldModel, Molecule* newModel);
@@ -697,7 +697,7 @@ public:
 
   void select(Molecule* model, chemlib::RESIDUE* residue, chemlib::MIAtom* atom, bool label = true);
 
-Q_SIGNALS:
+signals:
   void focusResidueChanged(chemlib::RESIDUE*);
 public:
 
@@ -777,7 +777,7 @@ public:
 
   QAction* solidSurfMenuAction() const;
 
-public Q_SLOTS:
+public slots:
 
   void updatePopupMenu();
   void updateDotSurfMenu();

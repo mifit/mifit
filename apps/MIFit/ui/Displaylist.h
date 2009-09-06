@@ -253,7 +253,7 @@ public:
   std::vector<PLINE>& getLines();
   std::vector<SURFDOT>& getCurrentDots();
 
-Q_SIGNALS:
+signals:
   void modelAdded(Molecule*);
   void currentMoleculeChanged(Molecule* oldMol, Molecule* newMol);
   void mapAdded(EMap*);
@@ -261,7 +261,7 @@ Q_SIGNALS:
   void currentMapChanged(EMap* oldMap, EMap* newMap);
   void selectionChanged(Molecule*, chemlib::RESIDUE*, chemlib::MIAtom*);
 
-private Q_SLOTS:
+private slots:
   void atomsToBeDeleted(chemlib::MIMoleculeBase* model, const std::vector<chemlib::MIAtom*> &atoms);
   void residuesToBeDeleted(chemlib::MIMoleculeBase* model, std::vector<chemlib::RESIDUE*> &res);
   void moleculeToBeDeleted(chemlib::MIMoleculeBase *model);

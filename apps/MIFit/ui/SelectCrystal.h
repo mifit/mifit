@@ -16,7 +16,7 @@ public:
   private:
     void scanCrystalsDirectory();
 
-  private Q_SLOTS:
+  private slots:
     void on_crystalListWidget_itemClicked(QListWidgetItem *item);
     void on_selectCrystalRadioButton_clicked();
     void on_specifyParametersRadioButton_clicked();

@@ -16,7 +16,7 @@ class MIBrowsePair : public QObject
     MIBrowsePair(QPushButton *button, QLineEdit *lineEdit, 
       const QString & filter="",bool isDir=false);
 
-  private Q_SLOTS:
+  private slots:
     void buttonClicked();
 
   private:

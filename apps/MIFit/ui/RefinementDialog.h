@@ -22,7 +22,7 @@ public:
     void InitializeFromData(const MIData &dat);
     bool GetData(MIData &data);
 
-  private Q_SLOTS:
+  private slots:
     void validateTimeout();
 
   private:

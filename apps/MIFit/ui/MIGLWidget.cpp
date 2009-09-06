@@ -10678,7 +10678,7 @@ void MIGLWidget::updateSolidsurfMenu() {
 
   QList<QAction*> actions(solidsurfActionGroup->actions());
   actions += solidsurfCommonActionGroup->actions();
-  Q_FOREACH (QAction* action, actions) {
+  foreach (QAction* action, actions) {
     switch (action->data().toInt()) {
       case ID_SOLIDSURFACE_QUALITY_0:
         action->setChecked(MIGetSurfaceQuality() == 0);

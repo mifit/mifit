@@ -249,7 +249,7 @@ public:
   //       // Do real work here.
   //     }
 
-Q_SIGNALS:
+signals:
   // sent when a [group of] atoms, but not an entire residue, is deleted
   void atomsToBeDeleted(MIMoleculeBase*, const MIAtomList&);
   void atomsDeleted(MIMoleculeBase*);

@@ -464,7 +464,7 @@ void GLRenderer::DrawLabels(std::list<Molecule*>& molecules) {
   }
   Molecule::AtomLabelList labels;
   labels.reserve(order.size());
-  Q_FOREACH(const LabelOrderMap::value_type& l, order) {
+  foreach (const LabelOrderMap::value_type& l, order) {
     labels.push_back(l.second);
   }
   drawLabels(labels);

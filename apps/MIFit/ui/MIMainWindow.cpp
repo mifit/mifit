@@ -1542,7 +1542,7 @@ void MIMainWindow::AfterInit() {
 #endif
 
   args.pop_front();
-  Q_FOREACH(QString str, args) {
+  foreach (QString str, args) {
     arglist.push_back(str.toStdString());
   }
   OpenFiles(arglist);
@@ -2303,7 +2303,7 @@ QMdiArea* MIMainWindow::getMdiArea() {
 
 void MIMainWindow::setActiveMIGLWidget(MIGLWidget *w)
 {
-  Q_FOREACH (QMdiSubWindow *window, mdiArea->subWindowList()) {
+  foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
     if (window->widget() == w)
       mdiArea->setActiveSubWindow(window);
   }
@@ -2314,7 +2314,7 @@ QMdiSubWindow *MIMainWindow::findMIGLWidget(const QString &fileName)
 {
     QString canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
 
-    Q_FOREACH (QMdiSubWindow *window, mdiArea->subWindowList()) {
+    foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
         MIGLWidget *mdiChild = dynamic_cast<MIGLWidget*>(window->widget());
         if (mdiChild && QString(mdiChild->GetFilename().c_str()) == canonicalFilePath)
             return window;

@@ -16,7 +16,7 @@ public:
     void InitializeFromData(const MIData &dat);
     void GetData(MIData &dat);
 
-  private Q_SLOTS:
+  private slots:
     void on_colorToolButton1_clicked() { colorButtonPressed((QToolButton*)sender()); }
     void on_colorToolButton2_clicked() { colorButtonPressed((QToolButton*)sender()); }
     void on_colorToolButton3_clicked() { colorButtonPressed((QToolButton*)sender()); }

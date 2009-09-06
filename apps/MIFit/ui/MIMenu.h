@@ -67,7 +67,7 @@ class MIMenu : public QMenu
     // do QMenu::exec(), respecting test mode
     QAction *doExec(const QPoint &p);
 
-  private Q_SLOTS:
+  private slots:
     void triggered(bool);
     void showHandler();
 

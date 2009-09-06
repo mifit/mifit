@@ -134,7 +134,7 @@ class DictEditCanvas : public QGLWidget, public MIEventHandler {
   bool isZooming;
   bool isPanning;
 
-public Q_SLOTS:
+public slots:
   void OnTimer();
 
 public:
@@ -218,7 +218,7 @@ private:
   void GrowPlane(int);
   void OnRefine(int);
 
-private Q_SLOTS:
+private slots:
   // button events
   void OnGenerateConformers();
   void OnRemoveAtomFromPlane();

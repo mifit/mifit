@@ -40,7 +40,7 @@ class PhaseFileLoadDialog : public QDialog, public Ui::PhaseFileLoadDialog {
   void ShowExtras(unsigned int mapNum, bool show = true);
   std::string modelStringToModelName(const char* str);
 
-private Q_SLOTS:
+private slots:
   void on_map1Type_activated(int);
   void on_map2Type_activated(int);
   void on_map1FoChoice_activated(int);

@@ -35,7 +35,7 @@ public:
   JobsTree(QWidget* parent);
   virtual ~JobsTree();
 
- private Q_SLOTS:
+ private slots:
   void OnItemClicked(QTreeWidgetItem *item, int column); // single click
   void OnItemActivated(QTreeWidgetItem *item, int column); // double click
   void OnItemPressed(QTreeWidgetItem *item, int column); // possible right click

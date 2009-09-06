@@ -166,7 +166,7 @@ public:
 
   chemlib::MIMolDictionary dict;
 
-Q_SIGNALS:
+signals:
   void isRefiningChanged(bool);
 
 protected:
@@ -215,7 +215,7 @@ protected:
   float StdevAngles();
   float StdevBonds();
 
-public Q_SLOTS:
+public slots:
   void ConnectTo(chemlib::MIMoleculeBase *mol);
   void atomsToBeDeleted(chemlib::MIMoleculeBase* model, const std::vector<chemlib::MIAtom*> &atoms);
   void residuesToBeDeleted(chemlib::MIMoleculeBase* model, std::vector<chemlib::RESIDUE*> &res);

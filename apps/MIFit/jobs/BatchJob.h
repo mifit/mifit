@@ -91,7 +91,7 @@ public:
 
   void openResults();
 
-Q_SIGNALS:
+signals:
   void jobChanged(BatchJob*);
 
   

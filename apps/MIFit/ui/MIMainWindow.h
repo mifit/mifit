@@ -72,7 +72,7 @@ public:
     static MIMainWindow* instance();
     ~MIMainWindow();
 
-public Q_SLOTS:
+public slots:
     void Log(const std::string &str);
     void Debug(const std::string &str);
     void RightFooter(const std::string &str);
@@ -110,7 +110,7 @@ public:
     void addRecentFileActions(MIMenu *);
     void setCurrentFile(const std::string &fname);
 
-private Q_SLOTS:
+private slots:
     void OnClose();
     void OnExit();
     void OnNew();

@@ -9,4 +9,3 @@ HEADERS = *.h
 FORMS = *.ui
 DESTDIR = ..
 INCLUDEPATH += .
-CONFIG += no_keywords

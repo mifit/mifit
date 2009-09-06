@@ -58,7 +58,7 @@ public:
 
   std::vector<MATCH> Matches;
 
-private Q_SLOTS:
+private slots:
   void on_targetComboBox_currentIndexChanged(const QString &);
   void on_sourceComboBox_currentIndexChanged(const QString &);
   void on_sourceListWidget_currentTextChanged(const QString &str);

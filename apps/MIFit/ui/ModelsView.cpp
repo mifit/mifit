@@ -217,7 +217,7 @@ public:
   bool HandleHistory(MIData& data);
   bool RandomTest();
 
-private Q_SLOTS:
+private slots:
   void atomChanged(MIMoleculeBase* model, MIAtomList& atom);
   void atomsToBeDeleted(MIMoleculeBase* model, const MIAtomList& atoms);
 
@@ -304,7 +304,7 @@ static QAction* solidsurf_menu_action(QMenu* menu, QActionGroup* group, int acti
 
 static void fillSolidSurfMenu(QWidget * /* parent */, MIGLWidget *view, QMenu *menu) {
   if (view) {
-    Q_FOREACH (QAction *a, view->solidSurfCommonActionGroup()->actions()) {
+    foreach (QAction *a, view->solidSurfCommonActionGroup()->actions()) {
       menu->addAction(a);
     }
   }
@@ -657,7 +657,7 @@ void AtomsTree::updateSolidSurfMenu() {
   if (view) {
     view->updateSolidsurfMenu();
 
-    Q_FOREACH (QAction *action, solidSurfActionGroup->actions()) {
+    foreach (QAction *action, solidSurfActionGroup->actions()) {
       switch (action->data().toInt()) {
 
         case ID_SOLIDSURFACE_COLOR:
@@ -802,7 +802,7 @@ public:
   bool HandleHistory(MIData& data);
   bool RandomTest();
 
-private Q_SLOTS:
+private slots:
   void residuesToBeDeleted(MIMoleculeBase* model, std::vector<RESIDUE*>& residues);
   void atomChanged(MIMoleculeBase* model, MIAtomList& atoms);
 
@@ -1346,7 +1346,7 @@ void ResiduesTree::updateSolidSurfMenu() {
   if (view) {
     view->updateSolidsurfMenu();
 
-    Q_FOREACH (QAction *action, solidSurfActionGroup->actions()) {
+    foreach (QAction *action, solidSurfActionGroup->actions()) {
       switch (action->data().toInt()) {
 
         case ID_SOLIDSURFACE_COLOR:
@@ -1676,7 +1676,7 @@ public:
   std::string truncateRight(const std::string& name, int shorter = 0);
   void goToResidue(const std::string& name);
 
-private Q_SLOTS:
+private slots:
   void modelAdded(Molecule* model);
   void moleculeChanged(MIMoleculeBase* model);
   void atomChanged(MIMoleculeBase* model, MIAtomList& atoms);
@@ -1719,7 +1719,7 @@ private:
   MapHeaderToDataMap mapHeaderToCrystalData;
 
 
-private Q_SLOTS:
+private slots:
   void OnItemClicked(QTreeWidgetItem *item, int column); // single click
   void OnItemActivated(QTreeWidgetItem *item, int column); // double click
 
@@ -2077,7 +2077,7 @@ void ModelsTree::updateSolidSurfMenu() {
   if (view) {
     view->updateSolidsurfMenu();
 
-    Q_FOREACH (QAction *action, solidSurfActionGroup->actions()) {
+    foreach (QAction *action, solidSurfActionGroup->actions()) {
       switch (action->data().toInt()) {
 
         case ID_SOLIDSURFACE_COLOR:

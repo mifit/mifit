@@ -17,7 +17,7 @@ public:
   QWidget *getFrame();
   QMenuBar *getMenuBar();
 
-public Q_SLOTS:
+public slots:
   void accept();
   void reject();
 
