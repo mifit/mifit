@@ -219,7 +219,7 @@ public:
 
 private slots:
   void atomChanged(MIMoleculeBase* model, MIAtomList& atom);
-  void atomsToBeDeleted(MIMoleculeBase* model, const MIAtomList& atoms);
+  void atomsToBeDeleted(chemlib::MIMoleculeBase* model, const chemlib::MIAtomList& atoms);
 
   void OnItemClicked(QTreeWidgetItem *item, int column); // single click
   void OnItemActivated(QTreeWidgetItem *item, int column); // double click
@@ -361,14 +361,14 @@ void AtomsTree::atomsToBeDeleted(MIMoleculeBase*, const MIAtomList& atoms) {
 void AtomsTree::setModel(Molecule* model) {
   if (this->model != NULL) {
     disconnect(this->model, SIGNAL(atomChanged(MIMoleculeBase*,MIAtomList&)));
-    disconnect(this->model, SIGNAL(atomsToBeDeleted(MIMoleculeBase*,MIAtomList)));
+    disconnect(this->model, SIGNAL(atomsToBeDeleted(chemlib::MIMoleculeBase*,chemlib::MIAtomList)));
   }
   this->model = model;
   if (model != NULL) {
     connect(model, SIGNAL(atomChanged(MIMoleculeBase*,MIAtomList&)),
             this, SLOT(atomChanged(MIMoleculeBase*,MIAtomList&)));
-    connect(model, SIGNAL(atomsToBeDeleted(MIMoleculeBase*,MIAtomList)),
-            this, SLOT(atomsToBeDeleted(MIMoleculeBase*,MIAtomList)));
+    connect(model, SIGNAL(atomsToBeDeleted(chemlib::MIMoleculeBase*,chemlib::MIAtomList)),
+            this, SLOT(atomsToBeDeleted(chemlib::MIMoleculeBase*,chemlib::MIAtomList)));
   }
 }
 
@@ -919,15 +919,15 @@ void ResiduesTree::setAtomsTree(AtomsTree* tree) {
 
 void ResiduesTree::setModel(Molecule* model) {
   if (this->model != NULL) {
-    disconnect(this->model, SIGNAL(residuesToBeDeleted(MIMoleculeBase*,std::vector<RESIDUE*>&)));
-    disconnect(this->model, SIGNAL(atomChanged(MIMoleculeBase*,MIAtomList&)));
+    disconnect(this->model, SIGNAL(residuesToBeDeleted(chemlib::MIMoleculeBase*,std::vector<chemlib::RESIDUE*>&)));
+    disconnect(this->model, SIGNAL(atomChanged(chemlib::MIMoleculeBase*,chemlib::MIAtomList&)));
   }
   this->model = model;
   if (model != NULL) {
-    connect(model, SIGNAL(residuesToBeDeleted(MIMoleculeBase*,std::vector<RESIDUE*>&)),
-            this, SLOT(residuesToBeDeleted(MIMoleculeBase*,std::vector<RESIDUE*>&)));
-    connect(model, SIGNAL(atomChanged(MIMoleculeBase*,MIAtomList&)),
-            this, SLOT(atomChanged(MIMoleculeBase*,MIAtomList&)));
+    connect(model, SIGNAL(residuesToBeDeleted(chemlib::MIMoleculeBase*,std::vector<chemlib::RESIDUE*>&)),
+            this, SLOT(residuesToBeDeleted(chemlib::MIMoleculeBase*,std::vector<chemlib::RESIDUE*>&)));
+    connect(model, SIGNAL(atomChanged(chemlib::MIMoleculeBase*,chemlib::MIAtomList&)),
+            this, SLOT(atomChanged(chemlib::MIMoleculeBase*,chemlib::MIAtomList&)));
   }
 }
 
@@ -3039,16 +3039,16 @@ void ModelsTree::addModel(Molecule* model) {
   addModelCrystal(model);
   addChains(model);
 
-  connect(model, SIGNAL(moleculeToBeDeleted(MIMoleculeBase*)),
-          this, SLOT(modelToBeDeleted(MIMoleculeBase*)));
-  connect(model, SIGNAL(residuesToBeDeleted(MIMoleculeBase*,std::vector<RESIDUE*>&)),
-          this, SLOT(residuesToBeDeleted(MIMoleculeBase*,std::vector<RESIDUE*>&)));
-  connect(model, SIGNAL(residuesDeleted(MIMoleculeBase*)),
-          this, SLOT(residuesToBeDeleted(MIMoleculeBase*,std::vector<RESIDUE*>&)));
-  connect(model, SIGNAL(moleculeChanged(MIMoleculeBase*)),
-          this, SLOT(moleculeChanged(MIMoleculeBase*)));
-  connect(model, SIGNAL(atomChanged(MIMoleculeBase*,MIAtomList&)),
-          this, SLOT(atomChanged(MIMoleculeBase*,MIAtomList&)));
+  connect(model, SIGNAL(moleculeToBeDeleted(chemlib::MIMoleculeBase*)),
+          this, SLOT(modelToBeDeleted(chemlib::MIMoleculeBase*)));
+  connect(model, SIGNAL(residuesToBeDeleted(chemlib::MIMoleculeBase*,std::vector<chemlib::RESIDUE*>&)),
+          this, SLOT(residuesToBeDeleted(chemlib::MIMoleculeBase*,std::vector<chemlib::RESIDUE*>&)));
+  connect(model, SIGNAL(residuesDeleted(chemlib::MIMoleculeBase*)),
+          this, SLOT(residuesToBeDeleted(chemlib::MIMoleculeBase*,std::vector<chemlib::RESIDUE*>&)));
+  connect(model, SIGNAL(moleculeChanged(chemlib::MIMoleculeBase*)),
+          this, SLOT(moleculeChanged(chemlib::MIMoleculeBase*)));
+  connect(model, SIGNAL(atomChanged(chemlib::MIMoleculeBase*,chemlib::MIAtomList&)),
+          this, SLOT(atomChanged(chemlib::MIMoleculeBase*,chemlib::MIAtomList&)));
 
   expandItem(item);
 }

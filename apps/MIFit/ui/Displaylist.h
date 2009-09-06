@@ -262,7 +262,7 @@ signals:
   void selectionChanged(Molecule*, chemlib::RESIDUE*, chemlib::MIAtom*);
 
 private slots:
-  void atomsToBeDeleted(chemlib::MIMoleculeBase* model, const std::vector<chemlib::MIAtom*> &atoms);
+  void atomsToBeDeleted(chemlib::MIMoleculeBase* model, const chemlib::MIAtomList &atoms);
   void residuesToBeDeleted(chemlib::MIMoleculeBase* model, std::vector<chemlib::RESIDUE*> &res);
   void moleculeToBeDeleted(chemlib::MIMoleculeBase *model);
   void symmetryToBeCleared(chemlib::MIMoleculeBase *model);

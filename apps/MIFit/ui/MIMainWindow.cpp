@@ -2033,7 +2033,7 @@ void MIMainWindow::createMenus()
   refi_menu = new MIMenu(*this);
   refineResidueAction = refi_menu->Append(ID_REFI_RESIDUE, "R&efine Residue\tCtrl+R", "Real-space refine the last picked residue", false);
   connect(MIFitGeomRefiner(), SIGNAL(isRefiningChanged(bool)),
-          this, SLOT(updateRefiningChanged(bool)));
+          this, SLOT(updateIsRefining(bool)));
   refi_menu->Append(ID_REFI_REGION, "Re&fine Local Region", "Real-space refine the last picked residue and its 2 neighbours", false);
   refi_menu->Append(ID_REFI_RANGE, "Ref&ine Range", "Real-space refine the last 2 picks and the intervening residues", false);
   refi_menu->Append(ID_REFI_MOLECULE, "Refi&ne Molecule", "Real-space refine the entire molecule in all 6 dimensions", false);

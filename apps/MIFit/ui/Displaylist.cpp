@@ -252,13 +252,14 @@ int Displaylist::AddItem(Molecule* node) { //  add a new node in displaylist
     return (0);
   } else {
 
-    connect(node, SIGNAL(atomsToBeDeleted(MIMoleculeBase*,MIAtomList)),
-            this, SLOT(atomsToBeDeleted(chemlib::MIMoleculeBase*,std::vector<chemlib::MIAtom*>)));
-    connect(node, SIGNAL(residuesToBeDeleted(MIMoleculeBase*,std::vector<RESIDUE*>&)),
+    connect(node,
+            SIGNAL(atomsToBeDeleted(chemlib::MIMoleculeBase*,chemlib::MIAtomList)),
+            this, SLOT(atomsToBeDeleted(chemlib::MIMoleculeBase*,chemlib::MIAtomList)));
+    connect(node, SIGNAL(residuesToBeDeleted(chemlib::MIMoleculeBase*,std::vector<chemlib::RESIDUE*>&)),
             this, SLOT(residuesToBeDeleted(chemlib::MIMoleculeBase*,std::vector<chemlib::RESIDUE*>&)));
-    connect(node, SIGNAL(moleculeToBeDeleted(MIMoleculeBase*)),
+    connect(node, SIGNAL(moleculeToBeDeleted(chemlib::MIMoleculeBase*)),
             this, SLOT(moleculeToBeDeleted(chemlib::MIMoleculeBase*)));
-    connect(node, SIGNAL(symmetryToBeCleared(MIMoleculeBase*)),
+    connect(node, SIGNAL(symmetryToBeCleared(chemlib::MIMoleculeBase*)),
             this, SLOT(symmetryToBeCleared(chemlib::MIMoleculeBase*)));
 
     Models.push_back(node);

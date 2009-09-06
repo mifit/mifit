@@ -369,7 +369,7 @@ MIGLWidget::MIGLWidget() : MIEventHandler(MIMainWindow::instance()) {
   }
 
   connect(displaylist, SIGNAL(mapAdded(EMap*)),
-          this, SLOT(mapAdded(EMapBase*)));
+          this, SLOT(mapAdded(EMap*)));
 
   Displaylist::MapList& maps = displaylist->getMaps();
   Displaylist::MapList::iterator mapIter = maps.begin();
@@ -452,21 +452,21 @@ void MIGLWidget::connectToModel(Molecule* model) {
   connect(model, SIGNAL(surfaceChanged(Molecule*)),
           this, SLOT(surfaceChanged(Molecule*)));
 
-  connect(model, SIGNAL(atomChanged(MIMoleculeBase*,MIAtomList&)),
-          this, SLOT(atomChanged(chemlib::MIMoleculeBase*,std::vector<chemlib::MIAtom*>&)));
-  connect(model, SIGNAL(atomsDeleted(MIMoleculeBase*)),
+  connect(model, SIGNAL(atomChanged(chemlib::MIMoleculeBase*,chemlib::MIAtomList&)),
+          this, SLOT(atomChanged(chemlib::MIMoleculeBase*,chemlib::MIAtomList&)));
+  connect(model, SIGNAL(atomsDeleted(chemlib::MIMoleculeBase*)),
           this, SLOT(atomsDeleted(chemlib::MIMoleculeBase*)));
-  connect(model, SIGNAL(moleculeChanged(MIMoleculeBase*)),
+  connect(model, SIGNAL(moleculeChanged(chemlib::MIMoleculeBase*)),
           this, SLOT(modelChanged(chemlib::MIMoleculeBase*)));
 
-  connect(model, SIGNAL(atomsToBeDeleted(MIMoleculeBase*,MIAtomList)),
-          this, SLOT(modelAtomsToBeDeleted(chemlib::MIMoleculeBase*,std::vector<chemlib::MIAtom*>)));
-  connect(model, SIGNAL(residuesToBeDeleted(MIMoleculeBase*,std::vector<RESIDUE*>&)),
+  connect(model, SIGNAL(atomsToBeDeleted(chemlib::MIMoleculeBase*,chemlib::MIAtomList)),
+          this, SLOT(modelAtomsToBeDeleted(chemlib::MIMoleculeBase*,chemlib::MIAtomList)));
+  connect(model, SIGNAL(residuesToBeDeleted(chemlib::MIMoleculeBase*,std::vector<chemlib::RESIDUE*>&)),
           this, SLOT(modelResiduesToBeDeleted(chemlib::MIMoleculeBase*,std::vector<chemlib::RESIDUE*>&)));
-  connect(model, SIGNAL(moleculeToBeDeleted(MIMoleculeBase*)),
+  connect(model, SIGNAL(moleculeToBeDeleted(chemlib::MIMoleculeBase*)),
           this, SLOT(moleculeToBeDeleted(chemlib::MIMoleculeBase*)));
 
-  connect(model, SIGNAL(symmetryToBeCleared(MIMoleculeBase*)),
+  connect(model, SIGNAL(symmetryToBeCleared(chemlib::MIMoleculeBase*)),
           this, SLOT(symmetryToBeCleared(chemlib::MIMoleculeBase*)));
 }
 
@@ -556,7 +556,7 @@ void MIGLWidget::connectToMap(EMapBase* emap) {
           this, SLOT(mapVisibilityChanged(EMapBase*)));
 }
 
-void MIGLWidget::mapAdded(EMapBase* emap) {
+void MIGLWidget::mapAdded(EMap* emap) {
   connectToMap(emap);
 }
 

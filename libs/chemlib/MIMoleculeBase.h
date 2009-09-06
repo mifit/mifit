@@ -251,25 +251,25 @@ public:
 
 signals:
   // sent when a [group of] atoms, but not an entire residue, is deleted
-  void atomsToBeDeleted(MIMoleculeBase*, const MIAtomList&);
-  void atomsDeleted(MIMoleculeBase*);
+  void atomsToBeDeleted(chemlib::MIMoleculeBase*, const chemlib::MIAtomList&);
+  void atomsDeleted(chemlib::MIMoleculeBase*);
 
   // sent when residue[s] deleted
-  void residuesToBeDeleted(MIMoleculeBase*, std::vector<RESIDUE*>&);
-  void residuesDeleted(MIMoleculeBase*);
+  void residuesToBeDeleted(chemlib::MIMoleculeBase*, std::vector<chemlib::RESIDUE*>&);
+  void residuesDeleted(chemlib::MIMoleculeBase*);
 
   // sent when molecule is deleted
-  void moleculeToBeDeleted(MIMoleculeBase*);
-  void moleculeDeleted(MIMoleculeBase*);
+  void moleculeToBeDeleted(chemlib::MIMoleculeBase*);
+  void moleculeDeleted(chemlib::MIMoleculeBase*);
 
   // sent when symmetry residues are about to be cleared
-  void symmetryToBeCleared(MIMoleculeBase*);
+  void symmetryToBeCleared(chemlib::MIMoleculeBase*);
 
   // sent when atoms shown/hidden, bvalue/occ changed, or color changed
-  void atomChanged(MIMoleculeBase*, MIAtomList&);
+  void atomChanged(chemlib::MIMoleculeBase*, chemlib::MIAtomList&);
 
   // sent when Build called, res inserted, id changed, renumber
-  void moleculeChanged(MIMoleculeBase*);
+  void moleculeChanged(chemlib::MIMoleculeBase*);
 
 public:
   std::vector<Bond> hbonds;

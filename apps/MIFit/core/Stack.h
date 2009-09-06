@@ -79,7 +79,7 @@ public:
 
   // note: in practice these slots are called by CMolwView, not directly by the signal
   void residuesToBeDeleted(chemlib::MIMoleculeBase* model, std::vector<chemlib::RESIDUE*>& residues);
-  void atomsToBeDeleted(chemlib::MIMoleculeBase* model, const std::vector<chemlib::MIAtom*>& atoms);
+  void atomsToBeDeleted(chemlib::MIMoleculeBase* model, const chemlib::MIAtomList& atoms);
   void moleculeToBeDeleted(chemlib::MIMoleculeBase* model);
 
 signals:

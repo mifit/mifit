@@ -13,6 +13,7 @@ class QTreeWidgetItem;
  * Class to control the user interface view of jobs.
  */
 class JobsView : public QWidget {
+  Q_OBJECT
 
   JobsTree* jobsTree;
   bool listeningToBatchJobManager;

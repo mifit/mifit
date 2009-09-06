@@ -217,7 +217,7 @@ protected:
 
 public slots:
   void ConnectTo(chemlib::MIMoleculeBase *mol);
-  void atomsToBeDeleted(chemlib::MIMoleculeBase* model, const std::vector<chemlib::MIAtom*> &atoms);
+  void atomsToBeDeleted(chemlib::MIMoleculeBase* model, const chemlib::MIAtomList &atoms);
   void residuesToBeDeleted(chemlib::MIMoleculeBase* model, std::vector<chemlib::RESIDUE*> &res);
   void moleculeToBeDeleted(chemlib::MIMoleculeBase* molecule);
   void moleculeDeleted(chemlib::MIMoleculeBase* molecule);

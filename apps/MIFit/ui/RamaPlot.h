@@ -1,12 +1,13 @@
 #ifndef mifit_ui_RamaPlot_h
 #define mifit_ui_RamaPlot_h
 
+#include <chemlib/MIAtom_fwd.h>
+
 #include "graphlib.h"
 
 namespace chemlib {
 class RESIDUE;
 class MIMoleculeBase;
-class MIAtom;
 }
 
 class GraphWindow;
@@ -46,7 +47,7 @@ public:
 
 public slots:
   // object changed slots
-  void atomChanged(chemlib::MIMoleculeBase* mol, std::vector<chemlib::MIAtom*>& atom);
+  void atomChanged(chemlib::MIMoleculeBase* mol, chemlib::MIAtomList& atom);
   void moleculeChanged(chemlib::MIMoleculeBase* mol);
 
   // common slot for residuesDeleted, atomsDeleted

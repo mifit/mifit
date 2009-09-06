@@ -674,19 +674,19 @@ public slots:
   void modelAdded(Molecule* model);
   void currentModelChanged(Molecule* oldModel, Molecule* newModel);
   void connectToMap(EMapBase* map);
-  void mapAdded(EMapBase* map);
+  void mapAdded(EMap* map);
   void annotationAdded(Molecule* model, Annotation* annotation);
   void annotationDeleted(Molecule* model);
   void annotationChanged(Annotation* annotation);
   void atomLabelChanged(Molecule* model, ATOMLABEL* label);
   void surfaceChanged(Molecule* model);
-  void atomChanged(chemlib::MIMoleculeBase* model, std::vector<chemlib::MIAtom*>& atom);
+  void atomChanged(chemlib::MIMoleculeBase* model, chemlib::MIAtomList& atom);
   void atomsDeleted(chemlib::MIMoleculeBase* model);
   void modelChanged(chemlib::MIMoleculeBase* model);
   void mapContourLevelsChanged(EMapBase* map);
   void mapVisibilityChanged(EMapBase* map);
 
-  void modelAtomsToBeDeleted(chemlib::MIMoleculeBase* model, const std::vector<chemlib::MIAtom*> &atoms);
+  void modelAtomsToBeDeleted(chemlib::MIMoleculeBase* model, const chemlib::MIAtomList &atoms);
   void modelResiduesToBeDeleted(chemlib::MIMoleculeBase* model, std::vector<chemlib::RESIDUE*> &res);
   void moleculeToBeDeleted(chemlib::MIMoleculeBase *model);
 

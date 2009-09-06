@@ -1548,14 +1548,14 @@ int MIMolOpt::applyderivatives() {
 }
 
 void MIMolOpt::ConnectTo(MIMoleculeBase *mol) {
-  connect(mol, SIGNAL(moleculeDeleted(MIMoleculeBase*)),
+  connect(mol, SIGNAL(moleculeDeleted(chemlib::MIMoleculeBase*)),
           this, SLOT(moleculeDeleted(chemlib::MIMoleculeBase*)));
-  connect(mol, SIGNAL(moleculeToBeDeleted(MIMoleculeBase*)),
+  connect(mol, SIGNAL(moleculeToBeDeleted(chemlib::MIMoleculeBase*)),
           this, SLOT(moleculeToBeDeleted(chemlib::MIMoleculeBase*)));
-  connect(mol, SIGNAL(residuesToBeDeleted(MIMoleculeBase*,std::vector<RESIDUE*>&)),
+  connect(mol, SIGNAL(residuesToBeDeleted(chemlib::MIMoleculeBase*,std::vector<chemlib::RESIDUE*>&)),
           this, SLOT(residuesToBeDeleted(chemlib::MIMoleculeBase*,std::vector<chemlib::RESIDUE*>&)));
-  connect(mol, SIGNAL(atomsToBeDeleted(MIMoleculeBase*,MIAtomList)),
-          this, SLOT(atomsToBeDeleted(chemlib::MIMoleculeBase*,std::vector<chemlib::MIAtom*>)));
+  connect(mol, SIGNAL(atomsToBeDeleted(chemlib::MIMoleculeBase*,chemlib::MIAtomList)),
+          this, SLOT(atomsToBeDeleted(chemlib::MIMoleculeBase*,chemlib::MIAtomList)));
 }
 
 

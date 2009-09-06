@@ -1,3 +1,5 @@
+#include "JobsView.h"
+
 #include <QApplication>
 #include <QVBoxLayout>
 
@@ -24,7 +26,6 @@
 #include <images/jobOk.xpm>
 #include <images/jobError.xpm>
 
-#include "JobsView.h"
 
 
 
