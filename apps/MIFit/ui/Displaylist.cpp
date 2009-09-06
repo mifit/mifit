@@ -45,7 +45,9 @@ Displaylist::~Displaylist() {
   // delete all items in list
   std::list<Molecule*>::iterator node;
   for (node = Models.begin(); node != Models.end(); node++) {
-    delete *node;
+    Molecule* m = *node;
+    m->disconnect(this);
+    delete m;
   }
   for (unsigned int i = 0; i < Maps.size(); i++) {
     delete Maps[i];
