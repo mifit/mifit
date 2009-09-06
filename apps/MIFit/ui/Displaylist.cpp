@@ -8,7 +8,7 @@
 #include <chemlib/RESIDUE_.h>
 #include <map/maplib.h>
 #include "core/corelib.h"
-#include "wxdr/MIDialog.h"
+#include "ui/MIDialog.h"
 
 #include "EMap.h"
 #include "id.h"

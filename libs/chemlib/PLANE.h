@@ -1,6 +1,7 @@
 #ifndef MI_PLANE_H
 #define MI_PLANE_H
 
+#include <cstring>
 #include "model.h"
 
 namespace chemlib {

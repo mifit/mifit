@@ -67,7 +67,7 @@
 #include "EMap.h"
 #include "GLOverviewCanvas.h"
 #include "GLRenderer.h"
-#include "wxdr/MIDialog.h"
+#include "ui/MIDialog.h"
 #include "MIHistory.h"
 #include "MIMenu.h"
 #include "MIMainWindow.h"

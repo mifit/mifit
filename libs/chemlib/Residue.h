@@ -1,9 +1,10 @@
 #ifndef RESIDUE_H
 #define RESIDUE_H
 
+#include <algorithm>
+#include <map>
 #include "MIAtom_fwd.h"
 #include "Bond.h"
-#include <map>
 
 namespace chemlib {
 

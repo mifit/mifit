@@ -34,7 +34,7 @@
 #include "MIQTreeWidget.h"
 
 #include "uitest.h"
-#include "wxdr/MIDialog.h"
+#include "ui/MIDialog.h"
 
 #include "surf.h"
 

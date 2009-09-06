@@ -1,0 +1,28 @@
+/*
+-----BEGIN QCMOD-----
+name: Boost
+arg: boost=[path],Directory where Boost is installed.
+-----END QCMOD-----
+*/
+class qc_boost : public ConfObj
+{
+public:
+	qc_boost(Conf *c) : ConfObj(c) {}
+	QString name() const { return "Boost"; }
+	QString shortname() const { return "boost"; }
+	bool exec()
+	{
+		QString s;
+		QString var;
+		var = qc_getenv("QC_BOOST");
+		QStringList dirs;
+		if (!var.isEmpty())
+		{
+			dirs += var;
+			conf->extra += QString("BOOST = %1\n").arg(var);
+		}
+		if (!conf->findHeader("boost/config.hpp", dirs, &s))
+                        return false;
+		return true;
+	}
+};

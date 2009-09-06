@@ -1,13 +1,13 @@
 //TODO: move to ui directory?
 
 #include "GLDrawingCanvas.h"
-#include "../ui/id.h"
-#include "../ui/MIHistory.h"
-#include "../wxdr/MIDialog.h"
+#include "ui/id.h"
+#include "ui/MIHistory.h"
+#include "ui/MIDialog.h"
 
-#include "../ui/MIMenuBar.h"
-#include "../ui/MIMenu.h"
-#include "../ui/MIEventHandlerMacros.h"
+#include "ui/MIMenuBar.h"
+#include "ui/MIMenu.h"
+#include "ui/MIEventHandlerMacros.h"
 
 #include <QPrinter>
 #include <QPrintDialog>

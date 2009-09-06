@@ -9,7 +9,7 @@
 #include <nongui/nonguilib.h>
 #include <util/utillib.h>
 #include "ui/uilib.h"
-#include "wxdr/MIDialog.h"
+#include "ui/MIDialog.h"
 
 #include "BatchJob.h"
 #include "OpenJobResults.h"

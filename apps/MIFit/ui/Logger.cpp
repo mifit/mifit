@@ -4,7 +4,7 @@
 #include <nongui/nonguilib.h>
 #include <util/utillib.h>
 
-#include "wxdr/MIDialog.h"
+#include "ui/MIDialog.h"
 #include "MIMainWindow.h"
 
 void Logger::log(const char* format, ...) {

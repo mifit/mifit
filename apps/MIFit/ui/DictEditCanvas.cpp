@@ -42,8 +42,8 @@
 
 #include "molw.h"
 #include "uitest.h"
-#include "wxdr/MIDialog.h"
-#include "wxdr/DictEditDialog.h"
+#include "ui/MIDialog.h"
+#include "ui/DictEditDialog.h"
 #include "MIMenuBar.h"
 #include "MIMenu.h"
 #include "MIEventHandlerMacros.h"

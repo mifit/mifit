@@ -22,8 +22,6 @@ mac {
 include(../ui/ui.pri)
 include(../figurelib/figurelib.pri)
 include(../jobs/jobs.pri)
-include(../wxdr/wxdr.pri)
-LIBS += -lui
 include(../core/core.pri)
 include($${libsDir}/nongui/nongui.pri)
 include($${libsDir}/ligand/ligand.pri)

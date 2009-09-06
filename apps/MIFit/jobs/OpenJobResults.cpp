@@ -4,7 +4,7 @@
 #include "ui/uilib.h"
 #include "ui/MIMainWindow.h"
 
-#include "wxdr/MIDialog.h"
+#include "ui/MIDialog.h"
 
 #include <QFileInfo>
 #include <QDateTime>

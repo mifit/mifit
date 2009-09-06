@@ -7,7 +7,7 @@
 #include <chemlib/chemlib.h>
 #include <chemlib/RESIDUE_.h>
 
-#include "wxdr/MIDialog.h"
+#include "ui/MIDialog.h"
 
 #include "Displaylist.h"
 #include "DisplayView.h"

@@ -1,7 +1,7 @@
 #include <nongui/nonguilib.h>
 #include <chemlib/chemlib.h>
 #include <map/maplib.h>
-#include "wxdr/MIDialog.h"
+#include "ui/MIDialog.h"
 
 #include "core/corelib.h"
 #include "EMap.h"

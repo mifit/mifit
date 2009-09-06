@@ -7,14 +7,14 @@
 #include <conflib/conflib.h>
 #include <map/maplib.h>
 #include <util/utillib.h>
-#include <jobs/jobslib.h>
+#include "jobs/jobslib.h"
 
 #include "tools.h"
 #include "macafxwin.h"
 #include "id.h"
 #include "Application.h"
 #include "uitest.h"
-#include "wxdr/MIDialog.h"
+#include "ui/MIDialog.h"
 #include "MIMainWindow.h"
 #include "MIEventHandlerMacros.h"
 #include "MIGLWidget.h"

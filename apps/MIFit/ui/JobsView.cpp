@@ -15,7 +15,7 @@
 #include "MIQTreeWidget.h"
 
 #include "uitest.h"
-#include "wxdr/MIDialog.h"
+#include "ui/MIDialog.h"
 #include "id.h"
 
 #include <images/jobsList.xpm>

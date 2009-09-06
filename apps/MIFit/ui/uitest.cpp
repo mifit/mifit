@@ -10,7 +10,7 @@
 
 #include "Displaylist.h"
 #include "uitest.h"
-#include "wxdr/MIDialog.h"
+#include "ui/MIDialog.h"
 #include "MIHistory.h"
 #include "id.h"
 

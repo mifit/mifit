@@ -1,5 +1,7 @@
 #ifndef MI_CHIRAL_H
 #define MI_CHIRAL_H
+
+#include <cstring>
 #include "model.h"
 
 namespace chemlib {

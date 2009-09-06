@@ -12,7 +12,7 @@
 #include "uitest.h"
 
 #include "DictEditCanvas.h"
-#include "wxdr/DictEditDialog.h"
+#include "ui/DictEditDialog.h"
 
 #include "MIMenuBar.h"
 #include "MIMenu.h"

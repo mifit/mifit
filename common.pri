@@ -7,7 +7,7 @@ libsDir = $$TOP_SRCDIR/libs
 
 CONFIG -= debug release
 CONFIG += release
-CONFIG += create_prl link_prl depend_prl
+#CONFIG += create_prl link_prl depend_prl
 
 CONFIG(debug, debug|release) {
   DEFINES += DEBUG

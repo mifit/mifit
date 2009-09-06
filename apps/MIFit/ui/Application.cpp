@@ -17,7 +17,7 @@
 #include "DictEditCanvas.h"
 
 #include "uitest.h"
-#include "wxdr/MIDialog.h"
+#include "ui/MIDialog.h"
 #include <util/FileIo.h>
 #include "MIHistory.h"
 #include "MIMainWindow.h"

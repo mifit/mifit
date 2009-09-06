@@ -17,27 +17,26 @@
 #include <ligand/ligandlib.h>
 #include <map/maplib.h>
 #include <nongui/nonguilib.h>
-#include "wxdr/wxdrlib.h"
 
 #include "DictEditCanvas.h"
 #include "DisplayView.h"
 #include "EMap.h"
 #include "Displaylist.h"
 
-#include "wxdr/ManageCrystals.h"
+#include "ui/ManageCrystals.h"
 #include "ModelsView.h"
 #include "MIMolIO.h"
 #include "molw.h"
 #include "MIHistory.h"
 
 #include "uitest.h"
-#include "wxdr/MIDialog.h"
+#include "ui/MIDialog.h"
 
 //#include "preferences/MapPreferencesPanel.h"
 //#include "preferences/EnvironmentPreferencesPanel.h"
 //#include "preferences/GeneralPreferencesPanel.h"
 //#include "preferences/PreferencesDialog.h"
-#include "wxdr/PreferencesDialog.h"
+#include "ui/PreferencesDialog.h"
 
 #include "MIMainWindow.h"
 #include "MIMenu.h"
@@ -45,7 +44,6 @@
 #include "MIToolBar.h"
 #include "MIGLWidget.h"
 
-#include "wxdr/MIDialog.h" // for file dialog
 #include "MIHistory.h"
 
 #include "Application.h"
@@ -60,7 +58,7 @@
 
 
 
-#include "wxdr/DictEditDialog.h"
+#include "ui/DictEditDialog.h"
 
 #include "MIEventHandlerMacros.h"
 #include "core/Version.h"
