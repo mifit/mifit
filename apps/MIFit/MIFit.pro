@@ -3,4 +3,21 @@ include(../../common.pri)
 
 TEMPLATE = subdirs
 
-SUBDIRS += core jobs figurelib wxdr ui main
+SUBDIRS += part_core part_jobs part_figurelib part_wxdr part_ui part_main
+
+part_core.subdir = core
+
+part_jobs.subdir = jobs
+part_jobs.depends = core
+
+part_figurelib.subdir = figurelib
+part_figurelib.depends = core
+
+part_wxdr.subdir = wxdr
+part_wxdr.depends = core
+
+part_ui.subdir = ui
+part_ui.depends = core
+
+part_main.subdir = main
+part_main.depends += part_core part_jobs part_figurelib part_wxdr part_ui

@@ -11,9 +11,6 @@ DESTDIR = ../../..
 target.path = $DESTDIR
 INSTALLS += target
 
-CONFIG += no_lflags_merge
-CONFIG -= staticlib
-
 win32 {
   RC_FILE=mifit.rc
 }
@@ -41,8 +38,8 @@ include($${libsDir}/jacgrid/jacgrid.pri)
 include($${libsDir}/umtz/umtz.pri)
 
 win32 {
-  LIBS -= -lglu32 -lopengl32 -llibboost_signals-mgw34-mt
-  LIBS += -lglu32 -lopengl32 -llibboost_signals-mgw34-mt
+  LIBS -= -lglu32 -lopengl32
+  LIBS += -lglu32 -lopengl32
 }
 
 include(../../../rpath.pri)
