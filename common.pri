@@ -1,7 +1,5 @@
+include(conf.pri)
 TOP_SRCDIR = $$PWD
-win32 {
-  BoostDir = $$TOP_SRCDIR/../external/boost_1_39_0
-}
 
 libsDir = $$TOP_SRCDIR/libs
 
@@ -40,7 +38,9 @@ USE_SHARED_LIBS {
   }
 }
 
-INCLUDEPATH += $$BoostDir
+!isEmpty(BOOST) {
+  INCLUDEPATH += $$BOOST
+}
 
 win32 {
   DEFINES -= UNICODE
