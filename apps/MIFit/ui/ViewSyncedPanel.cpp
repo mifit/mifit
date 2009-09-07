@@ -14,10 +14,10 @@ ViewSyncedPanel::ViewSyncedPanel(QWidget* parent) : QWidget(parent) {
   createDefaultNullPanel();
   setViewPanel(NULL);
 
-  // TODO Create and connect to singleton object
-//  MIGLWidget::viewActivated.connect(boost::bind(&ViewSyncedPanel::viewActivated, this, _1));
-//  MIGLWidget::viewDeactivated.connect(boost::bind(&ViewSyncedPanel::viewDeactivated, this, _1));
-
+  connect(ViewController::instance(), SIGNAL(viewActivated(MIGLWidget*)),
+          this, SLOT(viewActivated(MIGLWidget*)));
+  connect(ViewController::instance(), SIGNAL(viewDeactivated(MIGLWidget*)),
+          this, SLOT(viewDeactivated(MIGLWidget*)));
 }
 
 ViewSyncedPanel::~ViewSyncedPanel() {

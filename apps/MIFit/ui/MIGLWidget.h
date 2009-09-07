@@ -665,10 +665,6 @@ public:
 
   void moveTo(float x, float y, float z);
 
-signals:
-  void viewActivated(MIGLWidget*);
-  void viewDeactivated(MIGLWidget*);
-
 public slots:
   void connectToModel(Molecule* model);
   void modelAdded(Molecule* model);
@@ -1515,5 +1511,19 @@ inline bool MIGLWidget::IsDrawing() {
   return is_drawing;
 }
 
+class ViewController : public QObject {
+  Q_OBJECT
+
+  friend class MIGLWidget;
+
+  ViewController() : QObject() {}
+
+public:
+  static ViewController* instance();
+
+signals:
+  void viewActivated(MIGLWidget* view);
+  void viewDeactivated(MIGLWidget* view);
+};
 
 #endif

@@ -400,7 +400,7 @@ MIGLWidget::MIGLWidget() : MIEventHandler(MIMainWindow::instance()) {
 MIGLWidget::~MIGLWidget() {
 
   MIGetHistory()->RemoveFrame(this);
-  viewDeactivated(this);
+  ViewController::instance()->viewDeactivated(this);
 
   delete Models;
 
@@ -595,7 +595,7 @@ void MIGLWidget::OnActivated() {
   if (h && h->IsRecording() && !h->IsRecordingPaused()) {
     h->ActivateFrame(this);
   }
-  viewActivated(this);
+  ViewController::instance()->viewActivated(this);
   Molecule* model = GetDisplaylist()->GetCurrentModel();
   if (model != NULL) {
     MIMainWindowMiddleFooter(model->pathname.c_str());
@@ -9208,7 +9208,7 @@ void MIGLWidget::closeEvent(QCloseEvent *event) {
   event->accept();
 
   MIGetHistory()->RemoveFrame(this);
-  viewDeactivated(this);
+  ViewController::instance()->viewDeactivated(this);
 
 }
 
@@ -10738,5 +10738,10 @@ void MIGLWidget::updateSolidsurfMenu() {
 
 QAction* MIGLWidget::solidSurfMenuAction() const {
   return solidsurf_popup_menu->menuAction();
+}
+
+ViewController* ViewController::instance() {
+  static ViewController theInstance;
+  return &theInstance;
 }
 

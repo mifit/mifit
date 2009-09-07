@@ -22,11 +22,12 @@ protected:
   void setViewPanel(MIGLWidget* view);
   bool panelForViewExists(MIGLWidget* view);
 
-  virtual void viewActivated(MIGLWidget* view);
-  virtual void viewDeactivated(MIGLWidget* view);
-
   virtual QWidget* createPanelForView(MIGLWidget* view, QWidget* parent) = 0;
   virtual void destroyContentsForView(MIGLWidget* view, QWidget* panel) = 0;
+
+protected slots:
+  virtual void viewActivated(MIGLWidget* view);
+  virtual void viewDeactivated(MIGLWidget* view);
 
 public:
 
