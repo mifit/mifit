@@ -3,9 +3,9 @@ TOP_SRCDIR = $$PWD
 
 libsDir = $$TOP_SRCDIR/libs
 
-CONFIG -= debug release
-CONFIG += release
-#CONFIG += create_prl link_prl depend_prl
+INCLUDEPATH *= $$libsDir
+
+MOC_DIR = moc
 
 CONFIG(debug, debug|release) {
   DEFINES += DEBUG

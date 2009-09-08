@@ -1,10 +1,7 @@
-
-include(../../common.pri)
+include(../libs.pri)
 
 TEMPLATE = lib
-CONFIG += staticlib
 CONFIG -= qt moc
-DESTDIR=..
 
 # Input
 HEADERS += jacgrid.h atom.h cell_table.h surface.h grid.h plane.h

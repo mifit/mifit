@@ -1,8 +1,5 @@
-
-include(../../common.pri)
-include(../chemlib/chemlib.pri)
+include(../libs.pri)
 
 TEMPLATE = lib
 SOURCES = *.cpp
 HEADERS = *.h
-DESTDIR = ..

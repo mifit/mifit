@@ -1,13 +1,9 @@
-
-include(../../common.pri)
-include(../math/math.pri)
+include(../libs.pri)
 
 TEMPLATE = lib
 TARGET = miopengl
 DEPENDPATH += interact zlib
-INCLUDEPATH += . zlib 
-CONFIG += staticlib
-DESTDIR=..
+INCLUDEPATH += zlib 
 
 # Input
 HEADERS += Arc.h \

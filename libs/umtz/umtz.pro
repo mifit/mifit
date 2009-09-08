@@ -1,10 +1,7 @@
-
-include(../../common.pri)
+include(../libs.pri)
 
 TEMPLATE = lib
-CONFIG += staticlib
 CONFIG -= qt moc
-DESTDIR=..
 
 HEADERS = *.h
 SOURCES = mmtzlib.c umtzlib.c library.c

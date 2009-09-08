@@ -1,8 +1,6 @@
-
-include(../../common.pri)
+include(../libs.pri)
 
 TEMPLATE = lib
 SOURCES = *.cpp
 HEADERS = *.h
 TARGET = miutil
-DESTDIR = ..

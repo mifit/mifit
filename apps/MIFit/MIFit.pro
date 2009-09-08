@@ -1,5 +1,4 @@
-
-include(../../common.pri)
+include(MIFit.pri)
 
 TEMPLATE = subdirs
 

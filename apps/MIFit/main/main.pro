@@ -1,10 +1,7 @@
-
-include(../../../common.pri)
 include(../MIFit.pri)
 
 TEMPLATE = app
 TARGET = MIFit
-INCLUDEPATH += .
 DESTDIR = ../../..
 
 # to copy executable from build dir to source distribution dir
@@ -19,21 +16,22 @@ mac {
   ICON=../images/mifit.icns
 }
 
-include(../ui/ui.pri)
-include(../figurelib/figurelib.pri)
-include(../jobs/jobs.pri)
-include(../core/core.pri)
-include($${libsDir}/nongui/nongui.pri)
-include($${libsDir}/ligand/ligand.pri)
-include($${libsDir}/map/map.pri)
-include($${libsDir}/molopt/molopt.pri)
-include($${libsDir}/conflib/conflib.pri)
-include($${libsDir}/chemlib/chemlib.pri)
-include($${libsDir}/opengl/opengl.pri)
-include($${libsDir}/math/math.pri)
-include($${libsDir}/util/util.pri)
-include($${libsDir}/jacgrid/jacgrid.pri)
-include($${libsDir}/umtz/umtz.pri)
+INCLUDEPATH *= ..
+LIBS *= -L..
+appLibs = ui figurelib jobs core
+for(l, appLibs) {
+  LIBS *= -l$$qtLibraryTarget($${l})
+  PRE_TARGETDEPS += ../lib$$qtLibraryTarget($${l})$$LIB_EXTENSION
+}
+
+INCLUDEPATH *= ../../../libs
+LIBS *= -L../../../libs
+
+otherLibs = nongui ligand map molopt conflib chemlib miopengl mimath miutil jacgrid umtz
+for(l, otherLibs) {
+  LIBS *= -l$$qtLibraryTarget($${l})
+  PRE_TARGETDEPS += ../../../libs/lib$$qtLibraryTarget($${l})$$LIB_EXTENSION
+}
 
 win32 {
   LIBS -= -lglu32 -lopengl32

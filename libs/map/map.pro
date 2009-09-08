@@ -1,8 +1,5 @@
-
-include(../../common.pri)
-include(../nongui/nongui.pri)
+include(../libs.pri)
 
 TEMPLATE = lib
 SOURCES = *.cpp
 HEADERS = *.h
-DESTDIR = ..
