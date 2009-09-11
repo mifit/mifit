@@ -475,11 +475,13 @@ void RamaPlotMgr::Update(MIMoleculeBase* mol,
                          std::string modelname) {
 
   if (_mol != mol) {
-    disconnect(_mol, SIGNAL(atomChanged(MIMoleculeBase*,MIAtomList&)));
-    disconnect(_mol, SIGNAL(moleculeChanged(MIMoleculeBase*)));
-    disconnect(_mol, SIGNAL(moleculeDeleted(MIMoleculeBase*)));
-    disconnect(_mol, SIGNAL(residuesDeleted(MIMoleculeBase*)));
-    disconnect(_mol, SIGNAL(atomsDeleted(MIMoleculeBase*)));
+    if (_mol) {
+      disconnect(_mol, SIGNAL(atomChanged(chemlib::MIMoleculeBase*,chemlib::MIAtomList&)));
+      disconnect(_mol, SIGNAL(moleculeChanged(chemlib::MIMoleculeBase*)));
+      disconnect(_mol, SIGNAL(moleculeDeleted(chemlib::MIMoleculeBase*)));
+      disconnect(_mol, SIGNAL(residuesDeleted(chemlib::MIMoleculeBase*)));
+      disconnect(_mol, SIGNAL(atomsDeleted(chemlib::MIMoleculeBase*)));
+    }
 
     if (MIMoleculeBase::isValid(mol)) {
       connect(mol, SIGNAL(atomChanged(chemlib::MIMoleculeBase*,chemlib::MIAtomList&)),
@@ -489,7 +491,7 @@ void RamaPlotMgr::Update(MIMoleculeBase* mol,
       connect(mol, SIGNAL(moleculeDeleted(chemlib::MIMoleculeBase*)),
               this, SLOT(moleculeDeleted(chemlib::MIMoleculeBase*)));
       connect(mol, SIGNAL(residuesDeleted(chemlib::MIMoleculeBase*)),
-              this, SLOT(residuesDeleted(chemlib::MIMoleculeBase*)));
+              this, SLOT(modelObjectDeleted(chemlib::MIMoleculeBase*)));
       connect(mol, SIGNAL(atomsDeleted(chemlib::MIMoleculeBase*)),
               this, SLOT(modelObjectDeleted(chemlib::MIMoleculeBase*)));
     }

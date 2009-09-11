@@ -577,15 +577,15 @@ void DisplayTree::addModel(Molecule* model) {
   addAtomLabels(model);
   addSurface(model);
 
-  connect(model, SIGNAL(moleculeToBeDeleted(MIMoleculeBase*)),
-          this, SLOT(modelToBeDeleted(MIMoleculeBase*)));
+  connect(model, SIGNAL(moleculeToBeDeleted(chemlib::MIMoleculeBase*)),
+          this, SLOT(modelToBeDeleted(chemlib::MIMoleculeBase*)));
   connect(model, SIGNAL(annotationAdded(Molecule*,Annotation*)),
           this, SLOT(annotationAdded(Molecule*,Annotation*)));
   connect(model, SIGNAL(annotationToBeDeleted(Molecule*,Annotation*)),
           this, SLOT(annotationToBeDeleted(Molecule*,Annotation*)));
   connect(model, SIGNAL(atomLabelAdded(Molecule*,ATOMLABEL*)),
           this, SLOT(atomLabelAdded(Molecule*,ATOMLABEL*)));
-  connect(model, SIGNAL(atomLabelToBeDeleted(Molecule*,AtomLabelList)),
+  connect(model, SIGNAL(atomLabelToBeDeleted(Molecule*,Molecule::AtomLabelList)),
           this, SLOT(atomLabelToBeDeleted(Molecule*,Molecule::AtomLabelList)));
   connect(model, SIGNAL(atomLabelChanged(Molecule*,ATOMLABEL*)),
           this, SLOT(atomLabelChanged(Molecule*,ATOMLABEL*)));

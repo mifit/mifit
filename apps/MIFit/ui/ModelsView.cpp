@@ -218,7 +218,7 @@ public:
   bool RandomTest();
 
 private slots:
-  void atomChanged(MIMoleculeBase* model, MIAtomList& atom);
+  void atomChanged(chemlib::MIMoleculeBase* model, chemlib::MIAtomList& atom);
   void atomsToBeDeleted(chemlib::MIMoleculeBase* model, const chemlib::MIAtomList& atoms);
 
   void OnItemClicked(QTreeWidgetItem *item, int column); // single click
@@ -360,13 +360,13 @@ void AtomsTree::atomsToBeDeleted(MIMoleculeBase*, const MIAtomList& atoms) {
 
 void AtomsTree::setModel(Molecule* model) {
   if (this->model != NULL) {
-    disconnect(this->model, SIGNAL(atomChanged(MIMoleculeBase*,MIAtomList&)));
+    disconnect(this->model, SIGNAL(atomChanged(chemlib::MIMoleculeBase*,chemlib::MIAtomList&)));
     disconnect(this->model, SIGNAL(atomsToBeDeleted(chemlib::MIMoleculeBase*,chemlib::MIAtomList)));
   }
   this->model = model;
   if (model != NULL) {
-    connect(model, SIGNAL(atomChanged(MIMoleculeBase*,MIAtomList&)),
-            this, SLOT(atomChanged(MIMoleculeBase*,MIAtomList&)));
+    connect(model, SIGNAL(atomChanged(chemlib::MIMoleculeBase*,chemlib::MIAtomList&)),
+            this, SLOT(atomChanged(chemlib::MIMoleculeBase*,chemlib::MIAtomList&)));
     connect(model, SIGNAL(atomsToBeDeleted(chemlib::MIMoleculeBase*,chemlib::MIAtomList)),
             this, SLOT(atomsToBeDeleted(chemlib::MIMoleculeBase*,chemlib::MIAtomList)));
   }
@@ -803,8 +803,8 @@ public:
   bool RandomTest();
 
 private slots:
-  void residuesToBeDeleted(MIMoleculeBase* model, std::vector<RESIDUE*>& residues);
-  void atomChanged(MIMoleculeBase* model, MIAtomList& atoms);
+  void residuesToBeDeleted(chemlib::MIMoleculeBase* model, std::vector<chemlib::RESIDUE*>& residues);
+  void atomChanged(chemlib::MIMoleculeBase* model, chemlib::MIAtomList& atoms);
 
   void OnItemClicked(QTreeWidgetItem *item, int column); // single click
   void OnItemActivated(QTreeWidgetItem *item, int column); // double click
@@ -1678,19 +1678,19 @@ public:
 
 private slots:
   void modelAdded(Molecule* model);
-  void moleculeChanged(MIMoleculeBase* model);
-  void atomChanged(MIMoleculeBase* model, MIAtomList& atoms);
-  void modelToBeDeleted(MIMoleculeBase* model);
+  void moleculeChanged(chemlib::MIMoleculeBase* model);
+  void atomChanged(chemlib::MIMoleculeBase* model, chemlib::MIAtomList& atoms);
+  void modelToBeDeleted(chemlib::MIMoleculeBase* model);
   void currentModelChanged(Molecule* oldModel, Molecule* newModel);
   void mapAdded(EMap* model);
   void mapToBeDeleted(EMap* model);
   void currentMapChanged(EMap* oldModel, EMap* newModel);
   void mapFftRecalculated(EMap* map);
-  void residuesToBeDeleted(MIMoleculeBase* model, std::vector<RESIDUE*>& residues);
-  void residuesDeleted(MIMoleculeBase* model);
+  void residuesToBeDeleted(chemlib::MIMoleculeBase* model, std::vector<chemlib::RESIDUE*>& residues);
+  void residuesDeleted(chemlib::MIMoleculeBase* model);
   void mapHeaderChanged(CMapHeaderBase* mapHeader);
-  void focusResidueChanged(RESIDUE* residue);
-  void selectionChanged(Molecule* model, RESIDUE* residue, MIAtom* atom);
+  void focusResidueChanged(chemlib::RESIDUE* residue);
+  void selectionChanged(Molecule* model, chemlib::RESIDUE* residue, chemlib::MIAtom* atom);
 
 public:
   bool HandleHistory(MIData& data);
@@ -2893,7 +2893,7 @@ void ModelsTree::setView(MIGLWidget* view) {
   }
   this->view = view;
   connect(view, SIGNAL(focusResidueChanged(chemlib::RESIDUE*)),
-          this, SLOT(focusResidueChanged(RESIDUE*)));
+          this, SLOT(focusResidueChanged(chemlib::RESIDUE*)));
   addModels(displaylist());
   addMaps(displaylist());
   solidSurfMenu->clear();
@@ -3001,7 +3001,7 @@ void ModelsTree::addModels(Displaylist* displaylist) {
   connect(displaylist, SIGNAL(currentMoleculeChanged(Molecule*,Molecule*)),
           this, SLOT(currentModelChanged(Molecule*,Molecule*)));
   connect(displaylist, SIGNAL(selectionChanged(Molecule*,chemlib::RESIDUE*,chemlib::MIAtom*)),
-          this, SLOT(selectionChanged(Molecule*,RESIDUE*,MIAtom*)));
+          this, SLOT(selectionChanged(Molecule*,chemlib::RESIDUE*,chemlib::MIAtom*)));
 }
 
 void ModelsTree::addMaps(Displaylist* displaylist) {
@@ -3044,7 +3044,7 @@ void ModelsTree::addModel(Molecule* model) {
   connect(model, SIGNAL(residuesToBeDeleted(chemlib::MIMoleculeBase*,std::vector<chemlib::RESIDUE*>&)),
           this, SLOT(residuesToBeDeleted(chemlib::MIMoleculeBase*,std::vector<chemlib::RESIDUE*>&)));
   connect(model, SIGNAL(residuesDeleted(chemlib::MIMoleculeBase*)),
-          this, SLOT(residuesToBeDeleted(chemlib::MIMoleculeBase*,std::vector<chemlib::RESIDUE*>&)));
+          this, SLOT(residuesDeleted(chemlib::MIMoleculeBase*)));
   connect(model, SIGNAL(moleculeChanged(chemlib::MIMoleculeBase*)),
           this, SLOT(moleculeChanged(chemlib::MIMoleculeBase*)));
   connect(model, SIGNAL(atomChanged(chemlib::MIMoleculeBase*,chemlib::MIAtomList&)),

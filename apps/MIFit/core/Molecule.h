@@ -156,10 +156,10 @@ public:
   void setAtomLabelColor(ATOMLABEL* label, unsigned char red, unsigned char green, unsigned char blue);
   void setAtomLabelText(ATOMLABEL* label, const char* text);
 
-Q_SIGNALS:
+signals:
   void atomLabelAdded(Molecule*, ATOMLABEL*);
   void atomLabelChanged(Molecule*, ATOMLABEL*);
-  void atomLabelToBeDeleted(Molecule*, AtomLabelList);
+  void atomLabelToBeDeleted(Molecule*, Molecule::AtomLabelList);
   void atomLabelDeleted(Molecule*);
 
 public:
