@@ -330,6 +330,7 @@ void CMolwViewScene::render2DOverlay() {
   if (IsInTestMode())
     return;
 
+  glClear(GL_DEPTH_BUFFER_BIT);
   if (ShowStack) {
     renderer->DrawStack(atomStack, 5, 0);
   }

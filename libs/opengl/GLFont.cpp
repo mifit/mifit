@@ -49,32 +49,7 @@ void GLFont::render(const QString& text) {
   if (!glWidget_) {
     return;
   }
-  QRect fontRect = fontMetrics_.boundingRect(text);
-
-  // Create proper size image and render text
-  image_ = QImage(fontRect.size(), QImage::Format_ARGB32);
-  image_.fill(0);
-  painter_.begin(&image_);
-  painter_.setRenderHint(QPainter::Antialiasing, true);
-  painter_.setRenderHint(QPainter::TextAntialiasing, true);
-  painter_.setFont(font_);
-  painter_.setPen(pen_);
-  painter_.drawText(0, image_.height(), text);
-  painter_.end();
-
-  glPushAttrib(GL_ENABLE_BIT | GL_COLOR_BUFFER_BIT);
-
-  glEnable(GL_TEXTURE_2D);
-  glEnable(GL_BLEND);
-  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-  // Transfer text image to OpenGL
-  QImage finalImage = image_.mirrored(false, true);
-  GLuint id = glWidget_->bindTexture(finalImage);
-  glWidget_->drawTexture(QPointF(0.0, 0.0), id);
-  glWidget_->deleteTexture(id);
-
-  glPopAttrib();
+  glWidget_->renderText(0.0, 0.0, 0.0, text, font_);
 }
 
 }
