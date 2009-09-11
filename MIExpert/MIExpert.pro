@@ -1,7 +1,7 @@
-include(../../common.pri)
+include(../common.pri)
 
 # There's nothing to do for this build, we only need to copy files
-pyfiles.path = ../../MIExpert/
+pyfiles.path = $$PREFIX/MIExpert
 pyfiles.files = *.py
 INSTALLS += pyfiles
 PRE_TARGETDEPS += install_pyfiles

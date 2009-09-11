@@ -4,8 +4,7 @@ TEMPLATE = app
 TARGET = MIFit
 DESTDIR = ../../..
 
-# to copy executable from build dir to source distribution dir
-target.path = $DESTDIR
+target.path = $$PREFIX
 INSTALLS += target
 
 win32 {
