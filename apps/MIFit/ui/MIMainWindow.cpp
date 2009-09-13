@@ -834,9 +834,7 @@ void MIMainWindow::OnFileOpenNew() {
 
 
 void MIMainWindow::OnHelp() {
-  std::string link = std::string("file://") + Application::instance()->MolimageHome;
-  link += "/MIFitManual.pdf";
-  QUrl url(link.c_str());
+  QUrl url("http://code.google.com/p/mifit");
   QDesktopServices::openUrl(url);
 }
 
