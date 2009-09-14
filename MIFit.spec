@@ -22,11 +22,22 @@ URL: http://code.google.com/p/mifit
 Version: 2009.09
 Release: 1
 Group: Science/Crystallography
+%if %{?suse_version}
 Requires:  libqt4 >= 4.4.3
-Source: %{name}-%{version}-%{release}.tar.gz
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-build
+%endif
+%if %{?fedora_version} || %{?rhel_version} || %{?centos_version}
+Requires: qt
+%endif
+
+Source: %{name}-%{version}.tar.gz
+BuildRoot:      %{_tmppath}/%{name}-%{version}-build
+%if %{?suse_version}
 BuildRequires:  libqt4-devel >= 4.4.3
+%endif
 BuildRequires:  boost-devel
+%if %{?fedora_version} || %{?rhel_version} || %{?centos_version}
+BuildRequires:  qt-devel
+%endif
 
 %description
 MIFit is a cross-platform interactive graphics application
@@ -51,5 +62,5 @@ rm -rf $RPM_BUILD_ROOT
 /examples
 
 %changelog
-* Thu Sep 10 2009 MIFit 200909
-- MIFit 200909
+* Thu Sep 10 2009 MIFit 2009.09
+- MIFit 2009.09
