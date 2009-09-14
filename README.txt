@@ -23,8 +23,8 @@ Installation from source code
     Start the Qt command prompt
     Change to the MIFit source directory
     .\configure.exe --prefix=C:\MIFit --boost=C:\boost_1_39_0
-    mingw32-make.exe
-    mingw32-make.exe install
+    mingw32-make.exe release
+    mingw32-make.exe release install
 
     Run "configure.exe --help" to see more options.
 

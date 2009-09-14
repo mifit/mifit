@@ -4,7 +4,6 @@ include(../common.pri)
 pyfiles.path = $$PREFIX/MIExpert
 pyfiles.files = *.py
 INSTALLS += pyfiles
-PRE_TARGETDEPS += install_pyfiles
 
 # trick qmake in to not doing any "normal" processing
 TEMPLATE=lib
