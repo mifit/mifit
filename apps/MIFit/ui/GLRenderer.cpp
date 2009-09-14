@@ -134,7 +134,10 @@ void GLRenderer::setQGLWidget(QGLWidget* qcanvas_win) {
   this->qcanvas_win = qcanvas_win;
   labelsFont_ = createGLFont();
   stackFont_ = createGLFont();
+#ifndef Q_OS_LINUX
+  // Linux has problem rendering stack font if different than labels.
   stackFont_->setFont(QFont("Helvetica", 10));
+#endif
 }
 
 void* GLRenderer::getContext() {
