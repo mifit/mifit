@@ -45,7 +45,8 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root)
 /MIExpert
-/MIFit                                    
+/MIFit
+/README.txt
 /data
 /examples
 

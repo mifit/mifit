@@ -55,6 +55,7 @@ Section "MIFit" Section1
   SetOutPath "$INSTDIR"
   SetOverwrite on
   File "MIFit.exe"
+  File "README.txt"
   File "mingwm10.dll"
   File "QtCore4.dll"
   File "QtGui4.dll"
