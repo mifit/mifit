@@ -55,7 +55,6 @@ Section "MIFit" Section1
   SetOutPath "$INSTDIR"
   SetOverwrite on
   File "MIFit.exe"
-  File "README.txt"
   File "mingwm10.dll"
   File "QtCore4.dll"
   File "QtGui4.dll"
@@ -63,6 +62,7 @@ Section "MIFit" Section1
   File "QtXml4.dll"
   File "license.txt"
   File "qt.conf"
+  File "README.txt"
   CreateDirectory "$SMPROGRAMS\MIFit"
   CreateShortCut "$SMPROGRAMS\MIFit\MIFit.lnk" "$INSTDIR\MIFit.exe"
   CreateShortCut "$DESKTOP\MIFit.lnk" "$INSTDIR\MIFit.exe"
@@ -171,6 +171,7 @@ Section Uninstall
   Delete "$INSTDIR\data\rama500-pro.data"
 
   Delete "$INSTDIR\MIFit.exe"
+  Delete "$INSTDIR\README.txt"
   Delete "$INSTDIR\mingwm10.dll"
   Delete "$INSTDIR\QtCore4.dll"
   Delete "$INSTDIR\QtGui4.dll"

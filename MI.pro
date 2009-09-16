@@ -10,8 +10,8 @@ data.files = data/*
 examples.path = $$PREFIX/examples
 examples.files = examples/*
 
-OTHER_FILES += README.txt
-other.path = $$PREFIX/README.txt
+OTHER_FILES += README.txt license.txt
+other.path = $$PREFIX
 other.files = $$OTHER_FILES
 
 INSTALLS += data examples other
