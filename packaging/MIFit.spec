@@ -6,7 +6,7 @@ License:        GPLv2
 URL:            http://code.google.com/p/mifit
 Group:          Science/Crystallography
 
-Source:         %{name}-%{version}.tar.gz
+Source:         %{name}-%{version}-1.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildRequires:  boost-devel
 
@@ -29,18 +29,21 @@ structures from x-ray crystallography.
 
 %define mifitdir /opt/%{name}
 
-%if 0%{?suse_version}
-%define qtdir /usr/lib/qt4
+%if 0%{?fedora_version}
+%define qmake qmake-qt4
+%else
+%if 0%{?rhel_version} || 0%{?centos_version}
+%define qmake /usr/lib/qt4/bin/qmake
+%else
+%define qmake qmake
 %endif
-%if 0%{?fedora_version} || 0%{?rhel_version} || 0%{?centos_version}
-%define qtdir /usr
 %endif
 
 %prep
 %setup
 
 %build
-qmake -r MI.pro PREFIX=$RPM_BUILD_ROOT/%{mifitdir}
+%qmake -r MI.pro PREFIX=$RPM_BUILD_ROOT/%{mifitdir}
 %__make
 
 %install
@@ -54,6 +57,7 @@ rm -rf $RPM_BUILD_ROOT
 %{mifitdir}/MIExpert
 %{mifitdir}/MIFit
 %{mifitdir}/README.txt
+%{mifitdir}/license.txt
 %{mifitdir}/data
 %{mifitdir}/examples
 
