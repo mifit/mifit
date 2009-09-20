@@ -5,6 +5,8 @@ structures from x-ray crystallography.
 
 MIFit project web site: http://code.google.com/p/mifit
 
+MIFit is licensed under the GNU GPL. See the license.txt
+file for details.
 
 Installation from binaries
 
@@ -22,20 +24,16 @@ Installation from source code
 
     Start the Qt command prompt
     Change to the MIFit source directory
-    .\configure.exe --prefix=C:\MIFit --boost=C:\boost_1_39_0
+    qmake -r MI.pro PREFIX=C:\MIFit BOOST=c:\boost_1_39_0
     mingw32-make.exe release
     mingw32-make.exe release install
-
-    Run "configure.exe --help" to see more options.
 
   Linux
 
     Change to the MIFit source directory
-    ./configure
+    qmake -r MI.pro PREFIX=/opt/MIFit
     make
     make install
-
-    Run "configure --help" to see more options.
 
   Mac OS
 

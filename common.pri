@@ -1,4 +1,14 @@
 include(conf.pri)
+
+!isEmpty(PREFIX) {
+  linux {
+    PREFIX = /opt/MIFit
+  }
+  win32 {
+    PREFIX = /MIFit
+  }
+}
+
 TOP_SRCDIR = $$PWD
 
 libsDir = $$TOP_SRCDIR/libs

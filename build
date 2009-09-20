@@ -1,3 +1,0 @@
-#!/bin/sh
-PATH=$PWD/python/bin:$PATH
-python build.py "$@"
