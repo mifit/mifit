@@ -1,5 +1,6 @@
 #include "system.h"
-#include <ctype.h>
+#include <cstdio>
+#include <cctype>
 
 std::string MIBeforeFirst(const std::string& s, char sep) {
   std::string::size_type pos = s.find_first_of(sep);
