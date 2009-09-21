@@ -1,0 +1,12 @@
+Source: mifit
+Priority: optional
+Maintainer: Bradley Smith <bradley@baysmith.com>
+Build-Depends: debhelper (>= 4.1.16), qt4-dev-tools, libqt4-dev, libboost-graph1.35-dev, libqt4-opengl-dev
+
+Package: mifit
+Architecture: any
+Depends: libqt4-gui, libqt4-opengl
+Description: A protein crystallography fitting application
+ MIFit is a cross-platform interactive graphics application
+ for molecular modeling, fitting, and refinement of protein
+ structures from x-ray crystallography.
