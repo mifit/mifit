@@ -6,7 +6,7 @@ License:        GPLv2
 URL:            http://code.google.com/p/mifit
 Group:          Science/Crystallography
 
-Source:         %{name}-%{version}-1.tar.gz
+Source:         %{name}-%{version}-2.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildRequires:  boost-devel
 
@@ -16,8 +16,9 @@ BuildRequires:  libqt4-devel
 %endif
 
 %if 0%{?fedora_version} || 0%{?rhel_version} || 0%{?centos_version}
-Requires:       qt4
-BuildRequires:  qt4-devel
+Requires:       qt4 >= 4.3
+BuildRequires:  qt4-devel >= 4.3
+BuildRequires:  gcc-c++
 %endif
 
 BuildRequires:  -post-build-checks

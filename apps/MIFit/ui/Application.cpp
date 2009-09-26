@@ -66,7 +66,8 @@ const char* TildeExpand(const char* filename) {
   return filename;
 #else
   static char dummy[1024];
-  char username[20], * loc;
+  char username[20];
+  const char* loc;
   struct passwd* pw;
 
   if ((filename == NULL) || !strcmp(filename, "")) {
