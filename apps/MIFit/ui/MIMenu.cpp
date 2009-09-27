@@ -19,6 +19,9 @@ MIMenu::~MIMenu() {}
 
 QAction *MIMenu::Append(unsigned int event_id, const std::string &text, const std::string &tooltip, bool checkable)
 {
+  if (event_id == 0) {
+    event_id = _idToAction.size();
+  }
   //parse shortcut out of text and add as shortcut
   QString qtext(text.c_str());
   QStringList sl=qtext.split('\t');

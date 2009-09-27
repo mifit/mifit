@@ -2,67 +2,52 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <ctype.h> // for alanum
-
 #include <QtGui>
-
+#include <core/Version.h>
 #include <chemlib/chemlib.h>
 #include <chemlib/RESIDUE_.h>
 #include <conflib/conflib.h>
-
-#include "jobs/jobslib.h"
-#include "JobsView.h"
-
+#include <jobs/jobslib.h>
 #include <util/utillib.h>
-#include "core/corelib.h"
+#include <core/corelib.h>
 #include <ligand/ligandlib.h>
 #include <map/maplib.h>
 #include <nongui/nonguilib.h>
 
+#include "JobsView.h"
 #include "DictEditCanvas.h"
 #include "DisplayView.h"
 #include "EMap.h"
 #include "Displaylist.h"
-
-#include "ui/ManageCrystals.h"
+#include "ManageCrystals.h"
 #include "ModelsView.h"
 #include "MIMolIO.h"
 #include "molw.h"
 #include "MIHistory.h"
-
 #include "uitest.h"
-#include "ui/MIDialog.h"
-
+#include "MIDialog.h"
 //#include "preferences/MapPreferencesPanel.h"
 //#include "preferences/EnvironmentPreferencesPanel.h"
 //#include "preferences/GeneralPreferencesPanel.h"
 //#include "preferences/PreferencesDialog.h"
-#include "ui/PreferencesDialog.h"
-
+#include "PreferencesDialog.h"
 #include "MIMainWindow.h"
 #include "MIMenu.h"
 #include "MIMenuBar.h"
 #include "MIToolBar.h"
 #include "MIGLWidget.h"
-
 #include "MIHistory.h"
-
 #include "Application.h"
 #include "uitest.h"
 #include "id.h"
 #include "surf.h"
 #include "MIMolIO.h"
 #include "molw.h"
-
 #include "GLOverviewCanvas.h"
 #include "RamaPlot.h"
-
-
-
-#include "ui/DictEditDialog.h"
-
+#include "DictEditDialog.h"
 #include "MIEventHandlerMacros.h"
-#include "core/Version.h"
-
+#include "GLFormatDialog.h"
 #include "tools.h"
 
 #ifdef _WIN32
@@ -832,6 +817,14 @@ void MIMainWindow::OnFileOpenNew() {
 //   }
 // }
 
+
+void MIMainWindow::OnGLFormat() {
+  GLFormatDialog dialog;
+  if (currentMIGLWidget()) {
+    dialog.setCurrentFormat(currentMIGLWidget()->format());
+  }
+  dialog.exec();
+}
 
 void MIMainWindow::OnHelp() {
   QUrl url("http://code.google.com/p/mifit");
@@ -1776,20 +1769,6 @@ static void fill_file_menu(MIMenu* file_menu, int type) {
 
 
 
-static void fill_help_menu(MIMenu* help_menu) {
-  help_menu->Append(ID_ABOUT, "&About...");
-  help_menu->Append(ID_HELP, "&Help...");
-#ifdef DEBUG
-  help_menu->AppendSeparator();
-  help_menu->Append(ID_DO_RANDOM_TEST, "Debug: random tests");
-  help_menu->Append(ID_PLAY_HISTORY, "Debug: play history");
-  help_menu->Append(ID_RECORD_HISTORY, "Debug: record history");
-  help_menu->Append(ID_STOPRECORD_HISTORY, "Debug: stop recording history");
-  help_menu->Append(ID_MENU_VALIDATE,"Validate menu tree");
-  help_menu->Append(ID_SCRIPT, "Debug: script");
-#endif
-}
-
 static void fill_view_menu(MIMenu* view_menu, int type) {
   if (type == ID_MOLWVIEW) {
     view_menu->Append(ID_VIEW_UNDO, "&Undo Viewpoint", "Use this command to center objects", false);
@@ -2129,7 +2108,22 @@ void MIMainWindow::createMenus()
 
 
   MIMenu* help_menu = new MIMenu(*this);
-  fill_help_menu(help_menu);
+  help_menu->Append(ID_ABOUT, "&About...");
+
+  QAction * glFormatAction = help_menu->Append(0, "&OpenGL format...");
+  connect(glFormatAction, SIGNAL(triggered()),
+          this, SLOT(OnGLFormat()));
+
+  help_menu->Append(ID_HELP, "&Help...");
+#ifdef DEBUG
+  help_menu->AppendSeparator();
+  help_menu->Append(ID_DO_RANDOM_TEST, "Debug: random tests");
+  help_menu->Append(ID_PLAY_HISTORY, "Debug: play history");
+  help_menu->Append(ID_RECORD_HISTORY, "Debug: record history");
+  help_menu->Append(ID_STOPRECORD_HISTORY, "Debug: stop recording history");
+  help_menu->Append(ID_MENU_VALIDATE,"Validate menu tree");
+  help_menu->Append(ID_SCRIPT, "Debug: script");
+#endif
 
   MIGetHistory()->AddMenuBar(menu_bar, "MIFit"); // removed in closeEvent
 

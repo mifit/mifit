@@ -144,6 +144,7 @@ private slots:
     void OnStereoToggle();
     void OnHardwareStereo();
     void OnAbout();
+    void OnGLFormat();
     void OnHelp();
     void OnMenuValidate();
     void OnDefineAtomColors();

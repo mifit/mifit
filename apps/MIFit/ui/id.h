@@ -1,7 +1,6 @@
 #ifndef ID_H
 #define ID_H
 
-#ifndef __ccdoc__
 #define RENDER_STICKS           6201
 #define ID_MOLWVIEW 6202
 
@@ -416,8 +415,5 @@
 // this value is added to the solidsurface menu items for use in the models tree
 #define ID_SOLIDSURFACE_TREE_OFFSET 30000
 
-
-
-#endif //ccdoc
 #endif
 
