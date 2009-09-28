@@ -33,6 +33,7 @@ private:
 private slots:
   void formatTypeChanged(const QString& type);
   void changeDefault();
+  void resetToQtDefault();
 
 };
 

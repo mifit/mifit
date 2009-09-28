@@ -18,9 +18,14 @@ GLFormatDialog::GLFormatDialog(QWidget *parent) :
     m_ui->setupUi(this);
 
     // Hide initially and only show if format type set to Default.
-    m_ui->changeDefaultButton->hide();
-    connect(m_ui->changeDefaultButton, SIGNAL(clicked()),
+    m_ui->changeDefault->hide();
+    connect(m_ui->changeDefault, SIGNAL(clicked()),
             this, SLOT(changeDefault()));
+
+    // Hide initially and only show if format type set to Default.
+    m_ui->resetToQtDefault->hide();
+    connect(m_ui->resetToQtDefault, SIGNAL(clicked()),
+            this, SLOT(resetToQtDefault()));
 
     connect(m_ui->formatType, SIGNAL(currentIndexChanged(QString)),
             this, SLOT(formatTypeChanged(QString)));
@@ -131,7 +136,10 @@ void GLFormatDialog::formatTypeChanged(const QString& type)
   info += flags.join(", ");
   info += "</p>\n";
 
-  m_ui->changeDefaultButton->setVisible(type == DEFAULT_TYPE);
+  bool isDefault = type == DEFAULT_TYPE;
+  m_ui->changeDefault->setVisible(isDefault);
+  m_ui->resetToQtDefault->setVisible(isDefault);
+
   if (type == CURRENT_TYPE) {
     info += formatToString(currentFormat, type);
   } else if (type == DEFAULT_TYPE) {
@@ -150,4 +158,10 @@ void GLFormatDialog::changeDefault()
         QGLFormat::setDefaultFormat(edit.format());
         formatTypeChanged(DEFAULT_TYPE);
     }
+}
+
+void GLFormatDialog::resetToQtDefault()
+{
+    QGLFormat::setDefaultFormat(QGLFormat());
+    formatTypeChanged(DEFAULT_TYPE);
 }

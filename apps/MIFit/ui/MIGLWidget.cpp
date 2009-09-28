@@ -805,7 +805,7 @@ void MIGLWidget::paintGL() {
   Update = NewSize = 0;
   viewpoint->Yup = SaveYup;
 
-  swapBuffers();
+  glFlush();
 
   is_drawing = false;
 }

@@ -11,10 +11,10 @@
 #include <util/utillib.h>
 #include "core/corelib.h"
 
-
 #include "Application.h"
 #include "tools.h"
 #include "DictEditCanvas.h"
+#include "GLFormatEdit.h"
 
 #include "uitest.h"
 #include "ui/MIDialog.h"
@@ -126,7 +126,10 @@ class MIConfigImpl : public MIConfig {
   public:
     MIConfigImpl(const std::string& name, bool read_enabled=true) {
       _instance = this;
-      _settings = new QSettings("Rigaku",name.c_str());
+      _settings = new QSettings("MIFit", name.c_str());
+      QSettings oldSettings("Rigaku", name.c_str());
+      foreach (QString key, oldSettings.allKeys())
+          _settings->setValue(key, oldSettings.value(key));
       _read_enabled=read_enabled;
     }
 
@@ -247,6 +250,10 @@ Application *Application::instance() {
   return instance_;
 }
 
+namespace {
+    const QString GL_FORMAT_GROUP("glformat");
+    const QString GL_FORMAT_DEFAULT("default");
+}
 
 Application::Application(void) {
 
@@ -274,6 +281,18 @@ Application::Application(void) {
   checkpointDirectory = "";
   ShelxHome = "";
 
+  QSettings* settings = MIGetQSettings();
+  if (settings->childGroups().contains(GL_FORMAT_GROUP)) {
+    settings->beginGroup(GL_FORMAT_GROUP);
+    if (settings->childGroups().contains(GL_FORMAT_DEFAULT)) {
+      settings->beginGroup(GL_FORMAT_DEFAULT);
+      QGLFormat glformat = GLFormatEdit::readSettings(*settings);
+      QGLFormat::setDefaultFormat(glformat);
+      settings->endGroup();
+    }
+    settings->endGroup();
+  }
+
   Init();
 }
 
@@ -284,6 +303,16 @@ Application::~Application() {
   config->WriteProfileInt("Options", "ConcurrentJobLimit", concurrentJobLimit);
 
   Write();
+
+  QSettings* settings = MIGetQSettings();
+
+  settings->beginGroup(GL_FORMAT_GROUP);
+  settings->beginGroup(GL_FORMAT_DEFAULT);
+  QGLFormat glformat = QGLFormat::defaultFormat();
+  GLFormatEdit::writeSettings(*settings, glformat);
+  settings->endGroup();
+  settings->endGroup();
+
   delete config;
   delete lpal;
   ClearResidueBuffer();

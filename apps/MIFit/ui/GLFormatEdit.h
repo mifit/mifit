@@ -8,6 +8,7 @@ namespace Ui {
     class GLFormatEdit;
 }
 class QAbstractButton;
+class QSettings;
 
 /**
  * Editor dialog for changing an OpenGL format.
@@ -23,6 +24,9 @@ public:
     ~GLFormatEdit();
 
     QGLFormat format() const;
+
+    static QGLFormat readSettings(const QSettings& settings);
+    static void writeSettings(QSettings& settings, const QGLFormat& format);
 
 public slots:
     void setFormat(const QGLFormat& format);
