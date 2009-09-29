@@ -620,6 +620,8 @@ bool MIFileDialog::PromptForResults(MIData& data) {
   std::vector<std::string>& pathlist = data["pathList"].strList;
   pathlist.clear();
 
+  path = Application::instance()->latestFileBrowseDirectory(path);
+
   if (_mode == MI_SAVE_MODE) {
     response=QFileDialog::getSaveFileName(_qparent, _name.c_str(), path.c_str(), filter, &selectedFilter);
     if (response.isEmpty())
@@ -642,6 +644,9 @@ bool MIFileDialog::PromptForResults(MIData& data) {
     }
     data["path"].str = pathlist[0];
   }
+
+  QFileInfo fileInfo(data["path"].str.c_str());
+  Application::instance()->latestFileBrowseDirectory(fileInfo.absolutePath().toStdString());
 
   // set selected filter index
   std::string selFilter=selectedFilter.toStdString();
@@ -668,12 +673,14 @@ std::string MIFileSelector(const std::string& title,
                            unsigned int flags,
                            QWidget* parent) {
 
+    std::string dir = Application::instance()->latestFileBrowseDirectory(defaultDirString);
+
   std::string filter2 = filter;
   if (defaultExtension.size() && !filter.size() ) {
     filter2 = std::string("*.") + defaultExtension;
   }
 
-  MIFileDialog fileDialog(parent, title, defaultDirString,
+  MIFileDialog fileDialog(parent, title, dir,
                           defaultFileNameString, filter2,
                           flags);
 
@@ -705,6 +712,8 @@ std::string MIFileSelector(const std::string& title,
   if (fileDialog.GetResults(data)) {
     filename = data["path"].str;
   }
+  QFileInfo fileInfo(filename.c_str());
+  Application::instance()->latestFileBrowseDirectory(fileInfo.absolutePath().toStdString());
   return filename;
 }
 

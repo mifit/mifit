@@ -1233,3 +1233,20 @@ chemlib::MIMolDictionary* MIFitDictionary() {
 QSettings *MIGetQSettings() {
   return ((MIConfigImpl*)MIConfig::Instance())->GetQSettings();
 }
+
+std::string Application::latestFileBrowseDirectory(const std::string& path)
+{
+    const QString LATEST_FILE_BROWSE_DIRECTORY("latestFileBrowseDirectory");
+    QSettings* settings = MIGetQSettings();
+    if (settings) {
+        if (path.empty()) {
+            QString settingsPath = settings->value(LATEST_FILE_BROWSE_DIRECTORY).toString();
+            if (QFile::exists(settingsPath)) {
+                return settingsPath.toStdString();
+            }
+        } else {
+            settings->setValue(LATEST_FILE_BROWSE_DIRECTORY, QString(path.c_str()));
+        }
+    }
+    return path;
+}
