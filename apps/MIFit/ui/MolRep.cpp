@@ -107,7 +107,6 @@ bool MolRep::GetData(MIData &data) {
     data["fixed_pdb"].str = fixedModelLineEdit->text().toStdString();
 
   data["spacegroup_no"].radio = 0;
-  data["sg_search"].b = allPointGroupRadioButton->isChecked();
   if (spaceGroupRadioButton->isChecked()) 
     data["spacegroup_no"].radio = spaceGroupComboBox->currentIndex() + 1; // first spacegroup is 1, first index is 0
 

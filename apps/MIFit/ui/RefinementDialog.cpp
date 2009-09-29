@@ -104,12 +104,10 @@ bool RefinementDialog::GetData(MIData &data) {
   data["cycles"].u = numCyclesSpinBox->value();
 
   data["water_cycles"].u = UINT_MAX;
-  if (waterPickingRadioButton->isChecked())
+  if (waterPickingCheckBox->isChecked())
     data["water_cycles"].u = waterPickingCyclesSpinBox->value();
 
   data["build_cycles"].u = UINT_MAX;
-  if (arpWarpRadioButton->isChecked())
-    data["water_cycles"].u = arpWarpCyclesSpinBox->value();
 
   data["bref_type"].str = "isotropic";
   if (anisotropicRadioButton->isChecked())
