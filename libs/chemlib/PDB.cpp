@@ -421,7 +421,7 @@ bool SavePDB(FILE* fp, RESIDUE* res, Bond* Connects, int nConnects, bool mark_en
     }
     if (residue->linkage_type() &CTERMINUS) {
       n++;
-      sprintf(buf, "TER   %5d      %-4s%c%4s\n", n, residue->type().c_str(), chainid, residueName);
+      sprintf(buf, "TER   %5d      %-4s%c%5s\n", n, residue->type().c_str(), chainid, residueName);
       fwrite(buf, sizeof(char), strlen(buf), fp);
       //TER    1629      ARG A 106
     }
