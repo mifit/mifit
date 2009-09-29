@@ -32,6 +32,7 @@ using namespace chemlib;
 #include <QString>
 #include <QFileInfo>
 #include <QDir>
+#include <QMessageBox>
 
 Tools *Tools::_instance = NULL;
 
@@ -98,12 +99,12 @@ bool Tools::VerifyMIExpert() {
 }
 
 bool Tools::VerifyCCP4() {
-  static bool firsttime=true;
-  static bool result=false;
-  if (!firsttime) {
+  static bool firsttime = true;
+  static bool result = false;
+  if (!firsttime && result) {
     return result;
   }
-  firsttime=false;
+  firsttime = false;
 
   //NOTE: mtzdump used to be the test program, but with the port to Qt
   //      it's been replaced by pdbset.  mtzdump does not terminate without
@@ -111,25 +112,38 @@ bool Tools::VerifyCCP4() {
   QByteArray pdbsetOutput;
   QProcess pdbsetProcess;
   pdbsetProcess.start("pdbset");
+  pdbsetProcess.closeWriteChannel();
 
   pdbsetProcess.waitForFinished(2000);
 
   if (pdbsetProcess.exitStatus() != QProcess::NormalExit) {
     pdbsetProcess.kill();
-    MIMessageBox("Cannot find CCP4\n(Unable to run pdbset)", "Error", MIDIALOG_ICON_ERROR);
-    result=false;
+#ifdef DEBUG
+    QMessageBox::warning(MIMainWindow::instance(), "Error", "Cannot find CCP4\n(Unable to run pdbset)");
+    result = true;
+    return true;
+#else
+    QMessageBox::critical(MIMainWindow::instance(), "Error", "Cannot find CCP4\n(Unable to run pdbset)");
+    result = false;
     return false;
+#endif
   }
 
   QString outputText(pdbsetProcess.readAllStandardOutput());
   if (outputText.indexOf("PDBSET") == -1)  {
     pdbsetProcess.kill();
+#ifdef DEBUG
+    QMessageBox::warning(MIMainWindow::instance(), "Error", "Cannot find CCP4\n(Unable to run pdbset)");
+    result = true;
+    return true;
+#else
     MIMessageBox("Cannot find CCP4\n(Unable to identify output as from pdbset)", "Error", MIDIALOG_ICON_ERROR);
-    result=false;
+    result = false;
     return false;
+#endif
   }
   pdbsetProcess.kill();
-  result=true;
+  result = true;
   return true;
 }
 
@@ -140,7 +154,7 @@ void Tools::OnBindNGrind() {
     return;
   }
 
-  MIBindNGrindDialog dlg(0, "Cocrystal Solution");
+  static MIBindNGrindDialog dlg(MIMainWindow::instance(), "Cocrystal Solution");
   MIData data;
   dlg.GetInitialData(data);
   if (!dlg.GetResults(data)) {
@@ -308,7 +322,7 @@ void Tools::OnMolRep() {
     return;
   }
 
-  MIMolRepDialog dlg(0, "Molecular Replacement");
+  static MIMolRepDialog dlg(MIMainWindow::instance(), "Molecular Replacement");
   MIData data;
   dlg.GetInitialData(data);
   if (!dlg.GetResults(data)) {
@@ -383,7 +397,7 @@ void Tools::OnRefine() {
     return;
   }
 
-  MIRefinementDialog dlg(0, "Refinement");
+  static MIRefinementDialog dlg(MIMainWindow::instance(), "Refinement");
   MIData data;
   dlg.GetInitialData(data);
   if (!dlg.GetResults(data)) {
@@ -486,7 +500,7 @@ void Tools::OnJobReport() {
     return;
   }
 
-  MIJobReportDialog dlg(0, "Job Report");
+  static MIJobReportDialog dlg(MIMainWindow::instance(), "Job Report");
   MIData data;
   dlg.GetInitialData(data);
   if (!dlg.GetResults(data)) {
@@ -590,7 +604,7 @@ void Tools::OnCoCrystalSuperPos() {
     return;
   }
 
-  MICocrystalSuperpositionDialog dlg(0, "Cocrystal superposition");
+  static MICocrystalSuperpositionDialog dlg(MIMainWindow::instance(), "Cocrystal superposition");
   MIData data;
   dlg.GetInitialData(data);
   if (!dlg.GetResults(data)) {
@@ -641,7 +655,7 @@ void Tools::OnSadPhasing() {
     return;
   }
 
-  MISadPhasingDialog dlg(0, "SAD Phasing");
+  static MISadPhasingDialog dlg(MIMainWindow::instance(), "SAD Phasing");
   MIData data;
   dlg.GetInitialData(data);
   if (!dlg.GetResults(data)) {
@@ -708,7 +722,7 @@ void Tools::OnNCSModeling() {
     return;
   }
 
-  MINCSModelingDialog dlg(0, "NCS Modeling");
+  static MINCSModelingDialog dlg(MIMainWindow::instance(), "NCS Modeling");
   MIData data;
   dlg.GetInitialData(data);
   if (!dlg.GetResults(data)) {
@@ -847,7 +861,7 @@ void Tools::OnIntegrate() {
     return;
   }
 
-  MIIntegrateDialog dlg(0, "Integrate");
+  static MIIntegrateDialog dlg(MIMainWindow::instance(), "Integrate");
   MIData data;
   dlg.GetInitialData(data);
   if (!dlg.GetResults(data)) {

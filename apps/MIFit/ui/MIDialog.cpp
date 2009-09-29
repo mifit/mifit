@@ -861,7 +861,7 @@ MILSQFitDialog::MILSQFitDialog(QWidget* parent, const std::string& name)
 }
 
 bool MILSQFitDialog::PromptForResults(MIData& data) {
-  LSQFitDialog dlg(_qparent);
+  static LSQFitDialog dlg(_qparent);
   dlg.InitializeFromData(data);
   if (dlg.exec() != QDialog::Accepted) {
     return false;
@@ -882,7 +882,7 @@ void MIBindNGrindDialog::GetInitialData(MIData& data) {
 }
 
 bool MIBindNGrindDialog::PromptForResults(MIData& data) {
-  BindNGrind dlg(_qparent);
+  static BindNGrind dlg(_qparent);
   dlg.InitializeFromData(data);
   if (dlg.exec() != QDialog::Accepted) {
     return false;
@@ -903,7 +903,7 @@ void MIIntegrateDialog::GetInitialData(MIData& data) {
 }
 
 bool MIIntegrateDialog::PromptForResults(MIData& data) {
-  IntegrateDialog dlg(_qparent);
+  static IntegrateDialog dlg(_qparent);
   dlg.InitializeFromData(data);
   if (dlg.exec() != QDialog::Accepted) {
     return false;
@@ -924,7 +924,7 @@ void MISadPhasingDialog::GetInitialData(MIData& data) {
 }
 
 bool MISadPhasingDialog::PromptForResults(MIData& data) {
-  SadPhasing dlg(_qparent);
+  static SadPhasing dlg(_qparent);
   dlg.InitializeFromData(data);
   if (dlg.exec() != QDialog::Accepted) {
     return false;
@@ -945,7 +945,7 @@ void MINCSModelingDialog::GetInitialData(MIData& data) {
 }
 
 bool MINCSModelingDialog::PromptForResults(MIData& data) {
-  NCSModeling dlg(_qparent);
+  static NCSModeling dlg(_qparent);
   dlg.InitializeFromData(data);
   if (dlg.exec() != QDialog::Accepted) {
     return false;
@@ -967,7 +967,7 @@ void MICocrystalSuperpositionDialog::GetInitialData(MIData& data) {
 }
 
 bool MICocrystalSuperpositionDialog::PromptForResults(MIData& data) {
-  CocrystalSuperPos dlg(_qparent);
+  static CocrystalSuperPos dlg(_qparent);
   dlg.InitializeFromData(data);
   if (dlg.exec() != QDialog::Accepted) {
     return false;
@@ -989,7 +989,7 @@ void MIMolRepDialog::GetInitialData(MIData& data) {
 }
 
 bool MIMolRepDialog::PromptForResults(MIData& data) {
-  MolRep dlg(_qparent);
+  static MolRep dlg(_qparent);
   dlg.InitializeFromData(data);
   if (dlg.exec() != QDialog::Accepted) {
     return false;
@@ -1010,7 +1010,7 @@ void MICustomJobDialog::GetInitialData(MIData& data) {
 }
 
 bool MICustomJobDialog::PromptForResults(MIData& data) {
-  CustomJobDialog dlg(_qparent);
+  static CustomJobDialog dlg(_qparent);
   dlg.InitializeFromData(data);
   if (dlg.exec() != QDialog::Accepted) {
     return false;
@@ -1030,7 +1030,7 @@ void MIRefinementDialog::GetInitialData(MIData& data) {
 }
 
 bool MIRefinementDialog::PromptForResults(MIData& data) {
-  RefinementDialog dlg(_qparent);
+  static RefinementDialog dlg(_qparent);
   dlg.InitializeFromData(data);
   if (dlg.exec() != QDialog::Accepted) {
     return false;
@@ -1051,7 +1051,7 @@ void MIJobReportDialog::GetInitialData(MIData& data) {
 }
 
 bool MIJobReportDialog::PromptForResults(MIData& data) {
-  JobReport dlg(_qparent);
+  static JobReport dlg(_qparent);
   dlg.InitializeFromData(data);
   if (dlg.exec() != QDialog::Accepted) {
     return false;
