@@ -2162,7 +2162,6 @@ void MIMainWindow::createMenus()
 
     menu_bar->Append(help_menu, "Help");
 
-    QApplication::processEvents();
     initMenuHandlers();
 }
 
@@ -2401,17 +2400,14 @@ void MIMainWindowDebug(const std::string &str) {
 
 void MIMainWindowLeftFooter(const std::string &str, int timeout) {
   MIMainWindow::instance()->LeftFooter(str, timeout);
-  QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
 }
 
 void MIMainWindowMiddleFooter(const std::string &str) {
   MIMainWindow::instance()->MiddleFooter(str);
-  QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
 }
 
 void MIMainWindowRightFooter(const std::string &str) {
   MIMainWindow::instance()->RightFooter(str);
-  QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
 }
 
 void MIMainWindow::updateShowMenu() {
