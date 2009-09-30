@@ -382,6 +382,9 @@ EMapBase::contur_sec(int planedirection, int xmin, int xmax, int ymin, int ymax,
           if (sec[nrow*icol+irow] == 0) {
             continue;
           }
+          ix = (ix+64*nxw)%nxw;
+          iy = (iy+64*nyw)%nyw;
+          iz = (iz+64*nzw)%nzw;
         }
         if (UseNCR && (mapheader->nNCRSymmops > 0)) {
           set_ixyz();
