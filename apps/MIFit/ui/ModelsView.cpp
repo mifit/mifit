@@ -3577,6 +3577,8 @@ void ModelsTree::mapToBeDeleted(EMap* map) {
   }
   if (!validTreeData(data)) {
     mapToData.erase(map);
+    mapToCrystalData.erase(map);
+    mapHeaderToCrystalData.erase(map->GetMapHeader());
     return;
   }
   QTreeWidgetItem* item = data->GetId();
@@ -3585,6 +3587,8 @@ void ModelsTree::mapToBeDeleted(EMap* map) {
   }
   Delete(item);
   mapToData.erase(map);
+  mapToCrystalData.erase(map);
+  mapHeaderToCrystalData.erase(map->GetMapHeader());
   update();
 }
 
