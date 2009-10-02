@@ -53,12 +53,6 @@ MIDialog::MIDialog(QWidget* parent, const std::string& name) : _qparent(parent),
 MIDialog::~MIDialog() {
 }
 
-bool MIDialog::IsRandom = false;
-
-void MIDialog::SetRandom(bool state) {
-  IsRandom = state;
-}
-
 void ValidateData(const MIData& data)
 {
   MIDataConstIter i=data.begin();
@@ -76,25 +70,11 @@ bool MIDialog::GetResults(MIData& data) {
 
   bool ret;
 
-  if (IsRandom) {
-    ret = RandomResults(data);
-  } else {
-    ValidateData(data);
-    ret = PromptForResults(data);
-  }
+  ValidateData(data);
+  ret = PromptForResults(data);
 
   return ret;
 }
-
-bool MIDialog::RandomResults(MIData& data) {
-  for (MIDataIter i = data.begin(); i != data.end(); ++i) {
-    std::string str(_name);
-    str = str+":"+i->first;
-    i->second.Randomize(str);
-  }
-  return true;
-}
-
 
 //
 // Generic
@@ -535,20 +515,6 @@ MIFileDialog::MIFileDialog(QWidget* parent, const std::string& message,
   : MIDialog(parent, message), _deftDir(deftDir), _deftFile(deftFile),
     _filter(filter), _mode(mode) {
 }
-
-bool MIFileDialog::RandomResults(MIData &data) {
-
-  //make sure pathList is set
-  std::vector<std::string> pathList;
-  pathList.push_back("");
-  MIDataIter i=data.find("pathList");
-  if (i==data.end()) {
-    data["pathList"].strList=pathList;
-  }
-
-  return MIDialog::RandomResults(data);
-}
-
 
 static void stringSplit(std::string str,
                         const std::string &delim,

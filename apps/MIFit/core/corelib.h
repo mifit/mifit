@@ -19,7 +19,6 @@
 #include "mifit_algorithm.h"
 #include "Molecule.h"
 #include "MoleculeType.h"
-#include "RandomTesting.h"
 #include "RenderStyle.h"
 #include "RESIDUE.h"
 #include "RibbonSegment.h"

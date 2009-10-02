@@ -14,15 +14,11 @@ class MIDialog {
   MIDialog(QWidget *parent, const std::string &name);
   virtual ~MIDialog();
 
-  virtual bool GetResults(MIData& data);
-  virtual bool RandomResults(MIData& data);
-
-  static void SetRandom(bool state);
+  bool GetResults(MIData& data);
 
  protected:
     QWidget *_qparent;
     std::string _name;
-    static bool IsRandom;
 
 private:
   virtual bool PromptForResults(MIData& data) = 0;
@@ -203,7 +199,6 @@ public:
                const std::string& deftFile = "",
                const std::string& filter = "",
                unsigned int mode = MI_OPEN_MODE);
-    bool RandomResults(MIData& data);
 
 private:
   bool PromptForResults(MIData& data);

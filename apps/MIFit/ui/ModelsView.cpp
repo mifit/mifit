@@ -25,7 +25,6 @@
 #include "TreeData.h"
 #include "Application.h"
 
-#include "MIBitVector.h"
 #include "MIMenu.h"
 #include "MIGLWidget.h"
 #include "MIEventHandler.h"
@@ -1438,10 +1437,6 @@ private slots:
   void mapHeaderChanged(CMapHeaderBase* mapHeader);
   void focusResidueChanged(chemlib::RESIDUE* residue);
   void selectionChanged(Molecule* model, chemlib::RESIDUE* residue, chemlib::MIAtom* atom);
-
-public:
-  bool HandleHistory(MIData& data);
-  bool RandomTest();
 
 private:
   QTreeWidgetItem* rootId;

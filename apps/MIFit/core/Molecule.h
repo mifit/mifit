@@ -12,7 +12,6 @@
 
 #include <chemlib/MIMoleculeBase.h>
 #include <chemlib/chemlib.h>
-#include "MIData.h"
 
 class Molecule;
 

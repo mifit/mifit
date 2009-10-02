@@ -3,17 +3,19 @@
 #include "GLDrawingCanvas.h"
 #include "ui/id.h"
 #include "ui/MIDialog.h"
-
-#include "ui/MIMenuBar.h"
-#include "ui/MIMenu.h"
 #include "ui/MIEventHandlerMacros.h"
+#include "ui/MIMenu.h"
+#include "ui/MIMenuBar.h"
 
-#include <QPrinter>
-#include <QPrintDialog>
-#include <QClipboard>
 #include <QApplication>
-#include <QPainter>
+#include <QClipboard>
+#include <QDebug>
 #include <QDir>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QPainter>
+#include <QPrintDialog>
+#include <QPrinter>
 
 const unsigned int NSPOKES=9;
 const unsigned int SPOKESPACING=18;
@@ -473,41 +475,42 @@ void GLDrawingCanvas::OnPrint() {
 }
 
 void GLDrawingCanvas::OnExportImage() {
-  std::string filter = "JPEG Image format (*.jpg)|*.jpg"
-                       "|PNG Image format (*.png)|*.png"
-                       "|TIFF Image format (*.tif)|*.tif";
+    QString filter = "JPEG Image format (*.jpg);;"
+                     "PNG Image format (*.png);;"
+                     "TIFF Image format (*.tif)";
 
-  MIFileDialog dlg(this, "Export Image As",
-                   QDir::currentPath().toStdString(), "export", filter, MI_SAVE_MODE);
-  MIData data;
-  data["path"].str = "./export";
-  data["filterIndex"].radio = 0;
-  data["filterIndex"].radio_count = 5;
+    QString selectedFilter;
+    QString file = QFileDialog::getSaveFileName(this, "Export Images As", QDir::currentPath(), filter, &selectedFilter);
+    if (!file.isEmpty()) {
+        QFileInfo fileInfo(file);
+        QString ext(fileInfo.suffix());
 
-  if (!dlg.GetResults(data)) {
-    return;
-  }
+        QString defaultExt;
+        const char* format = 0;
+        if (selectedFilter.startsWith("JPEG")) {
+            defaultExt = ".jpg";
+            format = "JPG";
+        } else if (selectedFilter.startsWith("PNG")) {
+            defaultExt = ".png";
+            format = "PNG";
+        } else if (selectedFilter.startsWith("TIFF")) {
+            defaultExt = ".tif";
+            format = "TIF";
+        }
 
-  std::string defaultExt="";
-  std::string ext(file_extension(data["path"].str.c_str()));
-  switch (data["filterIndex"].radio) {
-    default:
-    case 0:
-      defaultExt = ".jpg";
-      break;
-    case 1:
-      defaultExt = ".png";
-      break;
-    case 2:
-      defaultExt = ".tif";
-      break;
-  }
-  if (ext.size()==0) {
-    data["path"].str += defaultExt;
-  }
+        if (ext.isEmpty()) {
+            file += defaultExt;
+        }
 
-  QPixmap image = renderPixmap();   //TODO: could alter canvas size here
-  image.save(data["path"].str.c_str());
+        //TODO: could alter canvas size here
+        QPixmap image = renderPixmap();
+        QFile imageFile(file);
+        if (imageFile.open(QIODevice::WriteOnly)) {
+            image.save(&imageFile, format);
+        } else {
+            QMessageBox::critical(this, "Export Image Error", "Unable to open file " + file);
+        }
+    }
 }
 
 void GLDrawingCanvas::OnSelectFont() {

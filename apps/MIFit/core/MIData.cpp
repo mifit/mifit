@@ -1,6 +1,5 @@
 #include "MIData.h"
 
-#include "RandomTesting.h"
 #include <cmath>
 #include <nongui/nonguilib.h>
 #include <util/utillib.h>
@@ -22,40 +21,6 @@ MIDatum::MIDatum() {
   isColorIndex = false;
   str = INVALID_STRING;
   strList.clear();
-}
-
-void MIDatum::Randomize(const std::string& name) {
-  std::string label("Randomizing ");
-  label += name;
-
-  float factor = ((float)GetRand(label.c_str(), 40)/100.0f)+0.8f;
-
-  if (i != INT_MIN) {
-    i = (int)(i*factor);
-  } else if (u != UINT_MAX) {
-    u = (unsigned int)(u*factor);
-  } else if (s != SHRT_MIN) {
-    s = (short)(s*factor);
-  } else if (f != FLT_MIN) {
-    f = f*factor;
-  } else if (d != DBL_MIN) {
-    d = d*factor;
-  } else if (radio != UINT_MAX) {
-    radio = GetRand(label.c_str(), radio_count);
-  } else if (strList.size() != 0) {
-    //NOTE: we can't generically handle strList---use a custom randomizer if you need this
-  } else if (str != MIDatum::INVALID_STRING) {
-    //NOTE: we can't generically handle stings---use a custom randomizer if you need this
-  } else if (isColor) {
-    color[0]=(unsigned char)(color[0]*factor);
-    color[1]=(unsigned char)(color[1]*factor);
-    color[2]=(unsigned char)(color[2]*factor);
-  } else if (isColorIndex) {
-    color[0]=(unsigned char)(color[0]*factor);
-  } else { // assume boolean, could be problematic if empty sting set as arg
-    b = (factor > 1.0f); // factor has equal odds of being greater or less than 1.0
-  }
-  return;
 }
 
 bool MIDatum::WriteDatum(std::string& dat_str) const {

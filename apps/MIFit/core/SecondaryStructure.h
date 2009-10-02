@@ -4,8 +4,6 @@
 #include <vector>
 #include <utility>
 
-#include "MIData.h"
-
 class RibbonSegment;
 class Helix;
 namespace chemlib {
@@ -31,7 +29,6 @@ private:
 
   friend class GLRenderer;
 
-  MIData options;
   RibbonSegment* m_pRibbonSegmentList;
   RibbonSegment* m_pRibbonSegmentLast;
   std::vector<Helix*> m_pHelixList;

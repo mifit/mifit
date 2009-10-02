@@ -16,8 +16,6 @@ public:
   unsigned int ReadDatum(const std::string& dat);
   bool WriteDatum(std::string& str) const;
 
-  void Randomize(const std::string& name);
-
   bool b;
   int i;
   unsigned int u;
