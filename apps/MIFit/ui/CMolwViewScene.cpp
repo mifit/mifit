@@ -23,7 +23,6 @@
 #include <opengl/interact/TargetFeedback.h>
 
 #include <nongui/nonguilib.h>
-#include "uitest.h"
 #include "Displaylist.h"
 #include "CMolwViewScene.h"
 #include "Application.h"
@@ -136,9 +135,6 @@ static void planeFrom3Points(const Vector3<float>& v1, const Vector3<float>& v2,
 }
 
 void CMolwViewScene::render() {
-
-  if (IsInTestMode())
-    return;
 
   logOpenGLErrors(__FILE__, __LINE__);
 
@@ -327,9 +323,6 @@ void CMolwViewScene::renderOverlay() {
 }
 
 void CMolwViewScene::render2DOverlay() {
-  if (IsInTestMode())
-    return;
-
   glClear(GL_DEPTH_BUFFER_BIT);
   if (ShowStack) {
     renderer->DrawStack(atomStack, 5, 0);

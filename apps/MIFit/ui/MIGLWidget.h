@@ -697,9 +697,6 @@ signals:
   void focusResidueChanged(chemlib::RESIDUE*);
 public:
 
-  bool HandleHistory(MIData& data);
-  bool PlaybackMouseHistory(MIData& data);
-
   void doRefresh();
 
   void acceptRefine();

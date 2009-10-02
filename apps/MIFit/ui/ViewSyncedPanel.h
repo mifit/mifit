@@ -34,14 +34,6 @@ public:
   ViewSyncedPanel(QWidget* parent);
   virtual ~ViewSyncedPanel();
 
-  virtual bool HandleHistory(MIData&) {
-    return false;
-  }
-
-  virtual bool RandomTest() {
-    return false;
-  }
-
 };
 
 #endif

@@ -13,7 +13,6 @@
 #include "macafxwin.h"
 #include "id.h"
 #include "Application.h"
-#include "uitest.h"
 #include "ui/MIDialog.h"
 #include "MIMainWindow.h"
 #include "MIEventHandlerMacros.h"

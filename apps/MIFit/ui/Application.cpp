@@ -16,7 +16,6 @@
 #include "DictEditCanvas.h"
 #include "GLFormatEdit.h"
 
-#include "uitest.h"
 #include "ui/MIDialog.h"
 #include <util/FileIo.h>
 #include "MIMainWindow.h"
@@ -619,13 +618,6 @@ public:
   }
 
 };
-
-std::string Application::GetHistoryFilename()
-{
-    // TODO remove
-  return "";
-}
-
 
 // static int StereoAttribs[] = {
 //   WX_GL_STEREO,

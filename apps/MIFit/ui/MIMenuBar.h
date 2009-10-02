@@ -34,12 +34,6 @@ class MIMenuBar : public QMenuBar {
     // returns true if all updates in all menus can be handled
     bool validateUpdates();
 
-    // for testing, do single randomly-chosen item
-    bool DoRandomItem(const std::vector<unsigned int> &exclusion_list);
-
-    // for testing, do all all menu items, in order
-    bool DoExhaustiveTest(const std::vector<unsigned int> &exclusion_list, bool reverse=false);
-
     // only for hidden menu for toolbar actions which don't have parent menu item
     void AppendHidden(MIMenu *menu);
 

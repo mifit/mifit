@@ -9,7 +9,6 @@
 #include "macafxwin.h"
 #include "Application.h"
 
-#include "uitest.h"
 #include "MapSettings.h"
 
 struct mmtz_column_;

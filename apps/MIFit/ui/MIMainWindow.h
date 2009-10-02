@@ -118,10 +118,6 @@ private slots:
     void OnFileOpenNew();
 
     void OnScript();
-    void OnDoRandomTest();
-    void OnPlayHistory();
-    void OnRecordHistory();
-    void OnStopRecordingHistory();
 
     //dictionary menu handlers
     void OnSaveDict();

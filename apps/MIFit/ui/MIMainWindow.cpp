@@ -23,7 +23,6 @@
 #include "ModelsView.h"
 #include "MIMolIO.h"
 #include "molw.h"
-#include "uitest.h"
 #include "MIDialog.h"
 //#include "preferences/MapPreferencesPanel.h"
 //#include "preferences/EnvironmentPreferencesPanel.h"
@@ -36,7 +35,6 @@
 #include "MIToolBar.h"
 #include "MIGLWidget.h"
 #include "Application.h"
-#include "uitest.h"
 #include "id.h"
 #include "surf.h"
 #include "MIMolIO.h"
@@ -53,8 +51,6 @@
 #else
 #include <images/mifit_icon.xpm>
 #endif
-
-#define ID_SCRIPT 23463
 
 static bool GetOpenFilenames(std::vector<std::string> &fnames);
 static void SplitPath(const std::string& origPath,
@@ -127,12 +123,6 @@ EVT_UPDATE_UI(ID_HARDWARE_STEREO, MIMainWindow::OnUpdateHardwareStereo)
 EVT_MENU(ID_HARDWARE_STEREO, MIMainWindow::OnHardwareStereo)
 EVT_UPDATE_UI(ID_STEREO_TOGGLE, MIMainWindow::OnUpdateStereoToggle)
 EVT_MENU(ID_STEREO_TOGGLE, MIMainWindow::OnStereoToggle)
-EVT_MENU(ID_DO_RANDOM_TEST, MIMainWindow::OnDoRandomTest)
-EVT_MENU(ID_PLAY_HISTORY, MIMainWindow::OnPlayHistory)
-EVT_MENU(ID_RECORD_HISTORY, MIMainWindow::OnRecordHistory)
-EVT_MENU(ID_STOPRECORD_HISTORY, MIMainWindow::OnStopRecordingHistory)
-EVT_MENU(ID_MENU_VALIDATE, MIMainWidget::OnMenuValidate)
-EVT_MENU(ID_SCRIPT, MIMainWindow::OnScript)
 //
 EVT_MENU(ID_FILE_SAVE, MIGLWidget::OnFileSave)
 EVT_UPDATE_UI(ID_FILE_SAVE, MIMainWindow::HasCurrentMIGLWidget)
@@ -1316,23 +1306,6 @@ void MIMainWindow::OnScript() {
   MIMessageBox("Testing", "MIFit");
 }
 
-void MIMainWindow::OnDoRandomTest() {
-    // TODO remove
-}
-
-void MIMainWindow::OnPlayHistory() {
-    // TODO remove
-}
-
-void MIMainWindow::OnRecordHistory() {
-    // TODO remove
-}
-
-void MIMainWindow::OnStopRecordingHistory() {
-    // TODO remove
-}
-
-
 void MIMainWindow::OnSideChainTool() {
   QPoint pos=QCursor::pos();
   side_menu->doExec(pos);
@@ -1422,11 +1395,7 @@ void MIMainWindow::OpenFiles(const std::vector<std::string> &files, bool newWin)
 
      if (arg[0] == '-') {
        // command line switch
-       if (strcmp(arg, "-record") == 0) {
-         OnRecordHistory();
-       } else if (strcmp(arg, "-recordoff") == 0) {
-         OnStopRecordingHistory();
-       } else if (strcmp(arg, "-altTextRender") == 0) {
+       if (strcmp(arg, "-altTextRender") == 0) {
          MIConfig::Instance()->WriteProfileInt("View Parameters", "AlternateTextRendering", 1);
          OnExit();
        }
@@ -1980,7 +1949,6 @@ void MIMainWindow::createMenus()
   // Refine menu actions which have shortcuts must be immediately updated
   // when refinement state changes. They can't wait for the update which occurs
   // when the menu displays.
-  QAction* action;
   refi_menu = new MIMenu(*this);
   refineResidueAction = refi_menu->Append(ID_REFI_RESIDUE, "R&efine Residue\tCtrl+R", "Real-space refine the last picked residue", false);
   connect(MIFitGeomRefiner(), SIGNAL(isRefiningChanged(bool)),
@@ -2089,15 +2057,6 @@ void MIMainWindow::createMenus()
           this, SLOT(OnGLFormat()));
 
   help_menu->Append(ID_HELP, "&Help...");
-#ifdef DEBUG
-  help_menu->AppendSeparator();
-  help_menu->Append(ID_DO_RANDOM_TEST, "Debug: random tests");
-  help_menu->Append(ID_PLAY_HISTORY, "Debug: play history");
-  help_menu->Append(ID_RECORD_HISTORY, "Debug: record history");
-  help_menu->Append(ID_STOPRECORD_HISTORY, "Debug: stop recording history");
-  help_menu->Append(ID_MENU_VALIDATE,"Validate menu tree");
-  help_menu->Append(ID_SCRIPT, "Debug: script");
-#endif
 
   menu_bar->Append(file_menu, "&File");
   menu_bar->Append(di_menu, "&Dictionary");

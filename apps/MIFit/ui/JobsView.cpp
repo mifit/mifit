@@ -16,7 +16,6 @@
 #include "MIMenu.h"
 #include "MIQTreeWidget.h"
 
-#include "uitest.h"
 #include "ui/MIDialog.h"
 #include "id.h"
 

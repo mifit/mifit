@@ -32,7 +32,6 @@
 #include "TargaImage.h"
 #include "tools.h"
 #include "Xguicryst.h"
-#include "uitest.h"
 
 
 #include "MIMainWindow.h"

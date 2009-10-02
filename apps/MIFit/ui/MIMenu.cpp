@@ -4,8 +4,6 @@
 #include "MIEventHandler.h"
 #include "MIMainWindow.h"
 
-#include "uitest.h" // for IsInTestMode
-
 #include <algorithm>
 
 MIMenu::MIMenu(MIEventHandler &receiver, QWidget* parent)
@@ -272,7 +270,6 @@ bool MIMenu::validateActions() {
   }
 
   QList<QAction *> acts = actions();
-  int actionCount = acts.count();
   for (std::map<unsigned int, QAction*>::iterator i=_idToAction.begin();
        i!=_idToAction.end(); ++i) {
     unsigned int id=i->first;
@@ -315,114 +312,6 @@ bool MIMenu::validateUpdate(unsigned int id) {
 }
 
 
-bool MIMenu::DoExhaustiveTest(const std::vector<unsigned int> &exclusion_list, bool reverse) {
-  bool ret=true;
-
-
-  // do all submenus
-  if (!reverse) {
-    for (unsigned int i=0; i < _submenus.size(); ++i) {
-      if (!_submenus[i]->DoExhaustiveTest(exclusion_list))
-        ret=false;
-    }
-    // do all items in this menu
-
-    // critical: call all update code for this menu to make sure enabled state is correct
-    showHandler();
-
-    for (std::map<QAction*, unsigned int>::iterator i=_actionToId.begin();
-         i!=_actionToId.end(); ++i) {
-
-      if (std::find(exclusion_list.begin(), exclusion_list.end(), i->second) == exclusion_list.end()) {
-        // i.e. not in exclusion list
-        QAction *act=i->first;
-        if (act->isEnabled()) {
-          MIMainWindowRightFooter(Stringify(i->second));
-          act->trigger();
-          showHandler(); // critical: call all update code for this menu to make sure enabled state is correct
-        }
-      }
-    }
-
-
-  } else {
-    // reversed
-    for (unsigned int i=_submenus.size(); i > 0; --i) {
-      if (!_submenus[i-1]->DoExhaustiveTest(exclusion_list))
-        ret=false;
-    }
-
-    // critical: call all update code for this menu to make sure enabled state is correct
-    showHandler();
-
-    // do all items in this menu
-    for (std::map<QAction*, unsigned int>::reverse_iterator i=_actionToId.rbegin();
-         i!=_actionToId.rend(); ++i) {
-
-      if (std::find(exclusion_list.begin(), exclusion_list.end(), i->second) == exclusion_list.end()) {
-        // i.e. not in exclusion list
-        QAction *act=i->first;
-        if (act->isEnabled()) {
-          MIMainWindowRightFooter(Stringify(i->second));
-          act->trigger();
-          showHandler(); // critical: call all update code for this menu to make sure enabled state is correct
-        }
-      }
-    }
-  }
-
-
-
-  return ret;
-}
-
-#ifdef _WIN32
-#define random rand
-#endif
-bool MIMenu::DoRandomItem(const std::vector<unsigned int> &exclusion_list) {
-
-  unsigned long i=random()%2;
-  if (_submenus.size() && (i==1 || _actionToId.size() == 0)) {
-    //pick random submenu;
-    i=random()%_submenus.size();
-    return _submenus[i]->DoRandomItem(exclusion_list);
-  }
-
-  if (!_actionToId.size())
-    return true; // nothing to do, not an error.
-
-  // critical: call all update code for this menu to make sure enabled state is correct
-  showHandler();
-
-  // try 5 times to get a valid (non-excluded, enabled) entry in this menu
-  for (unsigned int trial=0; trial<5; ++trial) {
-
-    i=random()%_actionToId.size();
-    std::map<QAction*, unsigned int>::iterator j=_actionToId.begin();
-    for (unsigned tmp=0; tmp < i && j!=_actionToId.end(); ++tmp, ++j) {
-      ;
-    }
-
-    if (std::find(exclusion_list.begin(), exclusion_list.end(), j->second) == exclusion_list.end()) {
-      // i.e. not in exclusion list
-      QAction *act=j->first;
-      if (act->isEnabled()) {
-        MIMainWindowRightFooter(Stringify(j->second));
-        act->trigger();
-        return true;
-      }
-    }
-  }
-
-  return false;
-}
-
 QAction *MIMenu::doExec(const QPoint &p) {
-  if (IsInTestMode()) {
-    std::vector<unsigned int> excluded; // nothing excluded from popup menus
-    DoRandomItem(excluded);
-    return 0;
-  }
-
   return exec(p);
 }

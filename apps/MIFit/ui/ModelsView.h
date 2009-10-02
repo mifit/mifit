@@ -54,8 +54,6 @@ public:
   ModelsView(QWidget* parent);
   virtual ~ModelsView();
 
-  bool HandleHistory(MIData& data);
-  bool RandomTest();
 };
 
 #endif

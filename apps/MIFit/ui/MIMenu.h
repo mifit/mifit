@@ -58,12 +58,6 @@ class MIMenu : public QMenu
     // returns true if the every menu item has a handler registered
     bool validateUpdates();
 
-    // for testing, do single randomly-chosen item
-    bool DoRandomItem(const std::vector<unsigned int> &exclusion_list);
-
-    // for testing, do all all menu items, in order
-    bool DoExhaustiveTest(const std::vector<unsigned int> &exclusion_list, bool reverse=true);
-
     // do QMenu::exec(), respecting test mode
     QAction *doExec(const QPoint &p);
 

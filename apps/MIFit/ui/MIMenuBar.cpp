@@ -109,31 +109,3 @@ QAction *MIMenuBar::findAction(const std::string &line) {
   return 0;
 }
 
-bool MIMenuBar::DoExhaustiveTest(const std::vector<unsigned int> &exclusion_list, bool reverse) {
-  bool ret=true;
-  if (!reverse) {
-    for (unsigned int i=0; i < _menus.size(); ++i) {
-      if (!_menus[i]->DoExhaustiveTest(exclusion_list))
-        ret=false;
-    }
-  } else {
-    for (unsigned int i=_menus.size(); i > 0; --i) {
-      if (!_menus[i-1]->DoExhaustiveTest(exclusion_list))
-        ret=false;
-    }
-  }
-  return ret;
-}
-
-
-#ifdef _WIN32
-#define random rand
-#endif
-bool MIMenuBar::DoRandomItem(const std::vector<unsigned int> &exclusion_list) {
-  if (_menus.size()==0)
-    return false;
-
-  long i=random()%_menus.size();
-  return _menus[i]->DoRandomItem(exclusion_list);
-}
-

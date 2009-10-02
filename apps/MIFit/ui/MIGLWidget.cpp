@@ -79,7 +79,6 @@
 #include "molw.h"
 #include "surf.h"
 #include "tools.h"
-#include "uitest.h"
 
 
 using namespace std;
@@ -5279,10 +5278,7 @@ void MIGLWidget::OnRefiOptions() {
 
   g->dict.SetConstrainCA(data["ConstrainCA"].b);
   g->dict.SetConstrainEnds(data["ConstrainEnds"].b);
-  if (IsInTestMode())
-    g->SetVerbose(false); // logging errors is *way* more expensive than the actual refine!
-  else
-    g->SetVerbose(data["Verbose"].b);
+  g->SetVerbose(data["Verbose"].b);
   g->SetRefineWhileFit(data["RefineWhileFit"].b);
 
   g->dict.SetSigmaBond(data["SigmaBond"].f);
@@ -5293,9 +5289,6 @@ void MIGLWidget::OnRefiOptions() {
 }
 
 void MIGLWidget::OnRefiMolecule() {
-  //if (IsInTestMode()) //FIXME: don't leave this here!
-  //  return;
-
   if (MIBusyManager::instance()->Busy()) {
     return;
   }
@@ -9114,61 +9107,6 @@ void MIGLWidget::leaveEvent(QEvent *) {
 }
 
 
-bool MIGLWidget::PlaybackMouseHistory(MIData& data) {
-  std::string type = data["type"].str;
-  if (type == "slab") {
-    viewpoint->setfrontclip(data["frontclip"].f);
-    viewpoint->setbackclip(data["backclip"].f);
-  } else if (type == "zoom") {
-    viewpoint->zoom(data["zoom"].f);
-  } else if (type == "rot") {
-    viewpoint->rotate(data["xang"].f, data["yang"].f, data["zang"].f);
-  } else if (type == "frot") {
-    if (!IsFitting()) {
-      return false;
-    }
-    float xang, yang, zang;
-    xang = data["xang"].f;
-    yang = data["yang"].f;
-    zang = data["zang"].f;
-    fitmol->Rotate(xang, yang, zang, fitcenter.x(), fitcenter.y(), fitcenter.z(),
-      viewpoint, &CurrentAtoms);
-    UpdateCurrent();
-  } else if (type == "tran") {
-    if (!IsFitting()) {
-      return false;
-    }
-
-    float x, y, z;
-    x = data["x"].f;
-    y = data["y"].f;
-    z = data["z"].f;
-    fitmol->Translate(x, y, z, &CurrentAtoms);
-    UpdateCurrent();
-    fitcenter.translate(x, y, z);
-  } else if (type == "tors") {
-    if (!IsFitting() || !Torsioning) {
-      return false;
-    }
-
-    float ang;
-    ang = data["ang"].f;
-    fitmol->RotateTorsion(ang);
-    UpdateCurrent();
-  } else if (type == "pan") {
-    int x, y, z;
-    x = data["x"].i;
-    y = data["y"].i;
-    z = data["z"].i;
-    viewpoint->scroll(x, y, z);
-  } else {
-    return false;
-  }
-
-  ReDraw();
-  return true;
-}
-
 void MIGLWidget::closeEvent(QCloseEvent *event) {
   if (!OnSaveModified()) {
     event->ignore();
@@ -9445,11 +9383,6 @@ void MIGLWidget::OnRenderTargetSize() {
   scene->setTargetSize(size);
 }
 
-
-bool MIGLWidget::HandleHistory(MIData& data) {
-    // TODO remove
-  return true;
-}
 
 void MIGLWidget::OnUpdateRefiLigandFit(const MIUpdateEvent &pCmdUI) {
   pCmdUI.Enable(IsFitting() && fitres != NULL);

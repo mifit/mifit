@@ -32,7 +32,6 @@
 #include "MIMainWindow.h"
 #include "MIQTreeWidget.h"
 
-#include "uitest.h"
 #include "ui/MIDialog.h"
 
 #include "surf.h"
@@ -106,9 +105,6 @@ public:
   void setCurrentAtom(MIAtom* atom);
   MIAtom* getCurrentAtom();
   void stylizeAtom(MIAtom* atom);
-
-  bool HandleHistory(MIData& data);
-  bool RandomTest();
 
 private slots:
   void atomChanged(chemlib::MIMoleculeBase* model, chemlib::MIAtomList& atom);
@@ -345,16 +341,6 @@ void AtomsTree::stylizeAtom(MIAtom* atom) {
   item->setText(0, MIAtom::liststring(atom).c_str());
   item->setIcon(0,_imageList[ image]);
   item->setIcon(0,_imageList[ image ]);
-}
-
-bool AtomsTree::HandleHistory(MIData& data) {
-    // TODO remove
-  return false;
-}
-
-bool AtomsTree::RandomTest() {
-    // TODO remove
-  return true;
 }
 
 void AtomsTree::OnItemClicked(QTreeWidgetItem *item, int) {
@@ -635,9 +621,6 @@ public:
   void setCurrentResidue(RESIDUE* residue);
   RESIDUE* getCurrentResidue();
   void stylizeResidue(RESIDUE* residue);
-
-  bool HandleHistory(MIData& data);
-  bool RandomTest();
 
 private slots:
   void residuesToBeDeleted(chemlib::MIMoleculeBase* model, std::vector<chemlib::RESIDUE*>& residues);
@@ -930,16 +913,6 @@ void ResiduesTree::stylizeResidue(RESIDUE* residue) {
   item->setIcon(0,_imageList[ image]);
   item->setIcon(0,_imageList[ image ]);
   item->setText(0, RESIDUE::liststring(residue).c_str());
-}
-
-bool ResiduesTree::HandleHistory(MIData& data) {
-    // TODO remove
-  return false;
-}
-
-bool ResiduesTree::RandomTest() {
-    // TODO remove
-  return true;
 }
 
 void ResiduesTree::OnItemClicked(QTreeWidgetItem *item, int) {
@@ -1674,16 +1647,6 @@ QTreeWidgetItem* ModelsTree::FindLastModelItem() {
 }
 
 
-bool ModelsTree::HandleHistory(MIData& data) {
-    // TODO remove
-  return false;
-}
-
-bool ModelsTree::RandomTest() {
-    // TODO remove
-  return true;
-}
-
 void ModelsTree::contextMenuEvent(QContextMenuEvent* event) {
   ResetMenu(false);
 
@@ -1719,15 +1682,6 @@ void ModelsTree::OnItemClicked(QTreeWidgetItem *item, int) {
   } else if (data->map != NULL) {
     EMap* map = data->map;
     displaylist()->SetCurrentMap(map);
-    for (int i = 0; i < displaylist()->MapCount(); ++i) {
-      if (map == displaylist()->GetMap(i)) {
-        MIData values;
-        values["command"].str = "tree";
-        values["type"].str = "emap_selected";
-        values["map"].u = i;
-        break;
-      }
-    }
   } else if (data->chain != NULL) {
     setCurrentChain(data->chain);
     if (syncView) {
@@ -3563,46 +3517,6 @@ AtomsTree* ModelsView::GetCurrentAtomsTree() const {
     return NULL;
   }
   return panel->atomsTree;
-}
-
-bool ModelsView::HandleHistory(MIData& data) {
-
-  switch (data["type"].str[0]) {
-    case 'a':
-      return GetCurrentAtomsTree()->HandleHistory(data);
-      break;
-    case 'r':
-      return GetCurrentResiduesTree()->HandleHistory(data);
-      break;
-    case 'm':
-    case 'c':
-    case 'e':
-      return GetCurrentModelsTree()->HandleHistory(data);
-      break;
-  }
-  return true;
-}
-
-bool ModelsView::RandomTest() {
-  long mode = GetRand("which tree", 3);
-  switch (mode) {
-    case 0:
-      if (GetCurrentAtomsTree() != NULL) {
-        return GetCurrentAtomsTree()->RandomTest();
-      }
-      break;
-    case 1:
-      if (GetCurrentResiduesTree() != NULL) {
-        return GetCurrentResiduesTree()->RandomTest();
-      }
-      break;
-    case 2:
-      if (GetCurrentModelsTree() != NULL) {
-        return GetCurrentModelsTree()->RandomTest();
-      }
-      break;
-  }
-  return true;
 }
 
 #include "ModelsView.moc"

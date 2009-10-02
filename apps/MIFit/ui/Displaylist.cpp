@@ -14,7 +14,6 @@
 #include "id.h"
 #include "Displaylist.h"
 #include "molw.h"
-#include "uitest.h"
 
 using namespace std;
 using namespace chemlib;

@@ -110,8 +110,6 @@ public:
   bool GetCrystalCell(const char* crystal, float& a, float& b, float& c,float& alpha, float& beta, float& gamma);
   int GetCrystalNCSSymmops(const char* crystal, float ncrsymm[MISymmop::MAXNCRSYMMOPS][12]);
 
-  std::string GetHistoryFilename();
-
   MIPalette* GetLPpal() {return lpal; } // Returns a pointer to the palette.
 
   void backgroundColor();
