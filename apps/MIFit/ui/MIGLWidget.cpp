@@ -68,7 +68,6 @@
 #include "GLOverviewCanvas.h"
 #include "GLRenderer.h"
 #include "ui/MIDialog.h"
-#include "MIHistory.h"
 #include "MIMenu.h"
 #include "MIMainWindow.h"
 #include "MapSettings.h"
@@ -342,10 +341,6 @@ MIGLWidget::MIGLWidget() : MIEventHandler(MIMainWindow::instance()) {
 
   DoingRange = 0;
 
-  // add view to history before anything else, so that menus are associated with this view
-  MIGetHistory()->AddFrame(this);
-
-
   scene->renderer->setQGLWidget(this);
 
   annotationPickingRenderable = new CMolwViewAnnotationPickingRenderable(stereoView, frustum, this);
@@ -399,7 +394,6 @@ MIGLWidget::MIGLWidget() : MIEventHandler(MIMainWindow::instance()) {
 
 MIGLWidget::~MIGLWidget() {
 
-  MIGetHistory()->RemoveFrame(this);
   ViewController::instance()->viewDeactivated(this);
 
   delete Models;
@@ -591,10 +585,6 @@ void MIGLWidget::atomsDeleted(MIMoleculeBase*) {
 }
 
 void MIGLWidget::OnActivated() {
-  MIHistory* h = MIGetHistory();
-  if (h && h->IsRecording() && !h->IsRecordingPaused()) {
-    h->ActivateFrame(this);
-  }
   ViewController::instance()->viewActivated(this);
   Molecule* model = GetDisplaylist()->GetCurrentModel();
   if (model != NULL) {
@@ -883,7 +873,6 @@ void MIGLWidget::OnMouseMove(unsigned short nFlags, CPoint point) {
       values["command"].str = "mouse";
       values["type"].str = "zoom";
       values["zoom"].f = zang;
-      MIGetHistory()->AddCommand(values);
     } else if (nFlags & MK_LBUTTON && !DraggingSlab) {
       DraggingRotate = true;
       if (mousestart.y < 30) {
@@ -910,7 +899,6 @@ void MIGLWidget::OnMouseMove(unsigned short nFlags, CPoint point) {
       values["xang"].f = xang;
       values["yang"].f = yang;
       values["zang"].f = zang;
-      MIGetHistory()->AddCommand(values);
     }
     ReDraw();
   } else if (nFlags & MK_RBUTTON && !(nFlags & MK_LBUTTON)
@@ -947,7 +935,6 @@ void MIGLWidget::RightMouseDrag(CPoint d, float xang, float yang, float zang) {
         values["x"].f = x;
         values["y"].f = y;
         values["z"].f = z;
-        MIGetHistory()->AddCommand(values);
         UpdateCurrent();
         fitcenter.translate(x, y, z);
       }
@@ -973,7 +960,6 @@ void MIGLWidget::RightMouseDrag(CPoint d, float xang, float yang, float zang) {
         values["xang"].f = xang/3.0f;
         values["yang"].f = yang/3.0F;
         values["zang"].f = zang/3.0F;
-        MIGetHistory()->AddCommand(values);
         UpdateCurrent();
       }
       break;
@@ -984,7 +970,6 @@ void MIGLWidget::RightMouseDrag(CPoint d, float xang, float yang, float zang) {
         values["command"].str = "mouse";
         values["type"].str = "tors";
         values["ang"].f =(float)d.x;
-        MIGetHistory()->AddCommand(values);
         fitmol->RotateTorsion((float)d.x);
         char torval[100];
         if (fitmol->GetTorsionValue(torval, fitres)) {
@@ -1019,7 +1004,6 @@ void MIGLWidget::RightMouseDrag(CPoint d, float xang, float yang, float zang) {
         values["x"].i = x;
         values["y"].i = y;
         values["z"].i = z;
-        MIGetHistory()->AddCommand(values);
         break;
       }
   }
@@ -1083,7 +1067,6 @@ void MIGLWidget::MouseMoveXfit(unsigned short nFlags, CPoint point) {
       values["xang"].f = xang;
       values["yang"].f = yang;
       values["zang"].f = zang;
-      MIGetHistory()->AddCommand(values);
     }
     int save = viewpoint->GetBallandStick();
     if (save > ViewPoint::BALLANDSTICK) {
@@ -1100,7 +1083,6 @@ void MIGLWidget::MouseMoveXfit(unsigned short nFlags, CPoint point) {
     values["command"].str = "mouse";
     values["type"].str = "zoom";
     values["zoom"].f = zang;
-    MIGetHistory()->AddCommand(values);
     ReDraw();
   } else if ((nFlags & MK_MBUTTON) && !(nFlags & MK_LBUTTON) && !(nFlags & MK_RBUTTON)
              && (d.x != 0 || d.y != 0)) {
@@ -1131,21 +1113,18 @@ void MIGLWidget::OnLButtonUp(unsigned short  /* nFlags */, CPoint point) {
         MIData values;
         values["command"].str = "pick";
         values["type"].str = "clear";
-        MIGetHistory()->AddCommand(values);
         ReDraw();
       } else if (ShowStack && !AtomStack->empty() && AtomStack->PickHideBox(point.x, stereoView->getViewport()->getHeight() - point.y)) {
         AtomStack->ToggleMinMax();
         MIData values;
         values["command"].str = "pick";
         values["type"].str = "hide";
-        MIGetHistory()->AddCommand(values);
         ReDraw();
       } else if (ShowStack && !AtomStack->empty() && AtomStack->PickPopBox(point.x, stereoView->getViewport()->getHeight() - point.y)) {
         AtomStack->Pop();
         MIData values;
         values["command"].str = "pick";
         values["type"].str = "pop";
-        MIGetHistory()->AddCommand(values);
         ReDraw();
       } else {
         annotationPickingRenderable->setModels(models);
@@ -1164,7 +1143,6 @@ void MIGLWidget::OnLButtonUp(unsigned short  /* nFlags */, CPoint point) {
           values["command"].str="pick";
           values["type"].str="annotation";
           values["number"].u=ids[0];
-          MIGetHistory()->AddCommand(values);
         } else {
           prepareAtomPicking();
           ids = mousePicker->pick(point.x, point.y, frustum, atomPickingRenderable);
@@ -1190,9 +1168,6 @@ void MIGLWidget::OnLButtonUp(unsigned short  /* nFlags */, CPoint point) {
               {
                 RESIDUE* res1 = residue_from_atom(fitmol->getResidues(), atom1);
                 RESIDUE* res2 = residue_from_atom(fitmol->getResidues(), atom2);
-                MIGetHistory()->AddBondPick("pick",
-                  GetDisplaylist(),
-                  atom1, res1, fitmol, atom2, res2, fitmol);
                 AtomStack->Push(atom2, res2, fitmol);
                 AtomStack->Push(atom1, res1, fitmol);
               }
@@ -1207,9 +1182,6 @@ void MIGLWidget::OnLButtonUp(unsigned short  /* nFlags */, CPoint point) {
             select(mol, res, atom);
             if (res != NULL && mol != NULL) {
               AtomStack->Push(atom, res, mol);
-              MIGetHistory()->AddAtomPick("pick",
-                GetDisplaylist(),
-                atom, res, mol, false);
             }
           }
 
@@ -1309,7 +1281,6 @@ void MIGLWidget::OnLButtonDblClk(unsigned short  /* nFlags */, CPoint) {
     MIData values;
     values["command"].str = "pick";
     values["type"].str = "center";
-    MIGetHistory()->AddCommand(values);
   }
   doubleclicked = true;
 }
@@ -1354,7 +1325,6 @@ bool MIGLWidget::OnKeyDown(unsigned int nChar, unsigned int, unsigned int nFlags
   values["flags"].u = nFlags;
   values["x"].i=p.x();
   values["y"].i=p.y();
-  MIGetHistory()->AddCommand(values);
 
   bool xfit_mouse =Application::instance()->GetXfitMouseMode();
   switch (nChar) {
@@ -9207,7 +9177,6 @@ void MIGLWidget::closeEvent(QCloseEvent *event) {
 
   event->accept();
 
-  MIGetHistory()->RemoveFrame(this);
   ViewController::instance()->viewDeactivated(this);
 
 }
@@ -9260,7 +9229,6 @@ void MIGLWidget::doSlabDrag(int x, int y, int /* dx */, int dy) {
     values["type"].str = "slab";
     values["frontclip"].f = viewpoint->getfrontclip();
     values["backclip"].f = viewpoint->getbackclip();
-    MIGetHistory()->AddCommand(values);
   }
 }
 
@@ -9479,89 +9447,7 @@ void MIGLWidget::OnRenderTargetSize() {
 
 
 bool MIGLWidget::HandleHistory(MIData& data) {
-  if (data["command"].str == "pick") {
-    if (data["type"].str == "clear") {
-      AtomStack->Clear();
-    } else if (data["type"].str == "hide") {
-      AtomStack->ToggleMinMax();
-    } else if (data["type"].str == "pop") {
-      AtomStack->Pop();
-    } else if (data["type"].str == "annotation") {
-      Annotation* annot = annotationPickingRenderable->getAnnotation(data["number"].u);
-      Displaylist* models = GetDisplaylist();
-      if (models) {
-        CurrentAnnotation = annot;
-        Logger::log("Picked Annotation:");
-        Logger::log(annot->GetText());
-      }
-    } else if (data["type"].str == "center") {
-      // generated by double-click event
-      Molecule* mol;
-      RESIDUE* res;
-      MIAtom* atom;
-      AtomStack->Pop(atom, res, mol);
-      if (atom && res) {
-        recenter(res, atom);
-        //AtomStack->Push(atom,res,mol); // done by recenter
-      }
-    } else if (data["type"].str == "bond") {
-      unsigned int anum1 = 0, rnum1 = 0, mnum1 = 0;
-      unsigned int anum2 = 0, rnum2 = 0, mnum2 = 0;
-      Molecule* mol1 = 0, * mol2 = 0;
-      RESIDUE* res1 = 0, * res2 = 0;
-      MIAtom* atom1 = 0, * atom2 = 0;
-      anum1 = data["atom1"].u;
-      rnum1 = data["res1"].u;
-      mnum1 = data["mol1"].u;
-      anum2 = data["atom2"].u;
-      rnum1 = data["res1"].u;
-      mnum1 = data["mol2"].u;
-      if (!MIGetHistory()->PickDeSerialize(GetDisplaylist(), atom1, res1, mol1, anum1, rnum1, mnum1)
-          || !MIGetHistory()->PickDeSerialize(GetDisplaylist(), atom2, res2, mol2, anum2, rnum2, mnum2)) {
-        return false;
-      }
-
-      AtomStack->Push(atom2, res2, mol2);
-      AtomStack->Push(atom1, res1, mol1);
-      OnFitSetuptorsion();
-    } else if (data["type"].str == "atom") {
-      unsigned int anum = 0, rnum = 0, mnum = 0, recenter = 0;
-      Molecule* mol = 0;
-      RESIDUE* res = 0;
-      MIAtom* atom = 0;
-      anum = data["atom"].u;
-      rnum = data["res"].u;
-      mnum = data["mol"].u;
-      recenter = data["recenter"].b;
-      if (!MIGetHistory()->PickDeSerialize(GetDisplaylist(), atom, res, mol, anum, rnum, mnum)) {
-        return false;
-      }
-      select(mol, res, atom);
-      if (recenter) {
-        setFocusResidue(res, true);
-      } else {
-        AtomStack->Push(atom, res, mol);
-      }
-      PaletteChanged = true;
-      doRefresh();
-    } else {
-      // unrecognized keyword
-      return false;
-    }
-  } else if (data["command"].str == "key") {
-    unsigned int nChar, nFlags;
-    nChar = data["key"].u;
-    nFlags = data["flags"].u;
-    if (data.find("x") != data.end() && data.find("y") != data.end()) {
-      mouse.x = data["x"].i;
-      mouse.y = data["y"].i;
-    }
-    OnKeyDown(nChar, 0, nFlags);
-  } else {
-    // unrecognized prefix
-    return false;
-  }
-  ReDraw();
+    // TODO remove
   return true;
 }
 

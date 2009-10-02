@@ -51,7 +51,6 @@ void DictEditDialog::accept() {
   MIData values;
   values["command"].str = "dict";
   values["state"].str = "ok";
-  MIGetHistory()->AddCommand(values);
 
   QDialog::accept();
 }
@@ -62,7 +61,6 @@ void DictEditDialog::reject() {
   MIData values;
   values["command"].str = "dict";
   values["state"].str = "cancel";
-  MIGetHistory()->AddCommand(values);
 
   QDialog::reject();
 }

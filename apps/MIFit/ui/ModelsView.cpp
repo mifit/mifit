@@ -26,7 +26,6 @@
 #include "Application.h"
 
 #include "MIBitVector.h"
-#include "MIHistory.h"
 #include "MIMenu.h"
 #include "MIGLWidget.h"
 #include "MIEventHandler.h"
@@ -75,112 +74,6 @@ using namespace chemlib;
 
 bool syncView;
 typedef std::map<const char*, int> ImageIndexMap;
-
-static void BuildSelectedVector(QTreeWidget& tree, MIBitVector& bv) {
-  size_t count = bv.GetSize();
-
-   QTreeWidgetItemIterator it(&tree);
-   for (; *it; ++it) {
-     bv.Set(count++, (*it)->isSelected());
-   }
-}
-
-static void ApplySelectionVector(QTreeWidget& tree, const MIBitVector& bv) {
-  unsigned int current = 0;
-  size_t count = bv.GetSize();
-
-   QTreeWidgetItemIterator it(&tree);
-   for (; *it && current < count; ++it) {
-     (*it)->setSelected(bv.IsSet(current++));
-   }
-}
-
-static void SelectionToHistory(QTreeWidget& tree, const std::string& type) {
-  MIBitVector bv;
-  BuildSelectedVector(tree, bv);
-  std::string ss = bv.ToHexString().c_str();
-  MIData values;
-  values["command"].str = "tree";
-  values["type"].str = type;
-  values["sel"].str = ss;
-  MIGetHistory()->AddCommand(values);
-}
-
-static void HistoryToSelection(QTreeWidget& tree, const std::string& bvdat) {
-  MIBitVector bv(bvdat);
-  tree.clearSelection();
-  ApplySelectionVector(tree, bv);
-}
-
-static bool SendToHistory(const std::string& type, bool syncview, Displaylist* dl,
-                          Molecule* model, RESIDUE* res, MIAtom* atom) {
-  MIHistory* h = MIGetHistory();
-  unsigned int anum = 0, rnum = 0, mnum = 0;
-
-  if (!h->PickSerialize(dl, atom, res, model, anum, rnum, mnum)) {
-    return false;
-  }
-  MIData values;
-  values["command"].str = "tree";
-  values["type"].str = type;
-  values["sync"].b = syncview;
-  values["atom"].u = anum;
-  values["res"].u = rnum;
-  values["mol"].u = mnum;
-  return h->AddCommand(values);
-}
-
-static void RandomizeTree(QTreeWidget& tree, const std::string& type, bool single_only) {
-  MIBitVector bv;
-  BuildSelectedVector(tree, bv);
-  size_t size = bv.GetSize();
-  for (size_t i = 0; i < size; ++i) {
-    bv.Set(i, false);
-  }
-
-  long mode;
-  if (single_only) {
-    mode = 0;
-  } else {
-    mode = GetRand("tree randomization mode", 3);
-  }
-
-  long sel1 = 0, sel2 = 0;
-
-  switch (mode) {
-    case 0: // single
-      sel1 = GetRand("single tree selection", (long)size);
-      bv.Set(sel1, true);
-      break;
-    case 1: // range
-      sel2 = GetRand("tree range selection end", (long)size);
-      sel1 = GetRand("tree range selection begin", (long)sel2);
-      for (long i = sel1; i < sel2; ++i) {
-        bv.Set(i, true);
-      }
-      break;
-    case 2: // all
-      for (size_t i = 0; i < size; ++i) {
-        bv.Set(i, true);
-      }
-      break;
-  }
-
-  tree.clearSelection();
-  ApplySelectionVector(tree, bv);
-
-  std::string ss = bv.ToHexString().c_str();
-  MIData values;
-  values["command"].str = "tree";
-  values["type"].str = type;
-  values["sel"].str = ss;
-  MIGetHistory()->AddCommand(values);
-}
-
-static void RandomMenu(MIMenu* menu) {
-  std::vector<unsigned int> excluded_items;
-  menu->DoRandomItem(excluded_items);
-}
 
 class AtomsTree : public MIQTreeWidget, public MIEventHandler {
   Q_OBJECT
@@ -270,7 +163,6 @@ AtomsTree::AtomsTree(QWidget* parent)
   _menu->addMenu(solidSurfMenu);
   connect(solidSurfMenu, SIGNAL(aboutToShow()), this, SLOT(updateSolidSurfMenu()));
 
-  MIGetHistory()->AddMenu(_menu, "AtomsTreePopup");
   _working = false;
 
 
@@ -291,7 +183,6 @@ END_EVENT_TABLE()
 
 AtomsTree::~AtomsTree() {
   setVisible(false);
-  MIGetHistory()->RemoveMenu(_menu);
   delete _menu;
 }
 
@@ -457,56 +348,12 @@ void AtomsTree::stylizeAtom(MIAtom* atom) {
 }
 
 bool AtomsTree::HandleHistory(MIData& data) {
-  unsigned int anum, rnum, mnum, sync;
-
-  if (data["type"].str == "atoms") {
-    _working = true;
-    HistoryToSelection(*this, data["sel"].str);
-    _working = false;
-    return true;
-  } else if (data["type"].str == "atom_selected") {
-    sync = data["sync"].b;
-    anum = data["atom"].u;
-    rnum = data["res"].u;
-    mnum = data["mol"].u;
-    MIAtom* atom;
-    RESIDUE* res;
-    Molecule* mol;
-    if (!MIGetHistory()->PickDeSerialize(
-          view->GetDisplaylist(),
-          atom, res, mol, anum, rnum, mnum)) {
-      return false;
-    }
-    setCurrentAtom(atom);
-    if (sync) {
-      view->select(mol, res, atom);
-    }
-    return true;
-  } else if (data["type"].str == "atom_activated") {
-    sync = data["sync"].b;
-    anum = data["atom"].u;
-    rnum = data["res"].u;
-    mnum = data["mol"].u;
-    MIAtom* atom;
-    RESIDUE* res;
-    Molecule* mol;
-    if (!MIGetHistory()->PickDeSerialize(
-          view->GetDisplaylist(),
-          atom, res, mol, anum, rnum, mnum)) {
-      return false;
-    }
-    view->moveTo(atom->x(), atom->y(), atom->z());
-    return true;
-  }
+    // TODO remove
   return false;
 }
 
 bool AtomsTree::RandomTest() {
-  _working = true;
-  RandomizeTree(*this, "atoms", false);
-  _working = false;
-
-  RandomMenu(_menu);
+    // TODO remove
   return true;
 }
 
@@ -520,17 +367,12 @@ void AtomsTree::OnItemClicked(QTreeWidgetItem *item, int) {
     return;
   }
 
-  SelectionToHistory(*this, "atoms");
-
   if (data->atom != NULL) {
     MIAtom* atom = data->atom;
     setCurrentAtom(atom);
     if (syncView && currentAtom != NULL) {
       view->select(model, residue, currentAtom);
     }
-    SendToHistory("atom_selected", syncView,
-      view->GetDisplaylist(),
-      model, residue, currentAtom);
   }
 }
 
@@ -542,9 +384,6 @@ void AtomsTree::OnItemActivated(QTreeWidgetItem *item, int) {
   if (data->atom != NULL) {
     MIAtom* atom = data->atom;
     view->moveTo(atom->x(), atom->y(), atom->z());
-    SendToHistory("atom_activated", false,
-      view->GetDisplaylist(),
-      model, residue, atom);
   }
 }
 
@@ -556,8 +395,6 @@ void AtomsTree::contextMenuEvent(QContextMenuEvent* event) {
     item->setSelected(true);
   }
   if (selectedItems().size()) {
-    SelectionToHistory(*this, "atoms");
-
     _menu->doExec(QCursor::pos());
   }
 }
@@ -870,7 +707,6 @@ ResiduesTree::ResiduesTree(QWidget* parent)
   _menu->addMenu(solidSurfMenu);
   connect(solidSurfMenu, SIGNAL(aboutToShow()), this, SLOT(updateSolidSurfMenu()));
 
-  MIGetHistory()->AddMenu(_menu, "ResiduesTreePopup");
   _working = false;
 
 
@@ -895,7 +731,6 @@ END_EVENT_TABLE()
 
 ResiduesTree::~ResiduesTree() {
   setVisible(false);
-  MIGetHistory()->RemoveMenu(_menu);
   delete _menu;
 }
 
@@ -1098,64 +933,12 @@ void ResiduesTree::stylizeResidue(RESIDUE* residue) {
 }
 
 bool ResiduesTree::HandleHistory(MIData& data) {
-  unsigned int anum, rnum, mnum, sync;
-
-  if (data["type"].str == "residues") {
-    _working = true;
-    HistoryToSelection(*this, data["sel"].str);
-    _working = false;
-    return true;
-  } else if (data["type"].str == "residue_selected") {
-    sync = data["sync"].b;
-    anum = data["atom"].u;
-    rnum = data["res"].u;
-    mnum = data["mol"].u;
-    MIAtom* atom;
-    RESIDUE* res;
-    Molecule* mol;
-    if (!MIGetHistory()->PickDeSerialize(
-          view->GetDisplaylist(),
-          atom, res, mol, anum, rnum, mnum)) {
-      return false;
-    }
-    setCurrentResidue(res);
-    if (sync) {
-      view->select(mol, res, atom);
-    }
-    return true;
-  } else if (data["type"].str == "residue_activated") {
-    sync = data["sync"].b;
-    anum = data["atom"].u;
-    rnum = data["res"].u;
-    mnum = data["mol"].u;
-    MIAtom* atom;
-    RESIDUE* res;
-    Molecule* mol;
-    if (!MIGetHistory()->PickDeSerialize(
-          view->GetDisplaylist(),
-          atom, res, mol, anum, rnum, mnum)) {
-      return false;
-    }
-    view->setFocusResidue(res);
-    return true;
-  }
+    // TODO remove
   return false;
 }
 
 bool ResiduesTree::RandomTest() {
-  _working = true;
-  RandomizeTree(*this, "residues", false);
-  _working = false;
-
-  if (Application::instance()->GetResidueBuffer() == NULL) {
-    _menu->Enable(ID_MODELSVIEW_RESIDUESTREE_INSERT, false);
-    _menu->Enable(ID_MODELSVIEW_RESIDUESTREE_PASTE, false);
-  } else {
-    _menu->Enable(ID_MODELSVIEW_RESIDUESTREE_INSERT, true);
-    _menu->Enable(ID_MODELSVIEW_RESIDUESTREE_PASTE, true);
-  }
-
-  RandomMenu(_menu);
+    // TODO remove
   return true;
 }
 
@@ -1169,16 +952,12 @@ void ResiduesTree::OnItemClicked(QTreeWidgetItem *item, int) {
     return;
   }
 
-  SelectionToHistory(*this, "residues");
   if (data->residue != NULL) {
     RESIDUE* residue = data->residue;
     setCurrentResidue(residue);
     if (syncView && currentResidue != NULL) {
       view->select(model, currentResidue, atomsTree->getCurrentAtom());
     }
-    SendToHistory("residue_selected", syncView,
-      view->GetDisplaylist(),
-      model, currentResidue, atomsTree->getCurrentAtom());
   }
 }
 
@@ -1191,9 +970,6 @@ void ResiduesTree::OnItemActivated(QTreeWidgetItem *item, int) {
     if (data->residue != NULL) {
       RESIDUE* residue = data->residue;
       view->setFocusResidue(residue);
-      SendToHistory("residue_activated", 0,
-        view->GetDisplaylist(),
-        model, residue, atomsTree->getCurrentAtom());
     }
   }
 }
@@ -1214,8 +990,6 @@ void ResiduesTree::contextMenuEvent(QContextMenuEvent* event) {
     item->setSelected(true);
   }
   if (selectedItems().size()) {
-    SelectionToHistory(*this, "residues");
-
     _menu->doExec(QCursor::pos());
   }
 }
@@ -1845,7 +1619,6 @@ ModelsTree::ModelsTree(QWidget* parent)
   _menu_item_ids.push_back(ID_MODELSVIEW_MODELSTREE_MODELEXPORT);
   _menu_item_ids.push_back(ID_MODELSVIEW_MODELSTREE_SAVETOCRYSTALS);
   //_menu_item_ids.push_back(ID_SOLIDSURFACE_MENU);
-  MIGetHistory()->AddMenu(_menu, "ModelsTreePopup");
   _working = false;
 
 
@@ -1880,7 +1653,6 @@ END_EVENT_TABLE()
 }
 
 ModelsTree::~ModelsTree() {
-  MIGetHistory()->RemoveMenu(_menu);
   delete _menu;
 }
 
@@ -1903,79 +1675,12 @@ QTreeWidgetItem* ModelsTree::FindLastModelItem() {
 
 
 bool ModelsTree::HandleHistory(MIData& data) {
-  unsigned int anum, rnum, mnum, sync;
-
-  if (data["type"].str == "models") {
-    _working = true;
-    HistoryToSelection(*this, data["sel"].str);
-    _working = false;
-    return true;
-  } else if (data["type"].str == "model_selected") {
-    sync = data["sync"].b;
-    anum = data["atom"].u;
-    rnum = data["res"].u;
-    mnum = data["mol"].u;
-    MIAtom* atom;
-    RESIDUE* res;
-    Molecule* mol;
-    if (!MIGetHistory()->PickDeSerialize(
-          view->GetDisplaylist(),
-          atom, res, mol, anum, rnum, mnum)) {
-      return false;
-    }
-    displaylist()->SetCurrent(mol);
-    return true;
-  } else if (data["type"].str == "chain_selected") {
-    sync = data["sync"].b;
-    anum = data["atom"].u;
-    rnum = data["res"].u;
-    mnum = data["mol"].u;
-    MIAtom* atom;
-    RESIDUE* res;
-    Molecule* mol;
-    if (!MIGetHistory()->PickDeSerialize(
-          view->GetDisplaylist(),
-          atom, res, mol, anum, rnum, mnum)) {
-      return false;
-    }
-    setCurrentChain(res);
-    if (sync) {
-      view->select(mol, res, atom);
-    }
-    return true;
-  } else if (data["type"].str == "chain_activated") {
-    sync = data["sync"].b;
-    anum = data["atom"].u;
-    rnum = data["res"].u;
-    mnum = data["mol"].u;
-    MIAtom* atom;
-    RESIDUE* res;
-    Molecule* mol;
-    if (!MIGetHistory()->PickDeSerialize(
-          view->GetDisplaylist(),
-          atom, res, mol, anum, rnum, mnum)) {
-      return false;
-    }
-    view->setFocusResidue(res);
-    return true;
-  } else if (data["type"].str == "emap_selected") {
-    mnum = data["map"].u;
-    if (mnum < (unsigned int)displaylist()->MapCount()) {
-      displaylist()->SetCurrentMap(displaylist()->GetMap(mnum));
-      return true;
-    }
-  }
+    // TODO remove
   return false;
 }
 
 bool ModelsTree::RandomTest() {
-  _working = true;
-  RandomizeTree(*this, "models", true);
-  _working = false;
-
-  ResetMenu(false);
-  RandomMenu(_menu);
-  ResetMenu(true);
+    // TODO remove
   return true;
 }
 
@@ -1993,8 +1698,6 @@ void ModelsTree::contextMenuEvent(QContextMenuEvent* event) {
     displaylist()->SetCurrentMap(data->map);
   }
   if (selectedItems().size()) {
-    SelectionToHistory(*this, "models");
-
     _menu->doExec(QCursor::pos());
   }
 
@@ -2010,14 +1713,9 @@ void ModelsTree::OnItemClicked(QTreeWidgetItem *item, int) {
     return;
   }
 
-  SelectionToHistory(*this, "models");
-
   if (data->model != NULL) {
     Molecule* model = data->model;
     displaylist()->SetCurrent(model);
-    SendToHistory("model_selected", syncView,
-      view->GetDisplaylist(),
-      model, 0, 0);
   } else if (data->map != NULL) {
     EMap* map = data->map;
     displaylist()->SetCurrentMap(map);
@@ -2027,7 +1725,6 @@ void ModelsTree::OnItemClicked(QTreeWidgetItem *item, int) {
         values["command"].str = "tree";
         values["type"].str = "emap_selected";
         values["map"].u = i;
-        MIGetHistory()->AddCommand(values);
         break;
       }
     }
@@ -2036,8 +1733,6 @@ void ModelsTree::OnItemClicked(QTreeWidgetItem *item, int) {
     if (syncView) {
       view->select(residuesTree->getModel(), residuesTree->getCurrentResidue(), atomsTree->getCurrentAtom());
     }
-    SendToHistory("chain_selected", syncView,
-      view->GetDisplaylist(), 0, data->chain, 0);
   }
 }
 
@@ -2324,9 +2019,6 @@ void ModelsTree::OnItemActivated(QTreeWidgetItem* item, int) {
   if (data->chain != NULL) {
     RESIDUE* residue = data->chain;
     view->setFocusResidue(residue);
-    SendToHistory("chain_activated", 0,
-      view->GetDisplaylist(),
-      currentModel, residue, atomsTree->getCurrentAtom());
   }
 }
 

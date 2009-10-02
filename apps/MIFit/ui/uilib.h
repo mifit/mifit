@@ -17,7 +17,6 @@
 #include "MapSettings.h"
 #include "EMap.h"
 #include "GLRenderer.h"
-#include "MIHistory.h"
 #include "id.h"
 #include "macafxwin.h"
 

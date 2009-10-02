@@ -19,7 +19,6 @@
 #include "uitest.h"
 #include "ui/MIDialog.h"
 #include <util/FileIo.h>
-#include "MIHistory.h"
 #include "MIMainWindow.h"
 #include "molw.h" // for cursors
 
@@ -49,10 +48,6 @@ int PaletteChanged = true;
 
 using namespace std;
 using namespace chemlib;
-
-#include <QTemporaryFile>
-
-static QTemporaryFile *HISTORY_TEMP_FILE=0;
 
 /*
  * tilde expand a file name
@@ -327,8 +322,6 @@ Application::~Application() {
   }
   delete geomrefiner;
 
-  delete MIGetHistory();
-  delete HISTORY_TEMP_FILE; // removes file
 
 }
 
@@ -629,11 +622,8 @@ public:
 
 std::string Application::GetHistoryFilename()
 {
-  if (!HISTORY_TEMP_FILE) {
-    HISTORY_TEMP_FILE=new QTemporaryFile("MIHistory");
-    HISTORY_TEMP_FILE->open(); // necessary to create full filename
-  }
-  return HISTORY_TEMP_FILE->fileName().toStdString();
+    // TODO remove
+  return "";
 }
 
 

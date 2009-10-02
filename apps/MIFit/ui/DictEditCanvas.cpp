@@ -37,7 +37,6 @@
 #include "Displaylist.h"
 #include "GLRenderer.h"
 #include "MIMolIO.h"
-#include "MIHistory.h"
 #include "Application.h"
 
 #include "molw.h"
@@ -182,8 +181,6 @@ DictEditCanvas::DictEditCanvas(DictEditDialog *daddy)
 }
 
 DictEditCanvas::~DictEditCanvas() {
-  MIGetHistory()->RemoveMenuBar(menuBar);
-  MIGetHistory()->RemoveMenu(popupMenu);
 
   geomrefiner->unlockRefineTarget();
   delete cameraMouseOrbitor;
@@ -250,7 +247,6 @@ DictEditCanvas::~DictEditCanvas() {
 
 void DictEditCanvas::createMenus() {
   menuBar = new MIMenuBar(parent->getMenuBar());
-  MIGetHistory()->AddMenuBar(menuBar, "Dictionary editor");
 
   BEGIN_EVENT_TABLE(this, ignored);
 
@@ -339,7 +335,6 @@ void DictEditCanvas::createMenus() {
 
 
   popupMenu = new MIMenu(*this, this);
-  MIGetHistory()->AddMenu(popupMenu, "DictEditorPopup");
 
   popupMenu->Append(ID_POPUP_LINES, "Line");
   EVT_MENU(ID_POPUP_LINES, DictEditCanvas::OnPopupMenu)

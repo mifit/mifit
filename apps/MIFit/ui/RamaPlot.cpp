@@ -13,7 +13,6 @@
 #include "RamaPlot.h"
 #include "molw.h"
 #include "asplib.h"
-#include "MIHistory.h"
 #include "Xguicryst.h"
 
 
@@ -201,30 +200,8 @@ void RamaPlotMgr::operator()(int keycode, bool shift) {
   //do the torsion via the CMolView's facilities
   _view->FitTorsion(mode.c_str());
   _view->fitmol->RotateTorsion(increment);
-  MIData data;
-  data["command"].str = "rama";
-  data["type"].str = mode;
-  data["inc"].f = increment;
-  MIGetHistory()->AddCommand(data);
   _view->UpdateCurrent();
   _view->ReDraw();
-}
-
-static bool SendToHistory(const std::string& type, Displaylist* dl,
-                          Molecule* model, RESIDUE* res, MIAtom* atom) {
-  MIHistory* h = MIGetHistory();
-  unsigned int anum = 0, rnum = 0, mnum = 0;
-
-  if (!h->PickSerialize(dl, atom, res, model, anum, rnum, mnum)) {
-    return false;
-  }
-  MIData data;
-  data["command"].str = "rama";
-  data["type"].str = type;
-  data["atom"].u = anum;
-  data["res"].u = rnum;
-  data["mol"].u = mnum;
-  return MIGetHistory()->AddCommand(data);
 }
 
 void RamaPlotMgr::operator()(const GR_POINT& gr) {
@@ -232,7 +209,6 @@ void RamaPlotMgr::operator()(const GR_POINT& gr) {
   if (Residue::isValid(res)) {
     if (_view) {
       _view->setFocusResidue(res, true);
-      SendToHistory("focus", _view->GetDisplaylist(), 0, res, 0);
     }
   }
 }

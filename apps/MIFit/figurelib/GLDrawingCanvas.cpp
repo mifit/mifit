@@ -2,7 +2,6 @@
 
 #include "GLDrawingCanvas.h"
 #include "ui/id.h"
-#include "ui/MIHistory.h"
 #include "ui/MIDialog.h"
 
 #include "ui/MIMenuBar.h"
@@ -44,7 +43,6 @@ GLDrawingCanvas::GLDrawingCanvas(QWidget *parent) :
   orig_x(0.0f), orig_y(0.0f), dim_x(1.0f), dim_y(1.0f), _selected_item(UINT_MAX) {
 
   menuBar = new MIMenuBar(new QMenuBar(parent));
-  MIGetHistory()->AddMenuBar(menuBar, "ActiveSitePlot");
 
   MIMenu* menuFile = new MIMenu(*this,this);
   MIMenu* menuEdit = new MIMenu(*this,this);
@@ -89,7 +87,6 @@ GLDrawingCanvas::GLDrawingCanvas(QWidget *parent) :
 }
 
 GLDrawingCanvas::~GLDrawingCanvas() {
-  MIGetHistory()->RemoveMenuBar(menuBar);
 }
 
 

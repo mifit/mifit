@@ -11,7 +11,6 @@
 #include <map/maplib.h>
 
 #include "ui/MIMainWindow.h"
-#include "ui/MIHistory.h" // from ui
 
 #include "MIDialog.h"
 
@@ -74,36 +73,14 @@ void ValidateData(const MIData& data)
 }
 
 bool MIDialog::GetResults(MIData& data) {
-  // possibly get result from history
-  std::string line;
-  MIHistory *h=MIGetHistory();
-  if (h && h->GetDialogResponse(line)) {
-    return MIHistory::StringToCommand(line, data);
-  }
 
   bool ret;
 
   if (IsRandom) {
     ret = RandomResults(data);
   } else {
-    h->PauseRecording();
     ValidateData(data);
     ret = PromptForResults(data);
-    h->ResumeRecording();
-  }
-
-  if (h && h->IsRecording() && !h->IsRecordingPaused()) {
-    h->AddComment(_name);
-
-    std::string str;
-    if (ret) {
-      data["command"].str = "dialog";
-      MIGetHistory()->AddCommand(data);
-    } else {
-      MIData emptyData;
-      emptyData["command"].str = "dialog";
-      MIGetHistory()->AddCommand(emptyData);
-    }
   }
 
   return ret;

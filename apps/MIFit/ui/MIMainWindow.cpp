@@ -23,7 +23,6 @@
 #include "ModelsView.h"
 #include "MIMolIO.h"
 #include "molw.h"
-#include "MIHistory.h"
 #include "uitest.h"
 #include "MIDialog.h"
 //#include "preferences/MapPreferencesPanel.h"
@@ -36,7 +35,6 @@
 #include "MIMenuBar.h"
 #include "MIToolBar.h"
 #include "MIGLWidget.h"
-#include "MIHistory.h"
 #include "Application.h"
 #include "uitest.h"
 #include "id.h"
@@ -935,17 +933,6 @@ void MIMainWindow::OnLoadDictReplace() {
 
 void MIMainWindow::ShowDictEditor(const char* type) {
 
-  //FIXME: this is essentially a ShowModal, and should be converted to
-  //MIDialog!  Till then, don't do this in testing mode
-  if (IsInTestMode()) {
-    MIFitGeomRefiner()->EditEntryCleanup(true);  // otherwise we leak memory
-    MIData values;
-    values["command"].str = "dict";
-    values["state"].str = "cancel";
-    MIGetHistory()->AddCommand(values); // tell playback to dismiss dialog
-    return;
-  }
-
   // note this dialog is dynamcially allocated, and is deleted when closed.
   // this is so that history can function
   std::string s= ::format("Dictionary Editor - %s", type);
@@ -1330,25 +1317,19 @@ void MIMainWindow::OnScript() {
 }
 
 void MIMainWindow::OnDoRandomTest() {
-  TestMode();
+    // TODO remove
 }
 
 void MIMainWindow::OnPlayHistory() {
-  std::string fname = MIFileSelector("Select history file");
-  if (fname.size()) {
-    MIGetHistory()->Play(fname);
-  }
+    // TODO remove
 }
 
 void MIMainWindow::OnRecordHistory() {
-  std::string fname = Application::instance()->GetHistoryFilename();
-  if (fname.size()) {
-    MIGetHistory()->Record(fname);
-  }
+    // TODO remove
 }
 
 void MIMainWindow::OnStopRecordingHistory() {
-  MIGetHistory()->StopRecording();
+    // TODO remove
 }
 
 
@@ -1458,13 +1439,6 @@ void MIMainWindow::OpenFiles(const std::vector<std::string> &files, bool newWin)
     std::string ss=s.toStdString();
     arg=ss.c_str();
     const char *ext=file_extension(arg);
-
-    if (strcmp(ext, ".mih") == 0) {
-      // play history file
-      setCurrentFile(arg);
-      MIGetHistory()->Play(arg);
-      continue;
-    }
 
     if (!is_valid_extension(ext)) {
       Log(::format("Unknown file type %s, ingoring.",arg));
@@ -2124,8 +2098,6 @@ void MIMainWindow::createMenus()
   help_menu->Append(ID_MENU_VALIDATE,"Validate menu tree");
   help_menu->Append(ID_SCRIPT, "Debug: script");
 #endif
-
-  MIGetHistory()->AddMenuBar(menu_bar, "MIFit"); // removed in closeEvent
 
   menu_bar->Append(file_menu, "&File");
   menu_bar->Append(di_menu, "&Dictionary");

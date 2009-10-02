@@ -3,7 +3,6 @@
 #include "MIMenu.h"
 #include "MIEventHandler.h"
 #include "MIMainWindow.h"
-#include "MIHistory.h"
 
 #include "uitest.h" // for IsInTestMode
 
@@ -133,8 +132,6 @@ void MIMenu::triggered(bool state)
   }
 
   unsigned int id=_actionToId[action];
-  if (MIGetHistory())
-    MIGetHistory()->AddMenuEvent(id);
 
   // send enhanced signal to registered receiver or main window
   MIActionEvent ae(action,id,state);
@@ -276,7 +273,6 @@ bool MIMenu::validateActions() {
 
   QList<QAction *> acts = actions();
   int actionCount = acts.count();
-  Logger::debug("%d actions", actionCount);
   for (std::map<unsigned int, QAction*>::iterator i=_idToAction.begin();
        i!=_idToAction.end(); ++i) {
     unsigned int id=i->first;
