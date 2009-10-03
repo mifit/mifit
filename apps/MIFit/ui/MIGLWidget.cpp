@@ -1,17 +1,10 @@
-#include "MIGLWidget.h"
-
+#include <vector>
 #include <algorithm>
 #include <cstring>
-#include <chemlib/chemlib.h>
-#include <chemlib/RESIDUE_.h>
-#include <conflib/conflib.h>
-#include <figurelib/figurelib.h>
-#include <math/mathlib.h>
+
 #include <math/Vector3.h>
 #include <math/Matrix3.h>
 #include <math/Quaternion.h>
-#include <map/maplib.h>
-#include <nongui/nonguilib.h>
 #include <opengl/Camera.h>
 #include <opengl/Frustum.h>
 #include <opengl/OpenGL.h>
@@ -21,53 +14,6 @@
 #include <opengl/Viewport.h>
 #include <opengl/interact/MousePicker.h>
 #include <opengl/interact/TargetFeedback.h>
-#include <QApplication>
-#include <QClipboard>
-#include <QCloseEvent>
-#include <QDialog>
-#include <QDialogButtonBox>
-#include <QDir>
-#include <QFileDialog>
-#include <QLabel>
-#include <QMdiArea>
-#include <QMdiSubWindow>
-#include <QMenuBar>
-#include <QMessageBox>
-#include <QPainter>
-#include <QPrintDialog>
-#include <QPrinter>
-#include <QRect>
-#include <QResizeEvent>
-#include <QString>
-#include <QVBoxLayout>
-#include <util/utillib.h>
-#include <vector>
-
-#include "Application.h"
-#include "asplib.h"
-#include "core/corelib.h"
-#include "CMolwViewAnnotationPickingRenderable.h"
-#include "CMolwViewAtomPickingRenderable.h"
-#include "CMolwViewBondPickingRenderable.h"
-#include "CMolwViewScene.h"
-#include "CMolwViewSlabPickingRenderable.h"
-#include "Displaylist.h"
-#include "EMap.h"
-#include "GLOverviewCanvas.h"
-#include "GLRenderer.h"
-#include "id.h"
-#include "jobs/jobslib.h"
-#include "MapSettings.h"
-#include "MIGLWidget.h"
-#include "MIMainWindow.h"
-#include "MIMenu.h"
-#include "MoleculeXmlHandler.h"
-#include "molw.h"
-#include "RamaPlot.h"
-#include "surf.h"
-#include "tools.h"
-#include "ui/MIDialog.h"
-#include "Xguicryst.h"
 
 #ifndef _WIN32
 #include <unistd.h>
@@ -76,6 +22,65 @@
 #define strncasecmp strnicmp
 #endif
 
+#include <QDir>
+#include <QString>
+#include <QMenuBar>
+#include <QResizeEvent>
+#include <QCloseEvent>
+#include <QApplication>
+#include <QClipboard>
+#include <QPrinter>
+#include <QPrintDialog>
+#include <QPainter>
+#include <QRect>
+#include <QVBoxLayout>
+#include <QDialog>
+#include <QDialogButtonBox>
+#include <QMdiArea>
+#include <QMdiSubWindow>
+#include <QMessageBox>
+#include <QLabel>
+
+#include <nongui/nonguilib.h>
+#include <math/mathlib.h>
+#include <chemlib/chemlib.h>
+#include <chemlib/RESIDUE_.h>
+#include <conflib/conflib.h>
+#include <map/maplib.h>
+#include "core/corelib.h"
+#include <util/utillib.h>
+
+#include <figurelib/figurelib.h>
+#include "jobs/jobslib.h"
+
+
+#include "CMolwViewScene.h"
+#include "CMolwViewAnnotationPickingRenderable.h"
+#include "CMolwViewAtomPickingRenderable.h"
+#include "CMolwViewBondPickingRenderable.h"
+#include "CMolwViewSlabPickingRenderable.h"
+
+#include "RamaPlot.h"
+
+#include "Application.h"
+#include "Displaylist.h"
+#include "EMap.h"
+#include "GLOverviewCanvas.h"
+#include "GLRenderer.h"
+#include "ui/MIDialog.h"
+#include "MIMenu.h"
+#include "MIMainWindow.h"
+#include "MapSettings.h"
+#include "MoleculeXmlHandler.h"
+#include "MIGLWidget.h"
+#include "Xguicryst.h"
+#include "asplib.h"
+#include "id.h"
+#include "molw.h"
+#include "surf.h"
+#include "tools.h"
+#include "PhaseFileLoadDialog.h"
+#include "RefinementOptionsDialog.h"
 
 using namespace std;
 using namespace chemlib;
@@ -146,13 +151,13 @@ public:
 
 
 
-static void SplitPath(const string& origPath,
-                      string *dirname,
-                      string *fname,
-                      string *ext) {
-  *dirname = string("");
-  *fname = string("");
-  *ext = string("");
+static void SplitPath(const std::string& origPath,
+                      std::string *dirname,
+                      std::string *fname,
+                      std::string *ext) {
+  *dirname=std::string("");
+  *fname=std::string("");
+  *ext=std::string("");
 
   QFileInfo qfile(origPath.c_str());
   *dirname=qfile.path().toStdString();
@@ -162,8 +167,8 @@ static void SplitPath(const string& origPath,
 
 static bool checkmappath(char* file) {
   if (!QFileInfo(file).exists()) {
-    string path, name, ext;
-    string origPath = file;
+    std::string path, name, ext;
+    std::string origPath = file;
     SplitPath(origPath, &path, &name, &ext);
     QFileInfo newFile(QDir::currentPath(), QString((ext.size() ? name + '.' + ext:name).c_str()));
     sprintf(file, "%s", newFile.absoluteFilePath().toAscii().constData());
@@ -173,15 +178,15 @@ static bool checkmappath(char* file) {
     return true;
   }
   // alert user - maybe they can find the file
-  string filter = "*" ;
+  std::string filter = "*" ;
   filter += file_extension(file);
   // trap ridiculous filters
   if (filter.size() == 2 || filter.size() > 8) {
     filter = "*.*";
   }
-  string filter_line;
+  std::string filter_line;
   filter_line = ::format("Map files (%s)|%s|All files (*.*)|*.*", filter.c_str(), filter.c_str());
-  const string& s = MIFileSelector("A map file appears to have moved or been deleted: Can you find the map file?",
+  const std::string& s = MIFileSelector("A map file appears to have moved or been deleted: Can you find the map file?",
                            "", file, file_extension(file), filter_line.c_str(), MI_OPEN_MODE);
   if (s.size()) {
     strcpy(file, s.c_str());
@@ -461,7 +466,7 @@ void MIGLWidget::connectToModel(Molecule* model) {
 
 void MIGLWidget::symmetryToBeCleared(MIMoleculeBase* mol) {
   // treat as if all symmetry residues are being deleted
-  vector<RESIDUE*> deaders;
+  std::vector<RESIDUE*> deaders;
   for (MIIter<RESIDUE> res=mol->GetSymmResidues(); Residue::isValid(res); ++res) {
     deaders.push_back(res);
   }
@@ -479,8 +484,8 @@ void MIGLWidget::modelAtomsToBeDeleted(MIMoleculeBase* mol, const MIAtomList &at
 }
 
 
-void MIGLWidget::modelResiduesToBeDeleted(MIMoleculeBase*mol, vector<RESIDUE*> &res) {
-  vector<RESIDUE*>::iterator iter;
+void MIGLWidget::modelResiduesToBeDeleted(MIMoleculeBase*mol, std::vector<RESIDUE*> &res) {
+  std::vector<RESIDUE*>::iterator iter;
 
   // set focus residue to one not in deleted set
   if (focusres && std::find(res.begin(),res.end(),focusres) != res.end()) {
@@ -529,7 +534,7 @@ void MIGLWidget::modelAdded(Molecule* model) {
 }
 
 void MIGLWidget::currentModelChanged(Molecule*, Molecule* newModel) {
-  string text;
+  std::string text;
   if (newModel != NULL) {
     text = newModel->pathname;
   }
@@ -631,8 +636,8 @@ void MIGLWidget::CheckCenter() {
   for (int i = 0; i < Models->MapCount(); i++) {
     Models->GetMap(i)->CheckCenter(viewpoint->getcenter(0), viewpoint->getcenter(1), viewpoint->getcenter(2));
   }
-  list<Molecule*>::iterator node = Models->begin();
-  list<Molecule*>::iterator end = Models->end();
+  std::list<Molecule*>::iterator node = Models->begin();
+  std::list<Molecule*>::iterator end = Models->end();
   while (node != end) {
     if ((*node)->CheckCenter(viewpoint->getcenter(0), viewpoint->getcenter(1), viewpoint->getcenter(2))) {
       if ((*node)->getSymmResidues()) {
@@ -665,8 +670,8 @@ void MIGLWidget::paintGL() {
       if (Models->CurrentItem()->modelnumber == 0) {
         // no number if not from .mlw file
         if (Models->NumberItems() == 1 || MIMessageBox("Center view on new molecule?", "Center view?", MIDIALOG_YES_NO, this) == MI_YES) {
-          string resshow;
-          string at("*");
+          std::string resshow;
+          std::string at("*");
           //model->Do();
           if (!FittingView) {
             model->Select(1, 0, 0, 1, resshow, at, NULL, NULL, 0, 0, 0, 1, 0);
@@ -679,7 +684,7 @@ void MIGLWidget::paintGL() {
               viewpoint->slab(-fzmax, fzmax);
               long sw = 900L*(long)(viewpoint->xmax - viewpoint->xmin)/((long)xmax- (long)xmin+200);
               long sh = 900L*(long)(viewpoint->ymax - viewpoint->ymin)/((long)ymax- (long)ymin+200);
-              viewpoint->setscale(min(sw, sh));
+              viewpoint->setscale(std::min(sw, sh));
             }
           } else {
             model->Select(1, 1, 1, 1, resshow, at, NULL, NULL, 0, 0, 0, 0, 1);
@@ -710,7 +715,7 @@ void MIGLWidget::paintGL() {
     frustum->setPerspective(true);
     focalLength -= 10.0f * viewpoint->getperspective();
   }
-  double fieldOfView = toDegrees(2.0 * atan(viewpoint->getheight() * 0.5 / focalLength));
+  double fieldOfView = toDegrees(2.0 * std::atan(viewpoint->getheight() * 0.5 / focalLength));
   frustum->setFieldOfView(fieldOfView);
   frustum->setFocalLength(focalLength);
   frustum->setNearClipping(focalLength - viewpoint->getfrontclip());
@@ -1716,7 +1721,7 @@ void MIGLWidget::timerEvent(QTimerEvent *) {
           if (first->Visible()) {
             first->Hide();
           } else {first->Show();}
-          list<Molecule*>::iterator node1 = Models->begin();
+          std::list<Molecule*>::iterator node1 = Models->begin();
           node1++;
           Molecule* second = *node1;
           if (second != NULL) {
@@ -2083,7 +2088,7 @@ void MIGLWidget::gotoXyzWithPrompt() {
 
   char buf[1024];
   sprintf(buf, "%0.2f %0.2f %0.2f", m_x, m_y, m_z);
-  string str(buf);
+  std::string str(buf);
 
   MIGetStringDialog dlg(this, "Go to x,y,z", "Enter the coordinate to center at (Angstroms):",true);
   if (!dlg.GetValue(str, str)) {
@@ -2348,7 +2353,7 @@ void MIGLWidget::OnFitApply() {
 }
 
 void MIGLWidget::OnFitResidues() {
-  set<MIAtom*> atom_set;
+  std::set<MIAtom*> atom_set;
   MIAtomList fit_atoms;
 
   MIAtom* a, * a1;
@@ -2447,7 +2452,7 @@ void MIGLWidget::OnFitSingleatom() {
 void MIGLWidget::OnFitAtoms() {
   MIAtom* a;
   MIAtom* afit;
-  set<MIAtom*> fit_set;
+  std::set<MIAtom*> fit_set;
   MIAtomList fit_atoms;
 
   RESIDUE* popres;
@@ -2657,7 +2662,7 @@ void MIGLWidget::OnFitSetuptorsion() {
       if ((Torsioning = fitmol->SetupTorsion(a1, a2, &CurrentAtoms)) != 0) {
         RightMouseMode = BONDTWIST;
 
-        vector<PLINE>().swap(TorsionArrow); // was TorsionArrow.clear();
+        std::vector<PLINE>().swap(TorsionArrow); // was TorsionArrow.clear();
         arrow2(TorsionArrow, a2->x() - a1->x(), a2->y() - a1->y(), a2->z() - a1->z(),
           a1->x(), a1->y(), a1->z(), Colors::WHITE);
         message = ftoa(Torsioning);
@@ -2820,7 +2825,7 @@ void MIGLWidget::clearFitTorsion() {
     if (RightMouseMode == BONDTWIST) {
       RightMouseMode = CENTER;
     }
-    vector<PLINE>().swap(TorsionArrow); // was TorsionArrow.clear();
+    std::vector<PLINE>().swap(TorsionArrow); // was TorsionArrow.clear();
   }
 }
 
@@ -2840,11 +2845,11 @@ void MIGLWidget::OnUpdateFitReset(const MIUpdateEvent& pCmdUI) {
   pCmdUI.Enable(IsFitting() != false && MIBusyManager::instance()->Busy() == false);
 }
 
-bool MIGLWidget::promptForReplaceResidue(string& deft_str) {
+bool MIGLWidget::promptForReplaceResidue(std::string& deft_str) {
   if (MIBusyManager::instance()->Busy()) {
     return false;
   }
-  vector<string> choices = MIFitDictionary()->GetDictResList();
+  vector<std::string> choices = MIFitDictionary()->GetDictResList();
   if (choices.size() <= 0) {
     return false;
   }
@@ -2876,7 +2881,7 @@ void MIGLWidget::OnFitReplacewith() {
 }
 
 void MIGLWidget::replaceResidueWithPrompt() {
-  string value;
+  std::string value;
   Molecule* model;
   MIAtom* a;
   RESIDUE* res;
@@ -2973,12 +2978,12 @@ void MIGLWidget::replaceResidue(const char* residueType) {
   }
   int confomer = 0;
   // if the new type is the same as the old - get the next confomer
-  if (string(residueType) == fitres->type()) {
+  if (std::string(residueType) == fitres->type()) {
     confomer = fitres->confomer() + 1;
   }
   RESIDUE* res = GetDictRes(residueType, confomer);
   if (!res) {
-    string s=::format("Type: %s not found in the dictionary", residueType);
+    std::string s=::format("Type: %s not found in the dictionary", residueType);
     MIMessageBox(s.c_str(), "Warning", MIDIALOG_ICON_WARNING, this);
     return;
   }
@@ -2988,7 +2993,7 @@ void MIGLWidget::replaceResidue(const char* residueType) {
 
   // check point the model if new residue being confomer'd
   if (fitres != lastres) {
-    string s=::format("Before changing confomer of %s in %s", resid(fitres).c_str(), fitmol->compound.c_str());
+    std::string s=::format("Before changing confomer of %s in %s", resid(fitres).c_str(), fitmol->compound.c_str());
     if (!SaveModelFile(fitmol, s.c_str())) {
       Logger::message("Warning: Unable to save model - will not be able to Undo");
     }
@@ -3224,7 +3229,7 @@ void MIGLWidget::OnGotoFittoscreen() {
       viewpoint->slab(-fzmax, fzmax);
       long sw = 900L*(long)(viewpoint->xmax - viewpoint->xmin)/((long)xmax- (long)xmin+200);
       long sh = 900L*(long)(viewpoint->ymax - viewpoint->ymin)/((long)ymax- (long)ymin+200);
-      viewpoint->setscale(min(sw, sh));
+      viewpoint->setscale(std::min(sw, sh));
     }
     ReDraw();
   }
@@ -3310,8 +3315,8 @@ void MIGLWidget::OnObjectShowsidechain() {
   if (!a) {
     return;
   }
-  string resshow;
-  string at("*");
+  std::string resshow;
+  std::string at("*");
   if (node != NULL) {
     if (SaveColors) {
       node->Do();
@@ -3374,8 +3379,8 @@ void MIGLWidget::OnGeomClearhbonds() {
   if (MIBusyManager::instance()->Busy()) {
     return;
   }
-  list<Molecule*>::iterator node = GetDisplaylist()->begin();
-  list<Molecule*>::iterator end = GetDisplaylist()->end();
+  std::list<Molecule*>::iterator node = GetDisplaylist()->begin();
+  std::list<Molecule*>::iterator end = GetDisplaylist()->end();
   while (node != end) {
     (*node)->ClearHbonds();
     node++;
@@ -3390,8 +3395,8 @@ void MIGLWidget::OnSchematicSecondaryStructure() {
     int clear = false;
     clear = MIMessageBox("Do you want to hide residue atoms?", "Show Schematic", MIDIALOG_YES_NO, this) == MI_YES;
     if (clear) {
-      string resshow;
-      string at("*");
+      std::string resshow;
+      std::string at("*");
       node->Select(1, 0, 0, 1, resshow, at, NULL, NULL, 0, Colors::YELLOW, Colors::COLORSECOND, 0, 0);
     }
     node->MakeSecondaryStructure(false, true);
@@ -3405,8 +3410,8 @@ void MIGLWidget::OnRibbonSecondaryStructure() {
     int clear = false;
     clear = MIMessageBox("Do you want to hide residue atoms?", "Show Ribbons", MIDIALOG_YES_NO, this) == MI_YES;
     if (clear) {
-      string resshow;
-      string at("*");
+      std::string resshow;
+      std::string at("*");
       node->Select(1, 0, 0, 1, resshow, at, NULL, NULL, 0, Colors::YELLOW, Colors::COLORSECOND, 0, 0);
     }
     node->MakeSecondaryStructure(true, false);
@@ -3438,8 +3443,8 @@ void MIGLWidget::OnSecondaryStructureOptionsHelix() {
   promptSecondaryStructureOptions("helix");
 }
 
-void MIGLWidget::promptSecondaryStructureOptions(const string& type) {
-  string prefix("Secondary Structure/");
+void MIGLWidget::promptSecondaryStructureOptions(const std::string& type) {
+  std::string prefix("Secondary Structure/");
   prefix += type + "/";
 
   MIGenericDialog dlg(this,"Secondary Structure Options");
@@ -3550,8 +3555,8 @@ void MIGLWidget::OnObjectBackboneribbon() {
     }
   }
   clear = MIMessageBox("Do you want to hide residue atoms?", "Make Ribbons", MIDIALOG_YES_NO, this) == MI_YES;
-  string resshow;
-  string at("*");
+  std::string resshow;
+  std::string at("*");
   if (do_single == MI_NO) {
     Molecule* node = GetDisplaylist()->CurrentItem();
     if (node) {
@@ -3562,8 +3567,8 @@ void MIGLWidget::OnObjectBackboneribbon() {
       node->BuildRibbons();
     }
   } else {
-    list<Molecule*>::iterator node = GetDisplaylist()->begin();
-    list<Molecule*>::iterator end = GetDisplaylist()->end();
+    std::list<Molecule*>::iterator node = GetDisplaylist()->begin();
+    std::list<Molecule*>::iterator end = GetDisplaylist()->end();
     while (node != end) {
       (*node)->Do();
       if (clear) {
@@ -3577,8 +3582,8 @@ void MIGLWidget::OnObjectBackboneribbon() {
 }
 
 void MIGLWidget::OnObjectClearribbon() {
-  list<Molecule*>::iterator node = GetDisplaylist()->begin();
-  list<Molecule*>::iterator end = GetDisplaylist()->end();
+  std::list<Molecule*>::iterator node = GetDisplaylist()->begin();
+  std::list<Molecule*>::iterator end = GetDisplaylist()->end();
   while (node != end) {
     (*node)->ClearRibbons();
     node++;
@@ -3622,8 +3627,8 @@ void MIGLWidget::OnUpdateViewContacts(const MIUpdateEvent& pCmdUI) {
   pCmdUI.Check(ShowContacts != 0);
 }
 
-static Molecule *findMolecule(Displaylist *displaylist, const string &str) {
-  for (list<Molecule*>::iterator p = displaylist->begin(); p != displaylist->end(); ++p) {
+static Molecule *findMolecule(Displaylist *displaylist, const std::string &str) {
+  for (std::list<Molecule*>::iterator p = displaylist->begin(); p != displaylist->end(); ++p) {
     if ((*p)->compound.c_str() == str) {
       return *p;
     }
@@ -3678,7 +3683,7 @@ void MIGLWidget::OnFitLsqsuperpose() {
 
     lsq_matrix.SetMatrix(r, v);
     // Checkpoint the model
-    string s=::format("Before LSQ of %s onto %s", source->compound.c_str(), target->compound.c_str());
+    std::string s=::format("Before LSQ of %s onto %s", source->compound.c_str(), target->compound.c_str());
     if (!SaveModelFile(source, s.c_str())) {
       Logger::message("Warning: Unable to save model - will not be able to Undo");
     }
@@ -3830,7 +3835,7 @@ void MIGLWidget::OnUpdateSitePlot(const MIUpdateEvent& pCmdUI) {
   pCmdUI.Enable(!AtomStack->empty());
 }
 
-void MIGLWidget::RemoveFileFromHistory(const string& /* pathname */) {
+void MIGLWidget::RemoveFileFromHistory(const std::string& /* pathname */) {
 #ifdef DO_ADD_TO_HISTORY
   wxFileHistory* history = MainFrame::GetMainFrame()->GetDocManager()->GetFileHistory();
   for (int i = history->GetCount()-1; i >= 0;  --i) {
@@ -3858,7 +3863,7 @@ void MIGLWidget::OnInvertChiralCenter() {
 
   Models->SetCurrent(node);
 
-  string result;
+  std::string result;
   if (InvertChiralCenter(a, node->getBonds(), result)) {
     Logger::log("Inverted chirality of atom %s\n", a->name());
 
@@ -3891,7 +3896,7 @@ void MIGLWidget::OnViewChiralCenters() {
 
   Models->SetCurrent(node);
 
-  string result;
+  std::string result;
   GuessBondOrders(res, node->getBonds());
   result = FindChiralCenters(res, node->getBonds());
   result += "\n";
@@ -3920,7 +3925,7 @@ void MIGLWidget::deleteResidueOnTopOfStack() {
   MIAtom* a;
   RESIDUE* res;
   Molecule* node;
-  string mess;
+  std::string mess;
   AtomStack->Pop(a, res, node);
   if (!MIAtom::isValid(a) || !RESIDUE::isValid(res) || !Molecule::isValid(node)) {
     return;
@@ -3964,14 +3969,14 @@ void MIGLWidget::addResidueWithPrompt() {
 
   MIAtom* a = NULL;
   RESIDUE* atres = NULL;
-  string chainStr;
+  std::string chainStr;
   if (!AtomStack->empty() && model->getResidues() != NULL) {
     AtomStack->Pop(a, atres, model);
-    chainStr = string(1, (char)(atres->chain_id()&255));
+    chainStr = std::string(1, (char)(atres->chain_id()&255));
   }
 
 
-  vector<string> resnames=MIFitDictionary()->GetDictResList();
+  std::vector<std::string> resnames=MIFitDictionary()->GetDictResList();
   MIGenericDialog dlg(this, "Insert Residue");
   MIData data;
   data["resname"].radio=0;
@@ -4033,12 +4038,12 @@ void MIGLWidget::addResidueWithPrompt() {
     rtemp = MIFitDictionary()->GetAlpha2();
   }
   // Checkpoint the model
-  string s=::format("Before inserting new residue %s", m_res->type().c_str());
+  std::string s=::format("Before inserting new residue %s", m_res->type().c_str());
   if (!SaveModelFile(model, s.c_str())) {
     Logger::message("Warning: Unable to save model - will not be able to Undo");
   }
 
-  string newname;
+  std::string newname;
   //newres = NULL;
   if (where == 3 || where == 2) {
     newres = model->InsertRes(NULL, m_res, where, chainId);
@@ -4258,7 +4263,7 @@ void MIGLWidget::OnFitRenameresidue() {
   }
 
   MIGetStringDialog dlg(this, "Rename Residue", "Enter new residue name:");
-  string newname;
+  std::string newname;
   if (!dlg.GetValue("", newname)) {
     return;
   }
@@ -4298,12 +4303,12 @@ void MIGLWidget::OnUpdateAnimateBlink(const MIUpdateEvent& pCmdUI) {
 
 
 void MIGLWidget::OnSolidSurfaceCommand(const MIActionEvent &evt) {
-  vector<Molecule*> mols;
-  vector<unsigned int> selected;
+  std::vector<Molecule*> mols;
+  std::vector<unsigned int> selected;
   solidSurfaceCommand(evt.GetId(), mols, selected);
 }
 
-void MIGLWidget::solidSurfaceCommand(int id, vector<Molecule*> &mols, vector<unsigned int> &selected) {
+void MIGLWidget::solidSurfaceCommand(int id, std::vector<Molecule*> &mols, std::vector<unsigned int> &selected) {
 
   MISurfaceSetCurrentView(this);
 
@@ -4664,7 +4669,7 @@ void MIGLWidget::OnMapLoadfromphsfile() {
 void MIGLWidget::mapLoadfromphsfile() {
   // no longer support .sca, and .ref: the readers are broken
 
-  const string& s = MIFileSelector("Select Phase File", "./", "", "phs;fcf;mtz;cif;fin",
+  const std::string& s = MIFileSelector("Select Phase File", "./", "", "phs;fcf;mtz;cif;fin",
                            "All phase files (*.mtz, *.phs, *.fcf, *.cif)|*.mtz;*.phs;*.fcf;*.cif|"
                            "CCP4 MTZ (*.mtz)|*.mtz|Phase files (*.phs)|*.phs|SHELX (*.fcf)|*.fcf|mmCIF (*.cif)|*.cif|All files (*.*)|*.*", MI_OPEN_MODE);
   mapLoadfromphsfile(s);
@@ -4672,15 +4677,15 @@ void MIGLWidget::mapLoadfromphsfile() {
 
 
 
-static Molecule *FindModel(const string &mname, Displaylist *dl, bool or_current=false)
+static Molecule *FindModel(const std::string &mname, Displaylist *dl, bool or_current=false)
 {
   if (strncasecmp(mname.c_str(),"Model:",6)==0) {
-    string name=string(&mname[6]);
+    std::string name=std::string(&mname[6]);
     Displaylist::ModelList::iterator modelIter = dl->begin();
     for (; modelIter != dl->end(); ++modelIter)
     {
       Molecule* model = *modelIter;
-      if (string(model->pathname.c_str())==name)
+      if (std::string(model->pathname.c_str())==name)
         return model;
     }
   }
@@ -4690,10 +4695,10 @@ static Molecule *FindModel(const string &mname, Displaylist *dl, bool or_current
 }
 
 static EMap *CreateMap(Displaylist *dl,
-                const string &file,
-                const string &maptypestr,
-                const string &fo,const string &fc,
-                const string &fom,const string &phi,
+                const std::string &file,
+                const std::string &maptypestr,
+                const std::string &fo,const std::string &fc,
+                const std::string &fom,const std::string &phi,
                 int gridlevel, float resmin, float resmax, bool /* map2 */)
 {
   EMap* map = new EMap;
@@ -4716,7 +4721,7 @@ static EMap *CreateMap(Displaylist *dl,
   }
 
   if (map->LoadMapPhaseFile(file.c_str())) {
-    if (maptypestr == string("Direct FFT")) {
+    if (maptypestr == std::string("Direct FFT")) {
       map->fColumnName = fo;
     }
 
@@ -4727,7 +4732,7 @@ static EMap *CreateMap(Displaylist *dl,
 
     if (map->FFTMap(maptype,gridlevel,resmin,resmax)) {
       // set contour options to regular or diff map type as appropriate
-      if (maptypestr == string("Direct FFT")) {
+      if (maptypestr == std::string("Direct FFT")) {
         if (fo == "FWT" || fo == "2FOFCWT") {
           GetMapSettingsForStyle(REGULAR_MAP_SETTINGS, *map->GetSettings());
         } else if (fo == "DELFWT" || fo == "FOFCWT") {
@@ -4751,9 +4756,9 @@ static EMap *CreateMap(Displaylist *dl,
 }
 
 
-void MIGLWidget::mapLoadfromphsfile(const string& file) {
+void MIGLWidget::mapLoadfromphsfile(const std::string& file) {
   //build vector of model names
-  vector<string> modelNames, cellList;
+  std::vector<std::string> modelNames, cellList;
   Displaylist::ModelList::iterator modelIter = GetDisplaylist()->begin();
   for (; modelIter!=GetDisplaylist()->end(); ++modelIter)
   {
@@ -4761,7 +4766,7 @@ void MIGLWidget::mapLoadfromphsfile(const string& file) {
     modelNames.push_back(model->pathname.c_str());
     // set cell information so resolution can be calculated
     CMapHeaderBase &mh=model->GetMapHeader();
-    string cell=::format("%f %f %f %f %f %f", mh.a,mh.b,mh.c,
+    std::string cell=::format("%f %f %f %f %f %f", mh.a,mh.b,mh.c,
                             mh.alpha, mh.beta, mh.gamma);
     cellList.push_back(cell);
   }
@@ -4771,9 +4776,16 @@ void MIGLWidget::mapLoadfromphsfile(const string& file) {
   data["filename"].str=file;
   data["models"].strList=modelNames;
   data["cells"].strList=cellList;
-  MIPhaseFileLoadDialog dlg(this, "Phase file import");
-  if (!dlg.GetResults(data))
-    return;
+
+  PhaseFileLoadDialog dlg(this);
+  dlg.setWindowTitle("Phase file import");
+  if (!dlg.SetFile(data["filename"].str, data["models"].strList, data["cells"].strList)) {
+      return;
+  }
+  if (dlg.exec() != QDialog::Accepted) {
+      return;
+  }
+  dlg.GetData(data);
 
   int gridlevel=data["grid"].radio;
   float resmin=data["resmin"].f;
@@ -4815,12 +4827,12 @@ void MIGLWidget::OnMapLoadfromfile() {
 }
 
 void MIGLWidget::mapLoadfromfile() {
-  const string& s = MIFileSelector("Select CCP4 or FSFOUR/XtalView Map File", "./", "", "map",
+  const std::string& s = MIFileSelector("Select CCP4 or FSFOUR/XtalView Map File", "./", "", "map",
                            "Map files (*.map)|*.map|All files (*.*)|*.*", MI_OPEN_MODE);
   mapLoadfromfile(s);
 }
 
-void MIGLWidget::mapLoadfromfile(const string& file) {
+void MIGLWidget::mapLoadfromfile(const std::string& file) {
   if (file.size() > 0) {
     EMap* map = new EMap;
     Molecule* model = GetDisplaylist()->GetCurrentModel();
@@ -4918,12 +4930,12 @@ void MIGLWidget::readLowerSequenceWithPrompt() {
   Displaylist* Models = GetDisplaylist();
   if (!Models->CurrentItem())
     return;
-  string s = MIFileSelector("Select .seq File", "", "", "seq",
+  std::string s = MIFileSelector("Select .seq File", "", "", "seq",
                     "Sequence files (*.seq)|*.seq| All files (*.*)|*.*", MI_OPEN_MODE);
   readLowerSequence(s);
 }
 
-void MIGLWidget::readLowerSequence(const string& file) {
+void MIGLWidget::readLowerSequence(const std::string& file) {
   if (file.size()) {
     Displaylist* Models = GetDisplaylist();
     Models->CurrentItem()->ReadSequence(file.c_str(), SEQ_FORMAT_SIMPLE, 0);
@@ -4940,7 +4952,7 @@ void MIGLWidget::OnSequenceSave() {
   Displaylist* Models = GetDisplaylist();
   if (!Models->CurrentItem())
     return;
-  string s = MIFileSelector("Select .seq File", "", "", "seq",
+  std::string s = MIFileSelector("Select .seq File", "", "", "seq",
                     "Sequence files (*.seq)|*.seq| All files (*.*)|*.*", MI_SAVE_MODE);
   if (s.size()) {
     Models->CurrentItem()->WriteSequence(s.c_str(), SEQ_FORMAT_SIMPLE);
@@ -5241,7 +5253,6 @@ void MIGLWidget::OnRefiOptions() {
   GeomRefiner* g = MIFitGeomRefiner();
 
   MIData data;
-  MIRefinementOptionsDialog dlg(this, "Refinement Options");
 
   data["BondWeight"].i = g->GetBondWeightI();
   data["AngleWeight"].i = g->GetAngleWeightI();
@@ -5261,9 +5272,12 @@ void MIGLWidget::OnRefiOptions() {
   data["SigmaTorsion"].f = g->dict.GetSigmaTorsion();
   data["SigmaBump"].f = g->dict.GetSigmaBump();
 
-  if (!dlg.GetResults(data)) {
-    return;
+  RefinementOptionsDialog dlg(data, this);
+  dlg.setWindowTitle("Refinement Options");
+  if (dlg.exec() != QDialog::Accepted) {
+      return;
   }
+  dlg.GetResults(data);
 
   g->SetBondWeightI(data["BondWeight"].i);
   g->SetAngleWeightI(data["AngleWeight"].i);
@@ -5340,7 +5354,7 @@ void MIGLWidget::acceptRefine() {
   }
   MIFitGeomRefiner()->Accept();
   batonatom = NULL;
-  vector<MAP_POINT>().swap(PList); // was PList.clear();
+  std::vector<MAP_POINT>().swap(PList); // was PList.clear();
 
   // undo the lowered baton weight
   if (MIFitGeomRefiner()->GetMapWeightI() == 1) {
@@ -5449,7 +5463,7 @@ void MIGLWidget::Purge(Molecule* model) {
     clearPentamer();
   }
 
-  vector<SaveModel>::iterator saveModelIter;
+  std::vector<SaveModel>::iterator saveModelIter;
   for (saveModelIter = SaveModels.begin(); saveModelIter != SaveModels.end(); ++saveModelIter) {
     if (saveModelIter->model == model) {
       saveModelIter->model = NULL;
@@ -5467,7 +5481,7 @@ void MIGLWidget::OnFitUndo() {
       FitToken--;
       savefits.Restore(FitToken);
     }
-    string t=::format("FitToken is now %d", (int)FitToken);
+    std::string t=::format("FitToken is now %d", (int)FitToken);
     Logger::log(t.c_str());
     viewpoint->setchanged();
     Modify(true);
@@ -5485,7 +5499,7 @@ void MIGLWidget::OnFitRedo() {
       FitToken++;
       savefits.Restore(FitToken);
     }
-    string t=::format("FitToken is now %d", (int)FitToken);
+    std::string t=::format("FitToken is now %d", (int)FitToken);
     Logger::log(t.c_str());
     viewpoint->setchanged();
     Modify(true);
@@ -5572,7 +5586,7 @@ void MIGLWidget::UpdateCurrent() {
     displaylist->ClearCurrentSurface();
   }
   if (IsTorsioning()) {
-    vector<PLINE>().swap(TorsionArrow); // was TorsionArrow.clear();
+    std::vector<PLINE>().swap(TorsionArrow); // was TorsionArrow.clear();
     MIAtom* a1 = fitmol->GetTorsionAtom1();
     MIAtom* a2 = fitmol->GetTorsionAtom2();
     if (a1 != NULL && a2 != NULL) {
@@ -5625,7 +5639,7 @@ void MIGLWidget::InsertMRK(RESIDUE* where, Molecule* model, bool before) {
     CAprev = &temp;
   }
 
-  string newname;
+  std::string newname;
   if (!before) {
     newname = ftoa((int)(atof(where->name().c_str())+1));
   } else {
@@ -5633,7 +5647,7 @@ void MIGLWidget::InsertMRK(RESIDUE* where, Molecule* model, bool before) {
   }
 
   // Checkpoint the model
-  string s=::format("Before inserting MRK %s", newname.c_str());
+  std::string s=::format("Before inserting MRK %s", newname.c_str());
   SaveModelFile(model, s.c_str());
 
   RESIDUE* newres = model->InsertRes(where, m_res, before);
@@ -5643,8 +5657,8 @@ void MIGLWidget::InsertMRK(RESIDUE* where, Molecule* model, bool before) {
 
 
   if (emap) {
-    vector<MAP_POINT>& list = emap->PlaceCA(CAprev, CA1);
-    vector<MAP_POINT>().swap(PList); // was PList.clear();
+    std::vector<MAP_POINT>& list = emap->PlaceCA(CAprev, CA1);
+    std::vector<MAP_POINT>().swap(PList); // was PList.clear();
 
     for (size_t i = 0; i < list.size(); i++) {
       PList.push_back(list[i]);
@@ -5806,7 +5820,7 @@ void MIGLWidget::replaceAndFitResidueWithPrompt() {
   if (a == NULL || res == NULL || model == NULL) {
     return;
   }
-  string value = res->type();
+  std::string value = res->type();
   if (!promptForReplaceResidue(value)) {
     return;
   }
@@ -9185,42 +9199,41 @@ void MIGLWidget::findResidueAndMoleculeForAtom(MIAtom* atom, RESIDUE*& res, Mole
 }
 
 void MIGLWidget::OnExportImage() {
-    QString filter = "JPEG Image format (*.jpg);;"
-                     "PNG Image format (*.png);;"
-                     "TIFF Image format (*.tif)";
+  std::string filter = "JPEG Image format (*.jpg)|*.jpg"
+                       "|PNG Image format (*.png)|*.png"
+                       "|TIFF Image format (*.tif)|*.tif";
 
-    QString selectedFilter;
-    QString file = QFileDialog::getSaveFileName(this, "Export Images As", QDir::currentPath(), filter, &selectedFilter);
-    if (!file.isEmpty()) {
-        QFileInfo fileInfo(file);
-        QString ext(fileInfo.suffix());
+  MIFileDialog dlg(this, "Export Image As",
+                   QDir::currentPath().toStdString(), "export", filter, MI_SAVE_MODE);
+  MIData data;
+  data["path"].str = "./export";
+  data["filterIndex"].radio = 0;
+  data["filterIndex"].radio_count = 5;
 
-        QString defaultExt;
-        const char* format = 0;
-        if (selectedFilter.startsWith("JPEG")) {
-            defaultExt = ".jpg";
-            format = "JPG";
-        } else if (selectedFilter.startsWith("PNG")) {
-            defaultExt = ".png";
-            format = "PNG";
-        } else if (selectedFilter.startsWith("TIFF")) {
-            defaultExt = ".tif";
-            format = "TIF";
-        }
+  if (!dlg.GetResults(data)) {
+    return;
+  }
 
-        if (ext.isEmpty()) {
-            file += defaultExt;
-        }
+  std::string defaultExt="";
+  std::string ext(file_extension(data["path"].str.c_str()));
+  switch (data["filterIndex"].radio) {
+    default:
+    case 0:
+      defaultExt = ".jpg";
+      break;
+    case 1:
+      defaultExt = ".png";
+      break;
+    case 2:
+      defaultExt = ".tif";
+      break;
+  }
+  if (ext.size()==0) {
+    data["path"].str += defaultExt;
+  }
 
-        //TODO: could alter canvas size here
-        QPixmap image = renderPixmap();
-        QFile imageFile(file);
-        if (imageFile.open(QIODevice::WriteOnly)) {
-            image.save(&imageFile, format);
-        } else {
-            QMessageBox::critical(this, "Export Image Error", "Unable to open file " + file);
-        }
-    }
+  QPixmap image = renderPixmap();   //TODO: could alter canvas size here
+  image.save(data["path"].str.c_str());
 }
 
 

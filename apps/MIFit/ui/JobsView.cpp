@@ -1,6 +1,7 @@
 #include "JobsView.h"
 
 #include <QApplication>
+#include <QMessageBox>
 #include <QVBoxLayout>
 
 #include <vector>
@@ -163,8 +164,9 @@ void JobsTree::DeleteJob() {
   if (selected.size() == 0) {
     return;
   } else if (selected.size() > 1) {
-    if (MIMessageBox("Are you sure you want to delete the selected jobs?",
-          "Confirm Delete Jobs", MIDIALOG_YES_NO) != MI_YES) {
+    if (QMessageBox::question(0, "Confirm Delete Jobs",
+                                  "Are you sure you want to delete the selected jobs?",
+                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::No) {
       return;
     }
   } else {
@@ -175,7 +177,9 @@ void JobsTree::DeleteJob() {
     }
     std::string message;
     message=::format("Are you sure you want to delete job %d?", job->JobId);
-    if (MIMessageBox(message.c_str(), "Confirm Delete Job", MIDIALOG_YES_NO) != MI_YES) {
+    if (QMessageBox::question(0, "Confirm Delete Job",
+                                  message.c_str(),
+                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::No) {
       return;
     }
   }
@@ -192,8 +196,9 @@ void JobsTree::DetachJob() {
   if (selected.size() == 0) {
     return;
   } else if (selected.size() > 1) {
-    if (MIMessageBox("Are you sure you want to detach the selected jobs?",
-          "Confirm Detach Jobs", MIDIALOG_YES_NO) != MI_YES) {
+    if (QMessageBox::question(0, "Confirm Detach Jobs",
+                                  "Are you sure you want to detach the selected jobs?",
+                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::No) {
       return;
     }
   } else {
@@ -201,7 +206,9 @@ void JobsTree::DetachJob() {
     BatchJob* job = itemToJob[id];
     std::string message;
     message=::format("Are you sure you want to detach job %d?", job->JobId);
-    if (MIMessageBox(message.c_str(), "Confirm Detach Job", MIDIALOG_YES_NO) != MI_YES) {
+    if (QMessageBox::question(0, "Confirm Detach Job",
+                                  message.c_str(),
+                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::No) {
       return;
     }
   }

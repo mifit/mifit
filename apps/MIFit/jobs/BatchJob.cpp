@@ -2,6 +2,7 @@
 #include <QFile>
 #include <QProcess>
 #include <QDialog>
+#include <QMessageBox>
 #include <QTextBrowser>
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
@@ -227,7 +228,7 @@ void BatchJob::doJobFinished() {
   } else {
     jobName = format("%d", JobId);
   }
-  MIMessageBox(jobName, "MIFit Job Finished");
+  QMessageBox::information(MIMainWindow::instance(), jobName.c_str(), "MIFit Job Finished");
   if (!m_doc && success) {
     bool openResultsOnJobFinished = false;
     MIConfig::Instance()->Read("openResultsOnJobFinished", &openResultsOnJobFinished, false);

@@ -3,19 +3,16 @@
 
 #include <map>
 #include <vector>
-
-#include "core/MIData.h"
-
 #include "ViewSyncedPanel.h"
 
+class AtomsTree;
+class ModelsTree;
 class QLineEdit;
 class QPushButton;
 class QToolButton;
 class QResizeEvent;
 
-class ModelsTree;
 class ResiduesTree;
-class AtomsTree;
 
 class ModelsView : public ViewSyncedPanel {
   Q_OBJECT

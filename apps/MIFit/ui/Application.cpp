@@ -24,6 +24,7 @@
 #include <QFileInfo>
 #include <QApplication>
 #include <QDir>
+#include <QMessageBox>
 #include <QSettings>
 #include <QProcess>
 #include <QProgressDialog>
@@ -313,8 +314,9 @@ Application::~Application() {
 
   if (geomrefiner) { //Cleanup the GeomRefiner
     if (geomrefiner->dict.GetModified()) {
-      if (MIMessageBox("The Dictionary has been modified\nDo you want to save it?",
-            "Dictionary Modified", MIDIALOG_YES_NO) == MI_YES) {
+        if (QMessageBox::question(MIMainWindow::instance(), "Dictionary Modified",
+                                  "The Dictionary has been modified\nDo you want to save it?",
+                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes) {
         saveDict();
       }
     }

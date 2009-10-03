@@ -728,41 +728,6 @@ bool MIContourDialog::PromptForResults(MIData& data) {
 }
 
 //
-// MIRefinementOptionsDialog
-//
-MIRefinementOptionsDialog::MIRefinementOptionsDialog(QWidget* parent, const std::string& name)
-  : MIDialog(parent, name) {
-}
-
-bool MIRefinementOptionsDialog::PromptForResults(MIData& data) {
-  RefinementOptionsDialog dlg(data,_qparent);
-  if (dlg.exec() != QDialog::Accepted) {
-    return false;
-  }
-  dlg.GetResults(data);
-  return true;
-}
-
-//
-// PhaseFileLoad
-//
-MIPhaseFileLoadDialog::MIPhaseFileLoadDialog(QWidget* parent, const std::string& name)
-  : MIDialog(parent, name) {
-}
-
-bool MIPhaseFileLoadDialog::PromptForResults(MIData& data) {
-  PhaseFileLoadDialog dlg(_qparent);
-  if (!dlg.SetFile(data["filename"].str, data["models"].strList, data["cells"].strList)) {
-    return false;
-  }
-  if (dlg.exec() != QDialog::Accepted) {
-    return false;
-  }
-  dlg.GetData(data);
-  return true;
-}
-
-//
 // BValue Colors
 //
 MIBValueColorsDialog::MIBValueColorsDialog(QWidget* parent, const std::string& name)

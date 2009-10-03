@@ -73,7 +73,6 @@ const int MI_CANCEL = -1;
 
 #define MIDIALOG_ICON_WARNING          0x00000100
 #define MIDIALOG_ICON_ERROR            0x00000200
-//#define MIDIALOG_ICON_QUESTION       0x00000400 // unused, assumed w/ YES_NO
 #define MIDIALOG_ICON_INFORMATION      0x00000800
 
 int MIMessageBox(const std::string& message, const std::string& caption = "", int style = MIDIALOG_ICON_INFORMATION, QWidget* parent = 0);
@@ -239,31 +238,6 @@ private:
   //           maplevelColor0.i maplevelColor1.i maplevelColor2.i maplevelColor3.i maplevelColor4.i
   //           maplevelOn0.b maplevelOn1.b maplevelOn2.b maplevelOn3.b maplevelOn4.b
   //           contourMethod.radio blobRadius.f lineWidth.f
-};
-
-
-class MIRefinementOptionsDialog : public MIDialog {
-public:
-  MIRefinementOptionsDialog(QWidget* parent, const std::string& name);
-private:
-  bool PromptForResults(MIData& data);
-  //variables: BondWeight.i AngleWeight.i PlaneWeight.i TorsionWeight.i
-  //           BumpWeight.i MapWeight.i ConstrainCA.b ConstrainEnds.b
-  //           Verbose.b RefineWhileFit.b SigmaBond.f SigmaAngle.f
-  //           SigmaTorsion.f SigmaPlane.f SigmaBump.f
-};
-
-
-class MIPhaseFileLoadDialog : public MIDialog {
-public:
-  MIPhaseFileLoadDialog(QWidget* parent, const std::string& name);
-private:
-  bool PromptForResults(MIData& data);
-  //variables:
-  // required input: filename.str models.strList, cells.strList
-  // output: grid.radio, resmin.f resmax.f
-  //         enabled1.b, type1.str fo1.str, fc1.str, fom1.str, phi1.str
-  //         enabled2.b, type2.str fo2.str, fc2.str, fom2.str, phi2.str
 };
 
 

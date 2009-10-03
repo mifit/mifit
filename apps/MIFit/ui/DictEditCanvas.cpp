@@ -18,6 +18,7 @@
 
 #include <QMenuBar>
 #include <QKeyEvent>
+#include <QMessageBox>
 #include <QTime>
 #include <QTimer>
 
@@ -974,7 +975,10 @@ void DictEditCanvas::on_changeNameButton_clicked() {
     vector<std::string>::iterator name = names.begin();
     while (name != names.end()) {
       if (std::string(name->c_str()) == s) {
-        if (MIMessageBox("That name already exists!\nDid you want to replace it?", "Replace dictionary entry?", MIDIALOG_YES_NO | MIDIALOG_NO_DEFAULT) == MI_NO) {
+        if (QMessageBox::question(this, "Replace dictionary entry?",
+                                  "That name already exists!\nDid you want to replace it?",
+                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::No) {
+
           // parent->Raise();
           return;
         } else {
@@ -1034,8 +1038,10 @@ void DictEditCanvas::OnRemoveAtomsFromPlane() {
   }
   // What atom are we removing
   if (pickedPlane->natoms - AtomStack->size() < 3) {
-    if (MIMessageBox("Deleting this many atoms implies deleting the plane. Continue?",
-          "Delete Plane?", MIDIALOG_YES_NO | MIDIALOG_NO_DEFAULT) == MI_NO) {
+    if (QMessageBox::question(this, "Delete Plane?",
+                                  "Deleting this many atoms implies deleting the plane. Continue?",
+                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::No) {
+
       return;
     }
     OnRemovePlane();
@@ -1097,7 +1103,9 @@ bool DictEditCanvas::removeAtomFromPlane(MIAtom* a, bool atomNotToBeDeleted) {
   // Will we still have a plane?
   if (pickedPlane->natoms == 3) {
     if (atomNotToBeDeleted) {
-      if (MIMessageBox("Removing this atom implies deleting the plane. Continue?", "Delete Plane?", MIDIALOG_YES_NO | MIDIALOG_NO_DEFAULT) == MI_NO) {
+      if (QMessageBox::question(this, "Delete Plane?",
+                                  "Removing this atom implies deleting the plane. Continue?",
+                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::No) {
         return false;
       }
     }
@@ -2010,7 +2018,9 @@ void DictEditCanvas::on_optimizeButton_clicked() {
 
 void DictEditCanvas::OnRefine(int iterations) {
   if (confs.NumberSets()-1 > 1) {
-    if (MIMessageBox("Optimize can only be performed on a single conformer.\nRemove conformers and continue?", "Remove conformers?", MIDIALOG_YES_NO | MIDIALOG_NO_DEFAULT) != MI_YES) {
+    if (QMessageBox::question(this, "Remove conformers?",
+                                  "Optimize can only be performed on a single conformer.\nRemove conformers and continue?",
+                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No) != QMessageBox::Yes) {
       // parent->Raise();
       return;
     }
@@ -2382,8 +2392,9 @@ void DictEditCanvas::on_conformerSpinbox_valueChanged(int conformer) {
 }
 
 void DictEditCanvas::OnGenerateConformers() {
-  if (MIMessageBox("Replace existing conformer(s)?", "Replace or Append?",
-        MIDIALOG_YES_NO | MIDIALOG_NO_DEFAULT) == MI_NO) {
+  if (QMessageBox::question(this, "Replace or Append?",
+                                  "Replace existing conformer(s)?",
+                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::No) {
     generateConformers(false);
   } else {
     generateConformers(true);

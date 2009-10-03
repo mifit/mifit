@@ -9,6 +9,7 @@
 #include <QFileInfo>
 #include <QDateTime>
 #include <QDir>
+#include <QMessageBox>
 
 
 #include <vector>
@@ -68,7 +69,7 @@ void OpenJobResults::prompt(const std::string& workdir, const std::string& jobNa
 
   if (!(mlwFiles.size() > 0 || pdbFiles.size() > 0 || mtzFiles.size() > 0)) {
     std::string s = format("Sorry, unable to open any results because\nno session, PDB, or MTZ files were found in job working directory:\n%s", workdir.c_str());
-    MIMessageBox(s.c_str(), "Open Results unsuccessful", MIDIALOG_ICON_WARNING);
+    QMessageBox::warning(MIMainWindow::instance(), "Open Results unsuccessful", s.c_str());
     return;
   }
 

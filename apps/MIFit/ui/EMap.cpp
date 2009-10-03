@@ -1,6 +1,7 @@
 #include <nongui/nonguilib.h>
 #include <chemlib/chemlib.h>
 #include <map/maplib.h>
+#include <QMessageBox>
 #include "ui/MIDialog.h"
 
 #include "core/corelib.h"
@@ -104,7 +105,9 @@ bool EMap::ContourLevels() {
 
 long EMap::LoadMap(const char* pathname, int type) {
   if (HasPhases()) {
-    if (MIMessageBox("This map already has a reflection list\nDo you want to overwrite it?", "Query", MIDIALOG_YES_NO) == MI_NO) {
+    if (QMessageBox::question(0, "Overwrite?",
+                                  "This map already has a reflection list\nDo you want to overwrite it?",
+                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::No) {
       return 0;
     }
   }
@@ -113,7 +116,9 @@ long EMap::LoadMap(const char* pathname, int type) {
 
 long EMap::LoadCIFMap(const char* pathname, int datablock) {
   if (refls.size() != 0) {
-    if (MIMessageBox("This map already has a reflection list\nDo you want to overwrite it?", "Query", MIDIALOG_YES_NO) == MI_NO) {
+    if (QMessageBox::question(0, "Overwrite?",
+                                  "This map already has a reflection list\nDo you want to overwrite it?",
+                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::No) {
       return 0;
     }
   }
