@@ -20,14 +20,6 @@
 #include <time.h>
 #endif
 
-
-
-//#include "LogView.h"
-
-//NOTE: this could stand to be substantially revised to take better
-//      advantage of Qt's QProcess to manage job state, but for now, we'll
-//      just do the minimal port
-
 using namespace std;
 
 #ifdef _WIN32
@@ -35,232 +27,79 @@ using namespace std;
 #endif
 
 BatchJob::BatchJob()
-  : Cleaned(false), pid(0), running(false), completed(false), success(false), 
-     CommandFileFp(NULL), m_doc(NULL) {
-
+    : process(NULL)
+{
   setJobId();
   setJobDir("");
 }
 
 BatchJob::BatchJob(const std::string& dir)
-  : Cleaned(false), pid(0), running(false), completed(false), success(false), 
-     CommandFileFp(NULL), m_doc(NULL) {
-
+    : process(NULL)
+{
   setJobId();
-
   setJobDir(dir.c_str());
-
-  openCommandFile();
-}
-
-void BatchJob::openCommandFile() {
-  std::string savedir = QDir::current().absolutePath().toStdString();
-  QDir::setCurrent(jobDir.c_str());
-
-  UpdateScript = format("mifit%lu_update.mlw", JobId);
-  FinishedFile = format("mifit%lu_finished.txt", JobId);
-#ifndef _WIN32
-  CommandFile = format("mifit%lu_commands.sh", JobId);
-#else
-  CommandFile = format("mifit%lu_commands.bat", JobId);
-#endif
-  CommandFileFp = fopen(CommandFile.c_str(), "w");
-  if (CommandFileFp == NULL) {
-    QDir::setCurrent(savedir.c_str());
-    return;
-  }
-#ifndef _WIN32
-  fprintf(CommandFileFp, "#!/bin/sh\n");
-#endif
-  fprintf(CommandFileFp, "cd \"%s\"\n", QDir::toNativeSeparators(jobDir.c_str()).toStdString().c_str());
-
-  QDir::setCurrent(savedir.c_str());
 }
 
 void BatchJob::setJobDir(const char* dir) {
   jobDir = dir;
   if (jobDir.size() == 0) {
-    jobDir = QDir::current().absolutePath().toStdString();
+    jobDir = QDir::current().absolutePath();
   }
-}
-
-void BatchJob::CleanUp() {
-  std::string savedir = QDir::current().absolutePath().toStdString();
-  QDir::setCurrent(jobDir.c_str());
-
-  if (CommandFileFp) {
-    fclose(CommandFileFp);
-    CommandFileFp = NULL;
-  }
-  QFile::remove(UpdateScript.c_str());
-  QFile::remove(CommandFile.c_str());
-  QFile::remove(FinishedFile.c_str());
-  if (CleanupList.size() > 0) {
-    for (unsigned int i = 0; i < CleanupList.size(); i++) {
-      QFile::remove(CleanupList[i].c_str());
-    }
-  }
-  Cleaned = true;
-
-  QDir::setCurrent(savedir.c_str());
 }
 
 BatchJob::~BatchJob() {
-  if (!Cleaned) {
-    CleanUp();
-  }
+    delete process;
 }
 
 void BatchJob::setJobId() {
-  JobId = getpid()*1000;
+  jobId_ = getpid()*1000;
   time_t t;
   time(&t);
-  JobId += abs((int)(t%1000));
+  jobId_ += abs((int)(t%1000));
 }
 
 bool BatchJob::StartJob() {
-  std::string savedir = QDir::current().absolutePath().toStdString();
-  QDir::setCurrent(jobDir.c_str());
 
-  if (CommandFileFp) {
-#ifndef _WIN32
-    fprintf(CommandFileFp,
-      "if [ $? -eq  0 ]\n"
-      "then\n"
-      "echo SUCCESS > %s\n"
-      "else\n"
-      "echo FAILED > %s\n"
-      "fi\n\n",
-      FinishedFile.c_str(), FinishedFile.c_str());
-#else
-    fprintf(CommandFileFp, "\nif %%ERRORLEVEL%% EQU 0 (\n"
-      "echo SUCCESS > %s\n) else (\n"
-      "echo FAILED > %s\n)\n\n", FinishedFile.c_str(), FinishedFile.c_str());
-#endif
-    fclose(CommandFileFp);
-    CommandFileFp = NULL;
-#ifndef _WIN32
-    std::string s;
-    QStringList args;
-    args.append(CommandFile.c_str());
-    pid = QProcess::startDetached("/bin/sh",args);
-    if (pid == 0) {
-      running = false;
-      setSuccess(false);
-      Logger::log("Command failed!");
-      QDir::setCurrent(savedir.c_str());
-      return false;
-    }
-#else
-    pid = QProcess::startDetached(CommandFile.c_str());
-    if (pid == 0) {
-      running = false;
-      setSuccess(false);
-      Logger::log("Command failed!");
-      QDir::setCurrent(savedir.c_str());
-      return false;
-    }
-#endif
+    process = new QProcess(this);
+    process->setWorkingDirectory(jobDir);
+    process->setProcessChannelMode(QProcess::MergedChannels);
+    process->setStandardOutputFile(LogFile);
+    connect(process, SIGNAL(finished(int)),
+            this, SLOT(doJobFinished()));
+    connect(process, SIGNAL(finished(int)),
+            this, SLOT(signalJobChanged()));
 
-    running = true;
+    process->start(program_, arguments_);
+    process->closeWriteChannel();
+
+    bool started = process->waitForStarted();
     jobChanged(this);
-  } else {
-    running = false;
-    setSuccess(false);
-  }
-  QDir::setCurrent(savedir.c_str());
-  return running;
+    return started;
+
 }
 
-bool BatchJob::IsRunning() {
-  if (running) {
-    HasEnded();
-  }
-  return running;
+void BatchJob::signalJobChanged() {
+    jobChanged(this);
 }
 
-bool BatchJob::HasEnded() {
-  if (!running) {
-    return true;
-  }
-
-  std::string savedir = QDir::current().absolutePath().toStdString();
-  QDir::setCurrent(jobDir.c_str());
-
-  FILE* fp = fopen(FinishedFile.c_str(), "r");
-  char buf[100];
-  if (fp) {
-    // we should make this more sophisticated!
-    fgets(buf, sizeof buf, fp);
-    if (strlen(buf) < 6) {
-      // if too small then file still not closed - try again later
-      fclose(fp);
-      QDir::setCurrent(savedir.c_str());
-      return false;
-    }
-    running = false;
-    if (strncasecmp(buf, "SUCCESS", 7) == 0) {
-      setSuccess(true);
-    } else {
-      setSuccess(false);
-    }
-    fclose(fp);
-
-    doJobFinished();
-    QDir::setCurrent(savedir.c_str());
-    return true;
-  }
-  QDir::setCurrent(savedir.c_str());
-  return false;
+bool BatchJob::isRunning() {
+    return process && (process->state() == QProcess::Running
+                       || process->state() == QProcess::Starting);
 }
+
 
 void BatchJob::doJobFinished() {
-  std::string savedir = QDir::current().absolutePath().toStdString();
-  QDir::setCurrent(jobDir.c_str());
-
-  // run the update script
-  if (m_doc && success) {
-    m_doc->LoadScript(UpdateScript.c_str());
-  }
-  std::string jobName;
+std::string jobName;
   if (settings["jobName"].str != MIDatum::INVALID_STRING) {
-    jobName = format("%s (%d)", settings["jobName"].str.c_str(), JobId);
+    jobName = format("%s (%d)", settings["jobName"].str.c_str(), jobId_);
   } else {
-    jobName = format("%d", JobId);
+    jobName = format("%d", jobId_);
   }
   QMessageBox::information(MIMainWindow::instance(), jobName.c_str(), "MIFit Job Finished");
-  if (!m_doc && success) {
-    bool openResultsOnJobFinished = false;
-    MIConfig::Instance()->Read("openResultsOnJobFinished", &openResultsOnJobFinished, false);
-    if (openResultsOnJobFinished) {
-      openResults();
-    }
-  }
-  QDir::setCurrent(savedir.c_str());
 }
 
-bool BatchJob::WriteCommand(const std::string& buf) {
-  std::string command;
-  command += buf;
-  if (CommandFileFp) {
-    fprintf(CommandFileFp, "%s", command.c_str());
-    if (command[command.size()-1] != '\n') {
-      fprintf(CommandFileFp, "\n");
-    }
-    return true;
-  } else {
-    return false;
-  }
-}
-
-bool BatchJob::AbortJob() {
-  return false;
-}
-
-void BatchJob::AddtoCleanup(const std::string& file) {
-  //canonicalize file name for QFile first.
-
-  CleanupList.push_back(file);
+void BatchJob::AbortJob() {
+    process->kill();
 }
 
 std::string BatchJob::Info() {
@@ -270,14 +109,11 @@ std::string BatchJob::Info() {
   }
   s += format("Job id: %ld\n"
               "Log file: %s\n"
-              "Command file: %s\n"
-              "Finished file: %s\n"
-              "Update script: %s\n"
               "Job directory: %s\n"
               "Running: %d\n"
               "Success: %d\n",
-              JobId, LogFile.c_str(), CommandFile.c_str(), FinishedFile.c_str(),
-              UpdateScript.c_str(), jobDir.c_str(), (int)running, (int)success);
+              jobId_, LogFile.toAscii().constData(),
+              jobDir.toAscii().constData(), (int)isRunning(), (int)isSuccess());
   if (settings["workingDirectory"].str != MIDatum::INVALID_STRING) {
     s += "Working directory: " + settings["workingDirectory"].str + "\n"; 
   }
@@ -285,51 +121,34 @@ std::string BatchJob::Info() {
 }
 
 void BatchJob::ShowLog() {
-  std::string savedir = QDir::current().absolutePath().toStdString();
-  QDir::setCurrent(jobDir.c_str());
 
-  QDialog dlg(m_doc);
-  dlg.setWindowTitle(LogFile.c_str());
-  dlg.setModal(true);
-  dlg.setSizeGripEnabled(true);
+    QDialog dlg(MIMainWindow::instance());
+    dlg.setWindowTitle(LogFile);
+    dlg.setModal(true);
+    dlg.setSizeGripEnabled(true);
+    QVBoxLayout* mainLayout = new QVBoxLayout;
+    dlg.setLayout(mainLayout);
 
-  QTextBrowser *browse = new QTextBrowser(&dlg);
-  QFile logFileObj(LogFile.c_str());
-  if ( !logFileObj.open(QFile::ReadOnly | QFile::Text) ) {
-    browse->setPlainText(QObject::tr("ERROR: Log file %1 not found!")
-      .arg(LogFile.c_str()));
-  } else {
-    QTextStream logStream(&logFileObj);
-    browse->setPlainText(logStream.readAll());
-  }
+    QTextBrowser *browse = new QTextBrowser(&dlg);
+    mainLayout->addWidget(browse);
 
-  QDialogButtonBox *bb=new QDialogButtonBox(QDialogButtonBox::Ok, Qt::Horizontal, &dlg);
-  dlg.connect(bb, SIGNAL(accepted()), &dlg, SLOT(accept()));
-  
-  QVBoxLayout *mainLayout = new QVBoxLayout;
-  mainLayout->addWidget(browse);
-  mainLayout->addWidget(bb);
-  dlg.setLayout(mainLayout);
-  dlg.exec();
+    QDialogButtonBox* bb = new QDialogButtonBox(QDialogButtonBox::Ok, Qt::Horizontal, &dlg);
+    mainLayout->addWidget(bb);
+    dlg.connect(bb, SIGNAL(accepted()), &dlg, SLOT(accept()));
 
-  QDir::setCurrent(savedir.c_str());
+    QFile logFileObj(LogFile);
+    if ( !logFileObj.open(QFile::ReadOnly | QFile::Text) ) {
+        browse->setPlainText(QObject::tr("ERROR: Log file %1 not found!")
+                             .arg(LogFile));
+    } else {
+        QTextStream logStream(&logFileObj);
+        browse->setPlainText(logStream.readAll());
+    }
+
+    dlg.exec();
 }
 
-void BatchJob::SetDocument(MIGLWidget* doc) {
-  m_doc = doc;
-}
-
-MIGLWidget* BatchJob::GetDocument() {
-  return m_doc;
-}
-
-void BatchJob::setSuccess(bool value) {
-  completed = true;
-  success = value;
-  jobChanged(this);
-}
-
-std::string BatchJob::getJobDir() const {
+QString BatchJob::getJobDir() const {
   return jobDir;
 }
 
@@ -343,9 +162,9 @@ MIData& BatchJob::getSettings() {
 }
 
 void BatchJob::openResults() {
-  std::string workDir;
+  QString workDir;
   if (settings["workingDirectory"].str != MIDatum::INVALID_STRING) {
-    workDir = settings["workingDirectory"].str; 
+    workDir = settings["workingDirectory"].str.c_str();
   } else {
     workDir = jobDir;
   }
@@ -353,5 +172,52 @@ void BatchJob::openResults() {
   if (settings["jobName"].str != MIDatum::INVALID_STRING) {
     jobName = settings["jobName"].str;
   }
-  OpenJobResults::prompt(workDir, jobName);
+  OpenJobResults::prompt(workDir.toStdString(), jobName);
+}
+
+QStringList BatchJob::parseArgs(const QString &program)
+{
+    QStringList args;
+    QString tmp;
+    int quoteCount = 0;
+    bool inQuote = false;
+
+    // Tokens can be surrounded by double quotes "hello world".
+    // Three consecutive double quotes represent
+    // the quote character itself.
+    for (int i = 0; i < program.size(); ++i) {
+        if (program.at(i) == QLatin1Char('"')) {
+            ++quoteCount;
+            if (quoteCount == 3) {
+                // third consecutive quote
+                quoteCount = 0;
+                tmp += program.at(i);
+            }
+            continue;
+        }
+        if (quoteCount) {
+            if (quoteCount == 1)
+                inQuote = !inQuote;
+            quoteCount = 0;
+        }
+        if (!inQuote && program.at(i).isSpace()) {
+            if (!tmp.isEmpty()) {
+                args += tmp;
+                tmp.clear();
+            }
+        } else {
+            tmp += program.at(i);
+        }
+    }
+    if (!tmp.isEmpty())
+        args += tmp;
+
+    return args;
+}
+
+void BatchJob::setCommandLine(const QString& command)
+{
+    arguments_ = parseArgs(command);
+    program_ = arguments_.front();
+    arguments_.pop_front();
 }

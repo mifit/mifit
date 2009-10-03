@@ -1,30 +1,28 @@
-/*
- * Author: Paul Collins
- * Date: 8-17-2005
- * Description: This is just a seperate class to seperate the handling
- *		of the Tools menu. This is more for organizational purposes than anything
- *		else
- */
 #ifndef MI_TOOLS_H
 #define MI_TOOLS_H
 
 #include <QObject>
-#include "MIEventHandler.h"
-#include "MIMenu.h"
+#include <QList>
 
-class Tools : public QObject, public MIEventHandler {
+class QAction;
+class QMenu;
+
+class Tools : public QObject {
 Q_OBJECT
 private:
   void CIFConvertlib(const char*);        // Generic function for running mi_convertlib
-  static Tools *_instance;
+
   Tools();
 
+  QList<QAction*> actions;
+  QList<QAction*> docActions;
+
 public:     //Event handles for the tools menu
-  static Tools *instance();
+  static Tools& instance();
 
   static bool VerifyMIExpert();
   static bool VerifyCCP4();
-  void FillToolsMenu(MIMenu*, bool havedoc = false);
+  void FillToolsMenu(QMenu*);
 
 private slots:
   void OnBindNGrind();
@@ -41,7 +39,7 @@ private slots:
   void OnNCSModeling();
   void OnCustom();
   void OnIntegrate();
-  void OnUpdateForJobLimit(const MIUpdateEvent &);
+  void OnUpdateForJobLimit();
 };
 
 #endif

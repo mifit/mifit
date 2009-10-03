@@ -51,7 +51,7 @@ void BatchJobManager::CleanSucc() {
   size = JobList.size();
   for (i = 0; i < size; i++) {
     job = *(JobList.begin()+i);
-    if (!job->IsRunning() && job->RanOK()) {
+    if (!job->isRunning() && job->isSuccess()) {
       tokill.push_back(job);
     }
   }
@@ -68,7 +68,7 @@ void BatchJobManager::CleanAll() {
   size = JobList.size();
   for (i = 0; i < size; i++) {
     job = *(JobList.begin()+i);
-    if (!job->IsRunning()) {
+    if (!job->isRunning()) {
       tokill.push_back(job);
     }
   }
@@ -84,7 +84,7 @@ bool BatchJobManager::DeleteJob(BatchJob* job) {
   // or refuse to delete job when running?
   if (!job)
     return false;
-  if (job->IsRunning()) {
+  if (job->isRunning()) {
     Logger::message("You cannot delete a job while it is still running");
     return false;
   }
@@ -97,16 +97,6 @@ bool BatchJobManager::DeleteJob(BatchJob* job) {
     }
   }
   return false;
-}
-
-void BatchJobManager::DetachJob(BatchJob* job) {
-  for (size_t i = 0; i < JobList.size(); i++) {
-    if (job == JobList[i]) {
-      delete *(JobList.begin()+i);
-      JobList.erase(JobList.begin()+i);
-      jobDeleted(job);
-    }
-  }
 }
 
 void BatchJobManager::ShowLogFile(BatchJob* b) {
@@ -139,7 +129,7 @@ void BatchJobManager::checkAllJobs() {
   while (jobIter != JobList.end()) {
     BatchJob* job = *jobIter;
     ++jobIter;
-    if (job && job->IsRunning()) {
+    if (job && job->isRunning()) {
       running = true;
     }
   }
@@ -156,7 +146,7 @@ int BatchJobManager::numberOfRunningJobs() {
   while (iter != JobList.end()) {
     BatchJob* job = *iter;
     ++iter;
-    if (job && job->IsRunning()) {
+    if (job && job->isRunning()) {
       ++count;
     }
   }

@@ -53,11 +53,6 @@ public:
   bool DeleteJob(BatchJob* p_job);
 
   /**
-   * Removes the given job from monitoring.
-   */
-  void DetachJob(BatchJob* p_job);
-
-  /**
    * Returns the working directory
    */
   const char* GetWorkDirectory() {

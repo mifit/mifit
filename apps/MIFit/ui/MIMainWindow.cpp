@@ -2069,9 +2069,8 @@ void MIMainWindow::createMenus()
   menu_bar->Append(analyze_menu, "&Analyze");
 
   JobManager = new BatchJobManager();
-  MIMenu* job_menu = new MIMenu(*Tools::instance());
-  Tools::instance()->FillToolsMenu(job_menu, true);
-  menu_bar->Append(job_menu, "&Job");
+  QMenu* job_menu = menuBar()->addMenu("&Job");
+  Tools::instance().FillToolsMenu(job_menu);
 
 
   hide_menu = new MIMenu(*this);

@@ -22,6 +22,7 @@ std::string CustomJob::Info() {
   return BatchJob::Info();
 }
 
+
 bool CustomJob::StartJob() {
   typedef std::map<std::string, std::string> SubstitutionMap;
   SubstitutionMap subs;
@@ -32,7 +33,7 @@ bool CustomJob::StartJob() {
     if (doc != NULL) {
       Molecule* model = doc->GetDisplaylist()->GetCurrentModel();
       if (model) {
-        std::string modelFile = format("%s%cmifit_%ld.pdb", settings["workingDirectory"].str.c_str(), QDir::separator().toAscii(), JobId);
+        std::string modelFile = format("%s%cmifit_%ld.pdb", settings["workingDirectory"].str.c_str(), QDir::separator().toAscii(), jobId_);
         model->SavePDBFile(modelFile.c_str());
         subs["\\$MODEL"] = modelFile.c_str();
       }
@@ -54,15 +55,11 @@ bool CustomJob::StartJob() {
   }
 
   setJobDir(settings["workingDirectory"].str.c_str());
-  LogFile = format("%s%c%s_%ld.log", jobDir.c_str(), QDir::separator().toAscii(), settings["jobName"].str.c_str(), JobId);
-  AddtoCleanup(LogFile);
+  LogFile = QString("%1%2%3_%4.log").arg(jobDir).arg(QDir::separator())
+            .arg(settings["jobName"].str.c_str()).arg(jobId_);
 
-  command = settings["executable"].str + " ";
-  command += args.c_str();
-
-
-  openCommandFile();
-  WriteCommand(command + " > \"" + LogFile + "\" 2>&1");
+  program_ = settings["executable"].str.c_str();
+  arguments_ = parseArgs(args.c_str());
 
   return BatchJob::StartJob();
 }

@@ -46,7 +46,6 @@ public:
   void ShowLog();
   void CleanSuccessful();
   void CleanAll();
-  void DetachJob();
   void OpenResults();
 
 public:
@@ -93,7 +92,6 @@ EVT_MENU(ID_JOBSVIEW_SHOWLOG, JobsTree::ShowLog)
 EVT_MENU(ID_JOBSVIEW_OPENRESULTS, JobsTree::OpenResults)
 EVT_MENU(ID_JOBSVIEW_CLEANSUCCESSFUL, JobsTree::CleanSuccessful)
 EVT_MENU(ID_JOBSVIEW_CLEANALL, JobsTree::CleanAll)
-EVT_MENU(ID_JOBSVIEW_DETACH, JobsTree::DetachJob)
 END_EVENT_TABLE()
 }
 
@@ -134,7 +132,6 @@ void JobsTree::OnItemPressed(QTreeWidgetItem *id, int) {
   menu->Append(ID_JOBSVIEW_DELETE, "Delete Job", "Delete this job", false);
   menu->Append(ID_JOBSVIEW_CLEANSUCCESSFUL, "Clean Successful", "Remove jobs that have completed successfully", false);
   menu->Append(ID_JOBSVIEW_CLEANALL, "Clean All", "Remove jobs that have completed", false);
-  menu->Append(ID_JOBSVIEW_DETACH, "Detach Job", "Detach this job", false);
   BatchJob* job = NULL;
   if (itemToJob.find(id) != itemToJob.end()) {
     job = itemToJob[id];
@@ -143,14 +140,10 @@ void JobsTree::OnItemPressed(QTreeWidgetItem *id, int) {
     menu->Enable(ID_JOBSVIEW_DELETE, false);
     menu->Enable(ID_JOBSVIEW_PROPERTIES, false);
     menu->Enable(ID_JOBSVIEW_SHOWLOG, false);
-    menu->Enable(ID_JOBSVIEW_DETACH, false);
   } else {
-    if (job != NULL && job->IsRunning()) {
+    if (job != NULL && job->isRunning()) {
       menu->Enable(ID_JOBSVIEW_OPENRESULTS, false);
       menu->Enable(ID_JOBSVIEW_SHOWLOG, false);
-      menu->Enable(ID_JOBSVIEW_DETACH, true);
-    } else {
-      menu->Enable(ID_JOBSVIEW_DETACH, false);
     }
   }
 
@@ -176,7 +169,7 @@ void JobsTree::DeleteJob() {
       return;
     }
     std::string message;
-    message=::format("Are you sure you want to delete job %d?", job->JobId);
+    message=::format("Are you sure you want to delete job %d?", job->jobId());
     if (QMessageBox::question(0, "Confirm Delete Job",
                                   message.c_str(),
                                   QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::No) {
@@ -187,35 +180,6 @@ void JobsTree::DeleteJob() {
     QTreeWidgetItem* id = selected[i];
     BatchJob* job = itemToJob[id];
     batchJobManager->DeleteJob(job);
-  }
-}
-
-void JobsTree::DetachJob() {
-  QList<QTreeWidgetItem *> selected;
-  GetSelections(selected);
-  if (selected.size() == 0) {
-    return;
-  } else if (selected.size() > 1) {
-    if (QMessageBox::question(0, "Confirm Detach Jobs",
-                                  "Are you sure you want to detach the selected jobs?",
-                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::No) {
-      return;
-    }
-  } else {
-    QTreeWidgetItem* id = selected[0];
-    BatchJob* job = itemToJob[id];
-    std::string message;
-    message=::format("Are you sure you want to detach job %d?", job->JobId);
-    if (QMessageBox::question(0, "Confirm Detach Job",
-                                  message.c_str(),
-                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::No) {
-      return;
-    }
-  }
-  for (int i = 0; i < selected.size(); i++) {
-    QTreeWidgetItem* id = selected[i];
-    BatchJob* job = itemToJob[id];
-    batchJobManager->DetachJob(job);
   }
 }
 
@@ -329,21 +293,19 @@ void JobsView::addJobToTree(BatchJob* job) {
 
 void JobsView::stylizeItem(QTreeWidgetItem* id, BatchJob* job) {
   int image = 1;
-  if (job->IsRunning()) {
-    image = 2;
-  } else if (job->isCompleted()) {
-    if (job->RanOK()) {
+  if (job->isRunning()) {
+      image = 2;
+  } else if (job->isSuccess()) {
       image = 3;
-    } else {
+  } else {
       image = 4;
-    }
   }
   id->setIcon(0,jobsTree->GetIcon(image));
   std::string jobText;
   if (job->getSettings()["jobName"].str != MIDatum::INVALID_STRING) {
-    jobText=::format("%s (%d)", job->getSettings()["jobName"].str.c_str(), job->JobId);
+    jobText=::format("%s (%d)", job->getSettings()["jobName"].str.c_str(), job->jobId());
   } else {
-    jobText=::format("%d", job->JobId);
+    jobText=::format("%d", job->jobId());
   }
   id->setText(0, jobText.c_str());
 }

@@ -27,10 +27,6 @@ void TestJob::StartJob(BatchJob* job) {
   s = "/usr/bin/sleep 10\n";
 #endif
 #endif
-  if (job->WriteCommand(s.c_str()) == false) {
-    Logger::log("Batch job failed to initialize - no job started");
-    return;
-  }
   job->StartJob();
 }
 

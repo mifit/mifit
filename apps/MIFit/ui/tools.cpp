@@ -12,6 +12,7 @@
 #include <QString>
 #include <QFileInfo>
 #include <QDir>
+#include <QMenu>
 #include <QMessageBox>
 #include <util/utillib.h>
 #include <vector>
@@ -30,16 +31,6 @@
 
 using namespace chemlib;
 
-Tools *Tools::_instance = NULL;
-
-// convert path to system-appropriate string:
-static QString buildPath(const QString& path) {
-  if (path.isEmpty() || path == "none")
-    return path;
-
-  return QDir::toNativeSeparators(path);
-}
-
 // convert path to system-appropriate absolute path string:
 static QString buildAbsPath(const QString& path) {
   if (path.isEmpty() || path == "none")
@@ -53,16 +44,6 @@ static QString MIExpertPy()
     return QDir::toNativeSeparators(
             QString("%1/MIExpert/MIExpert.py")
             .arg(Application::instance()->GetMolimageHome().c_str()));
-}
-
-static const char *MIExpertCommand()
-{
-  static std::string cmd; // static so that returned char * will stay valid
-
-  // must be re-assigned on each call b/c MolimageHome might change
-  cmd=Application::instance()->GetMolimageHome() + "/MIExpert/MIExpert.py";
-  cmd=QDir::toNativeSeparators(cmd.c_str()).toStdString();
-  return cmd.c_str();
 }
 
 bool Tools::VerifyMIExpert() {
@@ -138,6 +119,7 @@ void Tools::OnBindNGrind() {
   }
 
   QStringList args;
+  args << MIExpertPy() << "bng";
   // Write config file
   for (unsigned int i=0; i < data["hklin"].strList.size(); ++i ) {
     args << "--hklin" << buildAbsPath(data["hklin"].strList[i].c_str());
@@ -187,7 +169,6 @@ void Tools::OnBindNGrind() {
       mi.bonds = model.getBonds();
       fpdb.Write(ligOut, mi);
       fclose(ligOut);
-      job->AddtoCleanup(lig.toAscii().constData());
     } else {
       lig = data["ligand_name"].str.c_str();
     }
@@ -195,23 +176,17 @@ void Tools::OnBindNGrind() {
   }
   args << "--molimagehome" << buildAbsPath(Application::instance()->MolimageHome.c_str());
 
-  QString s = QString("New Cocrystal Solution job #%1").arg(job->JobId);
+  QString s = QString("New Cocrystal Solution job #%1").arg(job->jobId());
   Logger::log(s.toStdString());
-  job->AddtoCleanup("mi_runbng.txt");
   QFileInfo workdir(data["hklin"].strList[0].c_str());
-  log = buildAbsPath(QString("%1/mifit%2.log").arg(workdir.absoluteFilePath()).arg(job->JobId));
-  s = QString("\"%1\" bng \"%2\" > \"%3\"")
-      .arg(MIExpertCommand()).arg(args.join("\" \"")).arg(log);
-  job->LogFile = log.toStdString();
-  job->AddtoCleanup(log.toAscii().constData());
-  if (!job->WriteCommand(s.toAscii().constData())) {
-    Logger::message("Job failed to initialize!");
-    MIMainWindow::instance()->GetJobManager()->DeleteJob(job);
-  }
+  log = buildAbsPath(QString("%1/mifit%2.log").arg(workdir.absoluteFilePath()).arg(job->jobId()));
+  job->setProgram("python");
+  job->setArguments(args);
+  job->setLogFile(log);
   if (data["bngsummary"].str.size()) {
     QDir dir(data["bngsummary"].str.c_str());
     if (!dir.exists()) {
-      MIMessageBox("HTML Summary Directory doesn't exist!\nAborting");
+        QMessageBox::critical(MIMainWindow::instance(), "Error", "HTML Summary Directory doesn't exist!\nAborting");
       return;
     }
     QStringList filters;
@@ -220,17 +195,7 @@ void Tools::OnBindNGrind() {
     int count=fi.count() +1;
     std::string htmlName=::format("bng_jobsummary_%d.htm", count);
 
-
-#ifndef _WIN32 //Unix pathnames are needed
-    s = QString("%1 \"%2/%3\"").arg(buildPath(Application::instance()->HTMLBrowser.c_str()))
-               .arg(buildAbsPath(data["bngsummary"].str.c_str()))
-               .arg(buildPath(htmlName).c_str()));
-#else
-    s = QString("start \"%s\" \"%s\\%s\"").arg(buildPath(Application::instance()->HTMLBrowser.c_str()))
-               .arg(buildAbsPath(data["bngsummary"].str.c_str()))
-               .arg(buildPath(htmlName.c_str()));
-#endif
-    job->WriteCommand(s.toAscii().constData());
+    // TODO open browser with results
   }
   job->StartJob();
 }
@@ -246,24 +211,19 @@ void Tools::CIFConvertlib(const char* format) {
   }
 
   BatchJob* job = MIMainWindow::instance()->GetJobManager()->CreateJob();
-  s=::format("New CIF restraints job #%ld", job->JobId);
+  s=::format("New CIF restraints job #%ld", job->jobId());
   Logger::log(s);
 
   QFileInfo workdir(filename.c_str());
-  log=::format("%s%cmifit%ld.log", workdir.absolutePath().toStdString().c_str(),QDir::separator().toAscii(), job->JobId);
+  log=::format("%s%cmifit%ld.log", workdir.absolutePath().toStdString().c_str(),QDir::separator().toAscii(), job->jobId());
 
-  s=::format("\"%s\" convertlib --cif \"%s\" --workdir \"%s\" --refprogram \"%s\" > \"%s\"",
-             MIExpertCommand(),
+  s=::format("python \"%s\" convertlib --cif \"%s\" --workdir \"%s\" --refprogram \"%s\"",
+             MIExpertPy().toAscii().constData(),
              filename.c_str(),
              workdir.absolutePath().toStdString().c_str(),
-             format,
-             log.c_str() );
-  job->LogFile = log;
-  job->AddtoCleanup(log.c_str());
-  if (!job->WriteCommand(s.c_str())) {
-    Logger::message("Job failed to initialize!");
-    MIMainWindow::instance()->GetJobManager()->DeleteJob(job);
-  }
+             format);
+  job->setCommandLine(s.c_str());
+  job->setLogFile(log.c_str());
   job->StartJob();
 }
 
@@ -277,8 +237,6 @@ void Tools::OnCIF2CNS() {
 
 void Tools::OnMolRep() {
   BatchJob* job = NULL;
-  std::string multi = "no";
-  std::string match = "no";
   std::string jobtxt;
   std::string args;
   std::string log;
@@ -315,14 +273,10 @@ void Tools::OnMolRep() {
   settings["workingDirectory"].str = data["workdir"].str;
   settings["jobName"].str = "Molrep";
   job->setSettings(settings);
-  log = buildAbsPath(QString("%1/mifit%2.log").arg(data["workdir"].str.c_str()).arg(job->JobId)).toStdString();
-  jobtxt=::format("\"%s\" molrep %s > \"%s\"", MIExpertCommand(), args.c_str(), log.c_str());
-  job->LogFile = log;
-  job->AddtoCleanup(log.c_str());
-  if (!job->WriteCommand(jobtxt.c_str())) {
-    Logger::message("Job failed to initialize!");
-    MIMainWindow::instance()->GetJobManager()->DeleteJob(job);
-  }
+  log = buildAbsPath(QString("%1/mifit%2.log").arg(data["workdir"].str.c_str()).arg(job->jobId())).toStdString();
+  jobtxt=::format("python \"%s\" molrep %s", MIExpertPy().toAscii().constData(), args.c_str());
+  job->setLogFile(log.c_str());
+  job->setCommandLine(jobtxt.c_str());
   job->StartJob();
 }
 
@@ -339,19 +293,15 @@ void Tools::OnRefmacRestraints() {
   MIData settings;
   settings["jobName"].str = "Refmac Restraints";
   job->setSettings(settings);
-  s=::format("New CIF to ShellX job #%ld", job->JobId);
+  s=::format("New CIF to ShellX job #%ld", job->jobId());
   Logger::log(s);
   QFileInfo workdir(filename.c_str());
-  log=::format("%s%cmifit%ld.log", workdir.absolutePath().toStdString().c_str(),QDir::separator().toAscii(), job->JobId);
+  log=::format("%s%cmifit%ld.log", workdir.absolutePath().toStdString().c_str(),QDir::separator().toAscii(), job->jobId());
 
-  s=::format("\"%s\" restraints --pdbfile \"%s\" --workdir \"%s\" > \"%s\"",
-             MIExpertCommand(), filename.c_str(), workdir.absolutePath().toStdString().c_str(), log.c_str() );
-  job->LogFile = log;
-  job->AddtoCleanup(log.c_str());
-  if (!job->WriteCommand(s.c_str())) {
-    Logger::message("Job failed to initialize!");
-    MIMainWindow::instance()->GetJobManager()->DeleteJob(job);
-  }
+  s=::format("python \"%s\" restraints --pdbfile \"%s\" --workdir \"%s\"",
+             MIExpertPy().toAscii().constData(), filename.c_str(), workdir.absolutePath().toStdString().c_str());
+  job->setCommandLine(s.c_str());
+  job->setLogFile(log.c_str());
   job->StartJob();
 }
 
@@ -408,14 +358,10 @@ void Tools::OnRefine() {
   settings["workingDirectory"].str = data["workdir"].str;
   settings["jobName"].str = "Refinement";
   job->setSettings(settings);
-  log=buildAbsPath(::format("%smifit%ld.log", (data["workdir"].str+QDir::separator().toAscii()).c_str(), job->JobId).c_str()).toStdString();
-  jobtxt=::format("\"%s\" refine %s > \"%s\"", MIExpertCommand(), args.c_str(), log.c_str() );
-  job->LogFile = log;
-  job->AddtoCleanup(log.c_str());
-  if (!job->WriteCommand(jobtxt.c_str())) {
-    Logger::message("Job failed to initialize!");
-    MIMainWindow::instance()->GetJobManager()->DeleteJob(job);
-  }
+  log=buildAbsPath(::format("%smifit%ld.log", (data["workdir"].str+QDir::separator().toAscii()).c_str(), job->jobId()).c_str()).toStdString();
+  jobtxt=::format("python \"%s\" refine %s", MIExpertPy().toAscii().constData(), args.c_str());
+  job->setLogFile(log.c_str());
+  job->setCommandLine(jobtxt.c_str());
   //Find highest number error
   //refine_#_errors.txt
   std::string currentName, errorName, tempName;
@@ -443,18 +389,7 @@ void Tools::OnRefine() {
   }
 
   if (errorName.size()) {
-#ifndef _WIN32 //Unix pathnames are needed
-    jobtxt=::format("%s \"%s/%s\"",
-                    buildPath(Application::instance()->HTMLBrowser.c_str()).toStdString().c_str(),
-                    buildAbsPath(data["workdir"].str.c_str()).toStdString().c_str(),
-                    buildPath(errorName).toStdString().c_str());
-#else
-    jobtxt=::format("start \"%s\" \"%s\\%s\"",
-                    buildPath(Application::instance()->HTMLBrowser.c_str()).toStdString().c_str(),
-                    buildAbsPath(data["workdir"].str.c_str()).toStdString().c_str(),
-                    buildPath(errorName.c_str()).toStdString().c_str());
-#endif
-    job->WriteCommand(jobtxt.c_str());
+      // TODO open error file in browser
   }
   job->StartJob();
 }
@@ -531,15 +466,11 @@ void Tools::OnJobReport() {
   settings["workingDirectory"].str = data["workdir"].str.c_str();
   settings["jobName"].str = "Report";
   job->setSettings(settings);
-  log=buildAbsPath(::format("%smifit%ld.log", (data["workdir"].str+QDir::separator().toAscii()).c_str(), job->JobId).c_str()).toStdString();
-  jobtxt=::format("\"%s\" deposit3d %s > \"%s\"", MIExpertCommand(), args.c_str(), log.c_str());
+  log=buildAbsPath(::format("%smifit%ld.log", (data["workdir"].str+QDir::separator().toAscii()).c_str(), job->jobId()).c_str()).toStdString();
+  jobtxt=::format("python \"%s\" deposit3d %s", MIExpertPy().toAscii().constData(), args.c_str());
 
-  job->LogFile = log;
-  job->AddtoCleanup(log.c_str());
-  if (!job->WriteCommand(jobtxt.c_str())) {
-    Logger::message("Job failed to initialize!");
-    MIMainWindow::instance()->GetJobManager()->DeleteJob(job);
-  }
+  job->setLogFile(log.c_str());
+  job->setCommandLine(jobtxt.c_str());
   if (data["html_report"].b) {
     std::string htmlName;
     if (data["rootname"].str.size()) {
@@ -547,18 +478,7 @@ void Tools::OnJobReport() {
     } else {
       htmlName=::format("pdbdeposit.htm");
     }
-#ifndef _WIN32 //Unix pathnames are needed
-    jobtxt=::format("%s \"%s/%s\"",
-                    buildPath(Application::instance()->HTMLBrowser.c_str()).toStdString().c_str(),
-                    buildAbsPath(data["workdir"].str.c_str()).toStdString().c_str(),
-                    buildPath(htmlName.c_str()).toStdString().c_str());
-#else
-    jobtxt=::format("start \"%s\" \"%s\\%s\"",
-                    buildPath(Application::instance()->HTMLBrowser.c_str()).toStdString().c_str(),
-                    buildAbsPath(data["workdir"].str.c_str()).toStdString().c_str(),
-                    buildPath(htmlName.c_str()).toStdString().c_str());
-#endif
-    job->WriteCommand(jobtxt.c_str());
+    // TODO open report in browser
   }
   job->StartJob();
 }
@@ -590,27 +510,10 @@ void Tools::OnCoCrystalSuperPos() {
   settings["workingDirectory"].str = data["workdir"].str.c_str();
   settings["jobName"].str = "Cocrystal Superpos";
   job->setSettings(settings);
-  log=buildAbsPath(::format("%smifit%ld.log", (data["workdir"].str+QDir::separator().toAscii()).c_str(), job->JobId).c_str()).toStdString();
-  jobtxt=::format("\"%s\" ligandoverlap %s > \"%s\"", MIExpertCommand(), args.c_str(), log.c_str());
-  job->LogFile = log;
-  job->AddtoCleanup(log.c_str());
-  if (!job->WriteCommand(jobtxt.c_str())) {
-    Logger::message("Job failed to initialize!");
-    MIMainWindow::instance()->GetJobManager()->DeleteJob(job);
-  }
-
-#ifndef _WIN32 //Unix pathnames are needed
-  jobtxt=::format("echo loadpdb 0 %s/allligands.pdb > \"%s\"",
-                  buildAbsPath(data["workdir"].str.c_str()).toStdString().c_str(),
-                  job->UpdateScript.c_str());
-  job->WriteCommand(jobtxt.c_str());
-#else
-  jobtxt=::format("echo loadpdb 0 %s\\allligands.pdb > \"%s\"",
-                  buildAbsPath(data["workdir"].str.c_str()).toStdString().c_str(),
-                  job->UpdateScript.c_str());
-  job->WriteCommand(jobtxt.c_str());
-#endif
-  job->SetDocument(MIMainWindow::instance()->currentMIGLWidget());
+  log=buildAbsPath(::format("%smifit%ld.log", (data["workdir"].str+QDir::separator().toAscii()).c_str(), job->jobId()).c_str()).toStdString();
+  jobtxt=::format("python \"%s\" ligandoverlap %s", MIExpertPy().toAscii().constData(), args.c_str());
+  job->setLogFile(log.c_str());
+  job->setCommandLine(jobtxt.c_str());
   job->StartJob();
 }
 
@@ -656,27 +559,12 @@ void Tools::OnSadPhasing() {
   settings["workingDirectory"].str = data["workdir"].str;
   settings["jobName"].str = "SAD phasing";
   job->setSettings(settings);
-  log=buildAbsPath(::format("%smifit%ld.log", (data["workdir"].str + QDir::separator().toAscii()).c_str(), job->JobId).c_str()).toStdString();
-  jobtxt=::format("\"%s\" sadphase %s> \"%s\"", MIExpertCommand(), args.c_str(), log.c_str());
-  job->LogFile = log;
-  job->AddtoCleanup(log.c_str());
-  if (!job->WriteCommand(jobtxt.c_str())) {
-    Logger::message("Job failed to initialize!");
-    MIMainWindow::instance()->GetJobManager()->DeleteJob(job);
-  }
+  log=buildAbsPath(::format("%smifit%ld.log", (data["workdir"].str + QDir::separator().toAscii()).c_str(), job->jobId()).c_str()).toStdString();
+  jobtxt=::format("python \"%s\" sadphase %s", MIExpertPy().toAscii().constData(), args.c_str());
+  job->setLogFile(log.c_str());
+  job->setCommandLine(jobtxt.c_str());
   std::string htmlName = "mi_phase_summary.html";
-#ifndef _WIN32 //Unix pathnames are needed
-  jobtxt=::format("%s \"%s/%s\"",
-                  buildPath(Application::instance()->HTMLBrowser.c_str()).toStdString().c_str(),
-                  buildAbsPath(data["workdir"].str.c_str()).toStdString().c_str(),
-                  buildPath(htmlName.c_str()).toStdString().c_str());
-#else
-  jobtxt=::format("start \"%s\" \"%s\\%s\"",
-                  buildPath(Application::instance()->HTMLBrowser.c_str()).toStdString().c_str(),
-                  buildAbsPath(data["workdir"].str.c_str()).toStdString().c_str(),
-                  buildPath(htmlName.c_str()).toStdString().c_str());
-#endif
-  job->WriteCommand(jobtxt.c_str());
+  // TODO open summary in browser
   job->StartJob();
   return;
 }
@@ -732,19 +620,12 @@ void Tools::OnNCSModeling() {
   settings["jobName"].str = "NCS Modeling";
   job->setSettings(settings);
 
-  log=buildAbsPath(::format("%smifit%ld.log", (data["workdir"].str+QDir::separator().toAscii()).c_str(), job->JobId).c_str()).toStdString();
-  jobtxt=::format("\"%s\" %s > \"%s\"", MIExpertCommand(), cmd.c_str(), log.c_str());
-  job->LogFile = log;
-  job->AddtoCleanup(log.c_str());
-  if (!job->WriteCommand(jobtxt.c_str())) {
-    Logger::message("Job failed to initialize!");
-    MIMainWindow::instance()->GetJobManager()->DeleteJob(job);
-  }
+  log=buildAbsPath(::format("%smifit%ld.log", (data["workdir"].str+QDir::separator().toAscii()).c_str(), job->jobId()).c_str()).toStdString();
+  jobtxt=::format("python \"%s\" %s", MIExpertPy().toAscii().constData(), cmd.c_str());
+  job->setLogFile(log.c_str());
+  job->setCommandLine(jobtxt.c_str());
   pdbout=buildAbsPath(::format("%s%cncs_%s_out.pdb", data["workdir"].str.c_str(), QDir::separator().toAscii(), QFileInfo(doc->GetTitle().c_str()).fileName().toStdString().c_str()).c_str()).toStdString();
 
-  jobtxt=::format("echo loadpdb 0 %s > \"%s\"", pdbout.c_str(), job->UpdateScript.c_str());
-  job->WriteCommand(jobtxt.c_str());
-  job->SetDocument(MIMainWindow::instance()->currentMIGLWidget());
   job->StartJob();
 }
 
@@ -777,47 +658,49 @@ void Tools::OnCustom() {
   job->StartJob();
 }
 
-void Tools::FillToolsMenu(MIMenu* parent, bool havedoc) {
+void Tools::FillToolsMenu(QMenu* parent) {
 
-  MIMenu* convcif_menu = new MIMenu(*this);
-  parent->Append(ID_TOOLS_INTEGRATE, "&Integrate with d*TREK");
-  parent->Append(ID_TOOLS_SAD, "&SAD Phasing");
-  parent->Append(0, "&Convert CIF to", convcif_menu);
-  convcif_menu->Append(ID_TOOLS_CIF2SHELLX, "&SHELX");
-  convcif_menu->Append(ID_TOOLS_CIF2CNS, "&CNS / CNX");
-  parent->Append(ID_TOOLS_REFMACRES, "S&et Refmac5 restraints");
-  parent->Append(ID_TOOLS_MOLREP, "&Molecular Replacement");
-  parent->Append(ID_TOOLS_REFINE, "&Refinement");
-  parent->Append(ID_TOOLS_BNG, "C&ocrystal Solution");
-  parent->Append(ID_TOOLS_REPORT, "Re&port");
+    connect(parent, SIGNAL(aboutToShow()),
+            this, SLOT(OnUpdateForJobLimit()));
 
-  parent->Append(ID_TOOLS_CUSTOM, "Run Custom Job");
+    actions += parent->addAction("&Integrate with d*TREK", this, SLOT(OnIntegrate()));
+    actions += parent->addAction("&SAD Phasing", this, SLOT(OnSadPhasing()));
 
-  // Things that are in the job menu
-  if (havedoc) {
-    parent->AppendSeparator();
-    parent->Append(ID_TOOLS_NCS, "&NCS Modeling");
-    parent->Append(ID_TOOLS_SUPER, "Cocr&ystal Superposition");
+    QMenu* convcif_menu = new QMenu("&Convert CIF to", parent);
+    convcif_menu->addAction("&SHELX", this, SLOT(OnCIF2Shellx()));
+    convcif_menu->addAction("&CNS / CNX", this, SLOT(OnCIF2CNS()));
+
+    actions += parent->addAction("S&et Refmac5 restraints", this, SLOT(OnRefmacRestraints()));
+    actions += parent->addAction("&Molecular Replacement", this, SLOT(OnMolRep()));
+    actions += parent->addAction("&Refinement", this, SLOT(OnRefine()));
+    actions += parent->addAction("C&ocrystal Solution", this, SLOT(OnBindNGrind()));
+    actions += parent->addAction("Re&port", this, SLOT(OnJobReport()));
+
+    actions += parent->addAction("Run Custom Job", this, SLOT(OnCustom()));
+
+    parent->addSeparator();
+    docActions += parent->addAction("&NCS Modeling", this, SLOT(OnNCSModeling()));
+    docActions += parent->addAction("Cocr&ystal Superposition", this, SLOT(OnCoCrystalSuperPos()));
 #ifdef DEBUG
-    parent->Append(ID_RUN_TESTJOB, "Run &Test Job...", "Run a test job that waits 5 seconds then terminates");
+    QAction* action = parent->addAction("Run &Test Job...", this, SLOT(OnRunTestJob()));
+    action->setStatusTip("Run a test job that waits 5 seconds then terminates");
+    docActions += action;
 #endif
-  }
+
 }
 
-void Tools::OnUpdateForJobLimit(const MIUpdateEvent& pCmdUI) {
-  pCmdUI.Enable(!MIMainWindow::instance()->isJobLimit());
+void Tools::OnUpdateForJobLimit() {
+    bool enable = !MIMainWindow::instance()->isJobLimit();
+    foreach (QAction* act, actions) {
+        act->setEnabled(enable);
+    }
+    bool havedoc = MIMainWindow::instance()->currentMIGLWidget() != NULL;
+    foreach (QAction* act, docActions) {
+        act->setEnabled(enable && havedoc);
+    }
 
-  // disable menu options which depend on model window if not present
-  bool havedoc=MIMainWindow::instance()->currentMIGLWidget() != NULL;
-  switch (pCmdUI.GetId()) {
-    case ID_TOOLS_NCS:
-    case ID_TOOLS_SUPER:
-    case ID_RUN_TESTJOB:
-      pCmdUI.Enable(havedoc);
-    default:
-      break;
-  }
 }
+
 
 void Tools::OnIntegrate() {
   static std::string workdir("");
@@ -854,7 +737,7 @@ void Tools::OnIntegrate() {
     commonArguments += " --integrate_resolution=\""+ data["integrate_resolution"].str + "\"";
   }
 
-  log=buildAbsPath(::format("mifit%ld.log", job->JobId).c_str()).toStdString();
+  log=buildAbsPath(::format("mifit%ld.log", job->jobId()).c_str()).toStdString();
 
   std::vector<std::string> templateList = data["template_image"].strList;
   std::vector<std::string>::iterator iter = templateList.begin();
@@ -870,15 +753,12 @@ void Tools::OnIntegrate() {
       redirect = ">";
       firstCommand = false;
     }
-    jobtxt=::format("\"%s\" %s %s \"%s\"", MIExpertCommand(), cmd.c_str(), redirect.c_str(), log.c_str() );
-    if (!job->WriteCommand(jobtxt.c_str())) {
-      Logger::message("Job failed to initialize!");
-      MIMainWindow::instance()->GetJobManager()->DeleteJob(job);
-    }
+    jobtxt=::format("python \"%s\" %s", MIExpertPy().toAscii().constData(), cmd.c_str());
+    // TODO rework to run in one command
+    job->setCommandLine(jobtxt.c_str());
   }
 
-  job->LogFile = log;
-  job->AddtoCleanup(log.c_str());
+  job->setLogFile(log.c_str());
   job->StartJob();
 }
 
@@ -888,7 +768,6 @@ void Tools::OnRunTestJob() {
   MIMainWindow::instance()->GetJobManager()->SetWorkDirectory("C:\\temp");
 #endif
   BatchJob* job =   MIMainWindow::instance()->GetJobManager()->CreateJob();
-  job->SetDocument(MIMainWindow::instance()->currentMIGLWidget());
   try {
     TestJob testJob;
     testJob.StartJob(job);
@@ -898,7 +777,7 @@ void Tools::OnRunTestJob() {
     return;
   }
   WaitCursor* wait = new WaitCursor("Waiting for test job to finish");
-  while (wait->CheckForAbort() == false && job->IsRunning()) {
+  while (wait->CheckForAbort() == false && job->isRunning()) {
 #ifdef _WIN32
     Sleep(100);
 #else
@@ -909,41 +788,10 @@ void Tools::OnRunTestJob() {
 }
 
 
-Tools::Tools() : QObject(0),MIEventHandler(this) {
-  _instance = this;
-
-BEGIN_EVENT_TABLE(this,none)
-EVT_MENU(ID_TOOLS_CIF2SHELLX, Tools::OnCIF2Shellx)
-EVT_MENU(ID_TOOLS_CIF2CNS, Tools::OnCIF2CNS)
-EVT_MENU(ID_TOOLS_MOLREP, Tools::OnMolRep)
-EVT_UPDATE_UI(ID_TOOLS_MOLREP, Tools::OnUpdateForJobLimit)
-EVT_MENU(ID_TOOLS_REFMACRES, Tools::OnRefmacRestraints)
-EVT_UPDATE_UI(ID_TOOLS_REFMACRES, Tools::OnUpdateForJobLimit)
-EVT_MENU(ID_TOOLS_REFINE, Tools::OnRefine)
-EVT_UPDATE_UI(ID_TOOLS_REFINE, Tools::OnUpdateForJobLimit)
-EVT_MENU(ID_TOOLS_BNG, Tools::OnBindNGrind)
-EVT_UPDATE_UI(ID_TOOLS_BNG, Tools::OnUpdateForJobLimit)
-EVT_MENU(ID_TOOLS_REPORT, Tools::OnJobReport)
-EVT_UPDATE_UI(ID_TOOLS_REPORT, Tools::OnUpdateForJobLimit)
-EVT_MENU(ID_TOOLS_SUPER, Tools::OnCoCrystalSuperPos)
-EVT_UPDATE_UI(ID_TOOLS_SUPER, Tools::OnUpdateForJobLimit)
-EVT_MENU(ID_TOOLS_INTEGRATE, Tools::OnIntegrate)
-EVT_UPDATE_UI(ID_TOOLS_INTEGRATE, Tools::OnUpdateForJobLimit)
-EVT_MENU(ID_TOOLS_SAD, Tools::OnSadPhasing)
-EVT_UPDATE_UI(ID_TOOLS_SAD, Tools::OnUpdateForJobLimit)
-EVT_MENU(ID_TOOLS_NCS, Tools::OnNCSModeling)
-EVT_UPDATE_UI(ID_TOOLS_NCS, Tools::OnUpdateForJobLimit)
-EVT_MENU(ID_TOOLS_CUSTOM, Tools::OnCustom)
-EVT_UPDATE_UI(ID_TOOLS_CUSTOM, Tools::OnUpdateForJobLimit)
-EVT_MENU(ID_RUN_TESTJOB, Tools::OnRunTestJob)
-EVT_UPDATE_UI(ID_RUN_TESTJOB, Tools::OnUpdateForJobLimit)
-END_EVENT_TABLE()
-
+Tools::Tools() : QObject(0) {
 }
 
-Tools *Tools::instance() {
-  if (_instance)
+Tools& Tools::instance() {
+    static Tools _instance;
     return _instance;
-  new Tools(); // sets _instance
-  return _instance;
 }
