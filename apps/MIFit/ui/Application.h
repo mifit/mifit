@@ -102,7 +102,7 @@ public:
   std::string GetCrystalData(const char* crystal, const char* key);
   void SetCrystalData(bool reset = false);
 
-  std::string latestFileBrowseDirectory(const std::string& path);
+  QString latestFileBrowseDirectory(const QString& path);
 
   bool isHardwareStereoAvailable() { return hardwareStereoAvailable; };
   void setHardwareStereoAvailable(bool t) { hardwareStereoAvailable = t; }

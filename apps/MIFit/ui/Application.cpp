@@ -1218,18 +1218,18 @@ QSettings *MIGetQSettings() {
   return ((MIConfigImpl*)MIConfig::Instance())->GetQSettings();
 }
 
-std::string Application::latestFileBrowseDirectory(const std::string& path)
+QString Application::latestFileBrowseDirectory(const QString& path)
 {
     const QString LATEST_FILE_BROWSE_DIRECTORY("latestFileBrowseDirectory");
     QSettings* settings = MIGetQSettings();
     if (settings) {
-        if (path.empty()) {
+        if (path.isEmpty()) {
             QString settingsPath = settings->value(LATEST_FILE_BROWSE_DIRECTORY).toString();
             if (QFile::exists(settingsPath)) {
-                return settingsPath.toStdString();
+                return settingsPath;
             }
         } else {
-            settings->setValue(LATEST_FILE_BROWSE_DIRECTORY, QString(path.c_str()));
+            settings->setValue(LATEST_FILE_BROWSE_DIRECTORY, path);
         }
     }
     return path;

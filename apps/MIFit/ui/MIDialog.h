@@ -188,7 +188,6 @@ private:
 };
 
 const unsigned int MI_OPEN_MODE=0;
-const unsigned int MI_MULTI_OPEN_MODE=1;
 const unsigned int MI_SAVE_MODE=2;
 
 class MIFileDialog : public MIDialog {

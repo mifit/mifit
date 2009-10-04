@@ -563,7 +563,7 @@ bool MIFileDialog::PromptForResults(MIData& data) {
   std::vector<std::string>& pathlist = data["pathList"].strList;
   pathlist.clear();
 
-  path = Application::instance()->latestFileBrowseDirectory(path);
+  path = Application::instance()->latestFileBrowseDirectory(path.c_str()).toStdString();
 
   if (_mode == MI_SAVE_MODE) {
     response=QFileDialog::getSaveFileName(_qparent, _name.c_str(), path.c_str(), filter, &selectedFilter);
@@ -577,19 +577,10 @@ bool MIFileDialog::PromptForResults(MIData& data) {
       return false;
     data["path"].str = response.toStdString();
     pathlist.push_back(response.toStdString());
-  } else if (_mode==MI_MULTI_OPEN_MODE) {
-    responseList=QFileDialog::getOpenFileNames(_qparent, _name.c_str(), path.c_str(), filter, &selectedFilter);
-    if (responseList.isEmpty())
-      return false;
-    QStringList list = responseList;
-    for (int i = 0; i < list.count(); ++i) {
-      pathlist.push_back(list[i].toStdString());
-    }
-    data["path"].str = pathlist[0];
   }
 
   QFileInfo fileInfo(data["path"].str.c_str());
-  Application::instance()->latestFileBrowseDirectory(fileInfo.absolutePath().toStdString());
+  Application::instance()->latestFileBrowseDirectory(fileInfo.absolutePath());
 
   // set selected filter index
   std::string selFilter=selectedFilter.toStdString();
@@ -616,7 +607,7 @@ std::string MIFileSelector(const std::string& title,
                            unsigned int flags,
                            QWidget* parent) {
 
-    std::string dir = Application::instance()->latestFileBrowseDirectory(defaultDirString);
+    std::string dir = Application::instance()->latestFileBrowseDirectory(defaultDirString.c_str()).toStdString();
 
   std::string filter2 = filter;
   if (defaultExtension.size() && !filter.size() ) {
@@ -656,7 +647,7 @@ std::string MIFileSelector(const std::string& title,
     filename = data["path"].str;
   }
   QFileInfo fileInfo(filename.c_str());
-  Application::instance()->latestFileBrowseDirectory(fileInfo.absolutePath().toStdString());
+  Application::instance()->latestFileBrowseDirectory(fileInfo.absolutePath());
   return filename;
 }
 

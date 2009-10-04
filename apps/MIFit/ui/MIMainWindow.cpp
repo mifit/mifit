@@ -690,23 +690,23 @@ void MIMainWindow::OnManageCrystals() {
   mcd.exec();
 }
 
-static MIFileDialog* fileDialog = NULL;
+static QFileDialog* fileDialog = NULL;
 
 static void initializeFileDialog() {
   if (fileDialog == NULL) {
-    fileDialog = new MIFileDialog(0, "Open File(s)", "", "",
-                                  "Recognized files (*.mlw,*.pdb,*.mtz,*.phs,*.fcf,*.cif,*.map)|*.mlw;*.pdb;*.mtz;*.phs;*.fcf;*.cif;*.map"
-                                  "|MIFit session files (*.mlw)|*.mlw"
-                                  "|PDB files (*.pdb)|*.pdb"
-                                  "|MTZ files (*.mtz)|*.mtz"
-                                  "|Phase files (*.phs)|*.phs"
-                                  "|FCF files (*.fcf)|*.fcf"
-//        "|Scalepack files (*.sca)|*.sca"
-                                  "|CIF files (*.cif)|*.cif"
-//        "|Reflection files (*.ref)|*.ref"
-                                  "|Map files (*.map)|*.map"
-                                  "|All files (*.*)|*.*",
-                                  MI_MULTI_OPEN_MODE);
+      fileDialog = new QFileDialog(0, "Open File(s)", "",
+                                   "Recognized files (*.mlw *.pdb *.mtz *.phs *.fcf *.cif *.map);;"
+                                  "MIFit session files (*.mlw);;"
+                                  "PDB files (*.pdb);;"
+                                  "MTZ files (*.mtz);;"
+                                  "Phase files (*.phs);;"
+                                  "FCF files (*.fcf);;"
+//        "Scalepack files (*.sca);;"
+                                  "CIF files (*.cif);;"
+//        "Reflection files (*.ref);;"
+                                  "Map files (*.map);;"
+                                  "All files (*.*)");
+      fileDialog->setFileMode(QFileDialog::ExistingFiles);
   }
 }
 
@@ -1430,26 +1430,18 @@ void MIMainWindow::OpenFiles(const std::vector<std::string> &files, bool newWin)
 static bool GetOpenFilenames(std::vector<std::string> &fnames)
 {
   initializeFileDialog();
-
-  MIData data;
-  data["pathList"].strList.clear();
-  if (!fileDialog->GetResults(data)) {
-    return false;
+  // TODO use QFileDialog static functions to get native OS file dialog
+  QString path = Application::instance()->latestFileBrowseDirectory("");
+  fileDialog->setDirectory(path);
+  if (fileDialog->exec()) {
+      Application::instance()->latestFileBrowseDirectory(fileDialog->directory().absolutePath());
+      foreach (QString file, fileDialog->selectedFiles()) {
+          fnames.push_back(file.toStdString());
+      }
+      return true;
   }
-  fnames=data["pathList"].strList;
-  return true;
+  return false;
 }
-
-
-
-
-
-
-
-
-
-
-
 
 static void SplitPath(const std::string& origPath,
                       std::string *dirname,
