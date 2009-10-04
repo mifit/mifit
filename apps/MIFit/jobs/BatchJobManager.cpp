@@ -8,12 +8,9 @@
 using namespace std;
 
 BatchJobManager::BatchJobManager() {
-  timer = new QTimer(this);
-  connect(timer, SIGNAL(timeout()), this, SLOT(OnTimer()));
 }
 
 BatchJobManager::~BatchJobManager() {
-  delete timer;
   vector<BatchJob*>::iterator i, e;
   i = JobList.begin();
   e = JobList.end();
@@ -26,8 +23,6 @@ BatchJob* BatchJobManager::CreateJob() {
   BatchJob* job = new BatchJob(workdir.c_str());
   JobList.push_back(job);
   jobAdded(job);
-  connect(job, SIGNAL(jobChanged(BatchJob*)),
-          this, SLOT(jobChanged(BatchJob*)));
   return job;
 }
 
@@ -35,13 +30,7 @@ CustomJob* BatchJobManager::CreateCustomJob() {
   CustomJob* job = new CustomJob;
   JobList.push_back(job);
   jobAdded(job);
-  connect(job, SIGNAL(jobChanged(BatchJob*)),
-          this, SLOT(jobChanged(BatchJob*)));
   return job;
-}
-
-void BatchJobManager::jobChanged(BatchJob*) {
-  checkAllJobs();
 }
 
 void BatchJobManager::CleanSucc() {
@@ -79,9 +68,6 @@ void BatchJobManager::CleanAll() {
 }
 
 bool BatchJobManager::DeleteJob(BatchJob* job) {
-  //todo - add code to detect if job running
-  //and abort the job before deleting
-  // or refuse to delete job when running?
   if (!job)
     return false;
   if (job->isRunning()) {
@@ -102,42 +88,6 @@ bool BatchJobManager::DeleteJob(BatchJob* job) {
 void BatchJobManager::ShowLogFile(BatchJob* b) {
   if (b)
     b->ShowLog();
-}
-
-void BatchJobManager::stopTimer() {
-  if (timer != NULL) {
-    timer->stop();
-  }
-}
-
-void BatchJobManager::startTimer() {
-  if (timer->isActive()) {
-    return;
-  }
-  timer->start(3000);
-}
-
-void BatchJobManager::OnTimer() {
-  if (JobList.size() != 0) {
-    checkAllJobs();
-  }
-}
-
-void BatchJobManager::checkAllJobs() {
-  std::vector<BatchJob*>::iterator jobIter = JobList.begin();
-  bool running = false;
-  while (jobIter != JobList.end()) {
-    BatchJob* job = *jobIter;
-    ++jobIter;
-    if (job && job->isRunning()) {
-      running = true;
-    }
-  }
-  if (running) {
-    startTimer();
-  } else {
-    stopTimer();
-  }
 }
 
 int BatchJobManager::numberOfRunningJobs() {

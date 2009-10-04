@@ -7,9 +7,11 @@
 #include <map/maplib.h>
 #include <nongui/nonguilib.h>
 #include <math/mathlib.h>
+#include <QDebug>
 #include <QFile>
 #include <QProcess>
 #include <QString>
+#include <QFileDialog>
 #include <QFileInfo>
 #include <QDir>
 #include <QMenu>
@@ -44,6 +46,45 @@ static QString MIExpertPy()
     return QDir::toNativeSeparators(
             QString("%1/MIExpert/MIExpert.py")
             .arg(Application::instance()->GetMolimageHome().c_str()));
+}
+
+static QString pythonExe()
+{
+    static QString exe;
+    QString pythonExePath;
+    if (exe.isEmpty() || !QFile::exists(exe)) {
+#ifdef Q_OS_WIN32
+        QString separator = ";";
+        QString exe = "python.exe";
+        QString filters = "Programs (*.exe);;All files (*.*)";
+#else
+        QString separator = ":";
+        QString exe = "python";
+        QString filters = "All files (*)";
+#endif
+        QString pathEnv = getenv("PATH");
+        QStringList paths = pathEnv.split(separator);
+        foreach (QString p, paths) {
+            QDir dir(p);
+            if (dir.exists(exe)) {
+                pythonExePath = dir.absoluteFilePath(exe);
+                break;
+            }
+        }
+        qDebug() << paths;
+        if (pythonExePath.isEmpty()) {
+            QString fileName = QFileDialog::getOpenFileName(NULL, "Select Python Executable",
+                                                            "/", filters);
+            if (!fileName.isEmpty())
+                pythonExePath = fileName;
+        }
+        qDebug() << pythonExePath;
+        // TODO save python path setting
+        exe = pythonExePath;
+    } else {
+        pythonExePath = exe;
+    }
+    return pythonExePath;
 }
 
 bool Tools::VerifyMIExpert() {
@@ -107,6 +148,9 @@ void Tools::OnBindNGrind() {
   if (!VerifyMIExpert() || !VerifyCCP4()) {
     return;
   }
+  QString python = pythonExe();
+  if (python.isEmpty())
+      return;
 
   BatchJob* job;
   QString log;
@@ -180,7 +224,7 @@ void Tools::OnBindNGrind() {
   Logger::log(s.toStdString());
   QFileInfo workdir(data["hklin"].strList[0].c_str());
   log = buildAbsPath(QString("%1/mifit%2.log").arg(workdir.absoluteFilePath()).arg(job->jobId()));
-  job->setProgram("python");
+  job->setProgram(python);
   job->setArguments(args);
   job->setLogFile(log);
   if (data["bngsummary"].str.size()) {
@@ -205,6 +249,10 @@ void Tools::CIFConvertlib(const char* format) {
   if (!VerifyMIExpert() || !VerifyCCP4()) {
     return;
   }
+  QString python = pythonExe();
+  if (python.isEmpty())
+      return;
+
   std::string filename = MIFileSelector("Choose a CIF file", MIMainWindow::instance()->GetJobManager()->GetWorkDirectory(), "", "", "CIF files (*.cif)|*.cif|All files (*.*)|*.*", 0, 0);
   if (!filename.size()) {
     return;
@@ -217,7 +265,8 @@ void Tools::CIFConvertlib(const char* format) {
   QFileInfo workdir(filename.c_str());
   log=::format("%s%cmifit%ld.log", workdir.absolutePath().toStdString().c_str(),QDir::separator().toAscii(), job->jobId());
 
-  s=::format("python \"%s\" convertlib --cif \"%s\" --workdir \"%s\" --refprogram \"%s\"",
+  s=::format("\"%s\" \"%s\" convertlib --cif \"%s\" --workdir \"%s\" --refprogram \"%s\"",
+             python.toAscii().constData(),
              MIExpertPy().toAscii().constData(),
              filename.c_str(),
              workdir.absolutePath().toStdString().c_str(),
@@ -669,6 +718,7 @@ void Tools::FillToolsMenu(QMenu* parent) {
     QMenu* convcif_menu = new QMenu("&Convert CIF to", parent);
     convcif_menu->addAction("&SHELX", this, SLOT(OnCIF2Shellx()));
     convcif_menu->addAction("&CNS / CNX", this, SLOT(OnCIF2CNS()));
+    actions += parent->addMenu(convcif_menu);
 
     actions += parent->addAction("S&et Refmac5 restraints", this, SLOT(OnRefmacRestraints()));
     actions += parent->addAction("&Molecular Replacement", this, SLOT(OnMolRep()));

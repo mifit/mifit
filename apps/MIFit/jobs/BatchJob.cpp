@@ -73,9 +73,13 @@ bool BatchJob::StartJob() {
     process->closeWriteChannel();
 
     bool started = process->waitForStarted();
+    if (!started) {
+        QMessageBox::warning(NULL, "Job Error", QString("Unable to start job %1").arg(jobId_));
+        delete process;
+        process = NULL;
+    }
     jobChanged(this);
     return started;
-
 }
 
 void BatchJob::signalJobChanged() {
@@ -108,12 +112,19 @@ std::string BatchJob::Info() {
     s += "Job name: " + settings["jobName"].str + "\n"; 
   }
   s += format("Job id: %ld\n"
+              "Program: %s\n"
+              "Arguments: \"%s\"\n"
               "Log file: %s\n"
               "Job directory: %s\n"
-              "Running: %d\n"
-              "Success: %d\n",
-              jobId_, LogFile.toAscii().constData(),
-              jobDir.toAscii().constData(), (int)isRunning(), (int)isSuccess());
+              "Running: %s\n"
+              "Success: %s\n",
+              jobId_,
+              program_.toAscii().constData(),
+              arguments_.join("\" \"").toAscii().constData(),
+              LogFile.toAscii().constData(),
+              jobDir.toAscii().constData(),
+              isRunning() ? "true" : "false",
+              isSuccess() ? "true" : "false");
   if (settings["workingDirectory"].str != MIDatum::INVALID_STRING) {
     s += "Working directory: " + settings["workingDirectory"].str + "\n"; 
   }

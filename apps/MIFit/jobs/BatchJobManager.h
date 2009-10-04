@@ -17,13 +17,8 @@ class CustomJob;
 class BatchJobManager : public QObject {
   Q_OBJECT
 
-  QTimer* timer;
   std::vector<BatchJob*> JobList;
   std::string workdir;
-
-  void checkAllJobs();
-  void startTimer();
-  void stopTimer();
 
 public:
   void ShowLogFile(BatchJob* b);
@@ -88,9 +83,6 @@ signals:
   void jobAdded(BatchJob*);
   void jobDeleted(BatchJob*);
 
-private slots:
-  void OnTimer();
-  void jobChanged(BatchJob* job);
 };
 
 #endif
