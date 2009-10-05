@@ -27,23 +27,21 @@ using namespace std;
 #endif
 
 BatchJob::BatchJob()
-    : process(NULL)
+    : workingDirectory_(QDir::current().absolutePath()), process(NULL)
 {
   setJobId();
-  setJobDir("");
 }
 
-BatchJob::BatchJob(const std::string& dir)
-    : process(NULL)
+BatchJob::BatchJob(const QString& dir)
+    : workingDirectory_(dir), process(NULL)
 {
   setJobId();
-  setJobDir(dir.c_str());
 }
 
-void BatchJob::setJobDir(const char* dir) {
-  jobDir = dir;
-  if (jobDir.size() == 0) {
-    jobDir = QDir::current().absolutePath();
+void BatchJob::setWorkingDirectory(const QString& dir) {
+  workingDirectory_ = dir;
+  if (workingDirectory_.isEmpty()) {
+    workingDirectory_ = QDir::current().absolutePath();
   }
 }
 
@@ -159,8 +157,8 @@ void BatchJob::ShowLog() {
     dlg.exec();
 }
 
-QString BatchJob::getJobDir() const {
-  return jobDir;
+QString BatchJob::workingDirectory() const {
+  return workingDirectory_;
 }
 
 void BatchJob::setSettings(const MIData& jobSettings) {
@@ -224,6 +222,11 @@ QStringList BatchJob::parseArgs(const QString &program)
         args += tmp;
 
     return args;
+}
+
+void BatchJob::setArguments(const QString& arguments)
+{
+    arguments_ = parseArgs(arguments);
 }
 
 void BatchJob::setCommandLine(const QString& command)

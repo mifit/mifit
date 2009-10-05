@@ -27,7 +27,6 @@ public:
    *  Owner is usually this.
    */
   BatchJob* CreateJob();
-  CustomJob* CreateCustomJob();
 
   /**
    *  Constructor - should be just one copy per program.

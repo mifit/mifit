@@ -3,6 +3,5 @@
 #include "BatchJob.h"
 #include "BatchJobManager.h"
 #include "TestJob.h"
-#include "CustomJob.h"
 #include "OpenJobResults.h"
 #endif

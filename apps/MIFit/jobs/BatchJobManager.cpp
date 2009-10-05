@@ -2,7 +2,6 @@
 #include "BatchJobManager.h"
 
 #include "BatchJob.h"
-#include "CustomJob.h"
 #include "core/corelib.h"
 
 using namespace std;
@@ -21,13 +20,6 @@ BatchJobManager::~BatchJobManager() {
 
 BatchJob* BatchJobManager::CreateJob() {
   BatchJob* job = new BatchJob(workdir.c_str());
-  JobList.push_back(job);
-  jobAdded(job);
-  return job;
-}
-
-CustomJob* BatchJobManager::CreateCustomJob() {
-  CustomJob* job = new CustomJob;
   JobList.push_back(job);
   jobAdded(job);
   return job;

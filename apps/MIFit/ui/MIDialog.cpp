@@ -898,26 +898,6 @@ bool MIMolRepDialog::PromptForResults(MIData& data) {
 
 
 //
-// CustomJobDialog
-//
-MICustomJobDialog::MICustomJobDialog(QWidget* parent, const std::string& name)
-  : MIDialog(parent, name) {
-}
-
-void MICustomJobDialog::GetInitialData(MIData& data) {
-  CustomJobDialog::GetInitialData(data);
-}
-
-bool MICustomJobDialog::PromptForResults(MIData& data) {
-  static CustomJobDialog dlg(_qparent);
-  dlg.InitializeFromData(data);
-  if (dlg.exec() != QDialog::Accepted) {
-    return false;
-  }
-  return dlg.GetData(data);
-}
-
-//
 // RefinementDialog
 //
 MIRefinementDialog::MIRefinementDialog(QWidget* parent, const std::string& name)

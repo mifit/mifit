@@ -20,6 +20,7 @@
 #include <vector>
 
 #include "Application.h"
+#include "CustomJobDialog.h"
 #include "Displaylist.h"
 #include "EMap.h"
 #include "jobs/jobslib.h"
@@ -244,8 +245,8 @@ void Tools::OnBindNGrind() {
   job->StartJob();
 }
 
-void Tools::CIFConvertlib(const char* format) {
-  std::string s, log;
+void Tools::CIFConvertlib(const char* format)
+{
   if (!VerifyMIExpert() || !VerifyCCP4()) {
     return;
   }
@@ -253,26 +254,20 @@ void Tools::CIFConvertlib(const char* format) {
   if (python.isEmpty())
       return;
 
-  std::string filename = MIFileSelector("Choose a CIF file", MIMainWindow::instance()->GetJobManager()->GetWorkDirectory(), "", "", "CIF files (*.cif)|*.cif|All files (*.*)|*.*", 0, 0);
-  if (!filename.size()) {
-    return;
-  }
+  QString filename = Application::getOpenFileName(0, "Choose a CIF file", "CIF files (*.cif);;All files (*.*)");
 
   BatchJob* job = MIMainWindow::instance()->GetJobManager()->CreateJob();
-  s=::format("New CIF restraints job #%ld", job->jobId());
-  Logger::log(s);
-
-  QFileInfo workdir(filename.c_str());
-  log=::format("%s%cmifit%ld.log", workdir.absolutePath().toStdString().c_str(),QDir::separator().toAscii(), job->jobId());
-
-  s=::format("\"%s\" \"%s\" convertlib --cif \"%s\" --workdir \"%s\" --refprogram \"%s\"",
-             python.toAscii().constData(),
-             MIExpertPy().toAscii().constData(),
-             filename.c_str(),
-             workdir.absolutePath().toStdString().c_str(),
-             format);
-  job->setCommandLine(s.c_str());
-  job->setLogFile(log.c_str());
+  QFileInfo fileInfo(filename);
+  QDir workdir(fileInfo.absoluteDir());
+  QString log = workdir.absoluteFilePath(QString("mifit%1.log").arg(job->jobId()));
+  job->setProgram(python);
+  QStringList args;
+  args << MIExpertPy() << "convertlib"
+          << "--cif" << filename
+          << "--workdir" << workdir.absolutePath()
+          << "--refprogram" << format;
+  job->setArguments(args);
+  job->setLogFile(log);
   job->StartJob();
 }
 
@@ -678,33 +673,123 @@ void Tools::OnNCSModeling() {
   job->StartJob();
 }
 
-void Tools::OnCustom() {
-  MICustomJobDialog dlg(0, "Custom Job");
-  MIData data;
-  dlg.GetInitialData(data);
+void Tools::OnCustom()
+{
+    static CustomJobDialog dlg(MIMainWindow::instance());
 
-  MIGLWidget *doc = MIMainWindow::instance()->currentMIGLWidget();
-  if (doc != NULL) {
-    EMap* map = doc->GetDisplaylist()->GetCurrentMap();
-    if (map != NULL) {
-      data["dataFile"].str = map->pathName;
+    MIData data;    
+    static int customJobNumber = 1;
+    std::string str;
+
+    data["jobName"].str = format("Custom job %d", customJobNumber++);
+
+    MIConfig* config = MIConfig::Instance();
+    config->Read("CustomJob/executable", str);
+    data["executable"].str = str;
+    config->Read("CustomJob/arguments", str);
+    data["arguments"].str = str;
+    bool b;
+    config->Read("CustomJob/useCurrentModel", &b);
+    data["useCurrentModel"].b = b;
+    config->Read("CustomJob/workingDirectory", str);
+    data["workingDirectory"].str = str;
+    config->Read("CustomJob/modelFile", str);
+    data["modelFile"].str = str;
+    config->Read("CustomJob/dataFile", str);
+    data["dataFile"].str = str;
+
+    MIGLWidget *doc = MIMainWindow::instance()->currentMIGLWidget();
+    if (doc != NULL) {
+        EMap* map = doc->GetDisplaylist()->GetCurrentMap();
+        if (map != NULL) {
+            data["dataFile"].str = map->pathName;
+        }
+        if (data["modelFile"].str.size() == 0) {
+            Molecule* model = doc->GetDisplaylist()->CurrentItem();
+            if (model != NULL) {
+                data["modelFile"].str = model->pathname;
+            }
+        }
     }
-    if (data["modelFile"].str.size() == 0) {
-      Molecule* model = doc->GetDisplaylist()->CurrentItem();
-      if (model != NULL) {
-        data["modelFile"].str = model->pathname;
-      }
+    if (data["workingDirectory"].str.size() == 0) {
+        data["workingDirectory"].str = QDir::currentPath().toStdString();
     }
-  }
-  if (data["workingDirectory"].str.size() == 0) {
-    data["workingDirectory"].str = QDir::currentPath().toStdString();
-  }
-  if (!dlg.GetResults(data)) {
-    return;
-  }
-  CustomJob* job = MIMainWindow::instance()->GetJobManager()->CreateCustomJob();
-  job->setSettings(data);
-  job->StartJob();
+
+    dlg.setJobName(data["jobName"].str.c_str());
+    dlg.setProgram(data["executable"].str.c_str());
+    dlg.setArguments(data["arguments"].str.c_str());
+    if (data["useCurrentModel"].b) {
+        dlg.setModelMode(CustomJobDialog::CURRENT);
+    } else {
+        dlg.setModelMode(CustomJobDialog::FILE);
+    }
+    dlg.setWorkingDirectory(data["workingDirectory"].str.c_str());
+    dlg.setModelFile(data["modelFile"].str.c_str());
+    dlg.setDataFile(data["dataFile"].str.c_str());
+
+    if (dlg.exec() != QDialog::Accepted) {
+        return;
+    }
+
+    data["jobName"].str = dlg.jobName().toStdString();
+    data["executable"].str = dlg.program().toStdString();
+    data["arguments"].str = dlg.arguments().toStdString();
+    data["useCurrentModel"].b = dlg.modelMode() == CustomJobDialog::CURRENT;
+    data["workingDirectory"].str = dlg.workingDirectory().toStdString();
+    data["modelFile"].str = dlg.modelFile().toStdString();
+    data["dataFile"].str = dlg.dataFile().toStdString();
+
+    BatchJob* job = MIMainWindow::instance()->GetJobManager()->CreateJob();
+
+    typedef std::map<std::string, std::string> SubstitutionMap;
+    SubstitutionMap subs;
+    subs["\\$DATA"] = data["dataFile"].str;
+
+    QDir dir(data["workingDirectory"].str.c_str());
+    job->setWorkingDirectory(dir.absolutePath());
+
+    if (data["useCurrentModel"].b) {
+        MIGLWidget *doc = MIMainWindow::instance()->currentMIGLWidget();
+        if (doc != NULL) {
+            Molecule* model = doc->GetDisplaylist()->GetCurrentModel();
+            if (model) {
+                QString modelFile = dir.absoluteFilePath(QString("mifit_%1.pdb").arg(job->jobId()));
+                model->SavePDBFile(modelFile.toAscii().constData());
+                subs["\\$MODEL"] = modelFile.toAscii().constData();
+            }
+        }
+    } else {
+        subs["\\$MODEL"] = data["modelFile"].str;
+    }
+
+    std::string args = data["arguments"].str;
+    SubstitutionMap::iterator iter = subs.begin();
+    while (iter != subs.end()) {
+        std::string pattern = iter->first;
+        QString second(iter->second.c_str());
+        second.replace("\\\\","\\\\\\\\");
+        QString qargs(args.c_str());
+        qargs.replace(pattern.c_str(),iter->second.c_str());
+        args=qargs.toStdString();
+        ++iter;
+    }
+
+    QString jobName = data["jobName"].str.c_str();
+    job->setJobName(jobName);
+    QString logFile = dir.absoluteFilePath(QString("%3_%4.log").arg(jobName).arg(job->jobId()));
+    job->setLogFile(logFile);
+    job->setProgram(data["executable"].str.c_str());
+    job->setArguments(args.c_str());
+
+    job->StartJob();
+
+    config->Write("CustomJob/executable", data["executable"].str);
+    config->Write("CustomJob/arguments", data["arguments"].str);
+    config->Write("CustomJob/useCurrentModel", data["useCurrentModel"].b);
+    config->Write("CustomJob/workingDirectory", data["workingDirectory"].str);
+    config->Write("CustomJob/modelFile", data["modelFile"].str);
+    config->Write("CustomJob/dataFile", data["dataFile"].str);
+
 }
 
 void Tools::FillToolsMenu(QMenu* parent) {

@@ -104,6 +104,10 @@ public:
 
   QString latestFileBrowseDirectory(const QString& path);
 
+  static QString getOpenFileName(QWidget* parent, const QString& caption, const QString& filter = QString());
+  static QString getExistingDirectory(QWidget* parent, const QString& caption, const QString& filter);
+
+
   bool isHardwareStereoAvailable() { return hardwareStereoAvailable; };
   void setHardwareStereoAvailable(bool t) { hardwareStereoAvailable = t; }
 

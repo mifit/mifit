@@ -27,6 +27,8 @@ public:
       arguments_ = arguments;
   }
 
+  void setArguments(const QString& arguments);
+
   void setCommandLine(const QString& command);
 
   /**
@@ -59,16 +61,23 @@ public:
   }
 
   /**
-   * The constructor
-   *    working_directory - the directory to run the command in - max be blank
+   * @param working_directory - the directory to run the command in - if blank, uses current directory
    */
-  BatchJob(const std::string& working_directory);
-  /**
-   * The destructor.
-   */
+  BatchJob(const QString& working_directory);
+
   virtual ~BatchJob();
 
-  QString getJobDir() const;
+  QString workingDirectory() const;
+  void setWorkingDirectory(const QString& dir);
+
+  QString jobName() const {
+      return jobName_;
+  }
+
+  void setJobName(const QString& jobName) {
+      jobName_ = jobName;
+  }
+
   void setSettings(const MIData& jobSettings);
   MIData& getSettings();
 
@@ -83,11 +92,12 @@ protected:
   BatchJob();
 
   void setJobId();
-  void setJobDir(const char* dir);
 
   unsigned long jobId_;
+  QString jobName_;
   QString program_;
   QStringList arguments_;
+  QString workingDirectory_;
 
   MIData settings;
   QProcess* process;

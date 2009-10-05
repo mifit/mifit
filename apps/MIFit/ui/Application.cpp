@@ -21,13 +21,14 @@
 #include "MIMainWindow.h"
 #include "molw.h" // for cursors
 
-#include <QFileInfo>
 #include <QApplication>
 #include <QDir>
+#include <QFileDialog>
+#include <QFileInfo>
 #include <QMessageBox>
-#include <QSettings>
 #include <QProcess>
 #include <QProgressDialog>
+#include <QSettings>
 
 #ifndef _WIN32
 #include <unistd.h>
@@ -1233,4 +1234,25 @@ QString Application::latestFileBrowseDirectory(const QString& path)
         }
     }
     return path;
+}
+
+QString Application::getOpenFileName(QWidget* parent, const QString& caption, const QString& filter)
+{
+    QString dir = Application::instance()->latestFileBrowseDirectory("");
+    QString file = QFileDialog::getOpenFileName(parent, caption, dir, filter);
+    if (!file.isEmpty()) {
+        QFileInfo fileInfo(file);
+        Application::instance()->latestFileBrowseDirectory(fileInfo.absolutePath());
+    }
+    return file;
+}
+
+QString Application::getExistingDirectory(QWidget* parent, const QString& caption, const QString& filter)
+{
+    QString dir = Application::instance()->latestFileBrowseDirectory("");
+    dir = QFileDialog::getExistingDirectory(parent, caption, dir);
+    if (!dir.isEmpty()) {
+        Application::instance()->latestFileBrowseDirectory(dir);
+    }
+    return dir;
 }
