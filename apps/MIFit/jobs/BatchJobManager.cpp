@@ -19,7 +19,7 @@ BatchJobManager::~BatchJobManager() {
 }
 
 BatchJob* BatchJobManager::CreateJob() {
-  BatchJob* job = new BatchJob(workdir.c_str());
+  BatchJob* job = new BatchJob;
   JobList.push_back(job);
   jobAdded(job);
   return job;

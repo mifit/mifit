@@ -18,7 +18,6 @@ class BatchJobManager : public QObject {
   Q_OBJECT
 
   std::vector<BatchJob*> JobList;
-  std::string workdir;
 
 public:
   void ShowLogFile(BatchJob* b);
@@ -47,13 +46,6 @@ public:
   bool DeleteJob(BatchJob* p_job);
 
   /**
-   * Returns the working directory
-   */
-  const char* GetWorkDirectory() {
-    return workdir.c_str();
-  }
-
-  /**
    * Returns the current JobList
    */
   std::vector<BatchJob*>* GetJobList() {
@@ -61,16 +53,10 @@ public:
   }
 
   /**
-   * Sets the working directory - the working directory will default to the current directory unless this function is used to change it
-   */
-  void SetWorkDirectory(const char* dir) {
-    workdir = dir;
-  }
-
-  /**
    * Clean the Successfully completed jobs from the TreeMenu
    */
   void CleanSucc();
+
   /**
    * Clean ALL the completed jobs from the TreeMenu
    */

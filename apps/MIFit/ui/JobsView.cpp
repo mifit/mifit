@@ -302,8 +302,8 @@ void JobsView::stylizeItem(QTreeWidgetItem* id, BatchJob* job) {
   }
   id->setIcon(0,jobsTree->GetIcon(image));
   std::string jobText;
-  if (job->getSettings()["jobName"].str != MIDatum::INVALID_STRING) {
-    jobText=::format("%s (%d)", job->getSettings()["jobName"].str.c_str(), job->jobId());
+  if (!job->jobName().isEmpty()) {
+    jobText=::format("%s (%d)", job->jobName().toAscii().constData(), job->jobId());
   } else {
     jobText=::format("%d", job->jobId());
   }

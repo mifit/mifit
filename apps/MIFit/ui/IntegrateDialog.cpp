@@ -18,16 +18,11 @@
 IntegrateDialog::IntegrateDialog(QWidget *parent) : MIQDialog(parent) {
   setupUi(this);
 
+  connect(intensityDataBrowse, SIGNAL(clicked()),
+          this, SLOT(selectIntensityData()));
   new MIBrowsePair(hardwareParametersPushButton, hardwareParametersLineEdit,"All Files (*.* *)");
-  
-  _okButton = 0;
-  QList<QAbstractButton*> buttons=buttonBox->buttons();
-  for (int i=0; i < buttons.size(); ++i) {
-    if (buttonBox->buttonRole(buttons[i]) == QDialogButtonBox::AcceptRole) {
-      _okButton=buttons[i];
-      break;
-    }
-  }
+
+  _okButton = buttonBox->button(QDialogButtonBox::Ok);
 
   QTimer *timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), this, SLOT(validateTimeout()));
@@ -40,7 +35,7 @@ IntegrateDialog::IntegrateDialog(QWidget *parent) : MIQDialog(parent) {
 // contained here.
 
 void IntegrateDialog::GetInitialData(MIData &data) { // static
-  data["template_image"].strList = std::vector<std::string>();
+  data["template_image"].str = "";
   data["detector_constants"].str = "";
 
   std::vector<std::string> sg;
@@ -58,8 +53,8 @@ void IntegrateDialog::GetInitialData(MIData &data) { // static
 void IntegrateDialog::validateTimeout() {
   bool globalEnabled = true;
 
-  bool thisEnabled=intensityDataListWidget->count() > 0;
-  markEnabled(intensityDataListWidget, thisEnabled, globalEnabled);
+  bool thisEnabled = !intensityData->text().isEmpty();
+  markEnabled(intensityData, thisEnabled, globalEnabled);
 
   thisEnabled = (!resetHardwareParametersCheckBox->isChecked() || 
                  QFileInfo(hardwareParametersLineEdit->text()).exists());
@@ -83,12 +78,7 @@ void IntegrateDialog::InitializeFromData(const MIData &data)
 
 bool IntegrateDialog::GetData(MIData &data) {
 
-  //convert intensityDataListWidget contents to strlist;
-  std::vector<std::string> template_image;
-  for (int i=0;i<intensityDataListWidget->count(); ++i) {
-    template_image.push_back(intensityDataListWidget->item(i)->text().toStdString());
-  }
-  data["template_image"].strList = template_image;
+  data["template_image"].str = intensityData->text().toStdString();
 
   data["detector_constants"].str = "";
   if (resetHardwareParametersCheckBox->isChecked())
@@ -111,18 +101,10 @@ bool IntegrateDialog::GetData(MIData &data) {
   return true;
 }
 
-void IntegrateDialog::on_removePushButton_clicked() {
-  int isel = intensityDataListWidget->currentRow();
-  if (isel >= 0) {
-    QListWidgetItem *item=intensityDataListWidget->takeItem(isel);
-    delete item;
-  }
-}
-
-void IntegrateDialog::on_addPushButton_clicked() {
-  QString str=QFileDialog::getExistingDirectory();
-  if (str.size() == 0) {
+void IntegrateDialog::selectIntensityData() {
+  QString str = QFileDialog::getExistingDirectory();
+  if (str.isEmpty()) {
     return;
   }
-  intensityDataListWidget->addItem(str);
+  intensityData->setText(str);
 }

@@ -22,8 +22,7 @@ public:
     bool GetData(MIData &data);
 
   private slots:
-    void on_removePushButton_clicked();
-    void on_addPushButton_clicked();
+    void selectIntensityData();
     void validateTimeout();
 
   private:

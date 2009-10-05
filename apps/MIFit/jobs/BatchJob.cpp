@@ -62,7 +62,7 @@ void BatchJob::setJobId() {
 bool BatchJob::StartJob() {
 
     process = new QProcess(this);
-    process->setWorkingDirectory(jobDir);
+    process->setWorkingDirectory(workingDirectory_);
     process->setProcessChannelMode(QProcess::MergedChannels);
     process->setStandardOutputFile(LogFile);
     connect(process, SIGNAL(finished(int)),
@@ -94,13 +94,12 @@ bool BatchJob::isRunning() {
 
 
 void BatchJob::doJobFinished() {
-std::string jobName;
-  if (settings["jobName"].str != MIDatum::INVALID_STRING) {
-    jobName = format("%s (%d)", settings["jobName"].str.c_str(), jobId_);
-  } else {
-    jobName = format("%d", jobId_);
-  }
-  QMessageBox::information(MIMainWindow::instance(), jobName.c_str(), "MIFit Job Finished");
+  QString message;
+  if (!jobName_.isEmpty())
+      message = QString("%1 finished (job %2)").arg(jobName_).arg(jobId_);
+  else
+      message = QString("Job %2 finished").arg(jobName_).arg(jobId_);
+  QMessageBox::information(MIMainWindow::instance(), "MIFit Job Finished", message);
 }
 
 void BatchJob::AbortJob() {
@@ -108,28 +107,22 @@ void BatchJob::AbortJob() {
 }
 
 std::string BatchJob::Info() {
-  std::string s;
-  if (settings["jobName"].str != MIDatum::INVALID_STRING) {
-    s += "Job name: " + settings["jobName"].str + "\n"; 
-  }
-  s += format("Job id: %ld\n"
+  return format("Job name: %s\n"
+              "Job id: %ld\n"
               "Program: %s\n"
               "Arguments: \"%s\"\n"
               "Log file: %s\n"
               "Job directory: %s\n"
               "Running: %s\n"
               "Success: %s\n",
+              jobName_.toAscii().constData(),
               jobId_,
               program_.toAscii().constData(),
               arguments_.join("\" \"").toAscii().constData(),
               LogFile.toAscii().constData(),
-              jobDir.toAscii().constData(),
+              workingDirectory_.toAscii().constData(),
               isRunning() ? "true" : "false",
               isSuccess() ? "true" : "false");
-  if (settings["workingDirectory"].str != MIDatum::INVALID_STRING) {
-    s += "Working directory: " + settings["workingDirectory"].str + "\n"; 
-  }
-  return s;
 }
 
 void BatchJob::ShowLog() {
@@ -164,27 +157,8 @@ QString BatchJob::workingDirectory() const {
   return workingDirectory_;
 }
 
-void BatchJob::setSettings(const MIData& jobSettings) {
-  settings = jobSettings;
-  jobChanged(this);
-}
-
-MIData& BatchJob::getSettings() {
-  return settings;
-}
-
 void BatchJob::openResults() {
-  QString workDir;
-  if (settings["workingDirectory"].str != MIDatum::INVALID_STRING) {
-    workDir = settings["workingDirectory"].str.c_str();
-  } else {
-    workDir = jobDir;
-  }
-  std::string jobName;
-  if (settings["jobName"].str != MIDatum::INVALID_STRING) {
-    jobName = settings["jobName"].str;
-  }
-  OpenJobResults::prompt(workDir.toStdString(), jobName);
+  OpenJobResults::prompt(workingDirectory_.toStdString(), jobName_.toStdString());
 }
 
 QStringList BatchJob::parseArgs(const QString &program)

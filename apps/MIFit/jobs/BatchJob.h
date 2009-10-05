@@ -60,6 +60,8 @@ public:
       return jobId_;
   }
 
+  BatchJob();
+
   /**
    * @param working_directory - the directory to run the command in - if blank, uses current directory
    */
@@ -78,9 +80,6 @@ public:
       jobName_ = jobName;
   }
 
-  void setSettings(const MIData& jobSettings);
-  MIData& getSettings();
-
   void openResults();
 
 signals:
@@ -88,9 +87,6 @@ signals:
 
   
 protected:
-
-  BatchJob();
-
   void setJobId();
 
   unsigned long jobId_;
@@ -98,12 +94,9 @@ protected:
   QString program_;
   QStringList arguments_;
   QString workingDirectory_;
-
-  MIData settings;
-  QProcess* process;
-  QString jobDir;
-
   QString LogFile;
+
+  QProcess* process;
 
   static QStringList parseArgs(const QString &program);
 

@@ -52,9 +52,12 @@ static QString MIExpertPy()
 
 static QString pythonExe()
 {
-    static QString exe;
-    QString pythonExePath;
-    if (exe.isEmpty() || !QFile::exists(exe)) {
+    static QString pythonExePath;
+    if (pythonExePath.isEmpty() || !QFile::exists(pythonExePath)) {
+        QSettings* settings = MIGetQSettings();
+        pythonExePath = settings->value("pythonExe").toString();
+    }
+    if (pythonExePath.isEmpty() || !QFile::exists(pythonExePath)) {
 #ifdef Q_OS_WIN32
         QString separator = ";";
         QString exe = "python.exe";
@@ -73,19 +76,19 @@ static QString pythonExe()
                 break;
             }
         }
-        qDebug() << paths;
         if (pythonExePath.isEmpty()) {
             QString fileName = QFileDialog::getOpenFileName(NULL, "Select Python Executable",
                                                             "/", filters);
             if (!fileName.isEmpty())
                 pythonExePath = fileName;
         }
-        qDebug() << pythonExePath;
-        // TODO save python path setting
-        exe = pythonExePath;
-    } else {
-        pythonExePath = exe;
+
+        if (!pythonExePath.isEmpty() && QFile::exists(pythonExePath)) {
+            QSettings* settings = MIGetQSettings();
+            settings->setValue("pythonExe", pythonExePath);
+        }
     }
+
     return pythonExePath;
 }
 
@@ -166,7 +169,7 @@ void Tools::OnBindNGrind() {
 
   QStringList args;
   args << MIExpertPy() << "bng";
-  // Write config file
+
   for (unsigned int i=0; i < data["hklin"].strList.size(); ++i ) {
     args << "--hklin" << buildAbsPath(data["hklin"].strList[i].c_str());
     args << "--workdir" << "none";
@@ -196,9 +199,7 @@ void Tools::OnBindNGrind() {
   args << "--mifit" << "no";
 
   job = MIMainWindow::instance()->GetJobManager()->CreateJob();
-  MIData settings;
-  settings["jobName"].str = "Cocrystal Solution";
-  job->setSettings(settings);
+  job->setJobName("Cocrystal Solution");
 
   QString lig;
   /* Handle Place Ligand checkbox */
@@ -222,27 +223,12 @@ void Tools::OnBindNGrind() {
   }
   args << "--molimagehome" << buildAbsPath(Application::instance()->MolimageHome.c_str());
 
-  QString s = QString("New Cocrystal Solution job #%1").arg(job->jobId());
-  Logger::log(s.toStdString());
-  QFileInfo workdir(data["hklin"].strList[0].c_str());
-  log = buildAbsPath(QString("%1/mifit%2.log").arg(workdir.absoluteFilePath()).arg(job->jobId()));
+  QFileInfo hklin(data["hklin"].strList[0].c_str());
+  QDir workdir = hklin.absoluteDir();
   job->setProgram(python);
   job->setArguments(args);
+  log = workdir.absoluteFilePath(QString("mifit%2.log").arg(job->jobId()));
   job->setLogFile(log);
-  if (data["bngsummary"].str.size()) {
-    QDir dir(data["bngsummary"].str.c_str());
-    if (!dir.exists()) {
-        QMessageBox::critical(MIMainWindow::instance(), "Error", "HTML Summary Directory doesn't exist!\nAborting");
-      return;
-    }
-    QStringList filters;
-    filters << "bng_jobsummary*.htm";
-    QFileInfoList fi=dir.entryInfoList(filters);
-    int count=fi.count() +1;
-    std::string htmlName=::format("bng_jobsummary_%d.htm", count);
-
-    // TODO open browser with results
-  }
   job->StartJob();
 }
 
@@ -290,6 +276,9 @@ void Tools::OnMolRep() {
   if (!VerifyMIExpert() || !VerifyCCP4()) {
     return;
   }
+  QString python = pythonExe();
+  if (python.isEmpty())
+      return;
 
   static MIMolRepDialog dlg(MIMainWindow::instance(), "Molecular Replacement");
   MIData data;
@@ -314,14 +303,13 @@ void Tools::OnMolRep() {
     args += " --fixed_pdb \"" + buildAbsPath(data["fixed_pdb"].str.c_str()).toStdString()  + "\" ";
 
   job = MIMainWindow::instance()->GetJobManager()->CreateJob();
-  MIData settings;
-  settings["workingDirectory"].str = data["workdir"].str;
-  settings["jobName"].str = "Molrep";
-  job->setSettings(settings);
+  job->setJobName("Molrep");
   log = buildAbsPath(QString("%1/mifit%2.log").arg(data["workdir"].str.c_str()).arg(job->jobId())).toStdString();
-  jobtxt=::format("python \"%s\" molrep %s", MIExpertPy().toAscii().constData(), args.c_str());
+  jobtxt=::format("\"%s\" molrep %s", MIExpertPy().toAscii().constData(), args.c_str());
   job->setLogFile(log.c_str());
-  job->setCommandLine(jobtxt.c_str());
+  job->setProgram(python);
+  job->setArguments(jobtxt.c_str());
+  job->setWorkingDirectory(data["workdir"].str.c_str());
   job->StartJob();
 }
 
@@ -330,22 +318,25 @@ void Tools::OnRefmacRestraints() {
   if (!VerifyMIExpert() || !VerifyCCP4()) {
     return;
   }
-  std::string filename = MIFileSelector("Choose a PDB file", MIMainWindow::instance()->GetJobManager()->GetWorkDirectory(), "", "", "PDB files (*.pdb)|*.pdb|All files (*.*)|*.*", 0, 0);
+  QString python = pythonExe();
+  if (python.isEmpty())
+      return;
+
+  std::string filename = MIFileSelector("Choose a PDB file", Application::instance()->latestFileBrowseDirectory("").toAscii().constData(), "", "", "PDB files (*.pdb)|*.pdb|All files (*.*)|*.*", 0, 0);
   if (!filename.size()) {
     return;
   }
   BatchJob* job = MIMainWindow::instance()->GetJobManager()->CreateJob();
-  MIData settings;
-  settings["jobName"].str = "Refmac Restraints";
-  job->setSettings(settings);
+  job->setJobName("Refmac Restraints");
   s=::format("New CIF to ShellX job #%ld", job->jobId());
   Logger::log(s);
   QFileInfo workdir(filename.c_str());
   log=::format("%s%cmifit%ld.log", workdir.absolutePath().toStdString().c_str(),QDir::separator().toAscii(), job->jobId());
 
-  s=::format("python \"%s\" restraints --pdbfile \"%s\" --workdir \"%s\"",
+  s=::format("\"%s\" restraints --pdbfile \"%s\" --workdir \"%s\"",
              MIExpertPy().toAscii().constData(), filename.c_str(), workdir.absolutePath().toStdString().c_str());
-  job->setCommandLine(s.c_str());
+  job->setProgram(python);
+  job->setArguments(s.c_str());
   job->setLogFile(log.c_str());
   job->StartJob();
 }
@@ -357,6 +348,9 @@ void Tools::OnRefine() {
   if (!VerifyMIExpert() || !VerifyCCP4()) {
     return;
   }
+  QString python = pythonExe();
+  if (python.isEmpty())
+      return;
 
   static MIRefinementDialog dlg(MIMainWindow::instance(), "Refinement");
   MIData data;
@@ -399,43 +393,13 @@ void Tools::OnRefine() {
   }
 
   job = MIMainWindow::instance()->GetJobManager()->CreateJob();
-  MIData settings;
-  settings["workingDirectory"].str = data["workdir"].str;
-  settings["jobName"].str = "Refinement";
-  job->setSettings(settings);
+  job->setJobName("Refinement");
   log=buildAbsPath(::format("%smifit%ld.log", (data["workdir"].str+QDir::separator().toAscii()).c_str(), job->jobId()).c_str()).toStdString();
-  jobtxt=::format("python \"%s\" refine %s", MIExpertPy().toAscii().constData(), args.c_str());
+  jobtxt=::format("\"%s\" refine %s", MIExpertPy().toAscii().constData(), args.c_str());
   job->setLogFile(log.c_str());
-  job->setCommandLine(jobtxt.c_str());
-  //Find highest number error
-  //refine_#_errors.txt
-  std::string currentName, errorName, tempName;
-  int ctrCurrent = 0, ctrOld = 0;
-  QDir dir(data["workdir"].str.c_str());
-  if (!dir.exists()) {
-    //TODO: This should actually pop a dialog to the user too...
-    return;
-  }
-  QStringList filters;
-  filters << "refine_*.pdb";
-  QFileInfoList fi=dir.entryInfoList(filters);
-  if (fi.count()) {
-    for (int i=0; i < fi.count(); i++) {
-      std::string base=fi[i].baseName().toStdString();
-      if (sscanf(base.c_str(),"refine_%d",&ctrCurrent)==1 &&
-          ctrCurrent > ctrOld) {
-        ctrOld=ctrCurrent;
-      }
-    }
-    ctrOld++;
-    errorName=::format("refine_%d_errors.txt", (int)ctrOld);
-  } else {
-    errorName = "refine_1_errors.txt";
-  }
-
-  if (errorName.size()) {
-      // TODO open error file in browser
-  }
+  job->setProgram(python);
+  job->setArguments(jobtxt.c_str());
+  job->setWorkingDirectory(data["workdir"].str.c_str());
   job->StartJob();
 }
 
@@ -445,6 +409,9 @@ void Tools::OnJobReport() {
   if (!VerifyMIExpert() || !VerifyCCP4()) {
     return;
   }
+  QString python = pythonExe();
+  if (python.isEmpty())
+      return;
 
   static MIJobReportDialog dlg(MIMainWindow::instance(), "Job Report");
   MIData data;
@@ -507,24 +474,14 @@ void Tools::OnJobReport() {
 
   // Create the job object
   job = MIMainWindow::instance()->GetJobManager()->CreateJob();
-  MIData settings;
-  settings["workingDirectory"].str = data["workdir"].str.c_str();
-  settings["jobName"].str = "Report";
-  job->setSettings(settings);
   log=buildAbsPath(::format("%smifit%ld.log", (data["workdir"].str+QDir::separator().toAscii()).c_str(), job->jobId()).c_str()).toStdString();
-  jobtxt=::format("python \"%s\" deposit3d %s", MIExpertPy().toAscii().constData(), args.c_str());
+  jobtxt=::format("\"%s\" deposit3d %s", MIExpertPy().toAscii().constData(), args.c_str());
 
+  job->setJobName("Report");
   job->setLogFile(log.c_str());
-  job->setCommandLine(jobtxt.c_str());
-  if (data["html_report"].b) {
-    std::string htmlName;
-    if (data["rootname"].str.size()) {
-      htmlName=::format("%s.htm", data["rootname"].str.c_str());
-    } else {
-      htmlName=::format("pdbdeposit.htm");
-    }
-    // TODO open report in browser
-  }
+  job->setProgram(python);
+  job->setArguments(jobtxt.c_str());
+  job->setWorkingDirectory(data["workdir"].str.c_str());
   job->StartJob();
 }
 
@@ -534,6 +491,9 @@ void Tools::OnCoCrystalSuperPos() {
   if (!VerifyMIExpert() || !VerifyCCP4()) {
     return;
   }
+  QString python = pythonExe();
+  if (python.isEmpty())
+      return;
 
   static MICocrystalSuperpositionDialog dlg(MIMainWindow::instance(), "Cocrystal superposition");
   MIData data;
@@ -551,14 +511,13 @@ void Tools::OnCoCrystalSuperPos() {
 
   // Create the job object
   job = MIMainWindow::instance()->GetJobManager()->CreateJob();
-  MIData settings;
-  settings["workingDirectory"].str = data["workdir"].str.c_str();
-  settings["jobName"].str = "Cocrystal Superpos";
-  job->setSettings(settings);
+  job->setJobName("Cocrystal Superpos");
   log=buildAbsPath(::format("%smifit%ld.log", (data["workdir"].str+QDir::separator().toAscii()).c_str(), job->jobId()).c_str()).toStdString();
-  jobtxt=::format("python \"%s\" ligandoverlap %s", MIExpertPy().toAscii().constData(), args.c_str());
+  jobtxt=::format("\"%s\" ligandoverlap %s", MIExpertPy().toAscii().constData(), args.c_str());
   job->setLogFile(log.c_str());
-  job->setCommandLine(jobtxt.c_str());
+  job->setProgram(python);
+  job->setArguments(jobtxt.c_str());
+  job->setWorkingDirectory(data["workdir"].str.c_str());
   job->StartJob();
 }
 
@@ -568,6 +527,9 @@ void Tools::OnSadPhasing() {
   if (!VerifyMIExpert() || !VerifyCCP4()) {
     return;
   }
+  QString python = pythonExe();
+  if (python.isEmpty())
+      return;
 
   static MISadPhasingDialog dlg(MIMainWindow::instance(), "SAD Phasing");
   MIData data;
@@ -600,18 +562,14 @@ void Tools::OnSadPhasing() {
 
   // Create the job object
   job = MIMainWindow::instance()->GetJobManager()->CreateJob();
-  MIData settings;
-  settings["workingDirectory"].str = data["workdir"].str;
-  settings["jobName"].str = "SAD phasing";
-  job->setSettings(settings);
-  log=buildAbsPath(::format("%smifit%ld.log", (data["workdir"].str + QDir::separator().toAscii()).c_str(), job->jobId()).c_str()).toStdString();
-  jobtxt=::format("python \"%s\" sadphase %s", MIExpertPy().toAscii().constData(), args.c_str());
+  job->setJobName("SAD phasing");
+  log = buildAbsPath(::format("%smifit%ld.log", (data["workdir"].str + QDir::separator().toAscii()).c_str(), job->jobId()).c_str()).toStdString();
+  jobtxt=::format("\"%s\" sadphase %s", MIExpertPy().toAscii().constData(), args.c_str());
   job->setLogFile(log.c_str());
-  job->setCommandLine(jobtxt.c_str());
-  std::string htmlName = "mi_phase_summary.html";
-  // TODO open summary in browser
+  job->setProgram(python);
+  job->setArguments(jobtxt.c_str());
+  job->setWorkingDirectory(data["workdir"].str.c_str());
   job->StartJob();
-  return;
 }
 
 void Tools::OnNCSModeling() {
@@ -620,6 +578,9 @@ void Tools::OnNCSModeling() {
   if (!VerifyMIExpert() || !VerifyCCP4()) {
     return;
   }
+  QString python = pythonExe();
+  if (python.isEmpty())
+      return;
 
   static MINCSModelingDialog dlg(MIMainWindow::instance(), "NCS Modeling");
   MIData data;
@@ -660,17 +621,14 @@ void Tools::OnNCSModeling() {
   //Copied from superposition script
   // Create the job object
   job = MIMainWindow::instance()->GetJobManager()->CreateJob();
-  MIData settings;
-  settings["workingDirectory"].str = data["workdir"].str;
-  settings["jobName"].str = "NCS Modeling";
-  job->setSettings(settings);
+  job->setJobName("NCS Modeling");
 
   log=buildAbsPath(::format("%smifit%ld.log", (data["workdir"].str+QDir::separator().toAscii()).c_str(), job->jobId()).c_str()).toStdString();
-  jobtxt=::format("python \"%s\" %s", MIExpertPy().toAscii().constData(), cmd.c_str());
+  jobtxt=::format("\"%s\" %s", MIExpertPy().toAscii().constData(), cmd.c_str());
   job->setLogFile(log.c_str());
-  job->setCommandLine(jobtxt.c_str());
-  pdbout=buildAbsPath(::format("%s%cncs_%s_out.pdb", data["workdir"].str.c_str(), QDir::separator().toAscii(), QFileInfo(doc->GetTitle().c_str()).fileName().toStdString().c_str()).c_str()).toStdString();
-
+  job->setProgram(python);
+  job->setArguments(jobtxt.c_str());
+  job->setWorkingDirectory(data["workdir"].str.c_str());
   job->StartJob();
 }
 
@@ -832,6 +790,9 @@ void Tools::OnIntegrate() {
   if (!VerifyMIExpert() || !VerifyCCP4()) {
     return;
   }
+  QString python = pythonExe();
+  if (python.isEmpty())
+      return;
 
   static MIIntegrateDialog dlg(MIMainWindow::instance(), "Integrate");
   MIData data;
@@ -841,9 +802,7 @@ void Tools::OnIntegrate() {
   }
 
   job = MIMainWindow::instance()->GetJobManager()->CreateJob();
-  MIData settings;
-  settings["jobName"].str = "Integrate";
-  job->setSettings(settings);
+  job->setJobName("Integrate");
 
   std::string commonArguments;
   if (data["detector_constants"].str.size()) {
@@ -862,34 +821,19 @@ void Tools::OnIntegrate() {
 
   log=buildAbsPath(::format("mifit%ld.log", job->jobId()).c_str()).toStdString();
 
-  std::vector<std::string> templateList = data["template_image"].strList;
-  std::vector<std::string>::iterator iter = templateList.begin();
-  bool firstCommand = true;
-  while (iter != templateList.end()) {
-    std::string templateImage = *iter;
-    ++iter;
-    std::string cmd("integrate");
-    cmd += " --template_image=\"" + templateImage + "\"";
-    cmd += commonArguments;
-    std::string redirect(">>");
-    if (firstCommand) {
-      redirect = ">";
-      firstCommand = false;
-    }
-    jobtxt=::format("python \"%s\" %s", MIExpertPy().toAscii().constData(), cmd.c_str());
-    // TODO rework to run in one command
-    job->setCommandLine(jobtxt.c_str());
-  }
+  std::string templateImage = data["template_image"].str;
+  std::string cmd("integrate");
+  cmd += " --template_image=\"" + templateImage + "\"";
+  cmd += commonArguments;
+  jobtxt=::format("\"%s\" %s", MIExpertPy().toAscii().constData(), cmd.c_str());
+  job->setProgram(python);
+  job->setArguments(jobtxt.c_str());
 
   job->setLogFile(log.c_str());
   job->StartJob();
 }
 
 void Tools::OnRunTestJob() {
-  // set the working directory
-#ifdef WIN32
-  MIMainWindow::instance()->GetJobManager()->SetWorkDirectory("C:\\temp");
-#endif
   BatchJob* job =   MIMainWindow::instance()->GetJobManager()->CreateJob();
   try {
     TestJob testJob;
