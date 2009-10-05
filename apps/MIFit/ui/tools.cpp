@@ -16,6 +16,7 @@
 #include <QDir>
 #include <QMenu>
 #include <QMessageBox>
+#include <QSettings>
 #include <util/utillib.h>
 #include <vector>
 
@@ -677,118 +678,105 @@ void Tools::OnCustom()
 {
     static CustomJobDialog dlg(MIMainWindow::instance());
 
-    MIData data;    
     static int customJobNumber = 1;
-    std::string str;
 
-    data["jobName"].str = format("Custom job %d", customJobNumber++);
+    QString jobName(QString("Custom job %1").arg(customJobNumber++));
 
-    MIConfig* config = MIConfig::Instance();
-    config->Read("CustomJob/executable", str);
-    data["executable"].str = str;
-    config->Read("CustomJob/arguments", str);
-    data["arguments"].str = str;
-    bool b;
-    config->Read("CustomJob/useCurrentModel", &b);
-    data["useCurrentModel"].b = b;
-    config->Read("CustomJob/workingDirectory", str);
-    data["workingDirectory"].str = str;
-    config->Read("CustomJob/modelFile", str);
-    data["modelFile"].str = str;
-    config->Read("CustomJob/dataFile", str);
-    data["dataFile"].str = str;
+    QSettings* settings = MIGetQSettings();
+    settings->beginGroup("CustomJob");
+    QString program = settings->value("executable").toString();
+    QString arguments = settings->value("arguments").toString();
+    QString workingDirectory = settings->value("workingDirectory", QDir::currentPath()).toString();
+    bool useCurrentModel = settings->value("useCurrentModel", true).toBool();
+    QString modelFile = settings->value("modelFile").toString();
+    QString dataFile = settings->value("dataFile").toString();
+    settings->endGroup();
 
     MIGLWidget *doc = MIMainWindow::instance()->currentMIGLWidget();
     if (doc != NULL) {
         EMap* map = doc->GetDisplaylist()->GetCurrentMap();
         if (map != NULL) {
-            data["dataFile"].str = map->pathName;
+            dataFile = map->pathName.c_str();
         }
-        if (data["modelFile"].str.size() == 0) {
+        if (modelFile.isEmpty()) {
             Molecule* model = doc->GetDisplaylist()->CurrentItem();
             if (model != NULL) {
-                data["modelFile"].str = model->pathname;
+                modelFile = model->pathname.c_str();
             }
         }
     }
-    if (data["workingDirectory"].str.size() == 0) {
-        data["workingDirectory"].str = QDir::currentPath().toStdString();
+    if (workingDirectory.isEmpty()) {
+        workingDirectory = QDir::currentPath();
     }
 
-    dlg.setJobName(data["jobName"].str.c_str());
-    dlg.setProgram(data["executable"].str.c_str());
-    dlg.setArguments(data["arguments"].str.c_str());
-    if (data["useCurrentModel"].b) {
-        dlg.setModelMode(CustomJobDialog::CURRENT);
-    } else {
-        dlg.setModelMode(CustomJobDialog::FILE);
-    }
-    dlg.setWorkingDirectory(data["workingDirectory"].str.c_str());
-    dlg.setModelFile(data["modelFile"].str.c_str());
-    dlg.setDataFile(data["dataFile"].str.c_str());
+    dlg.setJobName(jobName);
+    dlg.setProgram(program);
+    dlg.setArguments(arguments);
+    dlg.setModelMode(useCurrentModel ? CustomJobDialog::CURRENT : CustomJobDialog::FILE);
+    dlg.setWorkingDirectory(workingDirectory);
+    dlg.setModelFile(modelFile);
+    dlg.setDataFile(dataFile);
 
     if (dlg.exec() != QDialog::Accepted) {
         return;
     }
 
-    data["jobName"].str = dlg.jobName().toStdString();
-    data["executable"].str = dlg.program().toStdString();
-    data["arguments"].str = dlg.arguments().toStdString();
-    data["useCurrentModel"].b = dlg.modelMode() == CustomJobDialog::CURRENT;
-    data["workingDirectory"].str = dlg.workingDirectory().toStdString();
-    data["modelFile"].str = dlg.modelFile().toStdString();
-    data["dataFile"].str = dlg.dataFile().toStdString();
+    jobName = dlg.jobName();
+    program = dlg.program();
+    arguments = dlg.arguments();
+    useCurrentModel = dlg.modelMode() == CustomJobDialog::CURRENT;
+    workingDirectory = dlg.workingDirectory();
+    modelFile = dlg.modelFile();
+    dataFile = dlg.dataFile();
 
     BatchJob* job = MIMainWindow::instance()->GetJobManager()->CreateJob();
 
-    typedef std::map<std::string, std::string> SubstitutionMap;
+    typedef std::map<QString, QString> SubstitutionMap;
     SubstitutionMap subs;
-    subs["\\$DATA"] = data["dataFile"].str;
+    subs["DATA"] = dataFile;
 
-    QDir dir(data["workingDirectory"].str.c_str());
+    QDir dir(workingDirectory);
     job->setWorkingDirectory(dir.absolutePath());
 
-    if (data["useCurrentModel"].b) {
+    if (useCurrentModel) {
         MIGLWidget *doc = MIMainWindow::instance()->currentMIGLWidget();
         if (doc != NULL) {
             Molecule* model = doc->GetDisplaylist()->GetCurrentModel();
             if (model) {
                 QString modelFile = dir.absoluteFilePath(QString("mifit_%1.pdb").arg(job->jobId()));
                 model->SavePDBFile(modelFile.toAscii().constData());
-                subs["\\$MODEL"] = modelFile.toAscii().constData();
+                subs["MODEL"] = modelFile;
             }
         }
     } else {
-        subs["\\$MODEL"] = data["modelFile"].str;
+        subs["MODEL"] = modelFile;
     }
 
-    std::string args = data["arguments"].str;
+    QString args(arguments);
     SubstitutionMap::iterator iter = subs.begin();
+    args.replace("$$", "\b");
     while (iter != subs.end()) {
-        std::string pattern = iter->first;
-        QString second(iter->second.c_str());
-        second.replace("\\\\","\\\\\\\\");
-        QString qargs(args.c_str());
-        qargs.replace(pattern.c_str(),iter->second.c_str());
-        args=qargs.toStdString();
+        args.replace("$" + iter->first, iter->second);
         ++iter;
     }
+    args.replace("\b", "$");
 
-    QString jobName = data["jobName"].str.c_str();
     job->setJobName(jobName);
     QString logFile = dir.absoluteFilePath(QString("%3_%4.log").arg(jobName).arg(job->jobId()));
     job->setLogFile(logFile);
-    job->setProgram(data["executable"].str.c_str());
-    job->setArguments(args.c_str());
+    job->setProgram(program);
+    job->setArguments(args);
 
     job->StartJob();
 
-    config->Write("CustomJob/executable", data["executable"].str);
-    config->Write("CustomJob/arguments", data["arguments"].str);
-    config->Write("CustomJob/useCurrentModel", data["useCurrentModel"].b);
-    config->Write("CustomJob/workingDirectory", data["workingDirectory"].str);
-    config->Write("CustomJob/modelFile", data["modelFile"].str);
-    config->Write("CustomJob/dataFile", data["dataFile"].str);
+    settings->beginGroup("CustomJob");
+    settings->setValue("executable", program);
+    settings->setValue("arguments", arguments);
+    settings->setValue("useCurrentModel", useCurrentModel);
+    settings->setValue("workingDirectory", workingDirectory);
+    settings->setValue("modelFile", modelFile);
+    settings->setValue("dataFile", dataFile);
+    settings->endGroup();
 
 }
 
