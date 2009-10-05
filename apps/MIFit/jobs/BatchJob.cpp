@@ -46,6 +46,9 @@ void BatchJob::setWorkingDirectory(const QString& dir) {
 }
 
 BatchJob::~BatchJob() {
+    if (QFile::exists(LogFile)) {
+        QFile::remove(LogFile);
+    }
     delete process;
 }
 
