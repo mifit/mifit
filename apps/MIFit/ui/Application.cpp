@@ -277,6 +277,11 @@ Application::Application(void) {
   checkpointDirectory = "";
   ShelxHome = "";
 
+  jobLogsDir = QDir::home().absoluteFilePath(".MIFit_jobLogs");
+  if (!jobLogsDir.exists()) {
+      jobLogsDir.mkpath(".");
+  }
+
   QSettings* settings = MIGetQSettings();
   if (settings->childGroups().contains(GL_FORMAT_GROUP)) {
     settings->beginGroup(GL_FORMAT_GROUP);

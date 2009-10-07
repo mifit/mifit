@@ -50,6 +50,14 @@ static QString MIExpertPy()
             .arg(Application::instance()->GetMolimageHome().c_str()));
 }
 
+static QString MIExpertScript(const QString& name)
+{
+    return QDir::toNativeSeparators(
+            QString("%1/MIExpert/%2")
+            .arg(Application::instance()->GetMolimageHome().c_str())
+            .arg(name));
+}
+
 static QString pythonExe()
 {
     static QString pythonExePath;
@@ -108,9 +116,6 @@ bool Tools::VerifyCCP4() {
   }
   firsttime = false;
 
-  //NOTE: mtzdump used to be the test program, but with the port to Qt
-  //      it's been replaced by pdbset.  mtzdump does not terminate without
-  //      additional input, but pdbset does, which makes it easier to test.
   QByteArray pdbsetOutput;
   QProcess pdbsetProcess;
   pdbsetProcess.start("pdbset");
@@ -158,7 +163,6 @@ void Tools::OnBindNGrind() {
       return;
 
   BatchJob* job;
-  QString log;
 
   static MIBindNGrindDialog dlg(MIMainWindow::instance(), "Cocrystal Solution");
   MIData data;
@@ -227,34 +231,24 @@ void Tools::OnBindNGrind() {
   QDir workdir = hklin.absoluteDir();
   job->setProgram(python);
   job->setArguments(args);
-  log = workdir.absoluteFilePath(QString("mifit%2.log").arg(job->jobId()));
-  job->setLogFile(log);
   job->StartJob();
 }
 
 void Tools::CIFConvertlib(const char* format)
 {
-  if (!VerifyMIExpert() || !VerifyCCP4()) {
-    return;
-  }
   QString python = pythonExe();
   if (python.isEmpty())
       return;
 
-  QString filename = Application::getOpenFileName(0, "Choose a CIF file", "CIF files (*.cif);;All files (*.*)");
-
   BatchJob* job = MIMainWindow::instance()->GetJobManager()->CreateJob();
-  QFileInfo fileInfo(filename);
-  QDir workdir(fileInfo.absoluteDir());
-  QString log = workdir.absoluteFilePath(QString("mifit%1.log").arg(job->jobId()));
+
   job->setProgram(python);
   QStringList args;
-  args << MIExpertPy() << "convertlib"
-          << "--cif" << filename
-          << "--workdir" << workdir.absolutePath()
+  args << MIExpertScript("mi_convertlib_ui.py")
           << "--refprogram" << format;
   job->setArguments(args);
-  job->setLogFile(log);
+  job->setWorkingDirectory(Application::instance()->latestFileBrowseDirectory(""));
+
   job->StartJob();
 }
 
@@ -267,12 +261,6 @@ void Tools::OnCIF2CNS() {
 }
 
 void Tools::OnMolRep() {
-  BatchJob* job = NULL;
-  std::string jobtxt;
-  std::string args;
-  std::string log;
-
-  // added to save working directory between commands and to use current working directory - dem
   if (!VerifyMIExpert() || !VerifyCCP4()) {
     return;
   }
@@ -287,34 +275,32 @@ void Tools::OnMolRep() {
     return;
   }
 
-  args += " --engine " + data["engine"].str;
+  QStringList args;
+  args << MIExpertPy() << "molrep";
+  args << "--engine" << data["engine"].str.c_str();
   if (data["spacegroup_no"].radio != 0) {
-    args += " --spacegroup " + ::format("%d",data["spacegroup_no"].radio);
+      args << "--spacegroup" << QString::number(data["spacegroup_no"].radio);
   } else if (data["sg_search"].b) {
-    args += " --sg_search yes ";
+    args << "--sg_search" << "yes";
   }
-  args +=" --pdbfile \"" + buildAbsPath(data["model"].str.c_str()).toStdString()  + "\"" +
-    " --mtzfile \"" + buildAbsPath(data["mtzfile"].str.c_str()).toStdString()  + "\"" +
-    " --workdir \"" + buildAbsPath(data["workdir"].str.c_str()).toStdString() + "\"" +
-    " --multi_search " + (data["multi_search"].b ? "yes": "no") +
-    " --match_pdbin " + (data["match_pdbin"].b ? "yes": "no") +
-    " --copies " + ::format("%d",data["copies"].u);
-  if (data["fixed_pdb"].str.size())
-    args += " --fixed_pdb \"" + buildAbsPath(data["fixed_pdb"].str.c_str()).toStdString()  + "\" ";
+  args << "--pdbfile" << buildAbsPath(data["model"].str.c_str())
+          << "--mtzfile" << buildAbsPath(data["mtzfile"].str.c_str())
+          << "--workdir" << buildAbsPath(data["workdir"].str.c_str())
+          << "--multi_search" << (data["multi_search"].b ? "yes": "no")
+          << "--match_pdbin" << (data["match_pdbin"].b ? "yes": "no")
+          << "--copies" << QString::number(data["copies"].u);
+  if (!data["fixed_pdb"].str.empty())
+    args << "--fixed_pdb" << buildAbsPath(data["fixed_pdb"].str.c_str());
 
-  job = MIMainWindow::instance()->GetJobManager()->CreateJob();
+  BatchJob* job = MIMainWindow::instance()->GetJobManager()->CreateJob();
   job->setJobName("Molrep");
-  log = buildAbsPath(QString("%1/mifit%2.log").arg(data["workdir"].str.c_str()).arg(job->jobId())).toStdString();
-  jobtxt=::format("\"%s\" molrep %s", MIExpertPy().toAscii().constData(), args.c_str());
-  job->setLogFile(log.c_str());
   job->setProgram(python);
-  job->setArguments(jobtxt.c_str());
+  job->setArguments(args);
   job->setWorkingDirectory(data["workdir"].str.c_str());
   job->StartJob();
 }
 
 void Tools::OnRefmacRestraints() {
-  std::string s, log;
   if (!VerifyMIExpert() || !VerifyCCP4()) {
     return;
   }
@@ -322,29 +308,24 @@ void Tools::OnRefmacRestraints() {
   if (python.isEmpty())
       return;
 
-  std::string filename = MIFileSelector("Choose a PDB file", Application::instance()->latestFileBrowseDirectory("").toAscii().constData(), "", "", "PDB files (*.pdb)|*.pdb|All files (*.*)|*.*", 0, 0);
-  if (!filename.size()) {
+  QString filename = Application::getOpenFileName(0, "Choose a PDB file", "PDB files (*.pdb);;All files (*.*)");
+
+  if (filename.isEmpty()) {
     return;
   }
   BatchJob* job = MIMainWindow::instance()->GetJobManager()->CreateJob();
   job->setJobName("Refmac Restraints");
-  s=::format("New CIF to ShellX job #%ld", job->jobId());
-  Logger::log(s);
-  QFileInfo workdir(filename.c_str());
-  log=::format("%s%cmifit%ld.log", workdir.absolutePath().toStdString().c_str(),QDir::separator().toAscii(), job->jobId());
-
-  s=::format("\"%s\" restraints --pdbfile \"%s\" --workdir \"%s\"",
-             MIExpertPy().toAscii().constData(), filename.c_str(), workdir.absolutePath().toStdString().c_str());
+  QFileInfo workdir(filename);
+  QStringList args;
+  args << MIExpertPy() << "restraints"
+          << "--pdbfile" << filename
+          << "--workdir" << workdir.absolutePath();
   job->setProgram(python);
-  job->setArguments(s.c_str());
-  job->setLogFile(log.c_str());
+  job->setArguments(args);
   job->StartJob();
 }
 
 void Tools::OnRefine() {
-  static std::string workdir;
-  BatchJob* job = NULL;
-  std::string jobtxt, log, args;
   if (!VerifyMIExpert() || !VerifyCCP4()) {
     return;
   }
@@ -359,53 +340,47 @@ void Tools::OnRefine() {
     return;
   }
 
-  //Get the required options
-  args +=" --mifithome \"" + buildAbsPath(Application::instance()->MolimageHome.c_str()).toStdString() + "\"" +
-    " --workdir \"" + buildAbsPath(data["workdir"].str.c_str()).toStdString() + "\"" +
-    " --pdbfile \"" + buildAbsPath(data["pdbfile"].str.c_str()).toStdString() + "\"" +
-    " --mtzfile \"" + buildAbsPath(data["mtzfile"].str.c_str()).toStdString() + "\"" +
-    " --weight " + ::format("%f",data["weight"].f) +
-    " --cycles " + ::format("%d",data["cycles"].u);
+  QStringList args;
+  args << MIExpertPy() << "refine"
+          << "--mifithome" << buildAbsPath(Application::instance()->MolimageHome.c_str())
+          << "--workdir" << buildAbsPath(data["workdir"].str.c_str())
+          << "--pdbfile" << buildAbsPath(data["pdbfile"].str.c_str())
+          << "--mtzfile" << buildAbsPath(data["mtzfile"].str.c_str())
+          << "--weight" << QString::number(data["weight"].f)
+          << "--cycles" << QString::number(data["cycles"].u);
   if (!Application::instance()->ShelxHome.empty()) {
-    args += " --shelx_dir \"" + buildAbsPath(Application::instance()->ShelxHome.c_str()).toStdString() + "\"";
+    args << "--shelx_dir" << buildAbsPath(Application::instance()->ShelxHome.c_str());
   }
 
   if (data["water_cycles"].u != UINT_MAX) {
-    args += " --water_cycles " + ::format("%d",data["water_cycles"].u);
+    args << "--water_cycles" << QString::number(data["water_cycles"].u);
   }
   if (data["build_cycles"].u != UINT_MAX) {
-    args += " --build_cycles " + ::format("%d",data["build_cycles"].u);
+    args << "--build_cycles" << QString::number(data["build_cycles"].u);
   }
 
-  args += " --bref_type " + data["bref_type"].str;
-  args += " --engine " + data["engine"].str;
+  args << "--bref_type" << data["bref_type"].str.c_str();
+  args << "--engine" << data["engine"].str.c_str();
 
-
-  //Grab the optional ones
   if (data["use_max_res"].b) {
-    args += " --max_res " + ::format("%f",data["max_res"].f);
+    args << " --max_res " << QString::number(data["max_res"].f);
   }
-  if (data["libfile"].str.size()) {
-    args += " --libfile \"" + buildAbsPath(data["libfile"].str.c_str()).toStdString() + "\"";
+  if (!data["libfile"].str.empty()) {
+    args << "--libfile" << buildAbsPath(data["libfile"].str.c_str());
   }
-  if (data["tls_file"].str.size()) {
-    args += " --tls_file \"" + buildAbsPath(data["tls_file"].str.c_str()).toStdString() + "\"";
+  if (!data["tls_file"].str.empty()) {
+    args << "--tls_file" << buildAbsPath(data["tls_file"].str.c_str());
   }
 
-  job = MIMainWindow::instance()->GetJobManager()->CreateJob();
+  BatchJob* job = MIMainWindow::instance()->GetJobManager()->CreateJob();
   job->setJobName("Refinement");
-  log=buildAbsPath(::format("%smifit%ld.log", (data["workdir"].str+QDir::separator().toAscii()).c_str(), job->jobId()).c_str()).toStdString();
-  jobtxt=::format("\"%s\" refine %s", MIExpertPy().toAscii().constData(), args.c_str());
-  job->setLogFile(log.c_str());
   job->setProgram(python);
-  job->setArguments(jobtxt.c_str());
+  job->setArguments(args);
   job->setWorkingDirectory(data["workdir"].str.c_str());
   job->StartJob();
 }
 
 void Tools::OnJobReport() {
-  BatchJob* job = NULL;
-  std::string jobtxt, log, temp, args;
   if (!VerifyMIExpert() || !VerifyCCP4()) {
     return;
   }
@@ -420,74 +395,52 @@ void Tools::OnJobReport() {
     return;
   }
 
-  // Required things
-  args += " --workdir \"" + buildAbsPath(data["workdir"].str.c_str()).toStdString() + "\"";
-  args += " --mtzfile \"" + buildAbsPath(data["mtzfile"].str.c_str()).toStdString() + "\"";
-  args += " --pdbfile \"" + buildAbsPath(data["pdbfile"].str.c_str()).toStdString() + "\"";
-  args += " --molimagehome \"" + buildAbsPath(Application::instance()->MolimageHome.c_str()).toStdString() + "\"";
-  args += " --libfile \"" + buildAbsPath(data["libfile"].str.c_str()).toStdString() + "\"";
-  args += " --seqfile \"" + buildAbsPath(data["seqfile"].str.c_str()).toStdString() + "\"";
-  args += " --templatefile \"" + buildAbsPath(data["templatefile"].str.c_str()).toStdString() + "\"";
-  args += " --datalogfile \"" + buildAbsPath(data["datalogfile"].str.c_str()).toStdString() + "\"";
+  QStringList args;
+  args << MIExpertPy() << "deposit3d"
+          << "--workdir" << buildAbsPath(data["workdir"].str.c_str())
+          << "--mtzfile" << buildAbsPath(data["mtzfile"].str.c_str())
+          << "--pdbfile" << buildAbsPath(data["pdbfile"].str.c_str())
+          << "--molimagehome" << buildAbsPath(Application::instance()->MolimageHome.c_str())
+          << "--libfile" << buildAbsPath(data["libfile"].str.c_str())
+          << "--seqfile" << buildAbsPath(data["seqfile"].str.c_str())
+          << "--templatefile" << buildAbsPath(data["templatefile"].str.c_str())
+          << "--datalogfile" << buildAbsPath(data["datalogfile"].str.c_str())
+          << "--cif_write" << (data["cif_write"].b ? "yes" : "no");
 
-  if (data["cif_write"].b) {
-    args += " --cif_write yes";
-  } else {
-    args += " --cif_write no";
-  }
   if (data["map_write"].b) {
-    args += " --map_write yes";
-    args += " --map_border=" + ::format("%f",data["map_border"].f);
+    args << "--map_write" << "yes"
+            << "--map_border" << QString::number(data["map_border"].f);
   }
-  if (data["text_report"].b) {
-    args += " --text_write yes";
-  } else {
-    args += " --text_write no";
-  }
+  args << "--text_write" << (data["text_report"].b ? "yes" : "no")
+          << "--html_write" << (data["html_report"].b ? "yes" : "no")
+          << "--hkl_write" << (data["hkl_write"].b ? "yes" : "no");
   if (data["html_report"].b) {
-    args += " --html_write yes";
-  } else {
-    args += " --html_write no";
-  }
-  if (data["hkl_write"].b) {
-    args += " --hkl_write yes";
-  } else {
-    args += " --hkl_write no";
-  }
-  if (data["html_report"].b) {
-    if (data["report_title"].str.size()) {
-      args += " --title \"" + data["report_title"].str + "\"";
+    if (data["report_title"].str.empty()) {
+      args << "--title" << data["report_title"].str.c_str();
     }
-    if (data["image1"].str.size()) {
-      args += " --image1 \"" + buildAbsPath(data["image1"].str.c_str()).toStdString() + "\"";
+    if (!data["image1"].str.empty()) {
+      args << "--image1" << buildAbsPath(data["image1"].str.c_str());
     }
-    if (data["image2"].str.size()) {
-      args += " --image2 \"" + buildAbsPath(data["image2"].str.c_str()).toStdString() + "\"";
+    if (!data["image2"].str.empty()) {
+      args << "--image2" << buildAbsPath(data["image2"].str.c_str());
     }
-    if (data["image3"].str.size()) {
-      args += " --image3 \"" + buildAbsPath(data["image3"].str.c_str()).toStdString() + "\"";
+    if (!data["image3"].str.empty()) {
+      args << "--image3" << buildAbsPath(data["image3"].str.c_str());
     }
   }
-  if (data["rootname"].str.size()) {
-    args += " --rootname \"" + buildAbsPath(data["rootname"].str.c_str()).toStdString() + "\"";
+  if (!data["rootname"].str.empty()) {
+    args << "--rootname" << buildAbsPath(data["rootname"].str.c_str());
   }
 
-  // Create the job object
-  job = MIMainWindow::instance()->GetJobManager()->CreateJob();
-  log=buildAbsPath(::format("%smifit%ld.log", (data["workdir"].str+QDir::separator().toAscii()).c_str(), job->jobId()).c_str()).toStdString();
-  jobtxt=::format("\"%s\" deposit3d %s", MIExpertPy().toAscii().constData(), args.c_str());
-
+  BatchJob* job = MIMainWindow::instance()->GetJobManager()->CreateJob();
   job->setJobName("Report");
-  job->setLogFile(log.c_str());
   job->setProgram(python);
-  job->setArguments(jobtxt.c_str());
+  job->setArguments(args);
   job->setWorkingDirectory(data["workdir"].str.c_str());
   job->StartJob();
 }
 
 void Tools::OnCoCrystalSuperPos() {
-  BatchJob* job = NULL;
-  std::string jobtxt, log, temp, args;
   if (!VerifyMIExpert() || !VerifyCCP4()) {
     return;
   }
@@ -502,28 +455,24 @@ void Tools::OnCoCrystalSuperPos() {
     return;
   }
 
-  // Required things
-  args += " --workdir \"" + buildAbsPath(data["workdir"].str.c_str()).toStdString() + "\"";
-  args += " --pdbdir \"" + buildAbsPath(data["pdbdir"].str.c_str()).toStdString() + "\"";
-  args += " --targetpdb \"" + buildAbsPath(data["targetpdb"].str.c_str()).toStdString() + "\"";
-  jobtxt=::format(" --targetsite \"%0.3f %0.3f %0.3f\"", data["x"].f,data["y"].f,data["z"].f);
-  args += jobtxt;
+  QStringList args;
+  args << MIExpertPy() << "ligandoverlap";
+  args << "--workdir" << buildAbsPath(data["workdir"].str.c_str());
+  args << "--pdbdir" << buildAbsPath(data["pdbdir"].str.c_str());
+  args << "--targetpdb" << buildAbsPath(data["targetpdb"].str.c_str());
+  args << "--targetsite" << QString::number(data["x"].f, 'f', 3)
+          << QString::number(data["y"].f, 'f', 3)
+          << QString::number(data["z"].f, 'f', 3);
 
-  // Create the job object
-  job = MIMainWindow::instance()->GetJobManager()->CreateJob();
+  BatchJob* job = MIMainWindow::instance()->GetJobManager()->CreateJob();
   job->setJobName("Cocrystal Superpos");
-  log=buildAbsPath(::format("%smifit%ld.log", (data["workdir"].str+QDir::separator().toAscii()).c_str(), job->jobId()).c_str()).toStdString();
-  jobtxt=::format("\"%s\" ligandoverlap %s", MIExpertPy().toAscii().constData(), args.c_str());
-  job->setLogFile(log.c_str());
   job->setProgram(python);
-  job->setArguments(jobtxt.c_str());
+  job->setArguments(args);
   job->setWorkingDirectory(data["workdir"].str.c_str());
   job->StartJob();
 }
 
 void Tools::OnSadPhasing() {
-  BatchJob* job = NULL;
-  std::string jobtxt, log, temp, args;
   if (!VerifyMIExpert() || !VerifyCCP4()) {
     return;
   }
@@ -537,44 +486,38 @@ void Tools::OnSadPhasing() {
   if (!dlg.GetResults(data)) {
     return;
   }
-  // Required things
-  args += " --molimagehome \"" + buildAbsPath(Application::instance()->MolimageHome.c_str()).toStdString() + "\"";
-  args += " --workdir \"" + buildAbsPath(data["workdir"].str.c_str()).toStdString() + "\"";
-  args += " --saddatafile \"" + buildAbsPath(data["saddatafile"].str.c_str()).toStdString() + "\"";
-  args += " --sitefile \"" + buildAbsPath(data["sitefile"].str.c_str()).toStdString() + "\"";
-  args += " --scatterer \"" + data["scatterer"].str + "\"";
-  args += " --sitenumber " + ::format("%d",data["sitenumber"].u);
-  args += " --ssnumber " + ::format("%d",data["ssnumber"].u);
-  args += " --separation " + ::format("%f",data["separation"].f);
-  args += " --solventfraction " + ::format("%f",data["solventfraction"].f);
-  args += " --siterefinemethod \"" + data["siterefinemethod"].str  + "\"";
+
+  QStringList args;
+  args << MIExpertPy() << "sadphase";
+  args << "--molimagehome \"" + buildAbsPath(Application::instance()->MolimageHome.c_str());
+  args << "--workdir" << buildAbsPath(data["workdir"].str.c_str());
+  args << "--saddatafile" << buildAbsPath(data["saddatafile"].str.c_str());
+  args << "--sitefile" << buildAbsPath(data["sitefile"].str.c_str());
+  args << "--scatterer" << data["scatterer"].str.c_str();
+  args << "--sitenumber" << QString::number(data["sitenumber"].u);
+  args << "--ssnumber" << QString::number(data["ssnumber"].u);
+  args << "--separation" << QString::number(data["separation"].f);
+  args << "--solventfraction" << QString::number(data["solventfraction"].f);
+  args << "--siterefinemethod" << data["siterefinemethod"].str.c_str();
   if (!Application::instance()->ShelxHome.empty()) {
-    args += " --shelx_dir \"" + buildAbsPath(Application::instance()->ShelxHome.c_str()).toStdString() + "\"";
+    args << "--shelx_dir" << buildAbsPath(Application::instance()->ShelxHome.c_str());
   }
-  if (data["bothhands"].b) {
-    args += " --bothhands yes";
-  } else {
-    args += " --bothhands no";
-  }
+  args << "--bothhands" << (data["bothhands"].b ? "yes" : "no");
   if (data["change_spacegroup"].b ) {
-    args += " --spacegroup_no " + ::format("%d",data["spacegroup_no"].radio);
+    args << "--spacegroup_no" << QString::number(data["spacegroup_no"].radio);
   }
 
-  // Create the job object
-  job = MIMainWindow::instance()->GetJobManager()->CreateJob();
+  BatchJob* job = MIMainWindow::instance()->GetJobManager()->CreateJob();
   job->setJobName("SAD phasing");
-  log = buildAbsPath(::format("%smifit%ld.log", (data["workdir"].str + QDir::separator().toAscii()).c_str(), job->jobId()).c_str()).toStdString();
-  jobtxt=::format("\"%s\" sadphase %s", MIExpertPy().toAscii().constData(), args.c_str());
-  job->setLogFile(log.c_str());
   job->setProgram(python);
-  job->setArguments(jobtxt.c_str());
+  job->setArguments(args);
   job->setWorkingDirectory(data["workdir"].str.c_str());
   job->StartJob();
 }
 
 void Tools::OnNCSModeling() {
   BatchJob* job = NULL;
-  std::string jobtxt, log, temp, pdbout;
+  std::string jobtxt, temp, pdbout;
   if (!VerifyMIExpert() || !VerifyCCP4()) {
     return;
   }
@@ -623,9 +566,7 @@ void Tools::OnNCSModeling() {
   job = MIMainWindow::instance()->GetJobManager()->CreateJob();
   job->setJobName("NCS Modeling");
 
-  log=buildAbsPath(::format("%smifit%ld.log", (data["workdir"].str+QDir::separator().toAscii()).c_str(), job->jobId()).c_str()).toStdString();
   jobtxt=::format("\"%s\" %s", MIExpertPy().toAscii().constData(), cmd.c_str());
-  job->setLogFile(log.c_str());
   job->setProgram(python);
   job->setArguments(jobtxt.c_str());
   job->setWorkingDirectory(data["workdir"].str.c_str());
@@ -720,8 +661,6 @@ void Tools::OnCustom()
     args.replace("\b", "$");
 
     job->setJobName(jobName);
-    QString logFile = dir.absoluteFilePath(QString("%3_%4.log").arg(jobName).arg(job->jobId()));
-    job->setLogFile(logFile);
     job->setProgram(program);
     job->setArguments(args);
 
@@ -786,7 +725,7 @@ void Tools::OnUpdateForJobLimit() {
 void Tools::OnIntegrate() {
   static std::string workdir("");
   BatchJob* job = NULL;
-  std::string jobtxt, log, temp;
+  std::string jobtxt, temp;
   if (!VerifyMIExpert() || !VerifyCCP4()) {
     return;
   }
@@ -819,8 +758,6 @@ void Tools::OnIntegrate() {
     commonArguments += " --integrate_resolution=\""+ data["integrate_resolution"].str + "\"";
   }
 
-  log=buildAbsPath(::format("mifit%ld.log", job->jobId()).c_str()).toStdString();
-
   std::string templateImage = data["template_image"].str;
   std::string cmd("integrate");
   cmd += " --template_image=\"" + templateImage + "\"";
@@ -829,7 +766,6 @@ void Tools::OnIntegrate() {
   job->setProgram(python);
   job->setArguments(jobtxt.c_str());
 
-  job->setLogFile(log.c_str());
   job->StartJob();
 }
 

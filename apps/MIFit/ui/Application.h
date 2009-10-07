@@ -7,6 +7,7 @@
 class MIConfig;
 
 #include <map/maplib.h>
+#include <QtCore/QDir>
 #include "core/corelib.h"
 
 class MISingleInstanceChecker;
@@ -47,6 +48,8 @@ class Application {
   std::string appname;
   std::string checkpointDirectory;
   std::string userSettingsDir;
+
+  QDir jobLogsDir;
 
 
   MIPalette* lpal;
@@ -103,6 +106,7 @@ public:
   void SetCrystalData(bool reset = false);
 
   QString latestFileBrowseDirectory(const QString& path);
+  QDir jobLogsDirectory() const { return jobLogsDir; }
 
   static QString getOpenFileName(QWidget* parent, const QString& caption, const QString& filter = QString());
   static QString getExistingDirectory(QWidget* parent, const QString& caption, const QString& filter);

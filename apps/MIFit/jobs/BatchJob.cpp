@@ -1,41 +1,36 @@
+#include <nongui/nonguilib.h>
+#include <QDebug>
+#include <QDialog>
+#include <QDialogButtonBox>
 #include <QDir>
 #include <QFile>
-#include <QProcess>
-#include <QDialog>
 #include <QMessageBox>
+#include <QProcess>
 #include <QTextBrowser>
-#include <QDialogButtonBox>
 #include <QVBoxLayout>
-
-#include <nongui/nonguilib.h>
 #include <util/utillib.h>
-#include "ui/uilib.h"
-#include "ui/MIDialog.h"
-
 #include "BatchJob.h"
 #include "OpenJobResults.h"
+#include "ui/MIDialog.h"
+#include "ui/uilib.h"
 
 #ifdef _WIN32
 #include <process.h>
 #include <time.h>
 #endif
 
-using namespace std;
-
-#ifdef _WIN32
-#define strncasecmp strnicmp
-#endif
-
 BatchJob::BatchJob()
     : workingDirectory_(QDir::current().absolutePath()), process(NULL)
 {
   setJobId();
+  logFile = Application::instance()->jobLogsDirectory().absoluteFilePath(QString("mifit%1.log").arg(jobId()));
 }
 
 BatchJob::BatchJob(const QString& dir)
     : workingDirectory_(dir), process(NULL)
 {
   setJobId();
+  logFile = Application::instance()->jobLogsDirectory().absoluteFilePath(QString("mifit%1.log").arg(jobId()));
 }
 
 void BatchJob::setWorkingDirectory(const QString& dir) {
@@ -46,8 +41,8 @@ void BatchJob::setWorkingDirectory(const QString& dir) {
 }
 
 BatchJob::~BatchJob() {
-    if (QFile::exists(LogFile)) {
-        QFile::remove(LogFile);
+    if (QFile::exists(logFile)) {
+        QFile::remove(logFile);
     }
     delete process;
 }
@@ -56,7 +51,7 @@ void BatchJob::setJobId() {
   jobId_ = getpid()*1000;
   time_t t;
   time(&t);
-  jobId_ += abs((int)(t%1000));
+  jobId_ += abs(static_cast<int>(t)) % 1000;
 }
 
 bool BatchJob::StartJob() {
@@ -64,7 +59,7 @@ bool BatchJob::StartJob() {
     process = new QProcess(this);
     process->setWorkingDirectory(workingDirectory_);
     process->setProcessChannelMode(QProcess::MergedChannels);
-    process->setStandardOutputFile(LogFile);
+    process->setStandardOutputFile(logFile);
     connect(process, SIGNAL(finished(int)),
             this, SLOT(doJobFinished()));
     connect(process, SIGNAL(finished(int)),
@@ -98,7 +93,7 @@ void BatchJob::doJobFinished() {
   if (!jobName_.isEmpty())
       message = QString("%1 finished (job %2)").arg(jobName_).arg(jobId_);
   else
-      message = QString("Job %2 finished").arg(jobName_).arg(jobId_);
+      message = QString("Job %1 finished").arg(jobId_);
   QMessageBox::information(MIMainWindow::instance(), "MIFit Job Finished", message);
 }
 
@@ -106,29 +101,29 @@ void BatchJob::AbortJob() {
     process->kill();
 }
 
-std::string BatchJob::Info() {
-  return format("Job name: %s\n"
-              "Job id: %ld\n"
-              "Program: %s\n"
-              "Arguments: \"%s\"\n"
-              "Log file: %s\n"
-              "Job directory: %s\n"
-              "Running: %s\n"
-              "Success: %s\n",
-              jobName_.toAscii().constData(),
-              jobId_,
-              program_.toAscii().constData(),
-              arguments_.join("\" \"").toAscii().constData(),
-              LogFile.toAscii().constData(),
-              workingDirectory_.toAscii().constData(),
-              isRunning() ? "true" : "false",
-              isSuccess() ? "true" : "false");
+QString BatchJob::Info() {
+  return QString("Job name: %1\n"
+              "Job id: %2\n"
+              "Program: %3\n"
+              "Arguments: \"%4\"\n"
+              "Log file: %5\n"
+              "Job directory: %6\n"
+              "Running: %7\n"
+              "Success: %8\n")
+              .arg(jobName_.toAscii().constData())
+              .arg(jobId_)
+              .arg(program_.toAscii().constData())
+              .arg(arguments_.join("\" \"").toAscii().constData())
+              .arg(logFile.toAscii().constData())
+              .arg(workingDirectory_.toAscii().constData())
+              .arg(isRunning() ? "true" : "false")
+              .arg(isSuccess() ? "true" : "false");
 }
 
 void BatchJob::ShowLog() {
 
     QDialog dlg(MIMainWindow::instance());
-    dlg.setWindowTitle(LogFile);
+    dlg.setWindowTitle(logFile);
     dlg.setModal(true);
     dlg.setSizeGripEnabled(true);
     QVBoxLayout* mainLayout = new QVBoxLayout;
@@ -141,10 +136,10 @@ void BatchJob::ShowLog() {
     mainLayout->addWidget(bb);
     dlg.connect(bb, SIGNAL(accepted()), &dlg, SLOT(accept()));
 
-    QFile logFileObj(LogFile);
+    QFile logFileObj(logFile);
     if ( !logFileObj.open(QFile::ReadOnly | QFile::Text) ) {
         browse->setPlainText(QObject::tr("ERROR: Log file %1 not found!")
-                             .arg(LogFile));
+                             .arg(logFile));
     } else {
         QTextStream logStream(&logFileObj);
         browse->setPlainText(logStream.readAll());

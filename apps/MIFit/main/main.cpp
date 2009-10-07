@@ -18,6 +18,7 @@ int main(int argc, char **argv)
     mw->show();
 
     result = app.exec();
+    delete mw;
   } catch(...) {
     std::cerr << "MIFit: unknown exception\n";
     result = 1;
