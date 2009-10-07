@@ -20,7 +20,7 @@ MolRep::MolRep(QWidget *parent) : MIQDialog(parent) {
 
   new MIBrowsePair(workingDirPushButton, workingDirLineEdit,"", true);
   new MIBrowsePair(modelPushButton, modelLineEdit,"PDB file (*.pdb *.res *.ent *.*)");
-  new MIBrowsePair(dataPushButton, dataLineEdit,"MTZ data file (*.mtz)");
+  new MIBrowsePair(dataPushButton, dataLineEdit,"Data file (*.mtz *.ref *.sca)");
   new MIBrowsePair(fixedModelPushButton, fixedModelLineEdit,"PDB file (*.pdb *.res *.ent *.*)");
   
   _okButton = 0;
