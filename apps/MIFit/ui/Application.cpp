@@ -9,7 +9,8 @@
 #include <chemlib/RESIDUE_.h>
 #include <conflib/conflib.h>
 #include <util/utillib.h>
-#include "core/corelib.h"
+#include <core/corelib.h>
+#include <script/LocalSocketScript.h>
 
 #include "Application.h"
 #include "tools.h"
@@ -777,6 +778,8 @@ void Application::Init() {
   MIRegisterColorSetter(new myColorSetter());
   MISetTorsionWritePrompt(new myTorsionWritePrompt());
   MISetMolPrefsHandler(new myMolPrefsHandler());
+
+  new LocalSocketScript(MIMainWindow::instance());
 }
 
 //FIXME: previous dictionary is leaked!

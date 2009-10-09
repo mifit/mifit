@@ -21,7 +21,7 @@ CONFIG(debug, debug|release) {
   DEFINES += DEBUG
 }
 
-QT += opengl xml
+QT += opengl xml network script
 CONFIG += opengl ordered
 
 !USE_SHARED_LIBS {

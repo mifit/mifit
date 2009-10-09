@@ -516,8 +516,6 @@ void Tools::OnSadPhasing() {
 }
 
 void Tools::OnNCSModeling() {
-  BatchJob* job = NULL;
-  std::string jobtxt, temp, pdbout;
   if (!VerifyMIExpert() || !VerifyCCP4()) {
     return;
   }
@@ -537,39 +535,40 @@ void Tools::OnNCSModeling() {
   if (!doc)
     return;
   Molecule* model = doc->GetDisplaylist()->GetCurrentModel();
-  pdbout=buildAbsPath(::format("%s%c%s_out.pdb", data["workdir"].str.c_str(), QDir::separator().toAscii(), QFileInfo(doc->GetTitle().c_str()).fileName().toStdString().c_str()).c_str()).toStdString();
-  model->SavePDBFile(pdbout.c_str());
-  //Build command line
-  std::string cmd;
-  cmd=::format("ncsmodeler --pdbfile \"%s\" --targetchain \"%s\"", buildAbsPath(pdbout.c_str()).toStdString().c_str(), data["chainid"].str.c_str());
-  if (data["model"].str.size()) {
-    cmd += " --preserve_model \"" + buildAbsPath(data["model"].str.c_str()).toStdString() + "\"";
+  QDir workdir(data["workdir"].str.c_str());
+  QString pdbout = buildAbsPath(workdir.absoluteFilePath(
+          QString("%1_out.pdb").arg(QFileInfo(doc->GetTitle().c_str()).fileName())));
+  model->SavePDBFile(pdbout.toAscii().constData());
+
+  QStringList args;
+  args << MIExpertPy() << "ncsmodeler"
+          << "--pdbfile" << pdbout
+          << "--targetchain" << data["chainid"].str.c_str();
+  if (!data["model"].str.empty()) {
+    args << "--preserve_model" << buildAbsPath(data["model"].str.c_str());
   }
-  if (data["maskadditions"].str.size()) {
-    cmd += " --maskextras \"" + buildAbsPath(data["maskadditions"].str.c_str()).toStdString() + "\"";
+  if (!data["maskadditions"].str.empty()) {
+    args << "--maskextras" << buildAbsPath(data["maskadditions"].str.c_str());
   }
-  if (data["mtzdata"].str.size()) {
-    cmd += " --mtzfile \"" + buildAbsPath(data["mtzdata"].str.c_str()).toStdString() + "\"";
+  if (!data["mtzdata"].str.empty()) {
+    args << "--mtzfile" << buildAbsPath(data["mtzdata"].str.c_str());
     switch (data["phasecalc"].radio) {
       case 0:
         break;
       case 1:
-        cmd += " --phase_prob yes";
+        args << "--phase_prob" << "yes";
         break;
       case 2:
-        cmd += " --phase_comb yes";
+        args << "--phase_comb" << "yes";
         break;
     }
   }
-  //Copied from superposition script
-  // Create the job object
-  job = MIMainWindow::instance()->GetJobManager()->CreateJob();
-  job->setJobName("NCS Modeling");
 
-  jobtxt=::format("\"%s\" %s", MIExpertPy().toAscii().constData(), cmd.c_str());
+  BatchJob* job = MIMainWindow::instance()->GetJobManager()->CreateJob();
+  job->setJobName("NCS Modeling");
   job->setProgram(python);
-  job->setArguments(jobtxt.c_str());
-  job->setWorkingDirectory(data["workdir"].str.c_str());
+  job->setArguments(args);
+  job->setWorkingDirectory(workdir.absolutePath());
   job->StartJob();
 }
 
@@ -723,9 +722,6 @@ void Tools::OnUpdateForJobLimit() {
 
 
 void Tools::OnIntegrate() {
-  static std::string workdir("");
-  BatchJob* job = NULL;
-  std::string jobtxt, temp;
   if (!VerifyMIExpert() || !VerifyCCP4()) {
     return;
   }
@@ -740,31 +736,28 @@ void Tools::OnIntegrate() {
     return;
   }
 
-  job = MIMainWindow::instance()->GetJobManager()->CreateJob();
+  BatchJob* job = MIMainWindow::instance()->GetJobManager()->CreateJob();
   job->setJobName("Integrate");
 
-  std::string commonArguments;
+  QStringList args;
+  args << MIExpertPy() << "integrate";
+  args << "--template_image" << data["template_image"].str.c_str();
   if (data["detector_constants"].str.size()) {
-    commonArguments += " --detector_constants=\""+ buildAbsPath(data["detector_constants"].str.c_str()).toStdString() + "\"";
+    args << "--detector_constants" << buildAbsPath(data["detector_constants"].str.c_str());
   }
-  commonArguments += " --spacegroup=\""+ ::format("%d",data["spacegroup_no"].radio) + "\"";
+  args << "--spacegroup" << QString::number(data["spacegroup_no"].radio);
   if (data["first_image"].u != UINT_MAX) {
-    commonArguments += " --first_image=\""+ ::format("%d",data["first_image"].u)+ "\"";
+      args << "--first_image" << QString::number(data["first_image"].u);
   }
   if (data["last_image"].u != UINT_MAX) {
-    commonArguments += " --last_image=\""+ ::format("%d",data["last_image"].u)+ "\"";
+      args << "--last_image" << QString::number(data["last_image"].u);
   }
   if (data["integrate_resolution"].str.size()) {
-    commonArguments += " --integrate_resolution=\""+ data["integrate_resolution"].str + "\"";
+    args << "--integrate_resolution" << data["integrate_resolution"].str.c_str();
   }
 
-  std::string templateImage = data["template_image"].str;
-  std::string cmd("integrate");
-  cmd += " --template_image=\"" + templateImage + "\"";
-  cmd += commonArguments;
-  jobtxt=::format("\"%s\" %s", MIExpertPy().toAscii().constData(), cmd.c_str());
   job->setProgram(python);
-  job->setArguments(jobtxt.c_str());
+  job->setArguments(args);
 
   job->StartJob();
 }
