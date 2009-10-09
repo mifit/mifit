@@ -586,11 +586,11 @@ MIMainWindow::MIMainWindow()
 
     LeftFooter("MIFit: Ok", 2500);
 
-    middleFooter=new QLabel(statusBar());
-    statusBar()->addPermanentWidget(middleFooter, 2);
+    middleFooter = new QLabel(statusBar());
+    statusBar()->addPermanentWidget(middleFooter, 0);
 
-    rightFooter=new QLabel(statusBar());
-    statusBar()->addPermanentWidget(rightFooter, 2);
+    rightFooter = new QLabel(statusBar());
+    statusBar()->addPermanentWidget(rightFooter, 0);
 
     navigator = new GLOverviewCanvas(this);
     navigatorDock = AddAsDockWidget(navigator, "Navigator", Qt::BottomDockWidgetArea);

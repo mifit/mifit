@@ -538,7 +538,7 @@ void MIGLWidget::currentModelChanged(Molecule*, Molecule* newModel) {
   if (newModel != NULL) {
     text = newModel->pathname;
   }
-  MIMainWindowMiddleFooter(text.c_str());
+  MIMainWindowRightFooter(text.c_str());
 
   doRefresh();
 }
@@ -588,9 +588,9 @@ void MIGLWidget::OnActivated() {
   ViewController::instance()->viewActivated(this);
   Molecule* model = GetDisplaylist()->GetCurrentModel();
   if (model != NULL) {
-    MIMainWindowMiddleFooter(model->pathname.c_str());
+    MIMainWindowRightFooter(model->pathname.c_str());
   } else {
-    MIMainWindowMiddleFooter("");
+    MIMainWindowRightFooter("");
   }
 
   MIMainWindow::instance()->updateNavigator();
@@ -6764,7 +6764,7 @@ void MIGLWidget::OnToolTip() {
       oldx = mouse.x;
       oldy = mouse.y;
     }
-    MIMainWindowRightFooter(s.c_str());
+    MIMainWindowMiddleFooter(s.c_str());
   }
 }
 

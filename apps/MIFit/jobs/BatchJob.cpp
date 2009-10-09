@@ -6,7 +6,9 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QProcess>
+#include <QStatusBar>
 #include <QTextBrowser>
+#include <QTimer>
 #include <QVBoxLayout>
 #include <util/utillib.h>
 #include "BatchJob.h"
@@ -92,6 +94,17 @@ bool BatchJob::isRunning() {
                        || process->state() == QProcess::Starting);
 }
 
+JobFinishedStatusLabel::JobFinishedStatusLabel(const QString& text, int timeout, QStatusBar* parent)
+    : QLabel(text, parent), statusBar(parent)
+{
+    statusBar->insertPermanentWidget(0, this, 1);
+    QTimer::singleShot(timeout, this, SLOT(remove()));
+}
+
+void JobFinishedStatusLabel::remove()
+{
+    statusBar->removeWidget(this);
+}
 
 void BatchJob::doJobFinished() {
   QString message;
@@ -99,7 +112,10 @@ void BatchJob::doJobFinished() {
       message = QString("%1 finished (job %2)").arg(jobName_).arg(jobId_);
   else
       message = QString("Job %1 finished").arg(jobId_);
-  QMessageBox::information(MIMainWindow::instance(), "MIFit Job Finished", message);
+
+  JobFinishedStatusLabel* messageLabel = new JobFinishedStatusLabel(message, 3000, MIMainWindow::instance()->statusBar());
+  messageLabel->setStyleSheet(isSuccess() ? "QLabel { background: springgreen; }" : "QLabel { color: white; font: bold; background: red; }");
+  Logger::log("%s", message.toAscii().constData());
 }
 
 void BatchJob::AbortJob() {

@@ -2,11 +2,14 @@
 #define mifit_jobs_BatchJob_h
 
 #include <string>
+#include <QLabel>
 #include <QObject>
 #include <QProcess>
 #include <QString>
 #include <QStringList>
 #include <core/MIData.h>
+
+class QStatusBar;
 
 class BatchJob : public QObject
 {
@@ -103,6 +106,19 @@ protected slots:
     virtual void doJobFinished();
     void signalJobChanged();
 
+};
+
+class JobFinishedStatusLabel : public QLabel
+{
+    Q_OBJECT
+public:
+    JobFinishedStatusLabel(const QString& text, int timeout, QStatusBar* parent = 0);
+
+private:
+    QStatusBar* statusBar;
+
+private slots:
+    void remove();
 };
 
 #endif
