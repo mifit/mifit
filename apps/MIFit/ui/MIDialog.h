@@ -339,15 +339,6 @@ private:
   bool PromptForResults(MIData& data);
 };
 
-class MIRefinementDialog : public MIDialog {
-public:
-  MIRefinementDialog(QWidget* parent, const std::string& name);
-  void GetInitialData(MIData &dat);
-
-private:
-  bool PromptForResults(MIData& data);
-};
-
 class MIJobReportDialog : public MIDialog {
 public:
   MIJobReportDialog(QWidget* parent, const std::string& name);

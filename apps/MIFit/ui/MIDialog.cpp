@@ -32,7 +32,6 @@
 #include "CocrystalSuperPos.h"
 #include "MolRep.h"
 #include "CustomJobDialog.h"
-#include "RefinementDialog.h"
 #include "JobReport.h"
 
 MIDialog::MIDialog(QWidget* parent, const std::string& name) : _qparent(parent), _name(name) {
@@ -889,27 +888,6 @@ void MIMolRepDialog::GetInitialData(MIData& data) {
 
 bool MIMolRepDialog::PromptForResults(MIData& data) {
   static MolRep dlg(_qparent);
-  dlg.InitializeFromData(data);
-  if (dlg.exec() != QDialog::Accepted) {
-    return false;
-  }
-  return dlg.GetData(data);
-}
-
-
-//
-// RefinementDialog
-//
-MIRefinementDialog::MIRefinementDialog(QWidget* parent, const std::string& name)
-  : MIDialog(parent, name) {
-}
-
-void MIRefinementDialog::GetInitialData(MIData& data) {
-  RefinementDialog::GetInitialData(data);
-}
-
-bool MIRefinementDialog::PromptForResults(MIData& data) {
-  static RefinementDialog dlg(_qparent);
   dlg.InitializeFromData(data);
   if (dlg.exec() != QDialog::Accepted) {
     return false;

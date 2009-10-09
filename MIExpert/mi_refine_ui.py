@@ -1,4 +1,4 @@
-import sys, os
+import sys, os, pickle, subprocess
 from PyQt4 import QtCore, QtGui, uic
 
 
@@ -6,9 +6,61 @@ class RefinementDialog(QtGui.QDialog):
     def __init__(self, parent=None):
         super(RefinementDialog, self).__init__(parent)
         self.mifitDir = QtCore.QString()
-        self.shelxDir = QtCore.QString()
 
-        uic.loadUi("mi_refine.ui", self)
+        config = {
+            'workdir': '',
+            'pdbfile': '',
+            'mtzfile': '',
+            'weight': 0.1,
+            'cycles': 5,
+            'water_cycles': False,
+            'water_cycles_value': 0,
+            'bref_type': 'isotropic',
+            'engine': 'refmac5',
+            'max_res': False,
+            'max_res_value': 0,
+            'tls_file': False,
+            'tls_file_value': '',
+            'libfile': False,
+            'libfile_value': '',
+            'shelx_dir': '',
+        }
+        settings = QtCore.QSettings("MIFit", "MIExpert")
+        appSettings = settings.value("refine").toString()
+        if not appSettings.isEmpty():
+            config = pickle.loads(str(appSettings))
+
+        self.shelxDir = QtCore.QString(config['shelx_dir'])
+
+        uiFile = os.path.join(os.path.dirname(sys.argv[0]), "mi_refine.ui")
+        uic.loadUi(uiFile, self)
+
+        self.workingDirLineEdit.setText(config['workdir'])
+        self.modelLineEdit.setText(config['pdbfile'])
+        self.dataLineEdit.setText(config['mtzfile'])
+        self.weightSpinBox.setValue(config['weight'])
+        self.numCyclesSpinBox.setValue(config['cycles'])
+        self.waterPickingCheckBox.setChecked(config['water_cycles'])
+        self.waterPickingCyclesSpinBox.setValue(config['water_cycles_value'])
+
+        if config['bref_type'] == "anisotropic":
+            self.anisotropicRadioButton.setChecked(True)
+        else:
+            self.anisotropicRadioButton.setChecked(False)
+
+        if config['engine'] == "rigid":
+            self.rigidBodyRadioButton.setChecked(True)
+        elif config['engine'] == "shelx":
+            self.shelxRadioButton.setChecked(True)
+        else:
+            self.refmac5RadioButton.setChecked(True)
+
+        self.maxResolutionCheckBox.setChecked(config['max_res'])
+        self.maxResolutionSpinBox.setValue(config['max_res_value'])
+        self.tlsSpecificationCheckBox.setChecked(config['tls_file'])
+        self.tlsSpecificationLineEdit.setText(config['tls_file_value'])
+        self.dictionaryCheckBox.setChecked(config['libfile'])
+        self.dictionaryLineEdit.setText(config['libfile_value'])
 
         self.timer = QtCore.QTimer(self)
         self.connect(self.timer, QtCore.SIGNAL("timeout()"),
@@ -82,50 +134,65 @@ class RefinementDialog(QtGui.QDialog):
             okButton.setEnabled(not somethingRequired)
 
     def runJob(self):
-        args = [ "python", "MIExpert.py", "refine" ]
+
+        config = {}
+        config['workdir'] = str(self.workingDirLineEdit.text())
+        config['pdbfile'] = str(self.modelLineEdit.text())
+        config['mtzfile'] = str(self.dataLineEdit.text())
+        config['weight'] = self.weightSpinBox.value()
+        config['cycles'] = self.numCyclesSpinBox.value()
+        config['water_cycles'] = self.waterPickingCheckBox.isChecked()
+        config['water_cycles_value'] = self.waterPickingCyclesSpinBox.value()
+        if self.anisotropicRadioButton.isChecked():
+            config['bref_type'] = "anisotropic"
+        else:
+            config['bref_type'] = "isotropic"
+        if self.rigidBodyRadioButton.isChecked():
+            config['engine'] = "rigid"
+        elif self.shelxRadioButton.isChecked():
+            config['engine'] = "shelx"
+        else:
+            config['engine'] = "refmac5"
+        config['max_res'] = self.maxResolutionCheckBox.isChecked()
+        config['max_res_value'] = self.maxResolutionSpinBox.value()
+        config['tls_file'] = self.tlsSpecificationCheckBox.isChecked()
+        config['tls_file_value'] = str(self.tlsSpecificationLineEdit.text())
+        config['libfile'] = self.dictionaryCheckBox.isChecked()
+        config['libfile_value'] = str(self.dictionaryLineEdit.text())
+        config['shelx_dir'] = str(self.shelxDir)
+
+        settings = QtCore.QSettings("MIFit", "MIExpert")
+        settings.setValue("refine", pickle.dumps(config))
+
+        miexpert = os.path.join(os.path.dirname(sys.argv[0]), "MIExpert.py")
+        args = [ sys.executable, miexpert, "refine" ]
         args += [ "--mifithome", str(QtCore.QFileInfo(self.mifitDir).absoluteFilePath()) ]
-        workDir = str(QtCore.QFileInfo(self.workingDirLineEdit.text()).absoluteFilePath())
-        args += [ "--workdir", workDir ]
-        args += [ "--pdbfile", str(QtCore.QFileInfo(self.modelLineEdit.text()).absoluteFilePath()) ]
-        args += [ "--mtzfile", str(QtCore.QFileInfo(self.dataLineEdit.text()).absoluteFilePath()) ]
-        args += [ "--weight", str(QtCore.QString.number(self.weightSpinBox.value())) ]
-        args += [ "--cycles", str(QtCore.QString.number(self.numCyclesSpinBox.value())) ]
+        args += [ "--workdir", str(QtCore.QFileInfo(config['workdir']).absoluteFilePath()) ]
+        args += [ "--pdbfile", str(QtCore.QFileInfo(config['pdbfile']).absoluteFilePath()) ]
+        args += [ "--mtzfile", str(QtCore.QFileInfo(config['mtzfile']).absoluteFilePath()) ]
+        args += [ "--weight", str(config['weight']) ]
+        args += [ "--cycles", str(config['cycles']) ]
 
         if not self.shelxDir.isEmpty():
            args += [ "--shelx_dir", str(QtCore.QFileInfo(self.shelxDir).absoluteFilePath()) ]
 
-        if self.waterPickingCheckBox.isChecked():
-            args += [ "--water_cycles", str(QtCore.QString.number(self.waterPickingCyclesSpinBox.value())) ]
+        if config['water_cycles']:
+            args += [ "--water_cycles", str(config['water_cycles_value']) ]
 
-        args += [ "--bref_type" ]
-        if self.anisotropicRadioButton.isChecked():
-            args += [ "anisotropic" ]
-        else:
-            args += [ "isotropic" ]
+        args += [ "--bref_type", config['bref_type'] ]
+        args += [ "--engine", config['engine'] ]
 
-        args += [ "--engine" ]
-        if self.rigidBodyRadioButton.isChecked():
-            args += [ "rigid" ]
-        elif self.shelxRadioButton.isChecked():
-            args += [ "shelx" ]
-        else:
-            args += [ "refmac5" ]
+        if config['max_res']:
+            args += [ "--max_res", str(config['max_res_value']) ]
 
+        if config['tls_file']:
+            args += [ "--tls_file", str(QtCore.QFileInfo(config['tls_file_value']).absoluteFilePath()) ]
 
-        if self.maxResolutionCheckBox.isChecked():
-            args += [ "--max_res", str(QtCore.QString.number(self.maxResolutionSpinBox.value())) ]
+        if config['libfile']:
+            args += [ "--libfile", str(QtCore.QFileInfo(config['libfile_value']).absoluteFilePath()) ]
 
-        if self.tlsSpecificationCheckBox.isChecked():
-            args += [ "--tls_file", str(QtCore.QFileInfo(self.tlsSpecificationLineEdit.text()).absoluteFilePath()) ]
-
-        if self.dictionaryCheckBox.isChecked():
-            args += [ "--libfile", str(QtCore.QFileInfo(self.dictionaryLineEdit.text()).absoluteFilePath()) ]
-
-        # TODO Communicate workdir back to MIFit
-
-        # Execute python mi_refine.py args
-        print args
-        os.execvp("python", args)
+        result = subprocess.call(args)
+        exit(result)
 
 
 if __name__ == '__main__':
@@ -133,9 +200,12 @@ if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
 
     dialog = RefinementDialog()
-    # TODO read options from MIFit
-    dialog.mifitDir = QtCore.QString("mifitDir")
-    dialog.shelxDir = QtCore.QString("shelxDir")
+
+    if 'MIFIT_DIR' in os.environ.keys():
+        dialog.mifitDir = os.environ['MIFIT_DIR']
+
+    if 'SHELX_DIR' in os.environ.keys():
+        dialog.shelxDir = os.environ['SHELX_DIR']
+
     if dialog.exec_():
         dialog.runJob()
-

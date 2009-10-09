@@ -326,58 +326,19 @@ void Tools::OnRefmacRestraints() {
 }
 
 void Tools::OnRefine() {
-  if (!VerifyMIExpert() || !VerifyCCP4()) {
-    return;
-  }
-  QString python = pythonExe();
-  if (python.isEmpty())
-      return;
+    QString python = pythonExe();
+    if (python.isEmpty())
+        return;
 
-  static MIRefinementDialog dlg(MIMainWindow::instance(), "Refinement");
-  MIData data;
-  dlg.GetInitialData(data);
-  if (!dlg.GetResults(data)) {
-    return;
-  }
+    BatchJob* job = MIMainWindow::instance()->GetJobManager()->CreateJob();
+    job->setJobName("Refinement");
+    job->setProgram(python);
+    QStringList args;
+    args << MIExpertScript("mi_refine_ui.py");
+    job->setArguments(args);
+    job->setWorkingDirectory(Application::instance()->latestFileBrowseDirectory(""));
 
-  QStringList args;
-  args << MIExpertPy() << "refine"
-          << "--mifithome" << buildAbsPath(Application::instance()->MolimageHome.c_str())
-          << "--workdir" << buildAbsPath(data["workdir"].str.c_str())
-          << "--pdbfile" << buildAbsPath(data["pdbfile"].str.c_str())
-          << "--mtzfile" << buildAbsPath(data["mtzfile"].str.c_str())
-          << "--weight" << QString::number(data["weight"].f)
-          << "--cycles" << QString::number(data["cycles"].u);
-  if (!Application::instance()->ShelxHome.empty()) {
-    args << "--shelx_dir" << buildAbsPath(Application::instance()->ShelxHome.c_str());
-  }
-
-  if (data["water_cycles"].u != UINT_MAX) {
-    args << "--water_cycles" << QString::number(data["water_cycles"].u);
-  }
-  if (data["build_cycles"].u != UINT_MAX) {
-    args << "--build_cycles" << QString::number(data["build_cycles"].u);
-  }
-
-  args << "--bref_type" << data["bref_type"].str.c_str();
-  args << "--engine" << data["engine"].str.c_str();
-
-  if (data["use_max_res"].b) {
-    args << " --max_res " << QString::number(data["max_res"].f);
-  }
-  if (!data["libfile"].str.empty()) {
-    args << "--libfile" << buildAbsPath(data["libfile"].str.c_str());
-  }
-  if (!data["tls_file"].str.empty()) {
-    args << "--tls_file" << buildAbsPath(data["tls_file"].str.c_str());
-  }
-
-  BatchJob* job = MIMainWindow::instance()->GetJobManager()->CreateJob();
-  job->setJobName("Refinement");
-  job->setProgram(python);
-  job->setArguments(args);
-  job->setWorkingDirectory(data["workdir"].str.c_str());
-  job->StartJob();
+    job->StartJob();
 }
 
 void Tools::OnJobReport() {

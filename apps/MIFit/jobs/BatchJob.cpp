@@ -57,9 +57,14 @@ void BatchJob::setJobId() {
 bool BatchJob::StartJob() {
 
     process = new QProcess(this);
-    process->setWorkingDirectory(workingDirectory_);
     process->setProcessChannelMode(QProcess::MergedChannels);
     process->setStandardOutputFile(logFile);
+    process->setWorkingDirectory(workingDirectory_);
+
+    QStringList env = QProcess::systemEnvironment();
+    env += QString("MIFIT_DIR=") + Application::instance()->GetMolimageHome().c_str();
+    process->setEnvironment(env);
+
     connect(process, SIGNAL(finished(int)),
             this, SLOT(doJobFinished()));
     connect(process, SIGNAL(finished(int)),
