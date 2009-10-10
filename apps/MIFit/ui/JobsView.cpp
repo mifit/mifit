@@ -189,7 +189,7 @@ void JobsTree::ShowProperties() {
   for (int i = 0; i < selected.size(); i++) {
     QTreeWidgetItem* id = selected[i];
     BatchJob* job = itemToJob[id];
-    MIMessageBox(job->Info().c_str(), "Job Properties", MIDIALOG_ICON_INFORMATION);
+    MIMessageBox(job->Info().toStdString(), "Job Properties", MIDIALOG_ICON_INFORMATION);
   }
 }
 

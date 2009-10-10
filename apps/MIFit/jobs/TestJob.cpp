@@ -20,7 +20,6 @@ void TestJob::StartJob(BatchJob* job) {
   s = "PAUSE\n";
 #else
   s = "echo blarg > testoutput.txt\n";
-  job->WriteCommand(s);
 #ifdef __APPLE__
   s = "/bin/sleep 10\n";
 #else
