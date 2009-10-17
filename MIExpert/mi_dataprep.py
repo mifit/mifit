@@ -1,6 +1,4 @@
 #################################################################
-# Script: mi_dataprep.py                                        #
-# Release: Auto                                                 #
 #                                                               #
 # Refinement data preparation script                            #
 #                                                               #
@@ -36,7 +34,6 @@ def Run(argv=None):
     mtzout = 'none'
     workingdir = 'none'
     spacegroup_no = 'none'
-    projectname = 'none'
     referencemtz = 'none'
 
     ilabel = 'none'
@@ -319,16 +316,17 @@ def Run(argv=None):
         filename_log = 'mi_scalepack2mtz.log'
 
         file = open(filename_inp,'w')
-        file.write('name proj ')
-        file.write(projectname)
+        file.write('name project noname crystal 1 dataset 1\n')
 
-        file.write('\nsymm ')
+        file.write('symm ')
         if spacegroup_no == 'none':
             file.write(spacegroup_name)
         else:
             file.write(spacegroup_no)
 
-        file.write('\nend\n')
+        file.write('\n')
+        file.write('wave 0.0\n')
+        file.write('end\n')
         file.close()
 
         runscalepack2mtz = 'scalepack2mtz hklin ' + temp_data_name + ' hklout ' + temp_mtz_name + ' < ' + filename_inp + ' > ' + filename_log
@@ -358,9 +356,8 @@ def Run(argv=None):
         filename_log = 'mi_rundstartrek.log'
 
         file = open(filename_inp,'w')
-        file.write('title ')
-        file.write(projectname)
-        file.write('\nsymm ')
+        file.write('title noname\n')
+        file.write('symm ')
         file.write(spacegroup_no)
         file.write('\n')
 
@@ -405,9 +402,8 @@ def Run(argv=None):
         os.remove(truncate_log)
 
     file = open(filename_inp,'w')
-    file.write('title ')
-    file.write(projectname)
-    file.write('\ntruncate yes\n')
+    file.write('title noname\n')
+    file.write('truncate yes\n')
     file.write('NRESIDUE 500\n')
 
     # If only I,sig(I) were given input use the given labels. Otherwise assume SCALA defaults

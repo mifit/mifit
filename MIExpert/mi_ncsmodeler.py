@@ -1,6 +1,4 @@
 #####################################################################
-# Script: mi_ncsmodeler.py                                          #
-# Release: Consortium                                               #
 #                                                                   #
 # Remodel NCS copies of protein to a template model                 #
 # and average map                                                   #

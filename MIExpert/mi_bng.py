@@ -1,6 +1,4 @@
 ######################################################################
-# Script: mi_bng.py                                                  #
-# Release: Auto                                                      #
 #                                                                    #
 # Runs 'bind-n-grind' automation including refinement data           #
 # preparation, MR, refinement, rigid-ligand fitting and MIFit launch #
@@ -35,12 +33,10 @@ def Usage():
     print "  --pdbviewfile=FILE        Input PDB marker file for viewpoint. Default: none"
     print "  --mifit=yes or no         Launch mifit when done.  Default: no"
     print "  --bngsummary=DIR          Path for bng summary html file. Default: no dir, do not produce"
-    print "  --arpwarpmap=yes or no    Run arp/wARP on map. Default: no"
     print "  --sg_search=yes or no     Do a spacegroup search.  Default: no"
     print "  --molimagehome=DIR        Path to MIFit."
     print "  --writemap=yes or no      Write map around target point.  Default: no"
     print "  --detector_constants=FILE Detector constants file.  Default: no file"
-    print "  --oe_path=DIR             Path to OpenEye executables.  Default: no path"
     print "  --process_engine=type     One of dstartrek or mosflm.  Default: dstartrek"
     print "  -?,--help                 This help."
     print ""
@@ -63,7 +59,6 @@ def Run(argv=None):
 
     mifit_root = 'none'
     symlibinstall = 'none'
-    pdbfile_prewarp = 'none'
 
     mlw_file = 'bng_milaunch.mlw'
     phs_file = 'bng_mlmap.phs'
@@ -83,20 +78,19 @@ def Run(argv=None):
     pdbviewfile = 'none'
     launch_mifit = 'no'
     bngsummary = 'none'
-    arpwarpmap = 'no'
+    pdbfileout = 'none'
     sg_search = 'no'
     write_map = 'no'
     detector_constants = 'none'
     mr_sg = 'none'
     mr_sg_best = 'none'
-    oe_path = 'none'
     process_engine = 'dstartrek'
 
     fragview = '1.0000 0.0000 0.0000 0.0000 1.0000 0.0000 0.0000 0.0000 1.0000'
     zoom = '30.00'
     frontclip = '3.00'
     backclip = '-3.00'
-    contourradius = '8.000000'
+    contourradius = '12.000000'
     aList_contourlevels1 = []
     aList_contourleveldefault1 = []
     aList_contourcolor1 = []
@@ -128,8 +122,8 @@ def Run(argv=None):
         ['hklin=','workdir=','spacegroup_no=','reference_mtz=',
          'pdbin=','multi_search=','libfile=','fragfit=',
          'frag_center=','mlwfile=','pdbviewfile=','mifit=','bngsummary=',
-         'arpwarpmap=','sg_search=','molimagehome=','writemap=',
-         'detector_constants=','oe_path=','process_engine=','help'])
+         'sg_search=','molimagehome=','writemap=','arpwarpmap='
+         'detector_constants=','process_engine=','help'])
     number_of_inputs = len(optlist)
     if number_of_inputs==0:
         Usage()
@@ -173,8 +167,6 @@ def Run(argv=None):
                 launch_mifit = param_value
             if arg_value=='--bngsummary':
                 bngsummary = param_value
-            if arg_value=='--arpwarpmap':
-                arpwarpmap = param_value
             if arg_value=='--sg_search':
                 sg_search = param_value
             if arg_value=='--molimagehome':
@@ -183,8 +175,6 @@ def Run(argv=None):
                 write_map = param_value
             if arg_value=='--detector_constants':
                 detector_constants = param_value
-            if arg_value=='--oe_path':
-                oe_path = param_value
             if arg_value=='--process_engine':
                 process_engine = param_value
         count=count+1
@@ -194,6 +184,10 @@ def Run(argv=None):
       print '\n' + error + '\n'
       time.sleep(4)
       return 1
+
+    # Capture initial CCP4 scratch space because subscripts may reset it
+
+    ccp4_scratch = os.environ['CCP4_SCR']
 
     # Check MIFit installation to access various files (default and direct path)
 
@@ -768,6 +762,8 @@ def Run(argv=None):
                 runcount = runcount + 1
                 continue # try next dataset
 
+            os.environ['CCP4_SCR'] = ccp4_scratch
+
             ##########################
             # Run initial refinement #
             ##########################
@@ -905,10 +901,6 @@ def Run(argv=None):
             tmpargs.append('5')
             tmpargs.append('--water_cycles')
             tmpargs.append('0')
-            tmpargs.append('--fragfit')
-            tmpargs.append('none')
-            tmpargs.append('--frag_center')
-            tmpargs.append('none')
             tmpargs.append('--mifithome')
             tmpargs.append(mifit_root)
 
@@ -917,6 +909,8 @@ def Run(argv=None):
             if mi_refine.Run(tmpargs)!=0:
                 runcount = runcount + 1
                 continue # try next dataset
+
+            os.environ['CCP4_SCR'] = ccp4_scratch
 
             #####################################
             # Run refinement with water-picking #
@@ -966,14 +960,8 @@ def Run(argv=None):
             tmpargs.append('5')
             tmpargs.append('--water_cycles')
             tmpargs.append('3')
-            tmpargs.append('--fragfit')
-            tmpargs.append('none')
-            tmpargs.append('--frag_center')
-            tmpargs.append('none')
             tmpargs.append('--mifithome')
             tmpargs.append(mifit_root)
-            tmpargs.append('--oe_path')
-            tmpargs.append(oe_path)
 
             # Execute
             import mi_refine
@@ -981,9 +969,10 @@ def Run(argv=None):
                 runcount = runcount + 1
                 continue # try next dataset
 
+            os.environ['CCP4_SCR'] = ccp4_scratch
+
             #############################################################
             # Run water deletion from target site if viewpoint was set  #
-            # Ligand-fitting is invoked here if set                     #
             #############################################################
 
             if fragcenter != 'none':
@@ -1014,9 +1003,6 @@ def Run(argv=None):
                 file.close()
 
                 pdbfile_omit = pdbfile.replace('.pdb','_omit.pdb')
-
-                water_delete = 'no'
-
                 file = open(pdbfile_omit,'w')
 
                 for eachLine in allLines:
@@ -1041,7 +1027,6 @@ def Run(argv=None):
 
                             if dist < water_radius:
                                 write_record = 'no'
-                                water_delete = 'yes'
 
                     if write_record == 'yes':
                         file.write(eachLine)
@@ -1072,31 +1057,25 @@ def Run(argv=None):
                 tmpargs.append('0')
                 tmpargs.append('--water_cycles')
                 tmpargs.append('0')
-                tmpargs.append('--fragfit')
-                tmpargs.append(fragfile)
-                tmpargs.append('--frag_center')
-                tmpargs.append(fragcenter)
                 tmpargs.append('--mifithome')
                 tmpargs.append(mifit_root)
-                tmpargs.append('--oe_path')
-                tmpargs.append(oe_path)
             
                 import mi_refine
                 if mi_refine.Run(tmpargs)!=0:
                     runcount = runcount + 1
                     continue # try next dataset
+                
+            os.environ['CCP4_SCR'] = ccp4_scratch
 
-            ###############################################
-            # Run refinement with ARP-wARP picking option #
-            ###############################################
+            ###############################################################
+            # Automated ligand-fitting subscripts may be invoked here     #
+            ###############################################################
 
-            if arpwarpmap == 'yes':
+            if fragcenter != 'none' and fragfile != 'none':
 
-                print '\nRUNNING ARP-WARP MAP CALCULATIONS'
+                print '\nAUTOMATED LIGAND FITTING'               
 
-                # Select last coordinate file to continue refinement 
-
-                pdbfile = 'none'
+                # Obtain paths to the last coordinate file and last data file
 
                 file = open('project_history.txt','r')
                 allLines = file.readlines()
@@ -1107,57 +1086,62 @@ def Run(argv=None):
                     if eachLine.find('Output atoms:') > -1:
                         pdbfile = eachLine[13:200]
                         pdbfile = pdbfile.strip()
-                        pdbfile_prewarp = pdbfile
+
+                    if eachLine.find('Output phased data:') > -1:
+                        mtzout = eachLine[19:200]
+                        mtzout = mtzout.strip()
 
                 if pdbfile == 'none':
-                    print '\nPDB file for ARP-wARP refinement/map was not found !\n'
+                    print '\nPDB file for session file was not found\n'
                     time.sleep(4)
                     return 1
 
-                # Write run args
-                tmpargs=[]
-                tmpargs.append("refine")
-                tmpargs.append('--pdbfile')
-                tmpargs.append(pdbfile)
-                tmpargs.append('--mtzfile')
-                tmpargs.append(mtzout_full)
-                tmpargs.append('--workdir')
-                tmpargs.append(workingdir)
-                tmpargs.append('--libfile')
-                tmpargs.append(libfile)
-                tmpargs.append('--engine')
-                tmpargs.append('refmac5')
-                tmpargs.append('--weight')
-                tmpargs.append('0.1')
-                tmpargs.append('--max_res')
-                tmpargs.append('none')
-                tmpargs.append('--bref_type')
-                tmpargs.append('none')
-                tmpargs.append('--cycles')
-                tmpargs.append('5')
-                tmpargs.append('--build_cycles')
-                tmpargs.append('5')
-                tmpargs.append('--fragfit')
-                tmpargs.append('none')
-                tmpargs.append('--frag_center')
-                tmpargs.append('none')
-                tmpargs.append('--mifithome')
-                tmpargs.append(mifit_root)
-                tmpargs.append('--oe_path')
-                tmpargs.append(oe_path)
+                if mtzout == 'none':
+                    print '\nMTZ file for session file was not found\n'
+                    time.sleep(4)
+                    return 1
 
-                # Execute
-                import mi_refine
-                if mi_refine.Run(tmpargs)!=0:
-                    runcount = runcount + 1
-                    continue # try next dataset
+                # Set output name for protein with ligand
+
+                pdbfileout = pdbfile.replace('.pdb','_ligand.pdb')
+
+                ############################################################################
+                # Run the ligand-fitting routine                                           #
+                # Ligand-fitting routines usually need:                                    #
+                #  pdbfile = the path to current model                                     #
+                #  mtzout = the path to phased diffraction data from REFMAC                #
+                #  workingdir = the path to working directory                              #
+                #  fragcenter = approx x,y,z coordinates for ligand                       #
+                #  fragfile = the path to an input 3D model of ligand                      #
+                #  pdbfileout = the path to o/p coordinates of protein with fitted ligand  #
+                ############################################################################
+
+                # Example script using FFFEAR to perform 6D search with single i/pligand conformation
+
+                print 'Example script mi_ligandfit.py only performs search on the input conformer'
+
+                tmpargs=[]
+                tmpargs.append("ligandfit")
+                tmpargs.append('-f')
+                tmpargs.append(fragfile)
+                tmpargs.append('-m')
+                tmpargs.append(mtzout)  
+                tmpargs.append('-p')
+                tmpargs.append(pdbfile)      
+                tmpargs.append('-c')
+                tmpargs.append(fragcenter)
+                tmpargs.append('-d')
+                tmpargs.append(workingdir)        
+                tmpargs.append('-o')
+                tmpargs.append(pdbfileout)
+                import mi_ligandfit
+                mi_ligandfit.Run(tmpargs)
 
             #########################################################
             # Setup crystal and data files for interactive graphics #
             #########################################################
 
             pdbfile = 'none'
-            pdbfile_with_ligand = 'none'
             mtzout = 'none'
 
             print '\nFILE CREATION FOR MIFIT'
@@ -1179,10 +1163,6 @@ def Run(argv=None):
                     mtzout = eachLine[19:200]
                     mtzout = mtzout.strip()
 
-                if eachLine.find('Output atoms with ligand fit:') > -1 and eachLine.find('none') == -1:
-                    pdbfile_with_ligand = eachLine[30:200]
-                    pdbfile_with_ligand = pdbfile_with_ligand.strip()
-
             if pdbfile == 'none':
                 print '\nPDB file for session file was not found\n'
                 time.sleep(4)
@@ -1193,12 +1173,14 @@ def Run(argv=None):
                 time.sleep(4)
                 return 1
 
-            # Display ligand-docked file if ligand docking was done
+            # Replace pdb file to version with ligand if automated-ligand fitting was done
 
-            if fragfile != 'none' and pdbfile_with_ligand != 'none':
-                if os.path.exists(pdbfile_with_ligand):
-                    pdbfile = pdbfile_with_ligand
-                    pdbfile_prewarp = pdbfile_with_ligand
+            if fragcenter != 'none' and fragfile != 'none' and pdbfileout != 'none':
+                fileexists = os.path.exists(pdbfileout)
+                if fileexists != 0:
+                    pdbfile = pdbfileout
+                
+            # Need local paths
 
             pdbfile_local = os.path.basename(pdbfile)
             mtzout_local = os.path.basename(mtzout)
@@ -1206,12 +1188,6 @@ def Run(argv=None):
             #   
             # Write a minimal session (mlw) file to launch the display
             #
-
-            # Take care not to use or display warp model
-
-            if arpwarpmap == 'yes':
-                pdbfile_prewarp = pdbfile_prewarp.strip()
-                pdbfile_local = os.path.basename(pdbfile_prewarp)
 
             # Obtain a model center for translation keyword if no fragment center was given
 
@@ -1331,65 +1307,64 @@ def Run(argv=None):
 
             # Likelihood weighted difference map
 
-            if arpwarpmap == 'no':
-                file.write('MapColumns FO=DELFWT PHI=PHDELFWT\n')
-                file.write('LoadMapPhase 2 ')
-                file.write(mtzout)
+            file.write('MapColumns FO=DELFWT PHI=PHDELFWT\n')
+            file.write('LoadMapPhase 2 ')
+            file.write(mtzout)
+            file.write('\n')
+            file.write('silentmode\n')
+            file.write('coefficients Direct FFT\n')
+            file.write('fftapply\n')
+            file.write('maptocont 2\n')
+            file.write('maplinewidth 1.000000\n')
+            file.write('contourradius ')
+            file.write(contourradius)
+            file.write('\n')
+
+            # Write standard or user-defined colors
+
+            if second_map == 'no':
+
+                file.write('contourlevels 6\n')
+                file.write('contourleveldefault -200.000000 -150.000000 150.000000 200.000000 250.000000\n')
+                file.write('color 24\n')
+                file.write('contourcolor 1\n')
+                file.write('color 25\n')
+                file.write('contourcolor 2\n')
+                file.write('color 21\n')
+                file.write('contourcolor 3\n')
+                file.write('color 22\n')
+                file.write('contourcolor 4\n')
+                file.write('color 23\n')
+                file.write('contourcolor 5\n')
+
+            else:
+
+                contourlevels2 = aList_contourlevels2[0]
+                contourleveldefault2 = aList_contourleveldefault2[0]
+
+                aLine = contourleveldefault2.split()
+                num_contours = len(aLine)
+
+                file.write('contourlevels ')
+                file.write(contourlevels2)
                 file.write('\n')
-                file.write('silentmode\n')
-                file.write('coefficients Direct FFT\n')
-                file.write('fftapply\n')
-                file.write('maptocont 2\n')
-                file.write('maplinewidth 1.000000\n')
-                file.write('contourradius ')
-                file.write(contourradius)
+                file.write('contourleveldefault ')
+                file.write(contourleveldefault2)
                 file.write('\n')
 
-                # Write standard or user-defined colors
+                count = 0
+                while count < num_contours:
 
-                if second_map == 'no':
-
-                    file.write('contourlevels 6\n')
-                    file.write('contourleveldefault -200.000000 -150.000000 150.000000 200.000000 250.000000\n')
-                    file.write('color 24\n')
-                    file.write('contourcolor 1\n')
-                    file.write('color 25\n')
-                    file.write('contourcolor 2\n')
-                    file.write('color 21\n')
-                    file.write('contourcolor 3\n')
-                    file.write('color 22\n')
-                    file.write('contourcolor 4\n')
-                    file.write('color 23\n')
-                    file.write('contourcolor 5\n')
-
-                else:
-
-                    contourlevels2 = aList_contourlevels2[0]
-                    contourleveldefault2 = aList_contourleveldefault2[0]
-
-                    aLine = contourleveldefault2.split()
-                    num_contours = len(aLine)
-
-                    file.write('contourlevels ')
-                    file.write(contourlevels2)
+                    file.write('color ')
+                    file.write(aList_color2[count])
                     file.write('\n')
-                    file.write('contourleveldefault ')
-                    file.write(contourleveldefault2)
+                    file.write('contourcolor ')
+                    file.write(aList_contourcolor2[count])
                     file.write('\n')
 
-                    count = 0
-                    while count < num_contours:
+                    count = count + 1
 
-                        file.write('color ')
-                        file.write(aList_color2[count])
-                        file.write('\n')
-                        file.write('contourcolor ')
-                        file.write(aList_contourcolor2[count])
-                        file.write('\n')
-
-                        count = count + 1
-
-                file.write('contourmap 2\n')
+            file.write('contourmap 2\n')
 
             # View parameters
 

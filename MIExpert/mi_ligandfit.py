@@ -1,16 +1,11 @@
 #####################################################################
-# Script: mi_ligandfit.py                                           #
-# Release: All                                                      #
 #                                                                   #
-# Ligand density docking with CCP4/FFFEAR                           #
-# Intended to be called from mi_refine.py                           #
+# Example of single conformer ligand density docking with           #
+# CCP4/FFFEAR. Intended to be called from mi_bng.py                 #
 #                                                                   #
 # Copyright: Molecular Images   2006                                #
 #                                                                   #
 # This script is distributed under the same conditions as MIFit     #
-#                                                                   #
-#                                                                   #
-# Compatible with CCP4 6.0.1                                        #
 #                                                                   #
 #####################################################################
 
@@ -127,6 +122,10 @@ def Run(argv=None):
     # Ligand search #
     #################
 
+    # Obtain the local name for the input data file
+
+    mtzfile_local_ligand = os.path.basename(mtzfile)
+
     # Check through protein file to determine a suitable chain-resno for the ligand
     # Set new ligand to Z 1, add additional ligands to the Z-chain
 
@@ -224,7 +223,7 @@ def Run(argv=None):
     file.write('END\n')
     file.close()
 
-    runfffear = 'fffear HKLIN ' + mtzfile + ' XYZIN mi_frag.pdb XYZOUT mi_frag_out_0.pdb \
+    runfffear = 'fffear HKLIN ' + mtzfile_local_ligand + ' XYZIN mi_frag.pdb XYZOUT mi_frag_out_0.pdb \
     MAPOUT mi_fffear.map < mi_fffear.inp > mi_fffear_0.log'
 
     os.system(runfffear)
@@ -281,7 +280,7 @@ def Run(argv=None):
     file.write('END\n')
     file.close()
 
-    runfffear = 'fffear HKLIN ' + mtzfile + ' XYZIN mi_frag_out_0.pdb XYZOUT mi_frag_out_1.pdb \
+    runfffear = 'fffear HKLIN ' + mtzfile_local_ligand + ' XYZIN mi_frag_out_0.pdb XYZOUT mi_frag_out_1.pdb \
     MAPOUT mi_fffear.map < mi_fffear.inp > mi_fffear_1.log'               
 
     os.system(runfffear)

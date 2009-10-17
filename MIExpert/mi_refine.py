@@ -1,14 +1,10 @@
 #####################################################################
-# Script: mi_refine.py                                              #
-# Release: All                                                      #
 #                                                                   #
 # Refinement Script with SHELX and CCP4/REFMAC5                     #
 #                                                                   #
 # Copyright: Molecular Images   2005                                #
 #                                                                   #
 # This script is distributed under the same conditions as MIFit     #
-#                                                                   #
-# Compatible with CCP4 6.0.1                                        #
 #                                                                   #
 #####################################################################
 
@@ -31,15 +27,11 @@ def Usage():
     print "  -e,--engine=ENGINE          One of refmac5 (default), shelx, or rigid"
     print "  -w,--weight=NUM             The weighting factor. Default: 0.1"
     print "  -c,--cycles=NUM             Number of refinement cycles to run"
-    print "     --build_cycles=NUM       Number of arp/warp cycles to run. Default: 0"
     print "     --water_cycles=NUM       Number of water cycles to run. Default: 0"
-    print "  -f,--fragfit=FILE or all    Fragment coordinate file. Default: no file"
     print "  -t,--tls_file=FILE          TLS specification file. Default: no file"
     print "  -s,--shelx_dir=DIR          Path to shelx executables. Default: $SHELXBIN"
     print "  -h,--mifithome=DIR          Path to MIFit. Default: no path"
-    print "     --oe_path=DIR            Path to OE Executables. Default: no path"
-    print "     --bref_type=TYPE         B-factor refinement type: anisotropic or none. Default: none"
-    print "     --frag_center=\"x y z\"  The center of the ligand. Default: no value" 
+    print "     --bref_type=TYPE         B-factor refinement type: anisotropic or none. Default: none" 
     print "     --max_res=NUM            Maximum resolution. Default: no value"
     print "  -?,--help                   this help"
 
@@ -47,7 +39,7 @@ def Run(argv=None):
     if argv is None:
         argv=sys.argv
 
-    # Hardcoded backdoor path to scripts (only needed to find phi-psi data)
+    # Path to MIFit installation to find phi-psi data
 
     mifit_root = 'none'
 
@@ -60,15 +52,15 @@ def Run(argv=None):
     mtzfile = 'none'
     libfile = 'none'
     workingdir = 'none'
-    fragfitfile = 'none'
     runid = '1'
     projectlog = 'project_history.txt'
     ref_engine = 'refmac5'
     flabel = 'none'
     sigflabel = 'none'
     rfreelabel = 'none'
+    anomlabel = 'none'
+    siganomlabel = 'none'
     resolution_mtz = 'none'
-    frag_center = 'none'
     rwork = 'none'
     rfree = 'none'
     rmsd_bonds = 'none'
@@ -76,24 +68,18 @@ def Run(argv=None):
     percent_rotamer = 'none'
     shelxpro = 'none'
     shelxh = 'none'
-    oe_path = 'none'
 
     max_res = 'none'
     weight = 'none'
     bref_type = 'none'
     freeflag = '0'
     number_molecules = '1'
-    water_chain = 'X'
-    water_chain_use = 'X'
-    autoligand_chain = 'Z'
-    autoligand_res_number = 0
+    res_number_X_high = 0
+    int_res_number = 0
+    number_sym_ops = 1
     cycles = '5'
     water_pick = 'no'
-    build = 'no'
-    arp_waters = 'no'
     water_cycles = 0
-    build_cycles = 0
-    arpwarp_cycles = 0
     big_cycles = 1
     water_count = 0
     missing_protein_chain = 'no'
@@ -104,14 +90,14 @@ def Run(argv=None):
     resolution_output = '?'
     tlsfile = 'none'
     shelx_directory = 'none'
-    ligand_method = 'fffear'
+ 
     seq_chain_prev = '?'
 
     filename_log_full = 'none'
     filename_pdb_full = 'none'
     filename_mtz_full = 'none'
     filename_refmac_full = 'none'
-    filename_ligand_pdb_full = 'none'
+    filename_anom_full = 'none'
 
     number_chain_list = 0
     aList_chains = []
@@ -121,8 +107,6 @@ def Run(argv=None):
     aLine = []
     labelList = []
     colList = []
-
-    aList_ligands = []
 
     aList_chain_store = []
     aList_res_number_store = []
@@ -168,7 +152,6 @@ def Run(argv=None):
     aList_density_chain = []
     aList_density_resno = []
     aList_density_resname = []
-    aList_density_sidechains = []
     aList_disorder_chain = []
     aList_disorder_resno = []
     aList_disorder_resname = []
@@ -248,11 +231,11 @@ def Run(argv=None):
     number_of_args = len(argv)
     args = argv[1:]
     optlist, args = getopt.getopt(
-        args,'p:m:l:d:e:w:c:f:t:s:h:?',
+        args,'p:m:l:d:e:w:c:t:s:h:?',
         ["pdbfile=","mtzfile=","libfile=","workdir=","engine=",
-         "weight=","cycles=","water_cycles=","build_cycles=",
-         "fragfit=","tls_file=","shelx_dir=","mifithome=","oe_path=",
-         "frag_center=","bref_type=","max_res=","help"])
+         "weight=","cycles=","water_cycles=",
+         "tls_file=","shelx_dir=","mifithome=",
+         "bref_type=","max_res=","help"])
     number_of_inputs = len(optlist)
     if number_of_inputs==0:
         Usage()
@@ -289,20 +272,12 @@ def Run(argv=None):
                 cycles = param_value
             elif arg_value == '--water_cycles':
                 water_cycles = int(param_value)
-            elif arg_value == '--build_cycles':
-                build_cycles = int(param_value)
-            elif arg_value == '-f' or arg_value=="--fragfit":
-                fragfitfile = param_value
-            elif arg_value == '--frag_center' or arg_value=="--frag_center":
-                frag_center = param_value
             elif arg_value == '-t' or arg_value=="--tls_file":
                 tlsfile = param_value
             elif arg_value == '-s' or arg_value=="--shelx_dir":
                 shelx_directory = param_value
             elif arg_value == '-h' or arg_value=="--mifithome":
                 mifit_root = param_value
-            elif arg_value == '--oe_path':
-                oe_path = param_value
         count = count + 1
 
     ccp4,error = ccp4check.ccp4check()
@@ -335,12 +310,6 @@ def Run(argv=None):
         time.sleep(4)
         return 1                    
 
-    fileexists = os.path.exists(fragfitfile)
-    if fileexists == 0 and fragfitfile != 'none' and fragfitfile != 'all':
-        print 'The fragment coordinate file was not found ',fragfitfile
-        time.sleep(4)
-        return 1
-
     fileexists = os.path.exists(tlsfile)
     if fileexists == 0 and tlsfile != 'none':
         print 'The TLS specification file was not found ',tlsfile
@@ -355,49 +324,12 @@ def Run(argv=None):
     if weight == 'none':
         weight = '0.1'
 
-    if frag_center != 'none' and fragfitfile != 'none':
-        parseLine = frag_center.split()
-
-        length = len(parseLine)
-
-        if length == 3:
-            str_x_center = parseLine[0]
-            str_y_center = parseLine[1]
-            str_z_center = parseLine[2]
-            x_center = float(str_x_center)
-            y_center = float(str_y_center)
-            z_center = float(str_z_center)
-        else:
-            print 'FRAGCENTER should contain the xyz coordinate (3 numbers) with space separation'
-            time.sleep(4)
-            return 1
-
     if water_cycles > 0:
         water_pick = 'yes'
-        build = 'no'
-        build_cycles = 0
-        arpwarp_cycles = water_cycles
-        big_cycles = water_cycles + 1
-
-    if build_cycles > 0 and water_pick == 'no':
-        build = 'yes'
-        arpwarp_cycles = build_cycles
-        big_cycles = build_cycles + 1  
-
-    if build == 'yes' or water_pick == 'yes':
-        arp_waters = 'yes'
-
-    if water_cycles > 0 or build_cycles > 0:
-        if bref_type == 'anisotropic':
-            bref_type = 'none'
-            print 'Warning: setting isotropic B-factors as water-picking is inconsistent with anisotropic refinement'
+        big_cycles = water_cycles + 1 
 
     if bref_type == 'none':
         bref_type = 'isotropic'
-
-    fileexists = os.path.exists(oe_path)
-    if fileexists != 0 and oe_path != 'none':
-        ligand_method = 'oe'
 
     # Check MIFit installation to access phi-psi data files (try environment variable, default and direct path)
 
@@ -411,13 +343,11 @@ def Run(argv=None):
 
     if ref_engine == 'shelx':
 
-        # Determine from environment variable (LINUX)
+        # Determine installation from a possible environment variable
 
-        find_shelx_bin = env_vars.count('SHELXBIN')
+        find_shelx_bin = os.environ.keys().count('SHELXBIN')
         if find_shelx_bin != 0:
-            shelx_dir_linux = os.environ['SHELXBIN']
-            shelxpro = os.path.join(shelx_dir_linux,'shelxpro')
-            shelxh = os.path.join(shelx_dir_linux,'shelxh') 
+            shelx_directory = os.environ['SHELXBIN']
 
         # Determine from input parameter
 
@@ -433,19 +363,19 @@ def Run(argv=None):
                     shelxpro = os.path.join(shelx_directory,'shelxpro')
                     shelxh = os.path.join(shelx_directory,'shelxh')
 
-        # Confirm we have SHELXH and SHELXPRO
+            # Confirm we have SHELXH and SHELXPRO
 
-        fileexists = os.path.exists(shelxpro)
-        if fileexists == 0:
-            print 'The SHELXPRO executable was not found ',shelxpro
-            time.sleep(4)
-            return 1
+            fileexists = os.path.exists(shelxpro)
+            if fileexists == 0:
+                print 'The SHELXPRO executable was not found ',shelxpro
+                time.sleep(4)
+                return 1
 
-        fileexists = os.path.exists(shelxh)
-        if fileexists == 0:
-            print 'The SHELXH executable was not found ',shelxh
-            time.sleep(4)
-            return 1
+            fileexists = os.path.exists(shelxh)
+            if fileexists == 0:
+                print 'The SHELXH executable was not found ',shelxh
+                time.sleep(4)
+                return 1
 
     # Create a CCP4 temp space for temporary files
 
@@ -507,6 +437,7 @@ def Run(argv=None):
 
     file = open('mi_mtzdump.inp','w')
     file.write('HEADER\n')
+    file.write('SYMMETRY\n')
     file.write('END\n')
     file.close()
 
@@ -524,7 +455,6 @@ def Run(argv=None):
     read_labels = 'no'
     read_resolution = 'no'
     read_cell = 'no'
-    read_spacegroup = 'no'
 
     for eachLine in allLines:
 
@@ -568,6 +498,11 @@ def Run(argv=None):
 
             read_cell = 'no'
 
+        if eachLine.find('* Number of Symmetry Operations') > -1:
+            parseLine = eachLine.split('=')
+            number_sym_ops = parseLine[1]
+            number_sym_ops = int(number_sym_ops)
+
         if eachLine.find('* Column Labels :') > -1:
             read_columns = 'yes'
 
@@ -580,19 +515,18 @@ def Run(argv=None):
         if eachLine.find('* Cell Dimensions :') > -1:
             read_cell = 'yes'
 
-        if eachLine.find('* Space group') > -1:
+        if eachLine.find('* Space Group =') > -1:
 
-            # SG number
+            # SG number and name
 
-            parseLine = eachLine.split('number')
+            eachLine = eachLine.strip()
+            parseLine = eachLine.split('=')
             space_group_out = parseLine[1]
-            space_group = space_group_out.replace(')','')
-            space_group = space_group.strip()
-
-            # SG name
-
-            parseLine = eachLine.split(quote)
+            parseLine = space_group_out.split(quote)
+            space_group = parseLine[0]
+            space_group = space_group.strip()           
             space_group_mtz = parseLine[1]
+            space_group_mtz = space_group_mtz.strip()
 
     list_length = len(labelList)
     count = 0
@@ -607,12 +541,55 @@ def Run(argv=None):
         if labelList[count] == 'I' and rfreelabel == 'none':
             rfreelabel = colList[count]
 
+        if labelList[count] == 'D' and anomlabel == 'none':
+            anomlabel = colList[count]
+
+        if labelList[count] == 'Q' and siganomlabel == 'none':
+            if anomlabel != 'none' and colList[count] != sigflabel:
+                siganomlabel = colList[count]
+
         count = count + 1
 
     if flabel == 'none' or sigflabel == 'none' or rfreelabel == 'none':
         print 'MTZ labels for F,sd(F) or Rfree-data could not be established'
         time.sleep(4)
         return 1
+
+    # Use CCP4/CAD to capture any anomalous difference data
+
+    if anomlabel != 'none' and siganomlabel != 'none':
+        
+        fileexists = os.path.exists('mi_anommap.mtz')
+        if fileexists != 0:
+            os.remove('mi_anommap.mtz')
+
+        file = open('mi_cad.inp','w')
+        file.write('LABIN FILE_NUMBER 1 E1=')
+        file.write(anomlabel)
+        file.write(' E2=')
+        file.write(siganomlabel)
+        file.write('\n')
+
+        # Avoid issues of the anomalous data exceeding the refinement resolution
+        if max_res != 'none':
+            file.write('RESOLUTION FILE_NUMBER 1 1000.0 ')
+            file.write(max_res)
+            file.write('/n')
+                       
+        file.write('END\n')
+        file.close()
+
+        runcad = 'cad HKLIN1 mi_refine.mtz HKLOUT mi_anommap.mtz < mi_cad.inp > mi_cad.log'
+        os.system(runcad)
+
+        fileexists = os.path.exists('mi_anommap.mtz')
+        if fileexists != 0:
+            os.remove('mi_cad.log')
+            os.remove('mi_cad.inp')
+        else:
+            print 'The CAD run to extract anomalous difference data seems to have failed'
+            time.sleep(4)
+            return 1       
 
     # Set resolution
 
@@ -790,13 +767,14 @@ def Run(argv=None):
         if tag == 'ATOM' or tag == 'HETATM':
 
             chain_id = eachLine[21:22]
+            chain_id = chain_id.strip()
             res_number = eachLine[22:26]
             res_number = res_number.strip()
             res_name = eachLine[17:20]
             res_name = res_name.strip()
             atom_name = eachLine[12:16]
 
-            # Check and fix potential atom justification issues for common ions (errors not handled by arp_waters)
+            # Check and fix potential atom justification issues for common ions
 
             atom_justify = 'OK'
 
@@ -856,11 +834,6 @@ def Run(argv=None):
                 eachLine_fix = eachLine[0:12] + atom_name + eachLine[16:80]
                 eachLine = eachLine_fix
 
-            # Obtain residue number for automated ligand chain
-
-            if chain_id == autoligand_chain:
-                autoligand_res_number = int(res_number)
-
             # Obtain residue (CA) count
 
             if eachLine.find(' CA ') > -1:
@@ -869,8 +842,14 @@ def Run(argv=None):
             # Check for waters
 
             if res_name == 'HOH':            
-                water_chain = chain_id
                 water_count = water_count + 1
+
+            # Get highest residue number in the chain X we will assign for waters
+
+            if chain_id == 'X':
+                int_res_number = int(res_number)
+                if int_res_number > res_number_X_high:
+                    res_number_X_high = int_res_number
 
             # Obtain protein chain names and terminii
 
@@ -898,9 +877,10 @@ def Run(argv=None):
 
                 res_number_prev = res_number
 
-        # Write record but eliminate SCALE records to avoid issues with changed cells
+        # Write record but eliminate SCALE records to avoid issues with changed cells and CISPEP
+        # records since it it better if they are recomputed following refitting
 
-        if tag != 'SCALE1' and tag != 'SCALE2' and tag != 'SCALE3':
+        if tag != 'SCALE1' and tag != 'SCALE2' and tag != 'SCALE3' and tag != 'CISPEP':
             eachLine = eachLine.strip()
             file.write(eachLine)
 
@@ -916,14 +896,10 @@ def Run(argv=None):
         time.sleep(4)
         return 1
 
-    # Set water picking defaults, depending on molecule size
+    # Set water picking defaults depending on molecule size
 
-    water_add = res_count/4.0
-    water_remove = water_add/3.0
+    water_add = 0.25*res_count
     water_add = int(water_add)
-    water_remove = int(water_remove)
-    water_add = str(water_add)
-    water_remove = str(water_remove)
 
     # Copy library file (if any) to temp area. REFMAC5 read requires a full path.
 
@@ -1007,13 +983,11 @@ def Run(argv=None):
     filename_log = job_id + '.log'
     filename_pdb = job_id + '.pdb'
     filename_mtz = job_id + '.mtz'
-    filename_mlw = job_id + '.mlw'
     filename_tls = job_id + '.tls'
     errorfile = job_id + '_errors.txt'
     filename_log_full = os.path.join(workingdir,filename_log)
     filename_pdb_full = os.path.join(workingdir,filename_pdb)
     filename_mtz_full = os.path.join(workingdir,filename_mtz)
-    filename_mlw_full = os.path.join(workingdir,filename_mlw)
     filename_errors_full = os.path.join(workingdir,errorfile)
     filename_tls_full = os.path.join(workingdir,filename_tls)
 
@@ -1029,10 +1003,6 @@ def Run(argv=None):
     if fileexists != 0:
         os.remove(filename_mtz)
 
-    fileexists = os.path.exists(filename_mlw)
-    if fileexists != 0:
-        os.remove(filename_mlw)
-
     fileexists = os.path.exists(filename_tls)
     if fileexists != 0:
         os.remove(filename_tls)
@@ -1047,7 +1017,6 @@ def Run(argv=None):
         print 'CCP4 scratch space:',working_ccp4_scratch
         print 'Job-ID:',job_id
         print 'Using mtz data:',flabel,',',sigflabel,',',rfreelabel
-        print 'Note: Uses fixed Babinet bulk solvent correction and 4A data'
 
         # REFMAC specific file names
 
@@ -1066,7 +1035,12 @@ def Run(argv=None):
         file.write(' FREE=')
         file.write(rfreelabel)
         file.write('\nLABOUT FC=FC PHIC=PHIC DELFWT=DELFWT PHDELWT=PHDELFWT FWT=FWT FOM=FOM\n')
-        file.write('RESOLUTION 100.0 4.0\n')
+        
+        if max_res != 'none':
+            file.write('RESOLUTION 100.0 ')
+            file.write(max_res)
+            file.write('\n')
+
         file.write('FREE ')
         file.write(freeflag)
         file.write('\nREFI TYPE RIGID\n')
@@ -1328,33 +1302,12 @@ def Run(argv=None):
                 return 1
 
             #
-            # Apply water picking or build arp_waters option
+            # Apply water picking option
             #
 
-            if arp_waters == 'yes' and count < arpwarp_cycles:
+            if water_pick == 'yes' and count < water_cycles:
 
-                if water_pick == 'yes':
-                    print 'Water picking'
-                else:
-                    print 'Model rebuilding'
-
-                # 2FF map
-
-                file = open('mi_fft.inp','w')
-                file.write('LABIN F1=FWT PHI=PHWT\n')
-                file.write('END\n')
-                file.close()
-
-                runfft = 'fft HKLIN ' + filename_mtz + ' MAPOUT mi_2ff.map < mi_fft.inp > mi_fft.log'
-                os.system(runfft)
-
-                fileexists = os.path.exists('mi_2ff.map')
-                if fileexists == 0:
-                    print 'FFT for water picking failed'
-                    return 1
-                else:
-                    os.remove('mi_fft.inp')
-                    os.remove('mi_fft.log')
+                print 'Water picking'
 
                 # 1FF map
 
@@ -1375,33 +1328,15 @@ def Run(argv=None):
                     os.remove('mi_fft.inp')
                     os.remove('mi_fft.log')
 
-                # Build full cell for 2ff map
+                # Setup crystal araound the protein
 
                 file = open('mi_mapmask.inp','w')
-                file.write('XYZLIM 0 1 0 1 0 1\n')
+                file.write('BORDER 5.0\n')
+                file.write('EXTEND XTAL\n')
                 file.write('END\n')
                 file.close()
 
-                runmapmask = 'mapmask MAPIN mi_2ff.map MAPOUT mi_2ff_masked.map < mi_mapmask.inp > mi_mapmask.log'
-                os.system(runmapmask)
-
-                fileexists = os.path.exists('mi_2ff_masked.map')
-                if fileexists == 0:
-                    print 'MAPMASK for water picking failed'
-                    return 1
-                else:
-                    os.remove('mi_mapmask.inp')
-                    os.remove('mi_mapmask.log')
-                    os.remove('mi_2ff.map')
-
-                # Build full cell for 1ff map
-
-                file = open('mi_mapmask.inp','w')
-                file.write('XYZLIM 0 1 0 1 0 1\n')
-                file.write('END\n')
-                file.close()
-
-                runmapmask = 'mapmask MAPIN mi_1ff.map MAPOUT mi_1ff_masked.map < mi_mapmask.inp > mi_mapmask.log'
+                runmapmask = 'mapmask XYZIN mi_refine_out.pdb MAPIN mi_1ff.map MAPOUT mi_1ff_masked.map < mi_mapmask.inp > mi_mapmask.log'
                 os.system(runmapmask)
 
                 fileexists = os.path.exists('mi_1ff_masked.map')
@@ -1414,187 +1349,129 @@ def Run(argv=None):
                     os.remove('mi_mapmask.log')
                     os.remove('mi_1ff.map')
 
-                # ARP_WATERS water-picking
+                # Water peak picking
 
-                file = open('mi_arpwaters.inp','w')
+                file = open('mi_peakmax.inp','w')
+                file.write('THRESHOLD RMS 4.0\n')
+                file.write('OUTPUT PDB\n')
+                file.write('BFACTOR 30.0 1.0\n')
+                file.write('RESIDUE HOH\n')
+                file.write('ATNAME O\n')
+                file.write('CHAIN X\n')
+                file.write('NUMPEAKS 500\n')
+                file.write('EXCLUDE EDGE\n')
+                file.write('END\n')
+                file.close()
+                
+                runpeakmax = 'peakmax MAPIN mi_1ff_masked.map XYZOUT mi_refine_peaks.pdb < mi_peakmax.inp > mi_peakmax_wat.log'
 
-                if water_pick == 'yes':
-                    file.write('MODE update waters\n')
-                else:
-                    file.write('MODE update allatoms\n')
+                os.system(runpeakmax)
 
-                file.write('SYMM ')
+                fileexists = os.path.exists('mi_refine_peaks.pdb')
+                if fileexists == 0:
+                    print 'PEAKMAX run failed'
+                    time.sleep(4)
+                    return 1                
+
+                # Water peak reduction by symmetry and protein proximity 
+                
+                file = open('mi_watpeak.inp','w')
+                file.write('DISTANCE 2.3 3.5\n')
+                file.write('CHAIN X\n')
+                file.write('SYMMETRY ')
                 file.write(space_group)
-                file.write('\nRESOLUTION 1000 ')
-                file.write(resolution_output)
-                file.write('\nFIND ATOMS ')
-                file.write(water_add)
-                file.write(' CHAIN ')
+                file.write('\nEND\n')
+                file.close()
+                
+                runwatpeak = 'watpeak XYZIN mi_refine_out.pdb PEAKS mi_refine_peaks.pdb XYZOUT mi_refine_wat.pdb < mi_watpeak.inp > mi_watpeak.log'
 
-                if water_chain == ' ':            
-                    file.write(water_chain_use)
-                else:
-                    file.write(water_chain)
+                os.system(runwatpeak)
 
-                file.write(' CUTSIGMA 3.5\n')
-                file.write('REMOVE ATOMS ')
-                file.write(water_remove)
+                fileexists = os.path.exists('mi_refine_wat.pdb')
+                if fileexists == 0:
+                    print 'WATPEAK run failed'
+                    time.sleep(4)
+                    return 1
 
-                if water_pick == 'yes':
-                    file.write(' CUTSIGMA 1.0 MERGE 2.2\n')
-                else:
-                    file.write(' CUTSIGMA 1.0 MERGE 0.6\n')
+                # Capture water atom records up to limit
+                # Adjust for ascending numbering within the water chain
+
+                file = open('mi_refine_wat.pdb','r')
+                allLines = file.readlines()
+                file.close()
+
+                aList_waters = []
+                water_pick_counter = 1
+
+                for eachLine in allLines:
+
+                    tag = eachLine[0:6]
+                    tag = tag.strip()
+
+                    if tag == 'ATOM' or tag == 'HETATM':
+
+                        water_pick_counter = water_pick_counter + 1
+                        if water_pick_counter < water_add:                            
+                            res_number_X_high = res_number_X_high + 1
+                            str_res_number = str(res_number_X_high)
+                            str_res_number = str_res_number.rjust(4)
+                            atom_water_record = eachLine[0:22] + str_res_number + eachLine[26:80]
+                            atom_water_record = atom_water_record.strip()
+                            aList_waters.append(atom_water_record)
+
+                # Clean-up coordinate file debris from water picking
+
+                fileexists = os.path.exists('mi_refine_peaks.pdb')
+                if fileexists != 0:
+                    os.remove('mi_refine_peaks.pdb')
+
+                fileexists = os.path.exists('mi_refine_wat.pdb')
+                if fileexists != 0:                    
+                    os.remove('mi_refine_wat.pdb')
+                
+
+                # Rewrite current PDB file ready to append new waters
+
+                file = open('mi_refine_out.pdb','r')
+                allLines = file.readlines()
+                file.close()
+
+                os.remove('mi_refine_out.pdb')
+
+                file = open('mi_refine_out.pdb','w')
+
+                for eachLine in allLines:
+
+                    tag = eachLine[0:6]
+                    tag = tag.strip()
+
+                    if tag != 'END' and tag != 'CONECT':
+                        file.write(eachLine)
+
+                # Add new waters
+
+                number_water_list = len(aList_waters)
+
+                count_rec = 0
+                while count_rec < number_water_list:
+                    aLine = aList_waters[count_rec]
+                    file.write(aLine)
+                    file.write('\n')
+
+                    count_rec = count_rec + 1
 
                 file.write('END\n')
                 file.close()
 
-                runarpwaters = 'arp_waters XYZIN mi_refine_out.pdb MAPIN1 mi_2ff_masked.map\
-                MAPIN2 mi_1ff_masked.map XYZOUT mi_refine_wat.pdb < mi_arpwaters.inp > mi_arpwaters.log'
-
-                os.system(runarpwaters)
-
-                fileexists = os.path.exists('mi_refine_wat.pdb')
-                if fileexists == 0:
-                    print 'ARP_WATERS run failed'
-                    time.sleep(4)
-                    return 1
-
-                # Post-fix on PDB files for ongoing refinement
-
-                if water_pick == 'yes':
-
-                    # Preserve all original non-water PDB records for water-picking case                       
-
-                    # Collect non-water records from current PDB
-
-                    file = open('mi_refine_out.pdb','r')
-                    allLines = file.readlines()
-                    file.close()
-
-                    os.remove('mi_refine_out.pdb')
-
-                    aList_nonwaters = []
-                    aList_waters = []
-                    write_flag_prev = 'yes'
-
-                    for eachLine in allLines:
-
-                        tag = eachLine[0:6]
-                        tag = tag.strip()
-
-                        write_flag = 'yes'
-
-                        if tag == 'ATOM' or tag == 'HETATM':
-                            if eachLine.find('WAT') > -1 or eachLine.find('HOH') > -1:
-                                write_flag = 'no'
-                                write_flag_prev = 'no'
-
-                        if tag == 'END' or tag == 'CONECT':
-                            write_flag = 'no'
-
-                        if tag == 'ANISOU' and write_flag_prev == 'no':
-                            write_flag = 'no'
-                            write_flag_prev = 'yes'
-
-                        if write_flag == 'yes':
-                            aList_nonwaters.append(eachLine)
-
-                    # Collect water records from arp-waters output PDB, fixing to PDB standard
-
-                    file = open('mi_refine_wat.pdb','r')
-                    allLines = file.readlines()
-                    file.close()
-
-                    os.remove('mi_refine_wat.pdb')
-
-                    for eachLine in allLines:
-
-                        if tag == 'ATOM' or tag == 'HETATM':
-                            
-                            if eachLine.find('WAT') > -1:
-                                aString1 = eachLine.replace('WAT','HOH')
-                                aString2 = aString1.replace('OW0','O  ')
-                                eachLine = aString2
-
-                            if eachLine.find('HOH') > -1:
-                                aList_waters.append(eachLine)
-
-                    # Reconstruct PDB file
-
-                    number_PDB_nonwater = len(aList_nonwaters)
-                    number_PDB_water = len(aList_waters)
-
-                    file = open('mi_refine_out.pdb','w')
-
-                    count_rec = 0
-                    while count_rec < number_PDB_nonwater:
-                        aLine = aList_nonwaters[count_rec]
-                        file.write(aLine)
-
-                        count_rec = count_rec + 1
-
-                    count_rec = 0
-                    while count_rec < number_PDB_water:
-                        aLine = aList_waters[count_rec]
-                        file.write(aLine)
-
-                        count_rec = count_rec + 1
-
-                    file.write('END')
-                    file.close()
-
-                else:
-
-                    # Should only fix water naming convention for arp-waters build case
-
-                    file = open('mi_refine_wat.pdb','r')
-                    allLines = file.readlines()
-                    file.close()
-
-                    os.remove('mi_refine_out.pdb')
-                    os.remove('mi_refine_wat.pdb')
-
-                    file = open('mi_refine_out.pdb','w')
-
-                    for eachLine in allLines:
-
-                        if tag == 'ATOM' or tag == 'HETATM':
-                                
-                            if eachLine.find('WAT') > -1:
-                                aString1 = eachLine.replace('WAT','HOH')
-                                aString2 = aString1.replace('OW0','O  ')
-                                eachLine = aString2
-
-                        file.write(eachLine)
-
-                    file.close()
-
-                # Report water-picking results
-
-                file = open('mi_arpwaters.log')
-                allLines = file.readlines()
-                file.close()
-
-                actual_number_removed = 0
-                actual_number_new = '0'
-                for eachLine in allLines:
-                    if eachLine.find('Removed:') > -1:
-                        actual_number_removed = actual_number_removed + 1
-
-                    if eachLine.find('New atoms found') > -1:
-                        actual_number_new  = eachLine[7:12]                    
-
-                actual_number_removed = str(actual_number_removed)
-                actual_number_new = actual_number_new.strip()
-                print 'Number of atoms added:  ',actual_number_new
-                print 'Number of atoms deleted:',actual_number_removed
-
+                print 'Number of waters added:  ',number_water_list
+                        
                 # Clean-up
 
-                os.remove('mi_2ff_masked.map')
                 os.remove('mi_1ff_masked.map')
-                os.remove('mi_arpwaters.inp')
-                os.remove('mi_arpwaters.log')
+                os.remove('mi_peakmax.inp')
+                os.remove('mi_peakmax_wat.log')
+                os.remove('mi_watpeak.inp')
+                os.remove('mi_watpeak.log')               
 
             #        
             # end of water picking option
@@ -1708,9 +1585,11 @@ def Run(argv=None):
         filename_lst = job_id + '.lst'
         filename_res = job_id + '.res'
         filename_fcf = job_id + '.fcf'
+        filename_mtz = job_id + '.mtz'
         filename_lst_full = os.path.join(workingdir,filename_lst)
         filename_res_full = os.path.join(workingdir,filename_res)
         filename_fcf_full = os.path.join(workingdir,filename_fcf)
+        filename_mtz_full = os.path.join(workingdir,filename_mtz)
 
         fileexists = os.path.exists(ins_file)
         if fileexists != 0:
@@ -2062,7 +1941,114 @@ def Run(argv=None):
             time.sleep(4)
             return 1
 
-        # Clean-up
+        # Back convert the fcf file phased data information into mtz format for easy MIFit load
+
+        print 'Converting output data to mtz format for MIFit input'
+        print 'Note:FWT contains pre computed 2Fo-Fc map coefficients'
+        print '     and DELFWT contains precomputed Fo-Fc map coefficients'
+
+        file = open(filename_fcf,'r')
+        allLines = file.readlines()
+        file.close()
+
+        file = open(hkl_file,'w')
+
+        for eachLine in allLines:
+
+            tag = eachLine[0:1]
+            tag = tag.strip()
+            
+            if tag != ' ' and tag != '_' and tag != '#':
+                parseLine = eachLine.split()
+
+                num_args = len(parseLine)
+                if num_args == 7:
+
+                    h = parseLine[0]
+                    k = parseLine[1]
+                    l = parseLine[2]
+                    fobs_sq = parseLine[3]
+                    fcalc = parseLine[5]
+                    phase = parseLine[6]
+                    
+                    h = int(h)
+                    k = int(k)
+                    l = int(l)
+                    fobs_sq = float(fobs_sq)
+                    fcalc = float(fcalc)
+                    phase = float(phase)
+
+                    fobs = math.sqrt(fobs_sq)
+                    twofofc = 2.0*fobs - fcalc
+                    twofofc = round(twofofc,3)                    
+                    fofc = fobs - fcalc
+                    fofc = round(fofc,3)
+
+                    aLine = str(h) + ' ' + str(k) + ' ' + str(l) + \
+                            ' ' + str(twofofc) + ' ' + str(fofc) + ' ' + str(phase) + ' ' + str(phase)
+
+                    file.write(aLine)
+                    file.write('\n')
+
+        file.close()
+
+        # Step 2, convert ascii to mtz
+
+        aLine = str(acell_mtz) + ' ' + str(bcell_mtz) + ' ' + str(ccell_mtz)\
+                + ' ' + str(alpha_mtz) + ' ' + str(beta_mtz) + ' ' + str(gamma_mtz)
+
+        file = open('mi_f2mtz.inp','w')
+
+        file.write('NAME PROJECT Shelx_map_coeffs CRYSTAL 1 DATASET 1\n')
+        file.write('CELL ')
+        file.write(aLine)
+        file.write('\n')
+        file.write('SYMMETRY ')
+        file.write(space_group)
+        file.write('\n')
+        file.write('LABOUT H K L FWT DELFWT PHWT PHDELFWT\n')
+        file.write('CTYPOUT H H H F F P P\n')
+        file.write('END\n')
+
+        file.close()
+
+        runf2mtz = 'f2mtz HKLIN ' + hkl_file + ' HKLOUT ' + filename_mtz + ' < mi_f2mtz.inp > mi_f2mtz.log'
+        os.system(runf2mtz)
+
+        fileexists = os.path.exists(filename_mtz)
+        if fileexists == 0:
+            print 'F2MTZ failed to convert to output mtz file'
+            time.sleep(4)
+            return 1
+        else:
+            os.remove('mi_f2mtz.inp')
+            os.remove('mi_f2mtz.log')
+
+        # Clean-up various intermediate files
+
+        fileexists = os.path.exists(ins_file_full)
+        if fileexists != 0:
+            os.remove(ins_file_full)
+
+        fileexists = os.path.exists(hkl_file_full)
+        if fileexists != 0:
+            os.remove(hkl_file_full)           
+
+        fileexists = os.path.exists(filename_fcf_full)
+        if fileexists != 0:
+            os.remove(filename_fcf_full)
+
+        fileexists = os.path.exists(filename_res_full)
+        if fileexists != 0:
+            os.remove(filename_res_full)           
+
+        fileexists = os.path.exists('mi_refine.pdb')
+        if fileexists != 0:
+            os.remove('mi_refine.pdb')
+
+        fileexists = os.path.exists('mi_refine.mtz')
+        if fileexists != 0:
+            os.remove('mi_refine.mtz')           
 
         fileexists = os.path.exists('mi_shelxpro.pro')
         if fileexists != 0:
@@ -2079,432 +2065,18 @@ def Run(argv=None):
         fileexists = os.path.exists('shelxpro.ps')
         if fileexists != 0:        
             os.remove('shelxpro.ps')
+            
+        fileexists = os.path.exists('mi_shelxpro.inp')
+        if fileexists != 0:  
+            os.remove('mi_shelxpro.inp')
 
-        os.remove('mi_shelxpro.inp')
-        os.remove('mi_shelxpro.log')    
+        fileexists = os.path.exists('mi_shelxpro.log')
+        if fileexists != 0:          
+            os.remove('mi_shelxpro.log')    
 
     ########################
     # End of SHELX section #
     ########################
-
-    ####################################
-    # Determine Ligand fitting mode    #
-    ####################################
-
-    number_ligands_in_dir = 0
-    current_directory = os.getcwd()
-
-    # Case where fragfitfile is the path to the ligand file
-
-    if fragfitfile != 'all' and fragfitfile != 'none':
-        aList_ligands.append(fragfitfile)
-        number_ligands_in_dir = 1
-
-    # Case where fragfitfile is keyword 'all'.
-
-    if fragfitfile == 'all':
-
-        # Look for subdirectory 'ligands' in data directory (which defaults to data directory from GUI)
-
-        fragfitfile = os.path.join(current_directory,'ligands')
-
-        fileexists = os.path.exists(fragfitfile)
-        if fileexists == 0:
-
-            # We may be in /BNG directory established by automated image data processing so also
-            # need to look back to data directory for /ligands
-
-            if fragfitfile.find('BNG') > -1:
-
-                fragfitfile = current_directory.replace('BNG','ligands')
-
-                fileexists = os.path.exists(fragfitfile)
-                if fileexists == 0:
-                    fragfitfile = 'none'
-            else:
-
-                fragfitfile = 'none'
-
-        if fragfitfile != 'none':
-
-            print '\nSearching for ligand files in directory',fragfitfile
-
-            # Obtain ligand pdb file names
-
-            aList = os.listdir(fragfitfile)
-            number_files = len(aList)
-
-            count = 0
-            while count < number_files:
-
-                afilename = aList[count]
-                if afilename.find('.pdb') > -1:
-
-                    afilename_full = os.path.join(fragfitfile,afilename)
-
-                    file = open(afilename_full,'r')
-                    allLines = file.readlines()
-                    file.close()
-
-                    count_atoms = 0
-                    ligand_file = 'yes'
-                    test_entity = '???'
-                    test_entity_prev = '???'
-
-                    for eachLine in allLines:
-
-                        if eachLine.find('ATOM') > -1 or eachLine.find('HETATM') > -1:
-                            test_entity = eachLine[17:20]
-
-                            if count_atoms > 0 and test_entity != test_entity_prev:
-                                ligand_file = 'no'
-
-                            count_atoms = count_atoms + 1
-                            test_entity_prev = test_entity
-
-                if count_atoms > 60:
-                    ligand_file = 'no'
-
-                if ligand_file == 'yes':
-                    aList_ligands.append(afilename_full)
-
-                count = count + 1
-
-            # Check if we found a useable set if ligands (usually fragment library)
-
-            number_ligands_in_dir = len(aList_ligands)
-
-            print 'Number of ligands for fitting',number_ligands_in_dir
-
-            if number_ligands_in_dir == 0:
-                print 'WARNING: No PDB files appeared to contain single entity ligand data'
-                fragfitfile = 'none'
-
-            if number_ligands_in_dir > 4:
-                print 'WARNING: Too many ligands for 6D ligand fitting (4 max)',number_ligands_in_dir
-                fragfitfile = 'none'
-
-            # Use convolution search for fragments as it is slow but more accurate
-            # Note that OE search would need modification to aggregate ligands and avoid ligand density masking
-
-            if number_ligands_in_dir > 1:
-                print '\nMultiple ligands so using 6D search'
-                ligand_method = 'fffear'
-
-    # Do ligand related calculations
-
-    if fragfitfile != 'none':
-
-        print 'Starting ligand search'
-
-        # Set output filename for structure with ligand
-
-        filename_ligand_pdb = job_id + '_ligfit.pdb'
-        filename_ligand_pdb_full = os.path.join(workingdir,filename_ligand_pdb)
-
-        fileexists = os.path.exists(filename_ligand_pdb)
-        if fileexists != 0:
-            os.remove(filename_ligand_pdb)
-
-        fileexists = os.path.exists(filename_ligand_pdb_full)
-        if fileexists != 0:
-            os.remove(filename_ligand_pdb_full)    
-
-        # Eject waters near target site ( < 15A) and recompute SFs if needed
-
-        file = open(filename_pdb,'r')
-        allLines = file.readlines()
-        file.close()
-
-        water_delete = 'no'
-
-        file = open('mi_ligand_input.pdb','w')
-
-        for eachLine in allLines:
-
-            tag = eachLine[0:6]
-            tag = tag.strip()
-
-            write_record = 'yes'
-
-            if tag == 'ATOM' or tag == 'HETATM':
-
-                if eachLine.find('HOH') > -1:
-
-                    x = eachLine[30:38]
-                    y = eachLine[38:46]
-                    z = eachLine[46:54]
-                    x = float(x)
-                    y = float(y)
-                    z = float(z)
-
-                    dist = (x_center - x) ** 2 + (y_center - y)**2 + (z_center - z)** 2
-
-                    if dist < 225.0:
-                        write_record = 'no'
-                        water_delete = 'yes'
-
-            if write_record == 'yes':
-                file.write(eachLine)
-
-        file.close()
-
-        # Recompute SFs if waters were deleted
-
-        if water_delete == 'yes' or ref_engine != 'refmac5':
-
-            print 'Computing omit data for ligand search'
-
-            file = open('mi_sfs_ligand.inp','w')
-            file.write('LABIN FP=')
-            file.write(flabel)
-            file.write(' SIGFP=')
-            file.write(sigflabel)
-            file.write(' FREE=')
-            file.write(rfreelabel)
-            file.write('\nLABOUT FC=FC PHIC=PHIC DELFWT=DELFWT PHDELWT=PHDELFWT FWT=FWT FOM=FOM\n')
-
-            file.write('FREE ')
-            file.write(freeflag)
-            file.write('\n')
-
-            if max_res != 'none':
-                file.write('RESOLUTION 100.0 ')
-                file.write(max_res)
-                file.write('\n')
-
-            if bref_type == 'anisotropic':
-                file.write('REFI BREF ANISotropic METH CGMAT\n')
-            else:
-                file.write('REFI BREF ISOT METH CGMAT\n')
-
-            file.write('SCAL TYPE SIMPLE LSSC ANIS\n')
-            file.write('SOLVENT YES\n')           
-            file.write('REFI TYPE RESTtrained\n')
-            file.write('REFI RESI MLKF\n')
-            file.write('WEIGH MATRIX ')
-            file.write(weight)
-            file.write('\n')
-
-            if extra_links == 'yes':
-                file.write('MAKE_RESTRAINTS LINK Y\n')
-
-            file.write('MAKE_RESTRAINTS CISP Y\n')
-            file.write('MAKE_RESTRAINTS SS Y\n')
-            file.write('MAKE_RESTRAINTS HYDR N\n')
-            file.write('BFAC 1 2.0 2.5 3.0 4.5\n')
-            file.write('NCYC 0')
-            file.write('\n')
-
-            file.write('MONI DIST 6.0\n')
-            file.write('MONI ANGL 8.0\n')
-            file.write('MONI TORSION 10.0\n')
-            file.write('MONI PLANE 10.0\n')
-            file.write('MONI VANderwaals 4.25\n')
-            file.write('MONI CHIRAL 8.0\n')
-            file.write('MONI BFACTOR 4.0\n')
-            file.write('BINS 20\n')
-
-            file.write('USECWD\n')
-            file.write('PNAME noid\n')
-            file.write('DNAME ligand \n')
-            file.write('END\n')
-            file.close()
-
-            if libfile == 'none':
-                runrefine = 'refmac5 HKLIN ' + filename_mtz + ' XYZIN mi_ligand_input.pdb XYZOUT mi_ligand_out.pdb \
-                HKLOUT mi_ligand_out.mtz < mi_sfs_ligand.inp > mi_sfs_ligand.log'
-            else:
-                runrefine = 'refmac5 HKLIN ' + filename_mtz + ' XYZIN mi_ligand_input.pdb LIBIN ' + temp_lib + \
-                            ' XYZOUT mi_ligand_out.pdb HKLOUT mi_ligand_out.mtz < mi_sfs_ligand.inp > mi_sfs_ligand.log'
-
-            os.system(runrefine)
-
-            fileexists = os.path.exists('mi_ligand_out.mtz')
-            if fileexists == 0:        
-                print 'REFMAC5 calculation of solvent omit map failed'
-                time.sleep(4)
-                return 1
-
-            fileexists = os.path.exists('ligand.refmac')
-            if fileexists != 0:
-                os.remove('ligand.refmac')
-
-            fileexists = os.path.exists('mi_ligand_out.pdb')
-            if fileexists != 0:
-                os.remove('mi_ligand_out.pdb')
-
-            fileexists = os.path.exists(filename_refmac_temp)
-            if fileexists != 0:
-                os.remove(filename_refmac_temp)     
-
-            fileexists = os.path.exists('mi_sfs_ligand.inp')
-            if fileexists != 0:
-                os.remove('mi_sfs_ligand.inp')
-
-            fileexists = os.path.exists('mi_sfs_ligand.log')
-            if fileexists != 0:
-                os.remove('mi_sfs_ligand.log')
-
-            ligand_mtz = 'mi_ligand_out.mtz'
-            ligand_pdb = 'mi_ligand_input.pdb'
-
-        else:
-
-            ligand_mtz = filename_mtz
-            ligand_pdb = filename_pdb
-
-        # Important to restore CCP4_SCR before going into another python script
-
-        os.environ['CCP4_SCR'] = ccp4.scr
-
-        ###############################
-        # Loop over available ligands #
-        ###############################
-
-        count = 0
-        while count < number_ligands_in_dir:
-
-            print 'Ligand:',count
-
-            ligand_to_fit = aList_ligands[count]
-
-            #########################
-            # Ligand search methods #
-            #########################
-
-            if ligand_method == 'oe':
-
-                #########################
-                # OE (flynn) option     #
-                #########################
-
-                print 'Searching for ligand using OpenEye software'
-
-                fileexists = os.path.exists('mi_oe_ligandfit.pdb')
-                if fileexists != 0:
-                    os.remove('mi_oe_ligandfit.pdb')
-
-                # Execute OE search method (returned solution file is mi_oe_ligandfit.pdb)
-                # set up args for oe_ligandfit search method
-                tmpargs=[]
-                tmpargs.append("oe_ligandfit")
-                tmpargs.append('-p')
-                tmpargs.append(ligand_pdb)
-                tmpargs.append('-m')
-                tmpargs.append(ligand_mtz)  
-                tmpargs.append('-l')
-                tmpargs.append(ligand_to_fit)      
-                tmpargs.append('-x')
-                tmpargs.append(str_x_center)
-                tmpargs.append('-y')
-                tmpargs.append(str_y_center)
-                tmpargs.append('-z')
-                tmpargs.append(str_z_center)
-                tmpargs.append('-a')
-                tmpargs.append("DELFWT")        
-                tmpargs.append('-f')
-                tmpargs.append("PHDELFWT")
-                tmpargs.append('-s')
-                tmpargs.append(oe_path)
-                import mi_oe_ligandfit
-                mi_oe_ligandfit.Run(tmpargs)
-
-                # Check and reset output pdb to standard name
-                fileexists = os.path.exists('mi_oe_ligandfit.pdb')
-                if fileexists != 0:
-                    os.rename('mi_oe_ligandfit.pdb',filename_ligand_pdb)
-                    print 'Output file containing ligand:',filename_ligand_pdb
-                else:
-                    print 'WARNING: OE ligand fitting failed'
-                    time.sleep(4)
-
-                    fragfitfile = 'none'
-
-            if ligand_method == 'fffear':
-
-                #################
-                # FFFEAR option #
-                #################
-
-                print 'Searching for ligand using CCP4/FFFEAR'
-
-                fileexists = os.path.exists(filename_ligand_pdb)
-                if fileexists != 0:
-                    os.remove(filename_ligand_pdb)
-
-                # set up args for FFFEAR search method (assumes precomputed sfs DELFWT and PHDELFWT)
-                tmpargs=[]
-                tmpargs.append("ligandfit")
-                tmpargs.append('-f')
-                tmpargs.append(ligand_to_fit)
-                tmpargs.append('-m')
-                tmpargs.append(ligand_mtz)  
-                tmpargs.append('-p')
-                tmpargs.append(ligand_pdb)      
-                tmpargs.append('-c')
-                tmpargs.append(frag_center)
-                tmpargs.append('-d')
-                tmpargs.append(workingdir)        
-                tmpargs.append('-o')
-                tmpargs.append(filename_ligand_pdb)
-                import mi_ligandfit
-                mi_ligandfit.Run(tmpargs)
-
-                # Check
-
-                fileexists = os.path.exists(filename_ligand_pdb)
-                if fileexists != 0:
-                    print 'Output file containing ligand:',filename_ligand_pdb
-
-                    # Copy and recycle input file to aggregate ligands
-
-                    if number_ligands_in_dir > 1 and count < number_ligands_in_dir:
-
-                        fileexists = os.path.exists('mi_ligand_all.pdb')
-                        if fileexists != 0:
-                            os.remove('mi_ligand_all.pdb')
-
-                        file = open(filename_ligand_pdb,'r')
-                        allLines = file.readlines()
-                        file.close()
-
-                        file = open('mi_ligand_all.pdb','w')
-                        file.writelines(allLines)
-                        file.close()
-
-                        ligand_pdb = 'mi_ligand_all.pdb'
-
-                else:
-                    print 'WARNING: FFFEAR ligand fitting failed'
-                    time.sleep(4)
-
-                    fragfitfile = 'none'
-
-            count = count + 1
-
-        # Clean
-
-        fileexists = os.path.exists('mi_ligand_out.pdb')
-        if fileexists != 0:
-            os.remove('mi_ligand_out.pdb')
-
-        fileexists = os.path.exists('mi_ligand_out.mtz')
-        if fileexists != 0:
-            os.remove('mi_ligand_out.mtz')
-
-        fileexists = os.path.exists('mi_ligand_input.pdb')
-        if fileexists != 0:
-            os.remove('mi_ligand_input.pdb')
-
-        fileexists = os.path.exists('mi_ligand_all.pdb')
-        if fileexists != 0:
-            os.remove('mi_ligand_all.pdb')     
-
-    # Make sure we remain in the same working directory after ligand fitting and have correct CCP4_SCR
-
-    os.chdir(current_directory)
-    os.environ['CCP4_SCR'] = ccp4.scr
 
     ########################
     # Structure validation #
@@ -3065,7 +2637,7 @@ def Run(argv=None):
         # Peak/hole pick near protein
 
         file = open('mi_peakmax.inp','w')
-        file.write('THRESHOLD RMS 5.0 NEGATIVE\n')
+        file.write('THRESHOLD RMS 4.0 NEGATIVE\n')
         file.write('END\n')
         file.close()
 
@@ -3086,7 +2658,7 @@ def Run(argv=None):
             os.remove('mi_1ff_masked.map')
             os.remove('mi_peakmax.log')
 
-        # Identify amino acids within 1.5A of any 5 sigma peaks/holes
+        # Identify amino acids within 2.0A of any 4 sigma peaks/holes
 
         fileexists = os.path.exists('mi_peakmax.pdb')
         if fileexists != 0:
@@ -3139,7 +2711,7 @@ def Run(argv=None):
 
                         dist = (xp - x) ** 2 + (yp - y)**2 + (zp - z)** 2
 
-                        if dist < 2.25:
+                        if dist < 4.0:
 
                             chain = eachLine[21:22]
                             res_number = eachLine[22:26]
@@ -3152,200 +2724,6 @@ def Run(argv=None):
                             aList_density_resname.append(res_name)
 
                 count = count + 1
-
-        #################################################
-        # 'In density' check on protein with ARP_WATERS #
-        #################################################
-
-        # 2FF map
-
-        file = open('mi_fft.inp','w')
-        file.write('LABIN F1=FWT PHI=PHWT\n')
-        file.write('END\n')
-        file.close()
-
-        runfft = 'fft HKLIN ' + filename_mtz + ' MAPOUT mi_2ff.map < mi_fft.inp > mi_fft.log'
-        os.system(runfft)
-
-        fileexists = os.path.exists('mi_2ff.map')
-        if fileexists == 0:
-            print 'FFT for validation failed'
-            time.sleep(4)
-            return 1
-        else:
-            os.remove('mi_fft.inp')
-            os.remove('mi_fft.log')
-
-        # Build full cell for 2ff map
-
-        file = open('mi_mapmask.inp','w')
-        file.write('XYZLIM 0 1 0 1 0 1\n')
-        file.write('END\n')
-        file.close()
-
-        runmapmask = 'mapmask MAPIN mi_2ff.map MAPOUT mi_2ff_masked.map < mi_mapmask.inp > mi_mapmask.log'
-        os.system(runmapmask)
-
-        fileexists = os.path.exists('mi_2ff_masked.map')
-        if fileexists == 0:
-            print 'MAPMASK for validation failed'
-            time.sleep(4)
-            return 1
-        else:
-            os.remove('mi_mapmask.inp')
-            os.remove('mi_mapmask.log')
-            os.remove('mi_2ff.map')
-
-        # ARP_WATERS finding atoms below 0.85-sigma density in standard ML-weighted map
-
-        file = open('mi_arpwaters.inp','w')
-
-        file.write('MODE update allatoms\n')                  
-        file.write('SYMM ')
-        file.write(space_group)
-        file.write('\nRESOLUTION 1000 ')
-        file.write(resolution_output)
-        file.write('\nREMOVE ATOMS 1000')
-        file.write(' CUTSIGMA 0.85\n')  
-        file.write('END\n')
-        file.close()
-
-        runarpwaters = 'arp_waters XYZIN ' + filename_pdb + ' MAPIN1 mi_2ff_masked.map XYZOUT mi_refine_wat.pdb < mi_arpwaters.inp > mi_arpwaters.log'
-
-        os.system(runarpwaters)
-
-        fileexists = os.path.exists('mi_refine_wat.pdb')
-        if fileexists == 0:
-            print 'ARP_WATERS run for density error checking failed'
-            print 'Check mi_arpwaters.log for atom justification format errors in input PDB file'
-            time.sleep(4)
-            return 1
-        else:
-            os.remove('mi_arpwaters.inp')
-            os.remove('mi_2ff_masked.map')
-            os.remove('mi_refine_wat.pdb')
-
-        # Parse log file for errors
-
-        file = open('mi_arpwaters.log','r')
-        allLines = file.readlines()
-        file.close()
-
-        os.remove('mi_arpwaters.log')
-
-        for eachLine in allLines:
-
-            if eachLine.find('Removed: ') > -1:
-                parseLine = eachLine.split()
-
-                atom = parseLine[1]
-                res_name = parseLine[2]
-                chain = parseLine[3]
-                res_number = parseLine[4]
-
-                # Main chain trace errors if any of N,CA,C,O are out of density            
-
-                if res_name != 'WAT' and res_name != 'HOH':
-
-                    if atom == 'N' or atom == 'CA' or atom == 'C' or atom == 'O':
-
-                        aList_density_chain.append(chain)
-                        aList_density_resno.append(res_number)
-                        aList_density_resname.append(res_name)
-
-                    else:
-
-                        aList_density_sidechains.append(eachLine)
-
-        # Find side chain errors if many atoms are out of density 
-
-        number_density_sidechains = len(aList_density_sidechains)
-
-        if number_density_sidechains > 0:
-            aLine = aList_density_sidechains[0]
-            parseLine = aLine.split()
-            chain_prev = parseLine[3]
-            res_number_prev = parseLine[4]
-            error_count = 0
-
-        count = 0
-        while count < number_density_sidechains:
-
-            aLine = aList_density_sidechains[count]
-            parseLine = aLine.split()
-            atom = parseLine[1]
-            res_name = parseLine[2]
-            chain = parseLine[3]
-            res_number = parseLine[4]
-
-            if chain == chain_prev and res_number == res_number_prev:
-
-                error_count = error_count + 1
-
-                # Case - SER/CYS (2) all atoms
-
-                if res_name == 'SER' or res_name == 'CYS':
-                    if error_count == 2:
-                        aList_density_chain.append(chain)
-                        aList_density_resno.append(res_number)
-                        aList_density_resname.append(res_name)
-
-                # Case - VAL/THR/PRO (3) all atoms
-
-                if res_name == 'VAL' or res_name == 'THR' or res_name == 'PRO':
-                    if error_count == 3:
-                        aList_density_chain.append(chain)
-                        aList_density_resno.append(res_number)
-                        aList_density_resname.append(res_name)
-
-                # Case - LEU/ILE/ASP/ASN/MET/MSE (4)  3/4 atoms
-
-                if res_name == 'LEU' or res_name == 'ILE' or res_name == 'ASP' or res_name == 'ASN' or res_name == 'MET' or res_name == 'MSE':
-                    if error_count == 3:
-                        aList_density_chain.append(chain)
-                        aList_density_resno.append(res_number)
-                        aList_density_resname.append(res_name)
-
-                # Case - GLU/GLN/LYS (5) 3/5 atoms
-
-                if res_name == 'GLU' or res_name == 'GLN' or res_name == 'LYS':
-                    if error_count == 3:
-                        aList_density_chain.append(chain)
-                        aList_density_resno.append(res_number)
-                        aList_density_resname.append(res_name)
-
-                # Case - HIS/SEP (6) 4/6 atoms
-
-                if res_name == 'HIS' or res_name == 'SEP':
-                    if error_count == 4:
-                        aList_density_chain.append(chain)
-                        aList_density_resno.append(res_number)
-                        aList_density_resname.append(res_name)
-
-                # Case - PHE/ARG/TPO (7) 5/7 atoms
-
-                if res_name == 'PHE' or res_name == 'ARG' or res_name == 'TPO':
-                    if error_count == 5:
-                        aList_density_chain.append(chain)
-                        aList_density_resno.append(res_number)
-                        aList_density_resname.append(res_name)
-
-                # Case - TYR (8)/TRP (10)/PTR(12) 5/? atoms
-
-                if res_name == 'TYR' or res_name == 'TRP' or res_name == 'PTR':
-                    if error_count == 6:
-                        aList_density_chain.append(chain)
-                        aList_density_resno.append(res_number)
-                        aList_density_resname.append(res_name)    
-
-            else:
-
-                error_count = 1
-
-            chain_prev = chain
-            res_number_prev = res_number
-
-            count = count + 1
 
         ###################################################################
         # Build tidy error lists by combining error types for each entity #
@@ -4232,7 +3610,7 @@ def Run(argv=None):
         pdb_annotate.append('REMARK 501 OTHER VALIDATION')   
         pdb_annotate.append('REMARK 501 SUBTOPIC: ELECTRON DENSITY (MI ERROR LIST)')
         pdb_annotate.append('REMARK 501')    
-        pdb_annotate.append('REMARK 501 THE FOLLOWING RESIDUES MADE ABNORMAL FITS TO LOCAL DENSITY')
+        pdb_annotate.append('REMARK 501 THE FOLLOWING RESIDUES ARE NEAR DENSITY DIFFERENCE FEATURES')
         pdb_annotate.append('REMARK 501 (M=MODEL NUMBER; RES=RESIDUE NAME; C=CHAIN')
         pdb_annotate.append('REMARK 501 IDENTIFIER; SSSEQ=SEQUENCE NUMBER; I=INSERTION CODE.)')
         pdb_annotate.append('REMARK 501')
@@ -4348,9 +3726,6 @@ def Run(argv=None):
         if write_error == 'no':
             pdb_annotate.append('REMARK 501   THERE WERE NO SEVERE ABNORMALITIES IN THIS CATEGORY')
 
-
-
-
         ################################
         # Insert annotation into PDB   #
         ################################
@@ -4409,122 +3784,97 @@ def Run(argv=None):
         file.write('#\n')
         file.close()        
 
-    #################################################
-    # Create a minimal file launcher (session file) #
-    #################################################
+    ############################################################
+    # Standard file for nomalous difference map when available #
+    ############################################################
 
-    # Obtain a view point 
+    if anomlabel != 'none' and siganomlabel != 'none' and ref_engine == 'refmac5':
 
-    if frag_center != 'none':
-        translation = frag_center
-    else:
-        xmean = 0.0
-        ymean = 0.0
-        zmean = 0.0
-        number_atoms = 0.0
+        fileexists = os.path.exists('anom_diffmap')
+        if fileexists != 0:
+            os.remove('anom_diffmap.map')
 
-        file = open(filename_pdb_full,'r')
-        allLines = file.readlines()
+        fileexists = os.path.exists('mi_anommap_out.mtz')
+        if fileexists != 0:
+            os.remove('mi_anommap_out.mtz')    
+
+        # Combine anomalous coefficients with refined phases back onto the refined mtz
+
+        file = open('mi_cad.inp','w')
+        file.write('LABIN FILE_NUMBER 1 ALL\n')
+        file.write('LABIN FILE_NUMBER 2 ALL\n')                       
+        file.write('END\n')
         file.close()
 
-        for eachLine in allLines:
+        runcad = 'cad HKLIN1 ' + filename_mtz + ' HKLIN2 mi_anommap.mtz HKLOUT mi_anommap_out.mtz < mi_cad.inp > mi_cad.log'
+        os.system(runcad)
 
-            tag = eachLine[0:6]
-            tag = tag.strip()
+        fileexists = os.path.exists('mi_anommap_out.mtz')
+        if fileexists != 0:
+            os.remove('mi_cad.log')
+            os.remove('mi_cad.inp')
+            os.remove('mi_anommap.mtz')
+        else:
+            print 'The CAD run to reattach anomalous difference data seems to have failed'
+            time.sleep(4)
+            return 1       
 
-            if tag == 'ATOM' or tag == 'HETATM':
-                x = eachLine[30:38]
-                y = eachLine[38:46]
-                z = eachLine[46:54]
-                x = float(x)
-                y = float(y)
-                z = float(z)
-                xmean = x + xmean
-                ymean = y + ymean
-                zmean = z + zmean
-                number_atoms = number_atoms + 1.0
+        # Use special CCP4/FFT condition that rotates phases for anomalous difference maps
 
-        xmean = xmean/number_atoms
-        ymean = ymean/number_atoms
-        zmean = zmean/number_atoms
-        xmean = round(xmean,3)
-        ymean = round(ymean,3)
-        zmean = round(zmean,3)
-        xmean = str(xmean)
-        ymean = str(ymean)
-        zmean = str(zmean)
+        file = open('mi_fft.inp','w')
+        file.write('LABIN DANO=')
+        file.write(anomlabel)
+        file.write(' PHI=PHIC\n')
+        file.write('END\n')
+        file.close()
 
-        translation = ' ' + xmean + ' ' + ymean + ' ' + zmean
+        runfft = 'fft HKLIN mi_anommap_out.mtz MAPOUT mi_1ff.map < mi_fft.inp 1> mi_fft.log 2>mi_fft_err.log'
+        os.system(runfft)
 
-    # Write basic session script file
+        os.remove('mi_fft.inp')
+        
+        fileexists = os.path.exists('mi_fft.log')
+        if fileexists != 0:
+            os.remove('mi_fft.log')
+            
+        fileexists = os.path.exists('mi_fft_err.log')
+        if fileexists != 0:
+            os.remove('mi_fft_err.log')          
 
-    file = open(filename_mlw_full,'w')
-    file.write('LoadPDB 1 ')
+        # Note that FFT may fail if anom columns are present but unfilled so not a stop
 
-    fileexists = os.path.exists(filename_ligand_pdb_full)
-    if fileexists != 0:
-        file.write(filename_ligand_pdb_full)
-    else:
-        file.write(filename_pdb_full)
+        fileexists = os.path.exists('mi_1ff.map')
+        if fileexists != 0:
 
-    file.write('\n')
-    file.write('MapColumns FO=FWT PHI=PHWT\n')
-    file.write('LoadMapPhase 1 ')
-    file.write(filename_mtz_full)
-    file.write('\n')
-    file.write('silentmode\n')
-    file.write('coefficients Direct FFT\n')
-    file.write('fftapply\n')
-    file.write('contourlevels 21\n')
-    file.write('contourleveldefault 50.000000 100.000000 150.000000 200.000000 250.000000\n')
-    file.write('contourradius 12.00\n')
-    file.write('maplinewidth 1\n')
-    file.write('color 21\n')
-    file.write('contourcolor 1\n')
-    file.write('color 22\n')
-    file.write('contourcolor 2\n')
-    file.write('color 23\n')
-    file.write('contourcolor 3\n')
-    file.write('color 24\n')
-    file.write('contourcolor 4\n')
-    file.write('color 25\n')
-    file.write('contourcolor 5\n')
-    file.write('contourmap 1\n')
+            print 'Creating anomalous difference map file: anom_diffmap.map'
 
-    file.write('MapColumns FO=DELFWT PHI=PHDELFWT\n')
-    file.write('LoadMapPhase 2 ')
-    file.write(filename_mtz_full)
-    file.write('\n')
-    file.write('silentmode\n')
-    file.write('coefficients Direct FFT\n')
-    file.write('fftapply\n')
-    file.write('contourlevels 31\n')
-    file.write('contourleveldefault -200.000000 -150.000000 150.000000 200.000000 250.000000\n')
-    file.write('contourradius 12.00\n')
-    file.write('maplinewidth 1\n')
-    file.write('color 24\n')
-    file.write('contourcolor 1\n')
-    file.write('color 25\n')
-    file.write('contourcolor 2\n')
-    file.write('color 21\n')
-    file.write('contourcolor 3\n')
-    file.write('color 22\n')
-    file.write('contourcolor 4\n')
-    file.write('color 23\n')
-    file.write('contourcolor 5\n')
-    file.write('contourmap 2\n')
-    
-    file.write('translation ')
-    file.write(translation)
-    file.write('\n')
-    file.write('rotation 1.0000 0.0000 0.0000 0.0000 1.0000 0.0000 0.0000 0.0000 1.0000\n')
-    file.write('zoom 30.00\n')
-    file.write('perspective 0.000\n')
-    file.write('frontclip 3.00\n')
-    file.write('backclip -3.00\n')
-    file.write('transform\n')
-    file.write('stereo off\n')
-    file.close()
+            # Build cell around the protein in the anomalous difference map with CCP4/MAPMASK
+
+            file = open('mi_mapmask.inp','w')
+            file.write('BORDER 5.0\n')
+            file.write('EXTEND XTAL\n')
+            file.write('END\n')
+            file.close()
+
+            runmapmask = 'mapmask XYZIN ' + filename_pdb + ' MAPIN mi_1ff.map MAPOUT anom_diffmap.map < mi_mapmask.inp > mi_mapmask.log'
+            os.system(runmapmask)
+
+            fileexists = os.path.exists('anom_diffmap.map')
+            if fileexists == 0:
+                print 'MAPMASK for anomalous difference map failed'
+                time.sleep(4)
+                return 1
+            else:
+                os.remove('mi_mapmask.inp')
+                os.remove('mi_mapmask.log')
+                os.remove('mi_1ff.map')
+
+            # Rename mtz carrying anomalous data to standard refinement output
+
+            os.remove(filename_mtz)
+            os.rename('mi_anommap_out.mtz',filename_mtz)
+
+            filename_anom_full = os.path.join(workingdir,'anom_diffmap.map')
 
     ######################
     # Append project log #
@@ -4545,9 +3895,7 @@ def Run(argv=None):
     file.write('\nInput data: ')
     file.write(mtzfile)
     file.write('\nInput library: ')
-    file.write(libfile)
-    file.write('\nInput ligand: ')
-    file.write(fragfitfile)
+    file.write(libfile)  
 
     if ref_engine == 'rigid':
         file.write('\nOutput atoms: ')
@@ -4577,17 +3925,13 @@ def Run(argv=None):
         file.write(filename_refmac_full)
         file.write('\nOutput error list: ')
         file.write(filename_errors_full)
-        file.write('\nOutput atoms with ligand fit: ')
-        file.write(filename_ligand_pdb_full)
-
-        if water_pick == 'no' and build == 'no':
-            file.write('\nOptions: none\n')
+        file.write('\nOutput anomalous difference map: ')
+        file.write(filename_anom_full)
 
         if water_pick == 'yes':
             file.write('\nOptions: water-pick\n')
-
-        if build == 'yes':
-            file.write('\nOptions: build\n')
+        else:
+            file.write('\nOptions: none\n')            
 
         file.write('Summary: REFMAC5 Rwork=')
         file.write(rwork)
@@ -4599,20 +3943,14 @@ def Run(argv=None):
         file.write(resolution_output)
 
     if ref_engine == 'shelx':
-        file.write('\nInput hkl data: ')
-        file.write(hkl_file_full)
-        file.write('\nInput ins file: ')
-        file.write(ins_file_full)
+        file.write('\nOutput pdb file: ')        
+        file.write(filename_pdb_full)
+        file.write('\nOutput precomputed map data file: ')
+        file.write(filename_mtz_full)    
         file.write('\nOutput log file: ')
         file.write(filename_log_full)
         file.write('\nOutput lst file: ')
         file.write(filename_lst_full)
-        file.write('\nOutput res file: ')
-        file.write(filename_res_full)
-        file.write('\nOutput fcf file: ')
-        file.write(filename_fcf_full)
-        file.write('\nOutput pdb file: ')
-        file.write(filename_pdb_full)
         file.write('\nOptions: none\n')
         file.write('Summary: SHELXH Rwork=')
         file.write(rwork)

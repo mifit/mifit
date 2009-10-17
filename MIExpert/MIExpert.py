@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 #####################################################################
-# Script: MIExpert                                                  #
-# Release: All                                                      #
 #                                                                   #
 # Master script for all mi_ python scripts                          #
 # Copyright: Molecular Images   2007                                #

@@ -1,6 +1,4 @@
 #####################################################################
-# Script: mi_convertlib.py                                          #
-# Release: All                                                      #
 #                                                                   #
 # Converts a mmCIF restraint dictionary to SHELX or CNS/CNX format  #
 #                                                                   #

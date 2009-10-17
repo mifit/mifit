@@ -1,6 +1,4 @@
 #####################################################################
-# Script: mi_sadphase.py                                            #
-# Release: All                                                      #
 #                                                                   #
 # SAD phasing script using SHELX and CCP4                           # 
 #                                                                   #
@@ -8,8 +6,10 @@
 #                                                                   #
 # This script is distributed under the same conditions as MIFit     #
 #                                                                   #
-# Compatible with CCP4 6.0.1                                        # 
-#                                                                   #
+# Prototype version: Requires testing/enhancement in site finding   #
+# protocols and possible changes to use updated CCP4 software       #
+# in site refinement and phasing                                    #
+#                                                                   # 
 #####################################################################
 
 import sys
@@ -84,6 +84,7 @@ def Run(argv=None):
 
     cc = 'none'
     cc_weak = 'none'
+    resolution_increment = 0.1
 
     refine_method = 'mlphare'
 
@@ -409,7 +410,6 @@ def Run(argv=None):
                 beta = aLine[4]
                 gamma = aLine[5]
                 spacegroup = aLine[6]
-
                 spacegroup = spacegroup.upper()
 
         if acell == 'none' or bcell == 'none' or ccell == 'none' \
@@ -428,6 +428,9 @@ def Run(argv=None):
         file = open(filename_inp,'w')
         file.write('name proj ')
         file.write(shelx_basename)
+        file.write(' crystal 1 dataset 1\n')
+        file.write('wave ')
+        file.write(wavelength)
         file.write('\nsymm ')
         file.write(spacegroup)
         file.write('\nend\n')
@@ -915,7 +918,7 @@ def Run(argv=None):
 
             # decrease resolution for next test
 
-            resolution_search = resolution_search + 0.2
+            resolution_search = resolution_search + resolution_increment
 
         ##############################
         # Assess and Log SHELXD runs #

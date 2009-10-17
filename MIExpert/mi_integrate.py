@@ -1,6 +1,4 @@
 #################################################################
-# Script: mi_integrate.py                                       #
-# Release: Auto                                                 #
 #                                                               #
 # Integrate images and merge with D*TREK                        #
 #                                                               #

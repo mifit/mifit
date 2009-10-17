@@ -1,14 +1,10 @@
 #####################################################################
-# Script: mi_molrep.py                                              #
-# Release: Auto                                                     #
 #                                                                   #
 # Molecular Replacement Script using CCP4/MOLREP or CCP4/PHASER     #
 #                                                                   #
 # Copyright: Molecular Images   2005                                #
 #                                                                   #
 # This script is distributed under the same conditions as MIFit     #
-#                                                                   #
-# Compatible with CCP4 6.0.1                                        #
 #                                                                   #
 #####################################################################
 
@@ -61,6 +57,7 @@ def Run(argv=None):
     sg_search = 'no'
     mr_spacegroup_no = 'none'
     spacegroup_user_input = 'none'
+    spacegroup_name = 'none'
     number_molecules_input = 'auto'
     
     datatype = 'none'
@@ -344,14 +341,39 @@ def Run(argv=None):
 
     if datatype == 'scalepack':
 
-        print 'Input file appears to be from SCALEPACK'        
+        print 'Input file appears to be from SCALEPACK'
+
+        # Obtain initial space group
+
+        count = 0
+        for eachLine in allLines:
+
+            count = count + 1
+
+            if count == 3:
+                aLine = eachLine.split()
+                line_length = len(aLine)
+                if line_length == 7:
+                    spacegroup_name = aLine[6]
+                    spacegroup_name = spacegroup_name.upper()
+
+        if spacegroup_name == 'none':
+            print 'Spacegroup was not found in the SCALEPACK reflection data file'
+            time.sleep(4)
+            return 1
+
+        #        
 
         filename_inp = 'mi_runscalepack2mtz.inp'
         filename_log = 'mi_scalepack2mtz.log'
 
         file = open(filename_inp,'w')
-        file.write('name proj MR\n')
-        file.write('\nend\n')
+        file.write('name project noname crystal 1 dataset 1\n')
+        file.write('symm ')
+        file.write(spacegroup_name)
+        file.write('\n')
+        file.write('wave 0.0\n')
+        file.write('end\n')
         file.close()
 
         runscalepack2mtz = 'scalepack2mtz hklin ' + filename_local_in + ' hklout ' + filename_mtz + ' < ' + filename_inp + ' > ' + filename_log
@@ -1332,11 +1354,18 @@ def Run(argv=None):
                 fileexists = os.path.exists('molrep_origin.pdb')
                 if fileexists != 0:
                     os.remove('molrep.pdb')
-                    os.remove('reforigin.log')
                     os.rename('molrep_origin.pdb','molrep.pdb')
                 else:
                     print 'Warning - REFORIGIN run seems to have failed'
                     time.sleep(4)
+
+                fileexists = os.path.exists('reforigin.log')
+                if fileexists != 0:
+                    os.remove('reforigin.log')     
+
+                fileexists = os.path.exists('reforigin_err.log')
+                if fileexists != 0:
+                    os.remove('reforigin_err.log')                   
 
             ##############################################            
             # Parse diagnostics from MR log and clean-up #
@@ -1473,6 +1502,10 @@ def Run(argv=None):
     fileexists = os.path.exists('mi_molrep_fixed.pdb')
     if fileexists != 0:
         os.remove('mi_molrep_fixed.pdb')
+
+    fileexists = os.path.exists('molrep.btc')
+    if fileexists != 0:
+        os.remove('molrep.btc')   
 
     dir_list = os.listdir(workingdir)
     number_files = len(dir_list)

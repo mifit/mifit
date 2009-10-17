@@ -1,11 +1,10 @@
 #################################################################
-# Script: mi_integrate_mosflm.py                                #
-# Release: Consortium                                           #
 #                                                               #
 # Integrate images with MOSFLM and merge with SCALA             #
 #                                                               #
-#                                                               #
 # Copyright: Molecular Images   2007                            #
+#                                                               #
+# This script is distributed under the same conditions as MIFit #
 #                                                               #
 #################################################################
 
@@ -51,19 +50,14 @@ def Run(argv=None):
     detector_constants = 'none'
     beam_x_image = 'none'
     beam_y_image = 'none'
-    ioversigi_limit = 1.19
+    ioversigi_limit = 1.0
     image_extension = 4
     gain = '1.0'
 
+    second_index = 45
+    second_index_prev = second_index - 1
+
     quote = '''"'''
-
-
-    # Test OS since the publicly available MOSFLM is LINUX only
-
-    test_platform = sys.platform
-    if test_platform.find('win') > -1:
-        print 'OS is WINDOWS. MOSFLM does not run on this platform'
-        return 1
 
     ##################
     # Parse args     #
@@ -118,20 +112,24 @@ def Run(argv=None):
 
     ccp4,error = ccp4check.ccp4check()
     if not ccp4:
-      print '\n' + error + '\n'
-      time.sleep(4)
-      return 1
+        print '\n' + error + '\n'
+        time.sleep(4)
+        return 1
 
-    # Check ipmosflm is in place and called 'ipmosflm'
-    ipmosflm_path = os.path.join(ccp4.bin,'ipmosflm')
+    # Check MOSFLM is in place in standard install directory in CCP4.
+    # Path may be changed for independent installations.
+
+    test_platform = sys.platform
+    if test_platform.find('win') > -1:
+        ipmosflm_path = os.path.join(ccp4.bin,'ipmosflm.exe')        
+    else:   
+        ipmosflm_path = os.path.join(ccp4.bin,'ipmosflm')
 
     fileexists = os.path.exists(ipmosflm_path)
     if fileexists == 0:
-        print '\nMOSFLM executable was not found at',ipmosflm_path
-        print 'Note that MOSFLM is not yet available on Windows\n'
+        print '\nMOSFLM executable was not found as',ipmosflm_path
         time.sleep(4)
         return 1 
-
 
     # Check for image directory
 
@@ -181,83 +179,149 @@ def Run(argv=None):
     else:
         image_dir = os.path.dirname(image_name)
 
-    ##################################################################
-    # Find low and high image numbers if default ('none') was given  #
-    ##################################################################
+    # Find image root from files in folder
 
     aList_image_number = []
     aList_image_number_low = []
     aList_image_number_high = []
+
+    aList_image_root = []
+    aList_image_root_count = []
+    aList_image_file = []
+    aList_image_extension = []   
 
     image_number_low = 99999
     image_number_high = -99999
     image_span = 0
     image_span_prev = 0
 
-    if first_image == 'none' or last_image == 'none':
-        aList_dir = dircache.listdir(image_dir)
-        number_files = len(aList_dir)
+    aList_dir = dircache.listdir(image_dir)
+    number_files = len(aList_dir)
 
-        count = 0
-        while count < number_files:
-            imagefile = aList_dir[count]
+    # Ensure image ranges are set
 
-            # Assume image files have extension .img or .osc preceeded by a 3 or 4 digit number
+    if first_image != 'none':
+        image_number_low = int(first_image)
+    if last_image != 'none':
+        image_number_high = int(last_image)
 
-            if imagefile.find('.img') > -1 or imagefile.find('.osc') > -1:
-                imagefile_split = imagefile.split('.')
-                imagefile_root = imagefile_split[0]
-                i_end = len(imagefile_root)
-                i_start = i_end - 4
+    #
+
+    count = 0
+    while count < number_files:
+        imagefile = aList_dir[count]
+
+        # Detect image files using extension .img or .osc preceeded by a 3 or 4 digit number
+
+        if imagefile.find('.img') > -1 or imagefile.find('.osc') > -1:
+            imagefile_split = imagefile.split('.')
+            imagefile_root = imagefile_split[0]
+            i_end = len(imagefile_root)
+            i_start = i_end - 4
+            image_number = imagefile_root[i_start:i_end]
+
+            if image_number.isdigit() == 1:               
+                image_number = int(image_number)
+                image_extension = 4
+            else:
+                i_start = i_end - 3
                 image_number = imagefile_root[i_start:i_end]
+                image_extension = 3
 
-                if image_number.isdigit() == 1:               
+                if image_number.isdigit() == 1:
                     image_number = int(image_number)
                 else:
-                    i_start = i_end - 3
-                    image_number = imagefile_root[i_start:i_end]
+                    print '\nImage file names must contain 3 or 4 digits preceeding extension .osc/.img\n'
+                    time.sleep(4)
+                    return 1
 
-                    if image_number.isdigit() == 1:
-                        image_number = int(image_number)
-                    else:
-                        print '\nImage file names must contain 3 or 4 digits preceeding extension .osc/.img\n'
-                        time.sleep(4)
-                        return 1
+            # Collect the image number, file name and file root for each image
 
-                aList_image_number.append(image_number)
+            aList_image_number.append(image_number)
+            aList_image_file.append(imagefile)
+            aList_image_extension.append(image_extension)
+                
+            true_imagefile_root = imagefile_root[0:i_start]               
+            aList_image_root.append(true_imagefile_root)
+
+        count = count + 1
+
+    number_of_images = len(aList_image_number)
+
+    if number_of_images < 2:
+        print 'Number of images found was only ',number_of_images
+        time.sleep(4)
+        return 1
+
+    # Get the correct file root - the one with most instances
+
+    count = 0
+    while count < number_of_images:
+
+        test_root = aList_image_root[count]
+        root_count = aList_image_root.count(test_root)
+        aList_image_root_count.append(root_count)
+
+        count = count + 1
+
+    test_count_prev = 0
+    test_count_max = 0
+      
+    count = 0
+    while count < number_of_images:
+
+        test_count = aList_image_root_count[count]
+
+        if test_count > test_count_prev:
+            root_index = count
+            test_count_prev = test_count
+
+        count = count + 1
+
+    true_root_image = aList_image_root[root_index]
+    image_extension = aList_image_extension[root_index]
+
+    # Automated determination of image range
+
+    if first_image == 'none' or last_image == 'none':
+
+        # Find the largest contiguous set of frames with the correct file root
+
+        image_number_target = 0
+        count = 0
+        while count < number_of_images:
+
+            test_image_root = aList_image_root[count]
+
+            if test_image_root == true_root_image and image_number_target == 0:
+                image_number_target = aList_image_number[count]
 
             count = count + 1
 
-        number_of_images = len(aList_image_number)
-
-        if number_of_images < 2:
-            print 'Number of images found was only ',number_of_images
-            time.sleep(4)
-            return 1
-
-        # Find the largest contiguous set of frames (i.e. avoid problems with test shots)
-
-        image_number_target = aList_image_number[0]
-
         count = 0
         while count < number_of_images:
-            image_number = aList_image_number[count]
 
-            # Capture and reset if the image numbers break
+            test_image_root = aList_image_root[count]
 
-            if image_number != image_number_target:
-                aList_image_number_low.append(image_number_low)
-                aList_image_number_high.append(image_number_high)                
-                image_number_low = image_number
-                image_number_high = image_number
+            if test_image_root == true_root_image:
 
-            if image_number < image_number_low:
-                image_number_low = image_number
+                image_number = aList_image_number[count]
 
-            if image_number > image_number_high:
-                image_number_high = image_number
+                # Capture and reset if the image numbers break
 
-            image_number_target = image_number + 1
+                if image_number != image_number_target:
+                    aList_image_number_low.append(image_number_low)
+                    aList_image_number_high.append(image_number_high)                
+                    image_number_low = image_number
+                    image_number_high = image_number
+
+                if image_number < image_number_low:
+                    image_number_low = image_number
+
+                if image_number > image_number_high:
+                    image_number_high = image_number
+
+                image_number_target = image_number + 1
 
             count = count + 1
 
@@ -288,101 +352,56 @@ def Run(argv=None):
         if last_image == 'none':
             last_image = str(image_number_high)
 
-    # Check the image selection for continuity
-
-    aList_dir = dircache.listdir(image_dir)
-    number_files = len(aList_dir)
-
-    image_number_first = int(first_image)
-    image_number_last = int(last_image)
-    image_number_target = image_number_first + 1
-
-    count = 0
-    while count < number_files:
-        imagefile = aList_dir[count]
-
-        # Assume image file has extension .img or .osc preceeded by a 3 or 4 digit number
-
-        if imagefile.find('.img') > -1 or imagefile.find('.osc') > -1:
-            imagefile_split = imagefile.split('.')
-            imagefile_root = imagefile_split[0]
-            i_end = len(imagefile_root)
-            i_start = i_end - 4
-            image_number = imagefile_root[i_start:i_end]
-
-            if image_number.isdigit() == 1:               
-                image_number = int(image_number)
-                image_extension = 4
-            else:
-                i_start = i_end - 3
-                image_number = imagefile_root[i_start:i_end]
-
-                if image_number.isdigit() == 1:
-                    image_number = int(image_number)
-                    image_extension = 3
-                else:
-                    print '\nContinuity - image file names must contain 3 or 4 digits preceeding extension .osc/.img\n'
-                    time.sleep(4)
-                    return 1
-
-            if image_number > image_number_first and image_number < image_number_last:
-                if image_number != image_number_target:
-                    image_number = str(image_number)
-                    print '\nThere is a break in the image number sequence at image:',image_number
-                    time.sleep(4)
-                    return 1                
-
-            image_number_target = image_number + 1
-
-            # Set template image to first image if not defined
-
-            if image_name == 'none':
-
-                test_image_number = int(image_number)
-                test_image_number = str(test_image_number)
-
-                if test_image_number == first_image:
-                    image_name = os.path.join(image_dir,imagefile)               
-
-        count = count + 1
+    #############################
+    # Setup program parameters  #
+    #############################
 
     # Total number of images
 
-    number_images = image_number_last - image_number_first + 1
+    number_images = image_number_high - image_number_low + 1
 
-    # Establish the indexing images
+    # Establish the indexing and refinement images
 
-    index_first = image_number_first
+    index_first = image_number_low
+    refine_segment1_first = image_number_low
+    refine_segment1_last = image_number_low + 3
+    cell_refine_images_segment1 = str(refine_segment1_first) + ' to ' + str(refine_segment1_last)
 
-    if number_images > 45:
-         index_second = 45
+    if number_images > second_index:
+        index_second = image_number_low + second_index_prev
+        refine_segment2_last = image_number_low + second_index_prev
+ 
     else:
-         index_second = image_number_last
+        index_second = image_number_high
+        refine_segment2_last = image_number_high
+
+    refine_segment2_first = refine_segment2_last - 3
+    cell_refine_images_segment2 = str(refine_segment2_first) + ' to ' + str(refine_segment2_last)   
 
     image_seq_find = str(index_first) + ' ' + str(index_second)
 
-    # Establish the cell refinement images as two separated segments
-
-    refine_segment1_first = image_number_first
-    refine_segment1_last = image_number_first + 3
-    cell_refine_images_segment1 = str(refine_segment1_first) + ' to ' + str(refine_segment1_last)
-
-    number_images = image_number_last - image_number_first + 1
-
-    if number_images > 45:
-         refine_segment2_last = 45
-    else:
-         refine_segment2_last = image_number_last
-
-    refine_segment2_first = refine_segment2_last - 3
-    cell_refine_images_segment2 = str(refine_segment2_first) + ' to ' + str(refine_segment2_last)
-
-    # Check template image is now set
+    # Set template image name to first image if not defined
 
     if image_name == 'none':
-        print 'Automated identification of the template image failed'
-        time.sleep(4)
-        return 1
+    
+        count = 0
+        while count < number_of_images:
+
+            test_image_number = aList_image_number[count]
+            test_image_number = str(test_image_number)
+            
+            test_image_root = aList_image_root[count]
+
+            if test_image_root == true_root_image and test_image_number == first_image:
+                imagefile = aList_image_file[count]
+                image_name = os.path.join(image_dir,imagefile)
+
+            count = count + 1    
+
+        if image_name == 'none':
+            print 'Automated identification of the template image failed'
+            time.sleep(4)
+            return 1
 
     # Establish MOSFLM style templates
 
@@ -470,6 +489,8 @@ def Run(argv=None):
     print 'Merging resolution limits:',merging_res
     print 'Expected space group number:',dt_spacegroup
 
+    time.sleep(5)
+
     if beam_x != 'none':
         print 'Using input beam center:',beam_x,beam_y
 
@@ -518,9 +539,9 @@ def Run(argv=None):
         file.write('TEMPLATE ')
         file.write(mosflm_template)
         file.write('\n') 
-        file.write('DIRECTORY ')
+        file.write('DIRECTORY "')
         file.write(image_dir)
-        file.write('\n')
+        file.write('"\n')
 
         # Apply user specified beam center if given
 
@@ -556,7 +577,8 @@ def Run(argv=None):
 
         # Execute
 
-        os.system('ipmosflm < mi_mosflm_index.inp > mi_mosflm_index.log')
+        runmosflm = ipmosflm_path + ' < mi_mosflm_index.inp > mi_mosflm_index.log'
+        os.system(runmosflm)
 
         fileexists = os.path.exists('NEWMAT')
         if fileexists != 0:
@@ -616,9 +638,9 @@ def Run(argv=None):
         file.write('TEMPLATE ')
         file.write(mosflm_template)
         file.write('\n') 
-        file.write('DIRECTORY ')
+        file.write('DIRECTORY "')
         file.write(image_dir)
-        file.write('\n')
+        file.write('"\n')
 
         file.write('MATRIX NEWMAT\n')
 
@@ -677,7 +699,8 @@ def Run(argv=None):
 
         # Execute
 
-        os.system('ipmosflm < mi_mosflm_refine.inp > mi_mosflm_refine.log')
+        runmosflm = ipmosflm_path +  ' < mi_mosflm_refine.inp > mi_mosflm_refine.log'
+        os.system(runmosflm)
 
         fileexists = os.path.exists('NEWMAT_REFINED')
         if fileexists != 0:
@@ -728,9 +751,9 @@ def Run(argv=None):
         file.write('TEMPLATE ')
         file.write(mosflm_template)
         file.write('\n') 
-        file.write('DIRECTORY ')
+        file.write('DIRECTORY "')
         file.write(image_dir)
-        file.write('\n')
+        file.write('"\n')
 
         file.write('MATRIX NEWMAT_REFINED\n')
         file.write('GENFILE GENFILE\n')
@@ -793,7 +816,8 @@ def Run(argv=None):
 
         # Execute
 
-        os.system('ipmosflm < mi_mosflm_integrate.inp > mi_mosflm_integrate.log')
+        runmosflm = ipmosflm_path + ' < mi_mosflm_integrate.inp > mi_mosflm_integrate.log' 
+        os.system(runmosflm)
 
         fileexists = os.path.exists('mi_integration.mtz')
         if fileexists != 0:
@@ -838,6 +862,7 @@ def Run(argv=None):
             time.sleep(4)
             return 1
         else:
+            os.remove('mi_integration.mtz')
             os.rename('mi_integration_sorted.mtz','mi_integration.mtz')
             os.remove('mi_sortmtz.inp')
             os.remove('mi_sortmtz.log')
@@ -881,12 +906,9 @@ def Run(argv=None):
 
     # Protocol allows for some decay
 
-    #file.write('SCALES ROTATION SPACING 5 SECONDARY 6 TAILS BFACTOR OFF\n')
-
     file.write('SCALES ROTATION SPACING 5 SECONDARY 6 TAILS BFACTOR ON BROTATION SPACING 20\n')
     file.write('TIE BFACTOR 0.5\n')
-
-    file.write('REJECT 6 ALL 8\n')
+    file.write('REJECT 6 6 ALL -8 -8\n')   
     file.write('EXCLUDE EMAX 10\n')
 
     if merging_res != 'none':
@@ -945,6 +967,7 @@ def Run(argv=None):
 
     ####################################################################
     # (Re) Scale and average the integrated and profile-fitted reflns  #
+    # This is approximate - may be better criteria available           # 
     ####################################################################
 
     # Capture table data to see how initial merging went (note: depend on precise SCALA file format)
@@ -1035,13 +1058,9 @@ def Run(argv=None):
             file.write('CYCLES 20\n')
             file.write('ANOMALOUS OFF\n')
             file.write('SDCORRECTION 1.3 0.02\n')  
-
-            #file.write('SCALES ROTATION SPACING 5 SECONDARY 6 TAILS BFACTOR OFF\n')
-
             file.write('SCALES ROTATION SPACING 5 SECONDARY 6 TAILS BFACTOR ON BROTATION SPACING 20\n')
             file.write('TIE BFACTOR 0.5\n')
-
-            file.write('REJECT 6 ALL 8\n')
+            file.write('REJECT 6 6 ALL -8 -8\n')
             file.write('EXCLUDE EMAX 10\n')
             file.write('RESOLUTION HIGH ')
             file.write(res_to_process)
@@ -1066,7 +1085,7 @@ def Run(argv=None):
                 runtime = time.ctime(time.time())
 
                 file = open('autoprocess.log','a')
-                file.write('Remerging done                : ')
+                file.write('Remerging done              : ')
                 file.write(runtime)
                 file.write('\n')
                 file.close()

@@ -1,6 +1,4 @@
 #####################################################################
-# Script: mi_restraints.py                                          #
-# Release: All                                                      #
 #                                                                   #
 # Script to automatically builds complete restraint libraries for   #
 # for CCP4/REFMAC5:                                                 #

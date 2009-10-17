@@ -1,6 +1,4 @@
 #################################################################
-# Script: mi_deposit3d.py                                       #
-# Release: All                                                  #
 #                                                               #
 # Prepares an mmCIF annotation file that may be used for        #
 # report generation or PDB structure deposition                 #

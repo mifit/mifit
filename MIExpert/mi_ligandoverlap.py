@@ -1,6 +1,4 @@
 #####################################################################
-# Script: mi_ligandoverlap.py                                       #
-# Release: Auto                                                     #
 #                                                                   #
 # Overlap and compare ligands in related structures                 # 
 #                                                                   #
