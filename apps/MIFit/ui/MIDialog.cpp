@@ -25,7 +25,6 @@
 #include "BValueColors.h"
 #include "AtomColors.h"
 #include "LSQFitDialog.h"
-#include "BindNGrind.h"
 #include "IntegrateDialog.h"
 #include "SadPhasing.h"
 #include "NCSModeling.h"
@@ -767,27 +766,6 @@ bool MILSQFitDialog::PromptForResults(MIData& data) {
   dlg.GetData(data);
   return true;
 }
-
-//
-// BindNGrindDialog
-//
-MIBindNGrindDialog::MIBindNGrindDialog(QWidget* parent, const std::string& name)
-  : MIDialog(parent, name) {
-}
-
-void MIBindNGrindDialog::GetInitialData(MIData& data) {
-  BindNGrind::GetInitialData(data);
-}
-
-bool MIBindNGrindDialog::PromptForResults(MIData& data) {
-  static BindNGrind dlg(_qparent);
-  dlg.InitializeFromData(data);
-  if (dlg.exec() != QDialog::Accepted) {
-    return false;
-  }
-  return dlg.GetData(data);
-}
-
 
 //
 // IntegrateDialogDialog

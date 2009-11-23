@@ -270,21 +270,6 @@ private:
   //          chainId.str
 };
 
-class MIBindNGrindDialog : public MIDialog {
-public:
-  MIBindNGrindDialog(QWidget* parent, const std::string& name);
-  void GetInitialData(MIData &dat);
-
-private:
-  bool PromptForResults(MIData& data);
-  //variables:
-  //    hklin.strList, pdbin.str, process_engine.str, arpwarpmap.b,
-  //    detector_constants.str, spacegroup_no.radio, reference_mtz.str,
-  //    multi_search.b, libfile.str, viewpoint_method.str, bngsummary.str
-  //    place_ligand.b, ligand_name.str, ligand_from_dictionary.b
-
-};
-
 class MIIntegrateDialog : public MIDialog {
 public:
   MIIntegrateDialog(QWidget* parent, const std::string& name);
