@@ -22,6 +22,8 @@
 #include "MIMainWindow.h"
 #include "molw.h" // for cursors
 
+#include <script/LocalSocketScript.h>
+
 #include <QApplication>
 #include <QDir>
 #include <QFileDialog>
@@ -779,7 +781,7 @@ void Application::Init() {
   MISetTorsionWritePrompt(new myTorsionWritePrompt());
   MISetMolPrefsHandler(new myMolPrefsHandler());
 
-  new LocalSocketScript(MIMainWindow::instance());
+  _localSocketScript = new LocalSocketScript(MIMainWindow::instance());
 }
 
 //FIXME: previous dictionary is leaked!
@@ -1263,4 +1265,9 @@ QString Application::getExistingDirectory(QWidget* parent, const QString& captio
         Application::instance()->latestFileBrowseDirectory(dir);
     }
     return dir;
+}
+
+const LocalSocketScript& Application::localSocketScript() const
+{
+    return *_localSocketScript;
 }

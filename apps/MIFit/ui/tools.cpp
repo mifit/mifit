@@ -32,6 +32,7 @@
 #include "MIMainWindow.h"
 #include "molw.h"
 #include "ui/MIDialog.h"
+#include <script/LocalSocketScript.h>
 
 using namespace chemlib;
 
@@ -155,82 +156,19 @@ bool Tools::VerifyCCP4() {
 }
 
 void Tools::OnBindNGrind() {
-  if (!VerifyMIExpert() || !VerifyCCP4()) {
-    return;
-  }
   QString python = pythonExe();
   if (python.isEmpty())
       return;
 
-  BatchJob* job;
+  BatchJob* job = MIMainWindow::instance()->GetJobManager()->CreateJob();
 
-  static MIBindNGrindDialog dlg(MIMainWindow::instance(), "Cocrystal Solution");
-  MIData data;
-  dlg.GetInitialData(data);
-  if (!dlg.GetResults(data)) {
-    return;
-  }
-
-  QStringList args;
-  args << MIExpertPy() << "bng";
-
-  for (unsigned int i=0; i < data["hklin"].strList.size(); ++i ) {
-    args << "--hklin" << buildAbsPath(data["hklin"].strList[i].c_str());
-    args << "--workdir" << "none";
-  }
-  args << "--pdbin" << buildAbsPath(data["pdbin"].str.c_str());
-  args << "--process_engine" << data["process_engine"].str.c_str();
-
-  args << "--arpwarpmap" << (data["arpwarpmap"].b ? "yes" : "no");
-
-  if (data["detector_constants"].str.size()) {
-    args << "--detector_constants" << data["detector_constants"].str.c_str();
-  }
-
-  if (data["spacegroup_no"].radio != 0) {
-      args << "--spacegroup_no" << QString::number(data["spacegroup_no"].radio);
-  }
-  args << "--reference_mtz" << buildAbsPath(data["reference_mtz"].str.c_str());
-
-  args << "--multi_search" << (data["multi_search"].b ? "yes" : "no");
-
-  args << "--libfile" << buildAbsPath(data["libfile"].str.c_str());
-
-  args << data["viewpoint_method"].str.c_str();
-  if (data["bngsummary"].str.size()) {
-      args << "--bngsummary" << buildAbsPath(data["bngsummary"].str.c_str());
-  }
-  args << "--mifit" << "no";
-
-  job = MIMainWindow::instance()->GetJobManager()->CreateJob();
-  job->setJobName("Cocrystal Solution");
-
-  QString lig;
-  /* Handle Place Ligand checkbox */
-  if (data["place_ligand"].b && data["viewpoint_method"].str.size()) {
-    if (data["ligand_from_dictionary"].b) {
-      RESIDUE* dictres = MIFitDictionary()->GetDictResidue(data["ligand_name"].str.c_str(), 0);
-      RESIDUE* reslist = new RESIDUE(*dictres);
-      Molecule model(reslist, "Dictionary", NULL, NULL, 0, MoleculeType::Other);
-      lig = "dictlig.pdb";
-      FILE* ligOut = fopen(lig.toAscii().constData(), "w");
-      chemlib::PDB fpdb;
-      MIMolInfo mi;
-      mi.res = model.getResidues();
-      mi.bonds = model.getBonds();
-      fpdb.Write(ligOut, mi);
-      fclose(ligOut);
-    } else {
-      lig = data["ligand_name"].str.c_str();
-    }
-    args << "--fragfit" << lig;
-  }
-  args << "--molimagehome" << buildAbsPath(Application::instance()->MolimageHome.c_str());
-
-  QFileInfo hklin(data["hklin"].strList[0].c_str());
-  QDir workdir = hklin.absoluteDir();
   job->setProgram(python);
+  QStringList args;
+  args << MIExpertScript("mi_bng_ui.py")
+          << Application::instance()->localSocketScript().name();
   job->setArguments(args);
+  job->setWorkingDirectory(Application::instance()->latestFileBrowseDirectory(""));
+
   job->StartJob();
 }
 

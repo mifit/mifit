@@ -33,3 +33,24 @@ bool MIFitScriptObject::writeCurrentModel(const QString& file)
     QFileInfo fileInfo(file);
     return model->SavePDBFile(fileInfo.absoluteFilePath().toAscii().constData());
 }
+
+QStringList MIFitScriptObject::dictionaryResidueList()
+{
+    QStringList result;
+    std::vector<std::string> choices = MIFitDictionary()->GetDictResList();
+    for (size_t i = 0; i < choices.size(); ++i) {
+        result << choices[i].c_str();
+    }
+    return result;
+}
+
+QStringList MIFitScriptObject::spacegroupList()
+{
+    std::vector<std::string> sg;
+    MIGetSpacegroups(sg);
+    QStringList result;
+    for (size_t i = 0; i < sg.size(); ++i) {
+        result << sg[i].c_str();
+    }
+    return result;
+}

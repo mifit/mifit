@@ -1,5 +1,6 @@
 #include "LocalSocketScript.h"
 #include <nongui/nonguilib.h>
+#include <QBuffer>
 #include <QDataStream>
 #include <QLocalServer>
 #include <QLocalSocket>
@@ -61,7 +62,6 @@ void LocalSocketScript::handleConnection()
         }
         Logger::log(("script: " + script).toStdString());
 
-        QByteArray data;
         QString result;
         QScriptValue scriptResult = engine->evaluate(script, name_);
         if (engine->hasUncaughtException()) {
@@ -76,8 +76,17 @@ void LocalSocketScript::handleConnection()
         }
 
         Logger::log(("script result: " + result).toStdString());
-        stream << result;
-        connection->flush();
+
+        QByteArray data;
+        QDataStream outStream(&data, QIODevice::WriteOnly);
+        outStream.setVersion(QDataStream::Qt_4_0);
+        outStream << static_cast<qint64>(0);
+        outStream << result;
+        outStream.device()->seek(0);
+        outStream << static_cast<qint64>(data.size() - sizeof(qint64));
+        connection->write(data);
+
         connection->disconnectFromServer();
+        Logger::log("script done");
     }
 }

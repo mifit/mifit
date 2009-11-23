@@ -2,6 +2,7 @@
 #define script_MIFitScriptObject_h
 
 #include <QObject>
+#include <QStringList>
 class QScriptEngine;
 
 class MIFitScriptObject : public QObject
@@ -15,6 +16,8 @@ public:
 public slots:
     QString version();
     bool writeCurrentModel(const QString& file);
+    QStringList dictionaryResidueList();
+    QStringList spacegroupList();
 
 private:
     QScriptEngine* engine;
