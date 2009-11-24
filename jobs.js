@@ -21,7 +21,7 @@ var jobs = [
         menuName: "&Refinement",
         jobName: "Refinement",
         executable: "python",
-        arguments: [ mifit.directory() + "/MIExpert/mi_integrate_ui.py" ]
+        arguments: [ mifit.directory() + "/MIExpert/mi_refine_ui.py" ]
     },
     {
         menuName: "C&ocrystal Solution",
@@ -58,6 +58,12 @@ var jobs = [
         jobName: "Convert CIF to CNX",
         executable: "python",
         arguments: [ mifit.directory() + "/MIExpert/mi_convertlib_ui.py", "--refprogram", "cns" ]
+    },
+    {
+        menuName: "R&efmac5 restraints",
+        jobName: "Refmac5 restraints",
+        executable: "python",
+        arguments: [ mifit.directory() + "/MIExpert/mi_restraints_ui.py" ]
     }
 ];
 

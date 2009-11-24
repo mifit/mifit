@@ -158,86 +158,19 @@ bool Tools::VerifyCCP4() {
 }
 
 void Tools::OnBindNGrind() {
-  QString python = pythonExe();
-  if (python.isEmpty())
-      return;
-
-  BatchJob* job = MIMainWindow::instance()->GetJobManager()->CreateJob();
-
-  job->setProgram(python);
-  QStringList args;
-  args << MIExpertScript("mi_bng_ui.py")
-          << Application::instance()->localSocketScript().name();
-  job->setArguments(args);
-  job->setWorkingDirectory(Application::instance()->latestFileBrowseDirectory(""));
-
-  job->StartJob();
 }
 
 void Tools::CIFConvertlib(const char* format)
 {
-  QString python = pythonExe();
-  if (python.isEmpty())
-      return;
-
-  BatchJob* job = MIMainWindow::instance()->GetJobManager()->CreateJob();
-
-  job->setProgram(python);
-  QStringList args;
-  args << MIExpertScript("mi_convertlib_ui.py")
-          << "--refprogram" << format;
-  job->setArguments(args);
-  job->setWorkingDirectory(Application::instance()->latestFileBrowseDirectory(""));
-
-  job->StartJob();
 }
 
 void Tools::OnCIF2Shellx() {
-  CIFConvertlib("shelx");
 }
 
 void Tools::OnCIF2CNS() {
-  CIFConvertlib("cns");
 }
 
 void Tools::OnMolRep() {
-  if (!VerifyMIExpert() || !VerifyCCP4()) {
-    return;
-  }
-  QString python = pythonExe();
-  if (python.isEmpty())
-      return;
-
-  static MIMolRepDialog dlg(MIMainWindow::instance(), "Molecular Replacement");
-  MIData data;
-  dlg.GetInitialData(data);
-  if (!dlg.GetResults(data)) {
-    return;
-  }
-
-  QStringList args;
-  args << MIExpertPy() << "molrep";
-  args << "--engine" << data["engine"].str.c_str();
-  if (data["spacegroup_no"].radio != 0) {
-      args << "--spacegroup" << QString::number(data["spacegroup_no"].radio);
-  } else if (data["sg_search"].b) {
-    args << "--sg_search" << "yes";
-  }
-  args << "--pdbfile" << buildAbsPath(data["model"].str.c_str())
-          << "--mtzfile" << buildAbsPath(data["mtzfile"].str.c_str())
-          << "--workdir" << buildAbsPath(data["workdir"].str.c_str())
-          << "--multi_search" << (data["multi_search"].b ? "yes": "no")
-          << "--match_pdbin" << (data["match_pdbin"].b ? "yes": "no")
-          << "--copies" << QString::number(data["copies"].u);
-  if (!data["fixed_pdb"].str.empty())
-    args << "--fixed_pdb" << buildAbsPath(data["fixed_pdb"].str.c_str());
-
-  BatchJob* job = MIMainWindow::instance()->GetJobManager()->CreateJob();
-  job->setJobName("Molrep");
-  job->setProgram(python);
-  job->setArguments(args);
-  job->setWorkingDirectory(data["workdir"].str.c_str());
-  job->StartJob();
 }
 
 void Tools::OnRefmacRestraints() {
@@ -266,35 +199,9 @@ void Tools::OnRefmacRestraints() {
 }
 
 void Tools::OnRefine() {
-    QString python = pythonExe();
-    if (python.isEmpty())
-        return;
-
-    BatchJob* job = MIMainWindow::instance()->GetJobManager()->CreateJob();
-    job->setJobName("Refinement");
-    job->setProgram(python);
-    QStringList args;
-    args << MIExpertScript("mi_refine_ui.py");
-    job->setArguments(args);
-    job->setWorkingDirectory(Application::instance()->latestFileBrowseDirectory(""));
-
-    job->StartJob();
 }
 
 void Tools::OnJobReport() {
-    QString python = pythonExe();
-    if (python.isEmpty())
-        return;
-
-    BatchJob* job = MIMainWindow::instance()->GetJobManager()->CreateJob();
-    job->setJobName("Report");
-    job->setProgram(python);
-    QStringList args;
-    args << MIExpertScript("mi_deposit3d_ui.py");
-    job->setArguments(args);
-    job->setWorkingDirectory(Application::instance()->latestFileBrowseDirectory(""));
-
-    job->StartJob();
 }
 
 void Tools::OnCoCrystalSuperPos() {
@@ -330,103 +237,9 @@ void Tools::OnCoCrystalSuperPos() {
 }
 
 void Tools::OnSadPhasing() {
-  if (!VerifyMIExpert() || !VerifyCCP4()) {
-    return;
-  }
-  QString python = pythonExe();
-  if (python.isEmpty())
-      return;
-
-  static MISadPhasingDialog dlg(MIMainWindow::instance(), "SAD Phasing");
-  MIData data;
-  dlg.GetInitialData(data);
-  if (!dlg.GetResults(data)) {
-    return;
-  }
-
-  QStringList args;
-  args << MIExpertPy() << "sadphase";
-  args << "--molimagehome \"" + buildAbsPath(Application::instance()->MolimageHome.c_str());
-  args << "--workdir" << buildAbsPath(data["workdir"].str.c_str());
-  args << "--saddatafile" << buildAbsPath(data["saddatafile"].str.c_str());
-  args << "--sitefile" << buildAbsPath(data["sitefile"].str.c_str());
-  args << "--scatterer" << data["scatterer"].str.c_str();
-  args << "--sitenumber" << QString::number(data["sitenumber"].u);
-  args << "--ssnumber" << QString::number(data["ssnumber"].u);
-  args << "--separation" << QString::number(data["separation"].f);
-  args << "--solventfraction" << QString::number(data["solventfraction"].f);
-  args << "--siterefinemethod" << data["siterefinemethod"].str.c_str();
-  if (!Application::instance()->ShelxHome.empty()) {
-    args << "--shelx_dir" << buildAbsPath(Application::instance()->ShelxHome.c_str());
-  }
-  args << "--bothhands" << (data["bothhands"].b ? "yes" : "no");
-  if (data["change_spacegroup"].b ) {
-    args << "--spacegroup_no" << QString::number(data["spacegroup_no"].radio);
-  }
-
-  BatchJob* job = MIMainWindow::instance()->GetJobManager()->CreateJob();
-  job->setJobName("SAD phasing");
-  job->setProgram(python);
-  job->setArguments(args);
-  job->setWorkingDirectory(data["workdir"].str.c_str());
-  job->StartJob();
 }
 
 void Tools::OnNCSModeling() {
-  if (!VerifyMIExpert() || !VerifyCCP4()) {
-    return;
-  }
-  QString python = pythonExe();
-  if (python.isEmpty())
-      return;
-
-  static MINCSModelingDialog dlg(MIMainWindow::instance(), "NCS Modeling");
-  MIData data;
-  dlg.GetInitialData(data);
-  if (!dlg.GetResults(data)) {
-    return;
-  }
-
-  //Write a PDB of current model
-  MIGLWidget* doc = MIMainWindow::instance()->currentMIGLWidget();
-  if (!doc)
-    return;
-  Molecule* model = doc->GetDisplaylist()->GetCurrentModel();
-  QDir workdir(data["workdir"].str.c_str());
-  QString pdbout = buildAbsPath(workdir.absoluteFilePath(
-          QString("%1_out.pdb").arg(QFileInfo(doc->GetTitle().c_str()).fileName())));
-  model->SavePDBFile(pdbout.toAscii().constData());
-
-  QStringList args;
-  args << MIExpertPy() << "ncsmodeler"
-          << "--pdbfile" << pdbout
-          << "--targetchain" << data["chainid"].str.c_str();
-  if (!data["model"].str.empty()) {
-    args << "--preserve_model" << buildAbsPath(data["model"].str.c_str());
-  }
-  if (!data["maskadditions"].str.empty()) {
-    args << "--maskextras" << buildAbsPath(data["maskadditions"].str.c_str());
-  }
-  if (!data["mtzdata"].str.empty()) {
-    args << "--mtzfile" << buildAbsPath(data["mtzdata"].str.c_str());
-    switch (data["phasecalc"].radio) {
-      case 0:
-        break;
-      case 1:
-        args << "--phase_prob" << "yes";
-        break;
-      case 2:
-        args << "--phase_comb" << "yes";
-        break;
-    }
-  }
-
-  BatchJob* job = MIMainWindow::instance()->GetJobManager()->CreateJob();
-  job->setJobName("NCS Modeling");
-  job->setProgram(python);
-  job->setArguments(args);
-  job->setWorkingDirectory(workdir.absolutePath());
-  job->StartJob();
 }
 
 void Tools::OnCustom()
@@ -560,25 +373,6 @@ void Tools::FillToolsMenu(QMenu* parent) {
             Logger::log(result.toStdString());
         }
     }
-
-//    actions += parent->addAction("&Integrate with d*TREK", this, SLOT(OnIntegrate()));
-//    actions += parent->addAction("&SAD Phasing", this, SLOT(OnSadPhasing()));
-//
-//    QMenu* convcif_menu = new QMenu("&Convert CIF to", parent);
-//    convcif_menu->addAction("&SHELX", this, SLOT(OnCIF2Shellx()));
-//    convcif_menu->addAction("&CNS / CNX", this, SLOT(OnCIF2CNS()));
-//    actions += parent->addMenu(convcif_menu);
-//
-//    actions += parent->addAction("S&et Refmac5 restraints", this, SLOT(OnRefmacRestraints()));
-//    actions += parent->addAction("&Molecular Replacement", this, SLOT(OnMolRep()));
-//    actions += parent->addAction("&Refinement", this, SLOT(OnRefine()));
-//    actions += parent->addAction("C&ocrystal Solution", this, SLOT(OnBindNGrind()));
-//    actions += parent->addAction("Re&port", this, SLOT(OnJobReport()));
-//
-//    parent->addSeparator();
-//    docActions += parent->addAction("&NCS Modeling", this, SLOT(OnNCSModeling()));
-//    docActions += parent->addAction("Cocr&ystal Superposition", this, SLOT(OnCoCrystalSuperPos()));
-
 }
 
 void Tools::OnUpdateForJobLimit() {
@@ -595,44 +389,6 @@ void Tools::OnUpdateForJobLimit() {
 
 
 void Tools::OnIntegrate() {
-  if (!VerifyMIExpert() || !VerifyCCP4()) {
-    return;
-  }
-  QString python = pythonExe();
-  if (python.isEmpty())
-      return;
-
-  static MIIntegrateDialog dlg(MIMainWindow::instance(), "Integrate");
-  MIData data;
-  dlg.GetInitialData(data);
-  if (!dlg.GetResults(data)) {
-    return;
-  }
-
-  BatchJob* job = MIMainWindow::instance()->GetJobManager()->CreateJob();
-  job->setJobName("Integrate");
-
-  QStringList args;
-  args << MIExpertPy() << "integrate";
-  args << "--template_image" << data["template_image"].str.c_str();
-  if (data["detector_constants"].str.size()) {
-    args << "--detector_constants" << buildAbsPath(data["detector_constants"].str.c_str());
-  }
-  args << "--spacegroup" << QString::number(data["spacegroup_no"].radio);
-  if (data["first_image"].u != UINT_MAX) {
-      args << "--first_image" << QString::number(data["first_image"].u);
-  }
-  if (data["last_image"].u != UINT_MAX) {
-      args << "--last_image" << QString::number(data["last_image"].u);
-  }
-  if (data["integrate_resolution"].str.size()) {
-    args << "--integrate_resolution" << data["integrate_resolution"].str.c_str();
-  }
-
-  job->setProgram(python);
-  job->setArguments(args);
-
-  job->StartJob();
 }
 
 Tools::Tools() : QObject(0)
