@@ -205,35 +205,6 @@ void Tools::OnJobReport() {
 }
 
 void Tools::OnCoCrystalSuperPos() {
-  if (!VerifyMIExpert() || !VerifyCCP4()) {
-    return;
-  }
-  QString python = pythonExe();
-  if (python.isEmpty())
-      return;
-
-  static MICocrystalSuperpositionDialog dlg(MIMainWindow::instance(), "Cocrystal superposition");
-  MIData data;
-  dlg.GetInitialData(data);
-  if (!dlg.GetResults(data)) {
-    return;
-  }
-
-  QStringList args;
-  args << MIExpertPy() << "ligandoverlap";
-  args << "--workdir" << buildAbsPath(data["workdir"].str.c_str());
-  args << "--pdbdir" << buildAbsPath(data["pdbdir"].str.c_str());
-  args << "--targetpdb" << buildAbsPath(data["targetpdb"].str.c_str());
-  args << "--targetsite" << QString::number(data["x"].f, 'f', 3)
-          << QString::number(data["y"].f, 'f', 3)
-          << QString::number(data["z"].f, 'f', 3);
-
-  BatchJob* job = MIMainWindow::instance()->GetJobManager()->CreateJob();
-  job->setJobName("Cocrystal Superpos");
-  job->setProgram(python);
-  job->setArguments(args);
-  job->setWorkingDirectory(data["workdir"].str.c_str());
-  job->StartJob();
 }
 
 void Tools::OnSadPhasing() {

@@ -270,59 +270,5 @@ private:
   //          chainId.str
 };
 
-class MIIntegrateDialog : public MIDialog {
-public:
-  MIIntegrateDialog(QWidget* parent, const std::string& name);
-  void GetInitialData(MIData &dat);
-
-private:
-  bool PromptForResults(MIData& data);
-  //variables:
-  //  template_image.strList, detector_constants.str,
-  //  spacegroup_no.radio, first_image.u, last_image.u,
-  //  integrate_resolution.str
-};
-
-class MISadPhasingDialog : public MIDialog {
-public:
-  MISadPhasingDialog(QWidget* parent, const std::string& name);
-  void GetInitialData(MIData &dat);
-
-private:
-  bool PromptForResults(MIData& data);
-  //variables:
-  //  template_image.strList, detector_constants.str,
-  //  spacegroup_no.radio, first_image.u, last_image.u,
-  //  integrate_resolution.str
-};
-
-
-class MINCSModelingDialog : public MIDialog {
-public:
-  MINCSModelingDialog(QWidget* parent, const std::string& name);
-  void GetInitialData(MIData &dat);
-
-private:
-  bool PromptForResults(MIData& data);
-};
-
-class MICocrystalSuperpositionDialog : public MIDialog {
-public:
-  MICocrystalSuperpositionDialog(QWidget* parent, const std::string& name);
-  void GetInitialData(MIData &dat);
-
-private:
-  bool PromptForResults(MIData& data);
-};
-
-class MIMolRepDialog : public MIDialog {
-public:
-  MIMolRepDialog(QWidget* parent, const std::string& name);
-  void GetInitialData(MIData &dat);
-
-private:
-  bool PromptForResults(MIData& data);
-};
-
 #endif
 
