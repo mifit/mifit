@@ -280,63 +280,19 @@ void Tools::OnRefine() {
 }
 
 void Tools::OnJobReport() {
-  if (!VerifyMIExpert() || !VerifyCCP4()) {
-    return;
-  }
-  QString python = pythonExe();
-  if (python.isEmpty())
-      return;
+    QString python = pythonExe();
+    if (python.isEmpty())
+        return;
 
-  static MIJobReportDialog dlg(MIMainWindow::instance(), "Job Report");
-  MIData data;
-  dlg.GetInitialData(data);
-  if (!dlg.GetResults(data)) {
-    return;
-  }
+    BatchJob* job = MIMainWindow::instance()->GetJobManager()->CreateJob();
+    job->setJobName("Report");
+    job->setProgram(python);
+    QStringList args;
+    args << MIExpertScript("mi_deposit3d_ui.py");
+    job->setArguments(args);
+    job->setWorkingDirectory(Application::instance()->latestFileBrowseDirectory(""));
 
-  QStringList args;
-  args << MIExpertPy() << "deposit3d"
-          << "--workdir" << buildAbsPath(data["workdir"].str.c_str())
-          << "--mtzfile" << buildAbsPath(data["mtzfile"].str.c_str())
-          << "--pdbfile" << buildAbsPath(data["pdbfile"].str.c_str())
-          << "--molimagehome" << buildAbsPath(Application::instance()->MolimageHome.c_str())
-          << "--libfile" << buildAbsPath(data["libfile"].str.c_str())
-          << "--seqfile" << buildAbsPath(data["seqfile"].str.c_str())
-          << "--templatefile" << buildAbsPath(data["templatefile"].str.c_str())
-          << "--datalogfile" << buildAbsPath(data["datalogfile"].str.c_str())
-          << "--cif_write" << (data["cif_write"].b ? "yes" : "no");
-
-  if (data["map_write"].b) {
-    args << "--map_write" << "yes"
-            << "--map_border" << QString::number(data["map_border"].f);
-  }
-  args << "--text_write" << (data["text_report"].b ? "yes" : "no")
-          << "--html_write" << (data["html_report"].b ? "yes" : "no")
-          << "--hkl_write" << (data["hkl_write"].b ? "yes" : "no");
-  if (data["html_report"].b) {
-    if (data["report_title"].str.empty()) {
-      args << "--title" << data["report_title"].str.c_str();
-    }
-    if (!data["image1"].str.empty()) {
-      args << "--image1" << buildAbsPath(data["image1"].str.c_str());
-    }
-    if (!data["image2"].str.empty()) {
-      args << "--image2" << buildAbsPath(data["image2"].str.c_str());
-    }
-    if (!data["image3"].str.empty()) {
-      args << "--image3" << buildAbsPath(data["image3"].str.c_str());
-    }
-  }
-  if (!data["rootname"].str.empty()) {
-    args << "--rootname" << buildAbsPath(data["rootname"].str.c_str());
-  }
-
-  BatchJob* job = MIMainWindow::instance()->GetJobManager()->CreateJob();
-  job->setJobName("Report");
-  job->setProgram(python);
-  job->setArguments(args);
-  job->setWorkingDirectory(data["workdir"].str.c_str());
-  job->StartJob();
+    job->StartJob();
 }
 
 void Tools::OnCoCrystalSuperPos() {

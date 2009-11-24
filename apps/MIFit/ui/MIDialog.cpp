@@ -31,7 +31,6 @@
 #include "CocrystalSuperPos.h"
 #include "MolRep.h"
 #include "CustomJobDialog.h"
-#include "JobReport.h"
 
 MIDialog::MIDialog(QWidget* parent, const std::string& name) : _qparent(parent), _name(name) {
   // Note:
@@ -872,28 +871,5 @@ bool MIMolRepDialog::PromptForResults(MIData& data) {
   }
   return dlg.GetData(data);
 }
-
-
-//
-// JobReportDialog
-//
-MIJobReportDialog::MIJobReportDialog(QWidget* parent, const std::string& name)
-  : MIDialog(parent, name) {
-}
-
-void MIJobReportDialog::GetInitialData(MIData& data) {
-  JobReport::GetInitialData(data);
-}
-
-bool MIJobReportDialog::PromptForResults(MIData& data) {
-  static JobReport dlg(_qparent);
-  dlg.InitializeFromData(data);
-  if (dlg.exec() != QDialog::Accepted) {
-    return false;
-  }
-  return dlg.GetData(data);
-}
-
-
 
 
