@@ -26,7 +26,6 @@ public:     //Event handles for the tools menu
 
 private slots:
   void OnBindNGrind();
-  void OnRunTestJob();
 
   void OnCIF2Shellx();
   void OnCIF2CNS();

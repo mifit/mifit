@@ -555,11 +555,6 @@ void Tools::FillToolsMenu(QMenu* parent) {
     parent->addSeparator();
     docActions += parent->addAction("&NCS Modeling", this, SLOT(OnNCSModeling()));
     docActions += parent->addAction("Cocr&ystal Superposition", this, SLOT(OnCoCrystalSuperPos()));
-#ifdef DEBUG
-    QAction* action = parent->addAction("Run &Test Job...", this, SLOT(OnRunTestJob()));
-    action->setStatusTip("Run a test job that waits 5 seconds then terminates");
-    docActions += action;
-#endif
 
 }
 
@@ -616,28 +611,6 @@ void Tools::OnIntegrate() {
 
   job->StartJob();
 }
-
-void Tools::OnRunTestJob() {
-  BatchJob* job =   MIMainWindow::instance()->GetJobManager()->CreateJob();
-  try {
-    TestJob testJob;
-    testJob.StartJob(job);
-  }
-  catch (...) {
-    Logger::message("Job Failed!!");
-    return;
-  }
-  WaitCursor* wait = new WaitCursor("Waiting for test job to finish");
-  while (wait->CheckForAbort() == false && job->isRunning()) {
-#ifdef _WIN32
-    Sleep(100);
-#else
-    usleep(100000);
-#endif
-  }
-  delete wait;
-}
-
 
 Tools::Tools() : QObject(0) {
 }
