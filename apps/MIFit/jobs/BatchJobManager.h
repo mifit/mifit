@@ -7,7 +7,7 @@
 #include <vector>
 
 class BatchJob;
-class CustomJob;
+class QAction;
 
 /**
  * Runs a batch job in the background.
@@ -32,6 +32,10 @@ public:
    */
   BatchJobManager();
   ~BatchJobManager();
+
+  QAction *customJobAction(const QString &menuName, const QString &jobName,
+                           const QString &executable, const QStringList &arguments);
+
   /**
    * Returns a pointer to the ith job in the list (indexed from 0).
    */
@@ -67,6 +71,9 @@ public:
 signals:
   void jobAdded(BatchJob*);
   void jobDeleted(BatchJob*);
+
+private slots:
+  void handleCustomJobAction();
 
 };
 

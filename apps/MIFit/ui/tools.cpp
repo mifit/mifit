@@ -17,6 +17,8 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QSettings>
+#include <QScriptEngine>
+#include <script/MIFitScriptObject.h>
 #include <util/utillib.h>
 #include <vector>
 
@@ -536,25 +538,46 @@ void Tools::FillToolsMenu(QMenu* parent) {
     connect(parent, SIGNAL(aboutToShow()),
             this, SLOT(OnUpdateForJobLimit()));
 
-    actions += parent->addAction("&Integrate with d*TREK", this, SLOT(OnIntegrate()));
-    actions += parent->addAction("&SAD Phasing", this, SLOT(OnSadPhasing()));
-
-    QMenu* convcif_menu = new QMenu("&Convert CIF to", parent);
-    convcif_menu->addAction("&SHELX", this, SLOT(OnCIF2Shellx()));
-    convcif_menu->addAction("&CNS / CNX", this, SLOT(OnCIF2CNS()));
-    actions += parent->addMenu(convcif_menu);
-
-    actions += parent->addAction("S&et Refmac5 restraints", this, SLOT(OnRefmacRestraints()));
-    actions += parent->addAction("&Molecular Replacement", this, SLOT(OnMolRep()));
-    actions += parent->addAction("&Refinement", this, SLOT(OnRefine()));
-    actions += parent->addAction("C&ocrystal Solution", this, SLOT(OnBindNGrind()));
-    actions += parent->addAction("Re&port", this, SLOT(OnJobReport()));
-
     actions += parent->addAction("Run Custom Job", this, SLOT(OnCustom()));
-
     parent->addSeparator();
-    docActions += parent->addAction("&NCS Modeling", this, SLOT(OnNCSModeling()));
-    docActions += parent->addAction("Cocr&ystal Superposition", this, SLOT(OnCoCrystalSuperPos()));
+
+    MIFitScriptObject* mifitObject = new MIFitScriptObject(engine, this);
+    mifitObject->setJobMenu(parent);
+    QScriptValue objectValue = engine->newQObject(mifitObject);
+    engine->globalObject().setProperty("mifit", objectValue);
+
+    QFile jobsJsFile(Application::instance()->GetMolimageHome().c_str() + QString("/jobs.js"));
+    if (jobsJsFile.open(QIODevice::ReadOnly)) {
+        QString script = jobsJsFile.readAll();
+        QScriptValue scriptResult = engine->evaluate(script, "jobs.js");
+        if (engine->hasUncaughtException()) {
+            QScriptValue exception = engine->uncaughtException();
+            int lineNumber = engine->uncaughtExceptionLineNumber();
+            QStringList backtrace = engine->uncaughtExceptionBacktrace();
+            QString result = QString("Exception %1 on line %2\n\t%3")
+                             .arg(exception.toString()).arg(lineNumber)
+                             .arg(backtrace.join("\n\t"));
+            Logger::log(result.toStdString());
+        }
+    }
+
+//    actions += parent->addAction("&Integrate with d*TREK", this, SLOT(OnIntegrate()));
+//    actions += parent->addAction("&SAD Phasing", this, SLOT(OnSadPhasing()));
+//
+//    QMenu* convcif_menu = new QMenu("&Convert CIF to", parent);
+//    convcif_menu->addAction("&SHELX", this, SLOT(OnCIF2Shellx()));
+//    convcif_menu->addAction("&CNS / CNX", this, SLOT(OnCIF2CNS()));
+//    actions += parent->addMenu(convcif_menu);
+//
+//    actions += parent->addAction("S&et Refmac5 restraints", this, SLOT(OnRefmacRestraints()));
+//    actions += parent->addAction("&Molecular Replacement", this, SLOT(OnMolRep()));
+//    actions += parent->addAction("&Refinement", this, SLOT(OnRefine()));
+//    actions += parent->addAction("C&ocrystal Solution", this, SLOT(OnBindNGrind()));
+//    actions += parent->addAction("Re&port", this, SLOT(OnJobReport()));
+//
+//    parent->addSeparator();
+//    docActions += parent->addAction("&NCS Modeling", this, SLOT(OnNCSModeling()));
+//    docActions += parent->addAction("Cocr&ystal Superposition", this, SLOT(OnCoCrystalSuperPos()));
 
 }
 
@@ -612,8 +635,14 @@ void Tools::OnIntegrate() {
   job->StartJob();
 }
 
-Tools::Tools() : QObject(0) {
+Tools::Tools() : QObject(0)
+{
+    engine = new QScriptEngine(this);
+    QObject* mifitObject = new MIFitScriptObject(engine, this);
+    QScriptValue objectValue = engine->newQObject(mifitObject);
+    engine->globalObject().setProperty("mifit", objectValue);
 }
+
 
 Tools& Tools::instance() {
     static Tools _instance;

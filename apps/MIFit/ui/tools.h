@@ -6,6 +6,7 @@
 
 class QAction;
 class QMenu;
+class QScriptEngine;
 
 class Tools : public QObject {
 Q_OBJECT
@@ -23,6 +24,9 @@ public:     //Event handles for the tools menu
   static bool VerifyMIExpert();
   static bool VerifyCCP4();
   void FillToolsMenu(QMenu*);
+
+private:
+  QScriptEngine *engine;
 
 private slots:
   void OnBindNGrind();

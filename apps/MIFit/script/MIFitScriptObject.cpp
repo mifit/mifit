@@ -4,15 +4,26 @@
 #include <QFileInfo>
 #include <QScriptEngine>
 #include <ui/uilib.h>
+#include <jobs/BatchJobManager.h>
 
 MIFitScriptObject::MIFitScriptObject(QScriptEngine* engine, QObject* parent)
     : QObject(parent), engine(engine)
 {
 }
 
+void MIFitScriptObject::setJobMenu(QMenu *jobMenu)
+{
+    this->jobMenu = jobMenu;
+}
+
 QString MIFitScriptObject::version()
 {
     return MIFit_version;
+}
+
+QString MIFitScriptObject::directory()
+{
+    return Application::instance()->GetMolimageHome().c_str();
 }
 
 bool MIFitScriptObject::writeCurrentModel(const QString& file)
@@ -53,4 +64,10 @@ QStringList MIFitScriptObject::spacegroupList()
         result << sg[i].c_str();
     }
     return result;
+}
+
+void MIFitScriptObject::addJob(const QString &menuName, const QString &jobName, const QString &executable, const QStringList &arguments)
+{
+    QAction *jobAction = MIMainWindow::instance()->GetJobManager()->customJobAction(menuName, jobName, executable, arguments);
+    jobMenu->addAction(jobAction);
 }

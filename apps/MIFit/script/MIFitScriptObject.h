@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QStringList>
+class QMenu;
 class QScriptEngine;
 
 class MIFitScriptObject : public QObject
@@ -13,14 +14,19 @@ class MIFitScriptObject : public QObject
 public:
     MIFitScriptObject(QScriptEngine* engine, QObject* parent = 0);
 
+    void setJobMenu(QMenu *jobMenu);
+
 public slots:
     QString version();
+    QString directory();
     bool writeCurrentModel(const QString& file);
     QStringList dictionaryResidueList();
     QStringList spacegroupList();
+    void addJob(const QString& menuName, const QString& jobName, const QString& executable, const QStringList& arguments);
 
 private:
-    QScriptEngine* engine;
+    QScriptEngine *engine;
+    QMenu *jobMenu;
 };
 
 #endif
