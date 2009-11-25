@@ -38,181 +38,6 @@
 
 using namespace chemlib;
 
-// convert path to system-appropriate absolute path string:
-static QString buildAbsPath(const QString& path) {
-  if (path.isEmpty() || path == "none")
-    return path;
-
-  return QDir::toNativeSeparators(QFileInfo(path).absoluteFilePath());
-}
-
-static QString MIExpertPy()
-{
-    return QDir::toNativeSeparators(
-            QString("%1/MIExpert/MIExpert.py")
-            .arg(Application::instance()->GetMolimageHome().c_str()));
-}
-
-static QString MIExpertScript(const QString& name)
-{
-    return QDir::toNativeSeparators(
-            QString("%1/MIExpert/%2")
-            .arg(Application::instance()->GetMolimageHome().c_str())
-            .arg(name));
-}
-
-static QString pythonExe()
-{
-    static QString pythonExePath;
-    if (pythonExePath.isEmpty() || !QFile::exists(pythonExePath)) {
-        QSettings* settings = MIGetQSettings();
-        pythonExePath = settings->value("pythonExe").toString();
-    }
-    if (pythonExePath.isEmpty() || !QFile::exists(pythonExePath)) {
-#ifdef Q_OS_WIN32
-        QString separator = ";";
-        QString exe = "python.exe";
-        QString filters = "Programs (*.exe);;All files (*.*)";
-#else
-        QString separator = ":";
-        QString exe = "python";
-        QString filters = "All files (*)";
-#endif
-        QString pathEnv = getenv("PATH");
-        QStringList paths = pathEnv.split(separator);
-        foreach (QString p, paths) {
-            QDir dir(p);
-            if (dir.exists(exe)) {
-                pythonExePath = dir.absoluteFilePath(exe);
-                break;
-            }
-        }
-        if (pythonExePath.isEmpty()) {
-            QString fileName = QFileDialog::getOpenFileName(NULL, "Select Python Executable",
-                                                            "/", filters);
-            if (!fileName.isEmpty())
-                pythonExePath = fileName;
-        }
-
-        if (!pythonExePath.isEmpty() && QFile::exists(pythonExePath)) {
-            QSettings* settings = MIGetQSettings();
-            settings->setValue("pythonExe", pythonExePath);
-        }
-    }
-
-    return pythonExePath;
-}
-
-bool Tools::VerifyMIExpert() {
-  if (QFile(MIExpertPy()).exists()) {
-    return true;
-  }
-  QMessageBox::critical(0, "Error", "Cannot find MIExpert");
-  return false;
-}
-
-bool Tools::VerifyCCP4() {
-  static bool firsttime = true;
-  static bool result = false;
-  if (!firsttime && result) {
-    return result;
-  }
-  firsttime = false;
-
-  QByteArray pdbsetOutput;
-  QProcess pdbsetProcess;
-  pdbsetProcess.start("pdbset");
-  pdbsetProcess.closeWriteChannel();
-
-  pdbsetProcess.waitForFinished(2000);
-
-  if (pdbsetProcess.exitStatus() != QProcess::NormalExit) {
-    pdbsetProcess.kill();
-#ifdef DEBUG
-    QMessageBox::warning(MIMainWindow::instance(), "Error", "Cannot find CCP4\n(Unable to run pdbset)");
-    result = true;
-    return true;
-#else
-    QMessageBox::critical(MIMainWindow::instance(), "Error", "Cannot find CCP4\n(Unable to run pdbset)");
-    result = false;
-    return false;
-#endif
-  }
-
-  QString outputText(pdbsetProcess.readAllStandardOutput());
-  if (outputText.indexOf("PDBSET") == -1)  {
-    pdbsetProcess.kill();
-#ifdef DEBUG
-    QMessageBox::warning(MIMainWindow::instance(), "Error", "Cannot find CCP4\n(Unable to run pdbset)");
-    result = true;
-    return true;
-#else
-    QMessageBox::critical(MIMainWindow::instance(), "Error", "Cannot find CCP4\n(Unable to identify output as from pdbset)");
-    result = false;
-    return false;
-#endif
-  }
-  pdbsetProcess.kill();
-  result = true;
-  return true;
-}
-
-void Tools::OnBindNGrind() {
-}
-
-void Tools::CIFConvertlib(const char* format)
-{
-}
-
-void Tools::OnCIF2Shellx() {
-}
-
-void Tools::OnCIF2CNS() {
-}
-
-void Tools::OnMolRep() {
-}
-
-void Tools::OnRefmacRestraints() {
-  if (!VerifyMIExpert() || !VerifyCCP4()) {
-    return;
-  }
-  QString python = pythonExe();
-  if (python.isEmpty())
-      return;
-
-  QString filename = Application::getOpenFileName(0, "Choose a PDB file", "PDB files (*.pdb);;All files (*.*)");
-
-  if (filename.isEmpty()) {
-    return;
-  }
-  BatchJob* job = MIMainWindow::instance()->GetJobManager()->CreateJob();
-  job->setJobName("Refmac Restraints");
-  QFileInfo workdir(filename);
-  QStringList args;
-  args << MIExpertPy() << "restraints"
-          << "--pdbfile" << filename
-          << "--workdir" << workdir.absolutePath();
-  job->setProgram(python);
-  job->setArguments(args);
-  job->StartJob();
-}
-
-void Tools::OnRefine() {
-}
-
-void Tools::OnJobReport() {
-}
-
-void Tools::OnCoCrystalSuperPos() {
-}
-
-void Tools::OnSadPhasing() {
-}
-
-void Tools::OnNCSModeling() {
-}
-
 void Tools::OnCustom()
 {
     static CustomJobDialog dlg(MIMainWindow::instance());
@@ -322,7 +147,7 @@ void Tools::FillToolsMenu(QMenu* parent) {
     connect(parent, SIGNAL(aboutToShow()),
             this, SLOT(OnUpdateForJobLimit()));
 
-    actions += parent->addAction("Run Custom Job", this, SLOT(OnCustom()));
+    parent->addAction("Run Custom Job", this, SLOT(OnCustom()));
     parent->addSeparator();
 
     MIFitScriptObject* mifitObject = new MIFitScriptObject(engine, this);
@@ -344,6 +169,8 @@ void Tools::FillToolsMenu(QMenu* parent) {
             Logger::log(result.toStdString());
         }
     }
+
+    actions = parent->actions();
 }
 
 void Tools::OnUpdateForJobLimit() {
@@ -351,15 +178,7 @@ void Tools::OnUpdateForJobLimit() {
     foreach (QAction* act, actions) {
         act->setEnabled(enable);
     }
-    bool havedoc = MIMainWindow::instance()->currentMIGLWidget() != NULL;
-    foreach (QAction* act, docActions) {
-        act->setEnabled(enable && havedoc);
-    }
 
-}
-
-
-void Tools::OnIntegrate() {
 }
 
 Tools::Tools() : QObject(0)
