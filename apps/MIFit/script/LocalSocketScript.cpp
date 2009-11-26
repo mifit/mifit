@@ -13,13 +13,8 @@
 #endif
 
 LocalSocketScript::LocalSocketScript(QObject* parent)
-    : QObject(parent)
+    : QObject(parent), engine(0)
 {
-    engine = new QScriptEngine(this);
-    QObject* mifitObject = new MIFitScriptObject(engine, this);
-    QScriptValue objectValue = engine->newQObject(mifitObject);
-    engine->globalObject().setProperty("mifit", objectValue);
-
     uint id = static_cast<uint>(getpid());
     name_ = "MIFit-" + QString::number(id, 16);
 
@@ -38,6 +33,13 @@ QString LocalSocketScript::name() const
 
 void LocalSocketScript::handleConnection()
 {
+    if (!engine) {
+        engine = new QScriptEngine(this);
+        QObject* mifitObject = new MIFitScriptObject(engine, this);
+        QScriptValue objectValue = engine->newQObject(mifitObject);
+        engine->globalObject().setProperty("mifit", objectValue);
+    }
+
     QLocalSocket* connection = localServer->nextPendingConnection();
     connect(connection, SIGNAL(disconnected()),
             connection, SLOT(deleteLater()));
@@ -60,7 +62,7 @@ void LocalSocketScript::handleConnection()
             }
             script += str;
         }
-        Logger::log(("script: " + script).toStdString());
+        Logger::debug(("script: " + script).toStdString());
 
         QString result;
         QScriptValue scriptResult = engine->evaluate(script, name_);
@@ -75,7 +77,7 @@ void LocalSocketScript::handleConnection()
             result = scriptResult.toString();
         }
 
-        Logger::log(("script result: " + result).toStdString());
+        Logger::debug(("script result: " + result).toStdString());
 
         QByteArray data;
         QDataStream outStream(&data, QIODevice::WriteOnly);
@@ -87,6 +89,6 @@ void LocalSocketScript::handleConnection()
         connection->write(data);
 
         connection->disconnectFromServer();
-        Logger::log("script done");
+        Logger::debug("script done");
     }
 }

@@ -26,6 +26,16 @@ QString MIFitScriptObject::directory()
     return Application::instance()->GetMolimageHome().c_str();
 }
 
+QString MIFitScriptObject::scriptPort()
+{
+    return scriptPort_;
+}
+
+void MIFitScriptObject::setScriptPort(const QString &scriptPort)
+{
+    scriptPort_ = scriptPort;
+}
+
 bool MIFitScriptObject::writeCurrentModel(const QString& file)
 {
     if (file == "test.pdb")

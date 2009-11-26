@@ -13,7 +13,6 @@ class MIConfig;
 class MISingleInstanceChecker;
 class GeomRefiner;
 class QSettings;
-class LocalSocketScript;
 
 class Application {
   static Application* instance_;
@@ -61,8 +60,6 @@ class Application {
 
   chemlib::RESIDUE* ResidueBuffer;
 
-  LocalSocketScript* _localSocketScript;
-
   Application();
 
   void WriteProfiles();  // Write the profiles to the registry (Windows) or the ~/.MIFitrc file.
@@ -86,8 +83,6 @@ public:
 
   ~Application();
   void Init();
-
-  const LocalSocketScript& localSocketScript() const;
 
   void Write();
   void SetEnv();

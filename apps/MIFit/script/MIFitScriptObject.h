@@ -15,10 +15,12 @@ public:
     MIFitScriptObject(QScriptEngine* engine, QObject* parent = 0);
 
     void setJobMenu(QMenu *jobMenu);
+    void setScriptPort(const QString &scriptPort);
 
 public slots:
     QString version();
     QString directory();
+    QString scriptPort();
     bool writeCurrentModel(const QString& file);
     QStringList dictionaryResidueList();
     QStringList spacegroupList();
@@ -27,6 +29,7 @@ public slots:
 private:
     QScriptEngine *engine;
     QMenu *jobMenu;
+    QString scriptPort_;
 };
 
 #endif

@@ -10,7 +10,6 @@
 #include <conflib/conflib.h>
 #include <util/utillib.h>
 #include <core/corelib.h>
-#include <script/LocalSocketScript.h>
 
 #include "Application.h"
 #include "tools.h"
@@ -21,8 +20,6 @@
 #include <util/FileIo.h>
 #include "MIMainWindow.h"
 #include "molw.h" // for cursors
-
-#include <script/LocalSocketScript.h>
 
 #include <QApplication>
 #include <QDir>
@@ -331,7 +328,6 @@ Application::~Application() {
     }
   }
   delete geomrefiner;
-
 
 }
 
@@ -781,7 +777,6 @@ void Application::Init() {
   MISetTorsionWritePrompt(new myTorsionWritePrompt());
   MISetMolPrefsHandler(new myMolPrefsHandler());
 
-  _localSocketScript = new LocalSocketScript(MIMainWindow::instance());
 }
 
 //FIXME: previous dictionary is leaked!
@@ -1265,9 +1260,4 @@ QString Application::getExistingDirectory(QWidget* parent, const QString& captio
         Application::instance()->latestFileBrowseDirectory(dir);
     }
     return dir;
-}
-
-const LocalSocketScript& Application::localSocketScript() const
-{
-    return *_localSocketScript;
 }

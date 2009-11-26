@@ -6,7 +6,6 @@
 
 class QAction;
 class QMenu;
-class QScriptEngine;
 
 class Tools : public QObject
 {
@@ -20,7 +19,6 @@ public:
 private:
     Tools();
 
-    QScriptEngine *engine;
     QList<QAction*> actions;
 
 private slots:

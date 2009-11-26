@@ -150,8 +150,11 @@ void Tools::FillToolsMenu(QMenu* parent) {
     parent->addAction("Run Custom Job", this, SLOT(OnCustom()));
     parent->addSeparator();
 
-    MIFitScriptObject* mifitObject = new MIFitScriptObject(engine, this);
+    static LocalSocketScript scriptSocket;
+    std::auto_ptr<QScriptEngine> engine(new QScriptEngine);
+    MIFitScriptObject* mifitObject = new MIFitScriptObject(engine.get(), this);
     mifitObject->setJobMenu(parent);
+    mifitObject->setScriptPort(scriptSocket.name());
     QScriptValue objectValue = engine->newQObject(mifitObject);
     engine->globalObject().setProperty("mifit", objectValue);
 
@@ -183,10 +186,6 @@ void Tools::OnUpdateForJobLimit() {
 
 Tools::Tools() : QObject(0)
 {
-    engine = new QScriptEngine(this);
-    QObject* mifitObject = new MIFitScriptObject(engine, this);
-    QScriptValue objectValue = engine->newQObject(mifitObject);
-    engine->globalObject().setProperty("mifit", objectValue);
 }
 
 
