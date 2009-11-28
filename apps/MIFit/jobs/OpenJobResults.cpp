@@ -3,9 +3,8 @@
 #include <util/utillib.h>
 #include "ui/uilib.h"
 #include "ui/MIMainWindow.h"
-
 #include "ui/MIDialog.h"
-
+#include "ui/GenericDataDialog.h"
 #include <QFileInfo>
 #include <QDateTime>
 #include <QDir>
@@ -16,25 +15,31 @@
 #include <algorithm>
 
 
-static bool later(const std::pair<std::string, QDateTime>& f1, const std::pair<std::string, QDateTime>& f2) {
-  return f1 > f2;
-}
+namespace
+{
+    bool later(const QPair<QString, QDateTime>& f1, const QPair<QString, QDateTime>& f2)
+    {
+        return f1 > f2;
+    }
 
-static void sortFileNameByTime(std::vector<std::string>& names) {
-  std::vector<std::pair<std::string, QDateTime> > fileTimes;
-  std::vector<std::string>::iterator iter;
-  for (iter = names.begin(); iter != names.end(); ++iter) {
-    QFileInfo fn(iter->c_str());
-    QDateTime time = fn.lastModified();
-    fileTimes.push_back(std::make_pair(*iter, time));
-  }
-  std::sort(fileTimes.begin(), fileTimes.end(), later);
+    void sortFileNameByTime(QStringList& names)
+    {
+        typedef QPair<QString, QDateTime> FileTime;
+        QList<FileTime> fileTimes;
+        foreach (const QString &name, names)
+        {
+            QFileInfo fn(name);
+            QDateTime time = fn.lastModified();
+            fileTimes += qMakePair(name, time);
+        }
+        qSort(fileTimes.begin(), fileTimes.end(), later);
 
-  names.clear();
-  std::vector<std::pair<std::string, QDateTime> >::iterator iter2;
-  for (iter2 = fileTimes.begin(); iter2 != fileTimes.end(); ++iter2) {
-    names.push_back(iter2->first);
-  }
+        names.clear();
+        foreach (const FileTime &fileTime, fileTimes)
+        {
+            names += fileTime.first;
+        }
+    }
 }
 
 
@@ -44,21 +49,20 @@ void OpenJobResults::prompt(const std::string& workdir, const std::string& jobNa
     return;
   }
 
-  std::vector<std::string> mlwFiles;
-  std::vector<std::string> pdbFiles;
-  std::vector<std::string> mtzFiles;
+  QStringList mlwFiles;
+  QStringList pdbFiles;
+  QStringList mtzFiles;
 
-  QStringList fileList=dir.entryList(QDir::Files | QDir::Readable | QDir::NoDotAndDotDot);
-  for (int i = 0; i < fileList.count(); ++i) {
-    std::string file = fileList[i].toStdString();
-    QFileInfo fi(file.c_str());
+  QStringList fileList = dir.entryList(QDir::Files | QDir::Readable | QDir::NoDotAndDotDot);
+  foreach (QString file, fileList) {
+    QFileInfo fi(file);
 
-    if (fi.suffix() == QString("mlw")) {
-      mlwFiles.push_back(file);
-    } else if (fi.suffix() == QString("pdb")) {
-      pdbFiles.push_back(file);
-    } else if (fi.suffix() == QString("mtz")) {
-      mtzFiles.push_back(file);
+    if (fi.suffix() == "mlw") {
+      mlwFiles += file;
+    } else if (fi.suffix() == "pdb") {
+      pdbFiles += file;
+    } else if (fi.suffix() == "mtz") {
+      mtzFiles += file;
     }
   }
 
@@ -74,56 +78,53 @@ void OpenJobResults::prompt(const std::string& workdir, const std::string& jobNa
   }
 
 
-  std::string title=::format("Job %s Finished",jobName.size() ? jobName.c_str(): "");
-  MIGenericDialog dlg(0,title);
-  MIData data;
+  GenericDataDialog dlg;
+  dlg.setWindowTitle(QString("Job %1 Finished").arg(jobName.c_str()));
 
-  if (mlwFiles.size() > 0) {
-    mlwFiles.push_back("None");
-    data["mlw"].radio = 0;
-    data["mlw"].radio_count = mlwFiles.size();
-    data["mlw"].radio_labels = mlwFiles;
-    dlg.order("mlw");
-    dlg.label("mlw","Load session:");
+  int fields = 0;
+  int mlwField = -1;
+  int mtzField = -1;
+  int pdbField = -1;
+  if (!mlwFiles.empty()) {
+    mlwFiles += "None";
+    dlg.addComboField("Load session:", mlwFiles, 0);
+    mlwField = fields;
+    ++fields;
   }
-  if (mtzFiles.size() > 0) {
-    mtzFiles.push_back("None");
-    data["mtz"].radio = 0;
-    data["mtz"].radio_count = mtzFiles.size();
-    data["mtz"].radio_labels = mtzFiles;
-    dlg.order("mtz");
-    dlg.label("mtz","Load data:");
+  if (!mtzFiles.empty()) {
+    mtzFiles += "None";
+    dlg.addComboField("Load data:", mtzFiles, 0);
+    mtzField = fields;
+    ++fields;
   }
-  if (pdbFiles.size() > 0) {
-    pdbFiles.push_back("None");
-    data["pdb"].radio = 0;
-    data["pdb"].radio_count = pdbFiles.size();
-    data["pdb"].radio_labels = pdbFiles;
-    dlg.order("pdb");
-    dlg.label("pdb","Load PDB:");
+  if (!pdbFiles.empty()) {
+    pdbFiles += "None";
+    dlg.addComboField("Load PDB:", pdbFiles, 0);
+    pdbField = fields;
+    ++fields;
   }
-  if (!dlg.GetResults(data))
+  if (dlg.exec() != QDialog::Accepted)
     return;
 
   std::vector<std::string> files;
-  bool newWin=true;
-  if (mlwFiles.size()) {
-    std::string res=data["mlw"].radio_labels[data["mlw"].radio];
-    if ( res != std::string("None")) {
-      files.push_back(res);
-      newWin=false;
+  bool newWin = true;
+  if (mlwField != -1) {
+    QString res = mlwFiles.at(dlg.value(mlwField).toInt());
+    if (res != "None") {
+      files.push_back(res.toStdString());
+      newWin = false;
     }
   }
-  if (pdbFiles.size()) {
-    std::string res=data["pdb"].radio_labels[data["pdb"].radio];
-    if ( res != std::string("None")) {
-      files.push_back(res);
+  if (pdbField != -1) {
+    QString res = pdbFiles.at(dlg.value(mlwField).toInt());
+    if (res != "None") {
+      files.push_back(res.toStdString());
     }
   }
-  if (mtzFiles.size()) {
-    std::string res=data["mtz"].radio_labels[data["mtz"].radio];
-    if (res != std::string("None")) {
-      files.push_back(res);
+  if (mtzField != -1) {
+    QString res = mtzFiles.at(dlg.value(mlwField).toInt());
+    if (res != "None") {
+      files.push_back(res.toStdString());
     }
   }
   MIMainWindow::instance()->OpenFiles(files, newWin);

@@ -11,6 +11,7 @@
 
 #include "Displaylist.h"
 #include "DisplayView.h"
+#include "GenericDataDialog.h"
 #include "MIQTreeWidget.h"
 #include "TreeData.h"
 #include "MIEventHandler.h"
@@ -392,49 +393,41 @@ void DisplayTree::EditItem() {
 
   if (annotations.size() > 0) {
     Annotation* annotation = *annotations.begin();
-    MIGenericDialog dlg(NULL, "Edit Annotation");
-    MIData data;
-    data["Text:"].str = std::string(annotation->GetText());
-    data["Color:"].color[0] = annotation->m_color.red;
-    data["Color:"].color[1] = annotation->m_color.green;
-    data["Color:"].color[2] = annotation->m_color.blue;
-    data["Color:"].isColor = true;
-    dlg.order("Text:");
-    dlg.order("Color:");
-    if (dlg.GetResults(data)) {
+    GenericDataDialog dlg;
+    dlg.setWindowTitle("Edit Annotation");
+    dlg.addStringField("Text:", annotation->GetText());
+    dlg.addColorField("Color:", QColor(annotation->m_color.red, annotation->m_color.green, annotation->m_color.blue));
+    if (dlg.exec() == QDialog::Accepted) {
       std::set<Annotation*>::iterator iter;
       for (iter = annotations.begin(); iter != annotations.end(); ++iter) {
         annotation = *iter;
-        annotation->setText(data["Text:"].str.c_str());
+        annotation->setText(dlg.value(0).toString().toStdString());
+        QColor color = dlg.value(1).value<QColor>();
         annotation->setColor(PaletteColor(
-                               (unsigned char)data["Color:"].color[0],
-                               (unsigned char)data["Color:"].color[1],
-                               (unsigned char)data["Color:"].color[2]));
+                               (unsigned char)color.red(),
+                               (unsigned char)color.green(),
+                               (unsigned char)color.blue()));
       }
     }
   }
 
   if (labels.size() > 0) {
     ATOMLABEL* label = labels.begin()->first;
-    MIGenericDialog dlg(NULL, "Edit atom label");
-    MIData data;
-    data["Text:"].str = std::string(label->label().c_str());
-    data["Color:"].color[0] = label->red();
-    data["Color:"].color[1] = label->green();
-    data["Color:"].color[2] = label->blue();
-    data["Color:"].isColor = true;
-    dlg.order("Text:");
-    dlg.order("Color:");
-    if (dlg.GetResults(data)) {
+    GenericDataDialog dlg;
+    dlg.setWindowTitle("Edit atom label");
+    dlg.addStringField("Text:", label->label().c_str());
+    dlg.addColorField("Color:", QColor(label->red(), label->green(), label->blue()));
+    if (dlg.exec() == QDialog::Accepted) {
       std::set<std::pair<ATOMLABEL*, Molecule*> >::iterator iter;
       for (iter = labels.begin(); iter != labels.end(); ++iter) {
         label = iter->first;
         Molecule* model = iter->second;
-        model->setAtomLabelText(label, data["Text:"].str.c_str());
+        model->setAtomLabelText(label, dlg.value(0).toString().toAscii().constData());
+        QColor color = dlg.value(1).value<QColor>();
         model->setAtomLabelColor(label,
-                                 (unsigned char)data["Color:"].color[0],
-                                 (unsigned char)data["Color:"].color[1],
-                                 (unsigned char)data["Color:"].color[2]);
+                                 (unsigned char)color.red(),
+                                 (unsigned char)color.green(),
+                                 (unsigned char)color.blue());
       }
     }
   }

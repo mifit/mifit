@@ -3,7 +3,7 @@
 #include <map/maplib.h>
 #include <QMessageBox>
 #include "ui/MIDialog.h"
-
+#include "GenericDataDialog.h"
 #include "core/corelib.h"
 #include "EMap.h"
 #include "id.h"
@@ -166,61 +166,52 @@ bool EMap::FFTMap(int mt, int gl, float rMin, float rMax) {
     return false;
   }
 
-  MIGenericDialog dlg(0,"Fast Fourier Transform Map");
-  MIData data;
+  GenericDataDialog dlg;
+  dlg.setWindowTitle("Fast Fourier Transform Map");
 
-  std::vector<std::string>& mapTypeOptions = data["mapType"].radio_labels;
-  std::vector<unsigned int> maptypes;
+  QStringList mapTypeOptions;
+  int mapTypeIndex = 0;
+  QList<unsigned int> mapTypes;
 
   int currentMapType = (mt != -1) ? mt : mapheader->maptype;
   if (currentMapType == (int)MIMapType::DirectFFT) {
     // If DirectFFT, it can only be DirectFFT
-    mapTypeOptions.push_back(StringForMapType(MIMapType::DirectFFT));
-    maptypes.push_back(MIMapType::DirectFFT);
-    data["mapType"].radio=0;
+    mapTypeOptions += StringForMapType(MIMapType::DirectFFT);
+    mapTypes.push_back(MIMapType::DirectFFT);
   } else {
     // Limit map types to types which can be calculated given the fields loaded
-    std::vector<unsigned int> with_fc_maptypes;
-    GetMapTypes(maptypes, with_fc_maptypes);
+    std::vector<unsigned int> types;
+    std::vector<unsigned int> types_with_fc;
+    GetMapTypes(types, types_with_fc);
   
-    for (size_t i=0; i < maptypes.size(); ++i) {
-      if (maptypes[i] != MIMapType::DirectFFT) {
+    for (size_t i = 0; i < types.size(); ++i) {
+      if (types[i] != MIMapType::DirectFFT) {
         // Exclude DirectFFT from list
-        mapTypeOptions.push_back(StringForMapType(maptypes[i]));
-        if ((int)maptypes[i]==currentMapType) {
-          data["mapType"].radio=i;
+        mapTypes += types[i];
+        mapTypeOptions += StringForMapType(types[i]);
+        if ((int)types[i] == currentMapType) {
+          mapTypeIndex = mapTypes.size()-1;
         }
       }
     }
   }
-  data["mapType"].radio_count=mapTypeOptions.size();
   
-  data["gridType"].radio=(gl == -1 || gl == -2 ? mapGrid : gl);
-  data["gridType"].radio_count=3;
-  data["gridType"].radio_labels.push_back("Coarse grid");
-  data["gridType"].radio_labels.push_back("Medium grid");
-  data["gridType"].radio_labels.push_back("Fine grid");
+  QStringList gridTypes;
+  gridTypes << "Coarse grid" << "Medium grid" << "Fine grid";
+  int gridIndex = (gl == -1 || gl == -2) ? mapGrid : gl;
   
-  data["resMin"].f=(rMin == -1.0f ? mapheader->resmin : rMin);
-  data["resMax"].f=(rMax == -1.0f ? mapheader->resmax : rMax);
-  
-  
-  dlg.order("resMin");
-  dlg.order("resMax");
-  dlg.order("mapType");
-  dlg.order("gridType");
-  dlg.label("resMin","Min resolution:");
-  dlg.label("resMax","Max resolution:");
-  dlg.label("mapType","Map type:");
-  dlg.label("gridType","Grid:");
+  dlg.addDoubleField("Min resolution:", rMin == -1.0f ? mapheader->resmin : rMin);
+  dlg.addDoubleField("Max resolution:", rMax == -1.0f ? mapheader->resmax : rMax);
+  dlg.addComboField("Map type:", mapTypeOptions, mapTypeIndex);
+  dlg.addComboField("Grid:", gridTypes, gridIndex);
   
   
-  if (mt!=-1 || (gl!=-1 && gl!=-2) || Application::instance()->GetSilentMode() || dlg.GetResults(data))
+  if (mt!=-1 || (gl!=-1 && gl!=-2) || Application::instance()->GetSilentMode() || dlg.exec() == QDialog::Accepted)
   {
-    bool result = EMapBase::FFTMap(MapTypeForString(StringForMapType(maptypes[data["mapType"].radio])),
-                                   (gl==-2?-1:data["gridType"].radio),
-                                   data["resMin"].f,
-                                   data["resMax"].f);
+    bool result = EMapBase::FFTMap(mapTypes[dlg.value(2).toInt()],
+                                   (gl==-2?-1:dlg.value(3).toInt()),
+                                   dlg.value(0).toDouble(),
+                                   dlg.value(1).toDouble());
     mapFftRecalculated(this);
     return result;
   }

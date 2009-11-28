@@ -48,9 +48,6 @@ void DictEditDialog::accept() {
   canvas->OnOk();
 
   MIFitGeomRefiner()->EditEntryCleanup(true);
-  MIData values;
-  values["command"].str = "dict";
-  values["state"].str = "ok";
 
   QDialog::accept();
 }
@@ -58,9 +55,6 @@ void DictEditDialog::accept() {
 void DictEditDialog::reject() {
 
   MIFitGeomRefiner()->EditEntryCleanup(false);
-  MIData values;
-  values["command"].str = "dict";
-  values["state"].str = "cancel";
 
   QDialog::reject();
 }

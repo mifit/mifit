@@ -7,7 +7,6 @@
 #include <QProcess>
 #include <QString>
 #include <QStringList>
-#include <core/MIData.h>
 
 class QStatusBar;
 

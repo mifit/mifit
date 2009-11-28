@@ -52,7 +52,7 @@
 
 #include <figurelib/figurelib.h>
 #include "jobs/jobslib.h"
-
+#include "GenericDataDialog.h"
 
 #include "CMolwViewScene.h"
 #include "CMolwViewAnnotationPickingRenderable.h"
@@ -869,10 +869,6 @@ void MIGLWidget::OnMouseMove(unsigned short nFlags, CPoint point) {
       SetCursor(imhScale);
       zang = 1.0F - (float)d.y*0.01F;
       viewpoint->zoom(zang);
-      MIData values;
-      values["command"].str = "mouse";
-      values["type"].str = "zoom";
-      values["zoom"].f = zang;
     } else if (nFlags & MK_LBUTTON && !DraggingSlab) {
       DraggingRotate = true;
       if (mousestart.y < 30) {
@@ -893,12 +889,6 @@ void MIGLWidget::OnMouseMove(unsigned short nFlags, CPoint point) {
         }
       }
       viewpoint->rotate(xang, yang, zang);
-      MIData values;
-      values["command"].str = "mouse";
-      values["type"].str = "rot";
-      values["xang"].f = xang;
-      values["yang"].f = yang;
-      values["zang"].f = zang;
     }
     ReDraw();
   } else if (nFlags & MK_RBUTTON && !(nFlags & MK_LBUTTON)
@@ -929,12 +919,6 @@ void MIGLWidget::RightMouseDrag(CPoint d, float xang, float yang, float zang) {
         y = (float)dy/30.0F;
         z = (float)dz/30.0F;
         fitmol->Translate(x, y, z, &CurrentAtoms);
-        MIData values;
-        values["command"].str = "mouse";
-        values["type"].str = "tran";
-        values["x"].f = x;
-        values["y"].f = y;
-        values["z"].f = z;
         UpdateCurrent();
         fitcenter.translate(x, y, z);
       }
@@ -954,22 +938,12 @@ void MIGLWidget::RightMouseDrag(CPoint d, float xang, float yang, float zang) {
         }
         fitmol->Rotate(xang/3.0F, yang/3.0F, zang/3.0F, fitcenter.x(),
           fitcenter.y(), fitcenter.z(), viewpoint, &CurrentAtoms);
-        MIData values;
-        values["command"].str = "mouse";
-        values["type"].str = "frot";
-        values["xang"].f = xang/3.0f;
-        values["yang"].f = yang/3.0F;
-        values["zang"].f = zang/3.0F;
         UpdateCurrent();
       }
       break;
     case BONDTWIST:
       SetCursor(imhTorsion);
       if (Torsioning && IsFitting()) {
-        MIData values;
-        values["command"].str = "mouse";
-        values["type"].str = "tors";
-        values["ang"].f =(float)d.x;
         fitmol->RotateTorsion((float)d.x);
         char torval[100];
         if (fitmol->GetTorsionValue(torval, fitres)) {
@@ -998,12 +972,6 @@ void MIGLWidget::RightMouseDrag(CPoint d, float xang, float yang, float zang) {
           z = -(int)d.y;
         }
         viewpoint->scroll(x, y, z);
-        MIData values;
-        values["command"].str = "mouse";
-        values["type"].str = "pan";
-        values["x"].i = x;
-        values["y"].i = y;
-        values["z"].i = z;
         break;
       }
   }
@@ -1061,12 +1029,6 @@ void MIGLWidget::MouseMoveXfit(unsigned short nFlags, CPoint point) {
         }
       }
       viewpoint->rotate(xang, yang, zang);
-      MIData values;
-      values["command"].str = "mouse";
-      values["type"].str = "rot";
-      values["xang"].f = xang;
-      values["yang"].f = yang;
-      values["zang"].f = zang;
     }
     int save = viewpoint->GetBallandStick();
     if (save > ViewPoint::BALLANDSTICK) {
@@ -1079,10 +1041,6 @@ void MIGLWidget::MouseMoveXfit(unsigned short nFlags, CPoint point) {
     SetCursor(imhScale);
     zang = 1.0F - (float)d.y*0.01F;
     viewpoint->zoom(zang);
-    MIData values;
-    values["command"].str = "mouse";
-    values["type"].str = "zoom";
-    values["zoom"].f = zang;
     ReDraw();
   } else if ((nFlags & MK_MBUTTON) && !(nFlags & MK_LBUTTON) && !(nFlags & MK_RBUTTON)
              && (d.x != 0 || d.y != 0)) {
@@ -1110,21 +1068,12 @@ void MIGLWidget::OnLButtonUp(unsigned short  /* nFlags */, CPoint point) {
     if (!TopView) {
       if (ShowStack && !AtomStack->empty() && AtomStack->PickClearBox(point.x, stereoView->getViewport()->getHeight() - point.y)) {
         AtomStack->Clear();
-        MIData values;
-        values["command"].str = "pick";
-        values["type"].str = "clear";
         ReDraw();
       } else if (ShowStack && !AtomStack->empty() && AtomStack->PickHideBox(point.x, stereoView->getViewport()->getHeight() - point.y)) {
         AtomStack->ToggleMinMax();
-        MIData values;
-        values["command"].str = "pick";
-        values["type"].str = "hide";
         ReDraw();
       } else if (ShowStack && !AtomStack->empty() && AtomStack->PickPopBox(point.x, stereoView->getViewport()->getHeight() - point.y)) {
         AtomStack->Pop();
-        MIData values;
-        values["command"].str = "pick";
-        values["type"].str = "pop";
         ReDraw();
       } else {
         annotationPickingRenderable->setModels(models);
@@ -1139,10 +1088,6 @@ void MIGLWidget::OnLButtonUp(unsigned short  /* nFlags */, CPoint point) {
           CurrentAnnotation = annot;
           Logger::log("Picked Annotation:");
           Logger::log(annot->GetText());
-          MIData values;
-          values["command"].str="pick";
-          values["type"].str="annotation";
-          values["number"].u=ids[0];
         } else {
           prepareAtomPicking();
           ids = mousePicker->pick(point.x, point.y, frustum, atomPickingRenderable);
@@ -1278,9 +1223,6 @@ void MIGLWidget::OnLButtonDblClk(unsigned short  /* nFlags */, CPoint) {
     MIAtom* a;
     AtomStack->Pop(a, res, node);
     recenter(res, a);
-    MIData values;
-    values["command"].str = "pick";
-    values["type"].str = "center";
   }
   doubleclicked = true;
 }
@@ -1318,13 +1260,6 @@ bool MIGLWidget::OnKeyDown(unsigned int nChar, unsigned int, unsigned int nFlags
 
   //save mouse position for OnAddWaterAtCursor
   QPoint p=QCursor::pos();
-
-  MIData values;
-  values["command"].str = "key";
-  values["key"].u = nChar;
-  values["flags"].u = nFlags;
-  values["x"].i=p.x();
-  values["y"].i=p.y();
 
   bool xfit_mouse =Application::instance()->GetXfitMouseMode();
   switch (nChar) {
@@ -2109,14 +2044,12 @@ void MIGLWidget::gotoXyz(float x, float y, float z) {
 }
 
 void MIGLWidget::OnViewClipplanes() {
-  MIGenericDialog dlg(this,"Clipping Planes");
-  MIData data;
-  data["Front"].f = viewpoint->getfrontclip();
-  data["Back"].f = viewpoint->getbackclip();
-  dlg.order("Front");
-  dlg.order("Back");
-  if (dlg.GetResults(data)) {
-    viewpoint->slab(data["Front"].f, data["Back"].f);
+  GenericDataDialog dlg(this);
+  dlg.setWindowTitle("Clipping Planes");
+  dlg.addDoubleField("Front", viewpoint->getfrontclip());
+  dlg.addDoubleField("Back", viewpoint->getbackclip());
+  if (dlg.exec() == QDialog::Accepted) {
+    viewpoint->slab(dlg.value(0).toDouble(), dlg.value(1).toDouble());
     PaletteChanged = true;
     doRefresh();
   }
@@ -2140,34 +2073,34 @@ void MIGLWidget::OnVdwDotSurface() {
     return;
   }
 
-  static MIData data;
-  static bool first = true;
-  if (first) {
-    first = false;
-    data["ignore_hidden"].b = true;
-    data["dotsper"].f = 3.0f;
-    data["boxsize"].f = 20.0f;
-  }
+  static double dotsper = 3.0;
+  static double boxsize = 20.0;
+  static bool ignoreHidden = true;
 
-  MIGenericDialog dlg(this,"Surface");
-  dlg.order("dotsper");
-  dlg.order("boxsize");
-  dlg.order("ignore_hidden");
-  dlg.label("dotsper","Dots/Angstrom (1-10):");
-  dlg.label("boxsize","Bounding Box (1-100 Angstroms):");
-  dlg.label("ignore_hidden","Ignore Hidden Atoms:");
-  if (dlg.GetResults(data) &&
-      data["dotsper"].f >= 1.0f && data["dotsper"].f <=10.0f &&
-      data["boxsize"].f >= 1.0f && data["boxsize"].f <=100.0f) {
-    message = "Number of dots: ";
-    message += ftoa(lastnode->SurfaceCenter(
-                   viewpoint,
-                   (data["dotsper"].f > 0.0f ? 1.0f/data["dotsper"].f : 0.5f),
-                   data["boxsize"].f, data["ignore_hidden"].b));
-    viewpoint->setchanged();
-    Logger::log(message);
-    PaletteChanged = true;
-    doRefresh();
+  GenericDataDialog dlg(this);
+  dlg.setWindowTitle("Surface");
+  dlg.addDoubleField("Dots/Angstrom (1-10):", dotsper);
+  dlg.addDoubleField("Bounding Box (1-100 Angstroms):", boxsize);
+  dlg.addBoolField("Ignore Hidden Atoms:", ignoreHidden);
+  if (dlg.exec() == QDialog::Accepted) {
+      double newDotsper = dlg.value(0).toDouble();
+      double newBoxsize = dlg.value(1).toDouble();
+      if (newDotsper >= 1.0 && newDotsper <= 10.0 &&
+          newBoxsize >= 1.0 && newBoxsize <= 100.0) {
+
+          dotsper = newDotsper;
+          boxsize = newBoxsize;
+          ignoreHidden = dlg.value(2).toBool();
+          message = "Number of dots: ";
+          message += ftoa(lastnode->SurfaceCenter(
+                  viewpoint,
+                  (dotsper > 0.0f ? static_cast<float>(1.0/dotsper) : 0.5f),
+                  boxsize, ignoreHidden));
+          viewpoint->setchanged();
+          Logger::log(message);
+          PaletteChanged = true;
+          doRefresh();
+      }
   }
 }
 
@@ -2178,23 +2111,22 @@ void MIGLWidget::OnSurfaceSolvent() {
     return;
   }
 
-  static MIData data;
-  static bool first = true;
-  if (first) {
-    first = false;
-    data["dotsper"].f = 3.0f;
-  }
+  static double dotsper = 3.0;
 
-  MIGenericDialog dlg(this,"Surface");
-  dlg.label("dotsper","Dots/Angstrom (1-10):");
-  if (dlg.GetResults(data) &&
-      data["dotsper"].f >= 1.0f && data["dotsper"].f <=10.0f) {
-    message = "Number of dots: ";
-    message += ftoa(lastnode->SolventSurface(viewpoint,1.0f/data["dotsper"].f));
-    viewpoint->setchanged();
-    Logger::log(message);
-    PaletteChanged = true;
-    doRefresh();
+  GenericDataDialog dlg(this);
+  dlg.setWindowTitle("Surface");
+  dlg.addDoubleField("Dots/Angstrom (1-10):", dotsper);
+  if (dlg.exec() == QDialog::Accepted) {
+      double newDotsper = dlg.value(0).toDouble();
+      if (newDotsper >= 1.0 && newDotsper <= 10.0) {
+          dotsper = newDotsper;
+          message = "Number of dots: ";
+          message += ftoa(lastnode->SolventSurface(viewpoint,static_cast<float>(1.0/dotsper)));
+          viewpoint->setchanged();
+          Logger::log(message);
+          PaletteChanged = true;
+          doRefresh();
+      }
   }
 }
 
@@ -2849,30 +2781,26 @@ bool MIGLWidget::promptForReplaceResidue(std::string& deft_str) {
   if (MIBusyManager::instance()->Busy()) {
     return false;
   }
-  vector<std::string> choices = MIFitDictionary()->GetDictResList();
-  if (choices.size() <= 0) {
+  vector<std::string> resList = MIFitDictionary()->GetDictResList();
+  if (resList.empty()) {
     return false;
   }
-  unsigned int choice=0;
-  if (deft_str.size() > 0) {
-    for (size_t i=0; i < choices.size(); ++i)
-      if (deft_str == choices[i])
-      {
-        choice=i;
-        break;
-      }
+  int choice = 0;
+  QStringList choices;
+  foreach (const std::string& res, resList)
+  {
+      choices += res.c_str();
+      if (res == deft_str)
+          choice = choices.size()-1;
   }
 
-  MIData data;
-  MIGenericDialog dlg(this, "Replace Residue");
-  dlg.label("choice", "Choose a residue type to replace with:");
-  data["choice"].radio = choice;
-  data["choice"].radio_count = choices.size();
-  data["choice"].radio_labels=choices;
-  if (!dlg.GetResults(data)) {
+  GenericDataDialog dlg(this);
+  dlg.setWindowTitle("Replace Residue");
+  dlg.addComboField("Choose a residue type to replace with:", choices, choice);
+  if (dlg.exec() != QDialog::Accepted) {
     return false;
   }
-  deft_str = choices[data["choice"].radio];
+  deft_str = choices.at(dlg.value(0).toInt()).toStdString();
   return true;
 }
 
@@ -3163,28 +3091,18 @@ void MIGLWidget::OnUpdateGeometryTorsion(const MIUpdateEvent& pCmdUI) {
 }
 
 void MIGLWidget::OnRenderBallsize() {
-  MIGenericDialog dlg(this, "Ball/Cylinder Size");
-  MIData data;
-  data["BallSize"].f = viewpoint->GetBallSize();
-  data["CylinderSize"].f = viewpoint->GetCylinderSize();
-  data["Bmin"].f = viewpoint->Bmin/100.0f;
-  data["Bmax"].f = viewpoint->Bmax/100.0f;
+  GenericDataDialog dlg(this);
+  dlg.setWindowTitle("Ball/Cylinder Size");
+  dlg.addDoubleField("Ball diameter (% of CPK):", viewpoint->GetBallSize());
+  dlg.addDoubleField("Cylinder diameter (% of ball d):", viewpoint->GetCylinderSize());
+  dlg.addDoubleField("Min:", viewpoint->Bmin/100.0f);
+  dlg.addDoubleField("Max:", viewpoint->Bmax/100.0f);
 
-  dlg.order("BallSize");
-  dlg.order("CylinderSize");
-  dlg.order("Bmin");
-  dlg.order("Bmax");
-
-  dlg.label("BallSize","Ball diameter (% of CPK):");
-  dlg.label("CylinderSize","Cylinder diameter (% of ball d):");
-  dlg.label("Bmin","Min:");
-  dlg.label("Bmax","Max:");
-
-  if (dlg.GetResults(data)) {
-    viewpoint->SetBallSize(data["BallSize"].f);
-    viewpoint->SetCylinderSize(data["CylinderSize"].f);
-    viewpoint->Bmin = data["Bmin"].f*100.0f;
-    viewpoint->Bmax = data["Bmax"].f*100.0f;
+  if (dlg.exec() == QDialog::Accepted) {
+    viewpoint->SetBallSize(dlg.value(0).toDouble());
+    viewpoint->SetCylinderSize(dlg.value(1).toDouble());
+    viewpoint->Bmin = dlg.value(2).toDouble()*100.0f;
+    viewpoint->Bmax = dlg.value(3).toDouble()*100.0f;
     PaletteChanged = true;
     doRefresh();
   }
@@ -3252,34 +3170,22 @@ void MIGLWidget::OnEditCopy() {
 }
 
 void MIGLWidget::OnAnimateRockandrollparameters() {
-  // NOTE: BlinkTime is disabled b/c Blink is not accessible through the interface
-  MIGenericDialog dlg(this, "Rock and Roll Parameters");
-  MIData data;
-  data["RockIncrement"].f = RockIncrement;
-  data["RollIncrement"].f = RollIncrement;
-  data["RockRange"].f     = RockRange;
+  GenericDataDialog dlg(this);
+  dlg.setWindowTitle("Rock and Roll Parameters");
+  dlg.addDoubleField("Rock increment (0-10 deg)", RockIncrement);
+  dlg.addDoubleField("Roll increment (0-10 deg)", RollIncrement);
+  dlg.addDoubleField("Rock range (0-90 deg)", RockRange);
 
-  dlg.order("RockIncrement");
-  dlg.order("RollIncrement");
-  dlg.order("RockRange");
-
-  dlg.label("RockIncrement", "Rock increment (0-10 deg)");
-  dlg.label("RollIncrement", "Roll increment (0-10 deg)");
-  dlg.label("RockRange", "Rock range (0-90 deg)");
-
-  //data["BlinkTime"].i     = BlinkTime;
-  if (dlg.GetResults(data)) {
-    RockIncrement = data["RockIncrement"].f;
-    RollIncrement = data["RollIncrement"].f;
-    RockRange = data["RockRange"].f;
-    //BlinkTime = data["BlinkTime"].i;
+  if (dlg.exec() == QDialog::Accepted) {
+    RockIncrement = dlg.value(0).toDouble();
+    RollIncrement = dlg.value(1).toDouble();
+    RockRange = dlg.value(2).toDouble();
     RockAngle = 0.0F;
     BlinkCounter = 0;
     PaletteChanged = true;
     MIConfig::Instance()->WriteProfileInt("View Parameters", "RockIncrement", (int)(RockIncrement*100.0F));
     MIConfig::Instance()->WriteProfileInt("View Parameters", "RollIncrement", (int)(RollIncrement*100.0F));
     MIConfig::Instance()->WriteProfileInt("View Parameters", "RockRange", (int)(RockRange*100.0F));
-    MIConfig::Instance()->WriteProfileInt("View Parameters", "BlinkTime", BlinkTime);
   }
 }
 
@@ -3447,8 +3353,8 @@ void MIGLWidget::promptSecondaryStructureOptions(const std::string& type) {
   std::string prefix("Secondary Structure/");
   prefix += type + "/";
 
-  MIGenericDialog dlg(this,"Secondary Structure Options");
-  MIData data;
+  GenericDataDialog dlg(this);
+  dlg.setWindowTitle("Secondary Structure Options");
   double width;
   double thickness;
   bool square;
@@ -3458,8 +3364,7 @@ void MIGLWidget::promptSecondaryStructureOptions(const std::string& type) {
   long blue;
   if (type == "helix") {
     MIConfig::Instance()->Read((prefix + "radius").c_str(), &radius, 2.5);
-    data["radius"].d = radius;
-    dlg.label("radius", "Helix radius:");
+    dlg.addDoubleField("Helix radius:", radius);
   } else {
     double defaultWidth = 1.0;
     double defaultThickness = 1.0;
@@ -3502,37 +3407,27 @@ void MIGLWidget::promptSecondaryStructureOptions(const std::string& type) {
     MIConfig::Instance()->Read((prefix + "red").c_str(), &red, defaultRed);
     MIConfig::Instance()->Read((prefix + "green").c_str(), &green, defaultGreen);
     MIConfig::Instance()->Read((prefix + "blue").c_str(), &blue, defaultBlue);
-    data["width"].d = width;
-    data["thickness"].d = thickness;
-    data["square"].b = square;
-    data["color"].isColor = true;
-    data["color"].color[0] = (unsigned char)red;
-    data["color"].color[1] = (unsigned char)green;
-    data["color"].color[2] = (unsigned char)blue;
-    dlg.label("width", "Width:");
-    dlg.label("thickness", "Thickness:");
-    dlg.label("square", "Square:");
-    dlg.label("color", "Color:");
-    dlg.order("width");
-    dlg.order("thickness");
-    dlg.order("square");
-    dlg.order("color");
+    dlg.addDoubleField("Width:", width);
+    dlg.addDoubleField("Thickness:", thickness);
+    dlg.addBoolField("Square:", square);
+    dlg.addColorField("Color:", QColor(red, green, blue));
   }
 
-  if (dlg.GetResults(data)) {
+  if (dlg.exec() == QDialog::Accepted) {
     if (type == "helix") {
-      radius = data["radius"].d;
+      radius = dlg.value(0).toDouble();
       MIConfig::Instance()->Write((prefix + "radius").c_str(), radius);
     } else {
-      width = data["width"].d;
-      thickness = data["thickness"].d;
-      square = data["square"].b;
+      width = dlg.value(0).toDouble();
+      thickness = dlg.value(1).toDouble();
+      square = dlg.value(2).toBool();
+      QColor color = dlg.value(3).value<QColor>();
       MIConfig::Instance()->Write((prefix + "width").c_str(), width);
       MIConfig::Instance()->Write((prefix + "thickness").c_str(), thickness);
       MIConfig::Instance()->Write((prefix + "square").c_str(), square);
-      MIConfig::Instance()->Write((prefix + "red").c_str(), (long)data["color"].color[0]);
-      MIConfig::Instance()->Write((prefix + "green").c_str(), (long)data["color"].color[1]);
-      MIConfig::Instance()->Write((prefix + "blue").c_str(), (long)data["color"].color[2]);
+      MIConfig::Instance()->Write((prefix + "red").c_str(), (long)color.red());
+      MIConfig::Instance()->Write((prefix + "green").c_str(), (long)color.green());
+      MIConfig::Instance()->Write((prefix + "blue").c_str(), (long)color.blue());
     }
     Molecule* node = GetDisplaylist()->CurrentItem();
     if (node != NULL) {
@@ -3976,58 +3871,32 @@ void MIGLWidget::addResidueWithPrompt() {
   }
 
 
-  std::vector<std::string> resnames=MIFitDictionary()->GetDictResList();
-  MIGenericDialog dlg(this, "Insert Residue");
-  MIData data;
-  data["resname"].radio=0;
-  data["resname"].radio_count=resnames.size();
-  data["resname"].radio_labels=resnames;
+  std::vector<std::string> resList = MIFitDictionary()->GetDictResList();
+  QStringList resNames;
+  foreach (const std::string &res, resList)
+  {
+      resNames += res.c_str();
+  }
 
-  data["chainId"].str = chainStr;
-  data["where"].radio = 0;
-  data["where"].radio_count = 4;
-  data["where"].radio_labels.push_back("After Selected");
-  data["where"].radio_labels.push_back("Before Selected");
-  data["where"].radio_labels.push_back("Start of Model");
-  data["where"].radio_labels.push_back("End of Model");
+  GenericDataDialog dlg(this);
+  dlg.setWindowTitle("Insert Residue");
+  dlg.addComboField("Residue Type:", resNames, 0);
+  QStringList whereList;
+  whereList << "After Selected" << "Before Selected" << "Start of Model" << "End of Model";
+  dlg.addComboField("Insert Position:", whereList, 0);
+  dlg.addStringField("Chain Id:", chainStr.c_str());
+  QStringList putAt;
+  putAt << "Screen Center" << "Best Fit" << "Alpha Helix" << "Beta Sheet";
+  dlg.addComboField("Put At:", putAt, 0);
 
-  data["m_phipsi"].radio = 0;
-  data["m_phipsi"].radio_count = 4;
-  data["m_phipsi"].radio_labels.push_back("Screen Center");
-  data["m_phipsi"].radio_labels.push_back("Best Fit");
-  data["m_phipsi"].radio_labels.push_back("Alpha Helix");
-  data["m_phipsi"].radio_labels.push_back("Beta Sheet");
-
-  dlg.order("resname");
-  dlg.order("where");
-  dlg.order("chainId");
-  dlg.order("m_phipsi");
-
-  dlg.label("resname","Residue Type:");
-  dlg.label("where","Insert Position:");
-  dlg.label("chainId","Chain Id:");
-  dlg.label("m_phipsi","Put At:");
-
-  if (!dlg.GetResults(data)) {
+  if (dlg.exec() != QDialog::Accepted) {
     return;
   }
 
-  // values for where
-  // 0 - After atres
-  // 1 - before atres
-  // 2 - at head of model
-  // 3 - at end of model
-
-  // values for m_phipsi
-  // 0 = screen center
-  // 1 = best fit
-  // 2 = alpha helix
-  // 3 = beta sheet
-
-  unsigned short chainId = (unsigned short)(data["chainId"].str[0]);
-  unsigned int where             = data["where"].radio;
-  unsigned int m_phipsi = data["m_phipsi"].radio;
-  RESIDUE* m_res        = GetDictRes(data["resname"].radio_labels[data["resname"].radio].c_str());
+  unsigned short chainId = (unsigned short)(dlg.value(2).toString().toAscii().at(0));
+  unsigned int where = dlg.value(1).toInt();
+  unsigned int m_phipsi = dlg.value(3).toInt();
+  RESIDUE* m_res = GetDictRes(resNames.at(dlg.value(0).toInt()).toAscii().constData());
 
   if (m_res == NULL) {
     Logger::message("Error - nothing picked or residue not found in dictionary");
@@ -4493,25 +4362,19 @@ void MIGLWidget::OnObjectSurfaceresidue() {
     return;
   }
 
-  static MIData data;
-  static bool first = true;
-  if (first) {
-    first = false;
-    data["ignore_hidden"].b = true;
-    data["dotsper"].f = 3.0f;
-  }
-
-  MIGenericDialog dlg(this,"Surface");
-  dlg.order("dotsper");
-  dlg.order("ignore_hidden");
-  dlg.label("dotsper","Dots/Angstrom (1-10):");
-  dlg.label("ignore_hidden","Ignore Hidden Atoms:");
-  if (dlg.GetResults(data) &&
-      data["dotsper"].f >= 1.0f && data["dotsper"].f <=10.0f) {
-    viewpoint->setchanged();
-    node->SurfaceResidue(res, (1.0f/data["dotsper"].f), viewpoint, data["ignore_hidden"].b);
-    PaletteChanged = true;
-    ReDraw();
+  GenericDataDialog *dlg = new GenericDataDialog(this);
+  dlg->setWindowTitle("Surface");
+  dlg->addDoubleField("Dots/Angstrom (1-10):", 3.0f);
+  dlg->addBoolField("Ignore Hidden Atoms:", true);
+  if (dlg->exec() == QDialog::Accepted) {
+      float dotsper = static_cast<float>(dlg->value(0).toDouble());
+      bool ignoreHidden = dlg->value(1).toBool();
+      if (dotsper >= 1.0f && dotsper <= 10.0f) {
+          viewpoint->setchanged();
+          node->SurfaceResidue(res, (1.0f/dotsper), viewpoint, ignoreHidden);
+          PaletteChanged = true;
+          ReDraw();
+      }
   }
 }
 
@@ -4530,44 +4393,45 @@ void MIGLWidget::OnObjectSurfaceClearsurface() {
   }
 }
 
-void MIGLWidget::OnObjectSurfaceresidues() {
-  RESIDUE* res;
-  Molecule* node;
-  MIAtom* a;
-  AtomStack->Pop(a, res, node);
-  if (!a) {
-    return;
-  }
+void MIGLWidget::OnObjectSurfaceresidues()
+{
+    RESIDUE* res;
+    Molecule* node;
+    MIAtom* a;
+    AtomStack->Pop(a, res, node);
+    if (!a)
+        return;
 
-  static MIData data;
-  static bool first = true;
-  if (first) {
-    first = false;
-    data["ignore_hidden"].b = true;
-    data["dotsper"].f = 3.0f;
-  }
+    static double dotsper = 3.0;
+    static bool ignoreHidden = true;
 
-  MIGenericDialog dlg(this,"Surface");
-  dlg.order("dotsper");
-  dlg.order("ignore_hidden");
-  dlg.label("dotsper","Dots/Angstrom (1-10):");
-  dlg.label("ignore_hidden","Ignore Hidden Atoms:");
-  if (dlg.GetResults(data) &&
-      data["dotsper"].f >= 1.0f && data["dotsper"].f <=10.0f) {
-    res->setFlags(res->flags()|128);
-    while (!AtomStack->empty()) {
-      AtomStack->Pop(a, res, node);
-      res->setFlags(res->flags()|128);
+    GenericDataDialog dlg(this);
+    dlg.setWindowTitle("Surface");
+    dlg.addDoubleField("Dots/Angstrom (1-10):", dotsper);
+    dlg.addBoolField("Ignore Hidden Atoms:", ignoreHidden);
+    if (dlg.exec() == QDialog::Accepted)
+    {
+        double newDotsper = dlg.value(0).toDouble();
+        if (newDotsper >= 1.0f && newDotsper <= 10.0f)
+        {
+            dotsper = newDotsper;
+            ignoreHidden = dlg.value(1).toBool();
+            res->setFlags(res->flags()|128);
+            while (!AtomStack->empty())
+            {
+                AtomStack->Pop(a, res, node);
+                res->setFlags(res->flags()|128);
+            }
+            message = "Number of dots: ";
+            message += ftoa(node->SurfaceResidues(1.0f/dotsper,
+                                                  viewpoint,
+                                                  ignoreHidden));
+            viewpoint->setchanged();
+            Logger::log(message);
+            PaletteChanged = true;
+            ReDraw();
+        }
     }
-    message = "Number of dots: ";
-    message += ftoa(node->SurfaceResidues(1.0f/data["dotsper"].f,
-                                          viewpoint,
-                                          data["ignore_hidden"].b));
-    viewpoint->setchanged();
-    Logger::log(message);
-    PaletteChanged = true;
-    ReDraw();
-  }
 }
 
 void MIGLWidget::OnUpdateObjectSurfaceresidues(const MIUpdateEvent& pCmdUI) {
@@ -4579,79 +4443,78 @@ void MIGLWidget::OnUpdateObjectSurfaceatoms(const MIUpdateEvent& pCmdUI) {
 }
 
 void MIGLWidget::OnObjectSurfaceatom() {
-  RESIDUE* res;
-  Molecule* node;
-  MIAtom* a;
-  AtomStack->Pop(a, res, node);
-  if (!a) {
-    return;
-  }
+    RESIDUE* res;
+    Molecule* node;
+    MIAtom* a;
+    AtomStack->Pop(a, res, node);
+    if (!a)
+        return;
 
-  static MIData data;
-  static bool first = true;
-  if (first) {
-    first = false;
-    data["ignore_hidden"].b = true;
-    data["dotsper"].f = 3.0f;
-  }
+    static double dotsper = 3.0;
+    static bool ignoreHidden = true;
 
-  MIGenericDialog dlg(this,"Surface");
-  dlg.order("dotsper");
-  dlg.order("ignore_hidden");
-  dlg.label("dotsper","Dots/Angstrom (1-10):");
-  dlg.label("ignore_hidden","Ignore Hidden Atoms:");
-  if (dlg.GetResults(data) &&
-      data["dotsper"].f >= 1.0f && data["dotsper"].f <=10.0f) {
-    message = "Number of dots: ";
-    message += ftoa(node->SurfaceAtom(a,1.0f/data["dotsper"].f, data["ignore_hidden"].b));
-    viewpoint->setchanged();
-    Logger::log(message);
-    PaletteChanged = true;
-    ReDraw();
-  }
+    GenericDataDialog dlg(this);
+    dlg.setWindowTitle("Surface");
+    dlg.addDoubleField("Dots/Angstrom (1-10):", dotsper);
+    dlg.addBoolField("Ignore Hidden Atoms:", ignoreHidden);
+    if (dlg.exec() == QDialog::Accepted)
+    {
+        double newDotsper = dlg.value(0).toDouble();
+        if (newDotsper >= 1.0f && newDotsper <= 10.0f)
+        {
+            dotsper = newDotsper;
+            ignoreHidden = dlg.value(1).toBool();
+            message = "Number of dots: ";
+            message += ftoa(node->SurfaceAtom(a,1.0f/dotsper, ignoreHidden));
+            viewpoint->setchanged();
+            Logger::log(message);
+            PaletteChanged = true;
+            ReDraw();
+        }
+    }
 }
 
 void MIGLWidget::OnUpdateObjectSurfaceAtom(const MIUpdateEvent& pCmdUI) {
   pCmdUI.Enable(!AtomStack->empty());
 }
 
-void MIGLWidget::OnObjectSurfaceAtoms() {
-  RESIDUE* res;
-  Molecule* node;
-  MIAtom* a;
-  AtomStack->Pop(a, res, node);
-  if (!a) {
-    return;
-  }
+void MIGLWidget::OnObjectSurfaceAtoms()
+{
+    RESIDUE* res;
+    Molecule* node;
+    MIAtom* a;
+    AtomStack->Pop(a, res, node);
+    if (!a)
+        return;
 
+    static double dotsper = 3.0;
+    static bool ignoreHidden = true;
 
-  static MIData data;
-  static bool first = true;
-  if (first) {
-    first = false;
-    data["ignore_hidden"].b = true;
-    data["dotsper"].f = 3.0f;
-  }
-
-  MIGenericDialog dlg(this,"Surface");
-  dlg.order("dotsper");
-  dlg.order("ignore_hidden");
-  dlg.label("dotsper","Dots/Angstrom (1-10):");
-  dlg.label("ignore_hidden","Ignore Hidden Atoms:");
-  if (dlg.GetResults(data) &&
-      data["dotsper"].f >= 1.0f && data["dotsper"].f <=10.0f) {
-    message = "Number of dots: ";
-    message += ftoa(node->SurfaceAtom(a,1.0f/data["dotsper"].f, data["ignore_hidden"].b));
-    while (!AtomStack->empty()) {
-      AtomStack->Pop(a, res, node);
-      message = "Number of dots: ";
-      message += ftoa(node->SurfaceAtom(a,1.0f/data["dotsper"].f,data["ignore_hidden"].b));
+    GenericDataDialog dlg(this);
+    dlg.setWindowTitle("Surface");
+    dlg.addDoubleField("Dots/Angstrom (1-10):", dotsper);
+    dlg.addBoolField("Ignore Hidden Atoms:", ignoreHidden);
+    if (dlg.exec() == QDialog::Accepted)
+    {
+        double newDotsper = dlg.value(0).toDouble();
+        if (newDotsper >= 1.0f && newDotsper <= 10.0f)
+        {
+            dotsper = newDotsper;
+            ignoreHidden = dlg.value(1).toBool();
+            message = "Number of dots: ";
+            message += ftoa(node->SurfaceAtom(a, 1.0f/dotsper, ignoreHidden));
+            while (!AtomStack->empty())
+            {
+                AtomStack->Pop(a, res, node);
+                message = "Number of dots: ";
+                message += ftoa(node->SurfaceAtom(a, 1.0f/dotsper, ignoreHidden));
+            }
+            viewpoint->setchanged();
+            Logger::log(message);
+            PaletteChanged = true;
+            ReDraw();
+        }
     }
-    viewpoint->setchanged();
-    Logger::log(message);
-    PaletteChanged = true;
-    ReDraw();
-  }
 }
 
 void MIGLWidget::OnEditSelectmodel() {
@@ -5870,41 +5733,25 @@ void MIGLWidget::OnSetRibbonColors() {
   if (!m_node)
     return;
 
-  MIGenericDialog dlg(this, "Set Ribbon Colors");
-  MIData data;
-  data["coil"].color[0] = Colors::sec_colors[Colors::COIL];
-  data["coil"].isColorIndex = true;
-  data["sheet"].color[0] = Colors::sec_colors[Colors::SHEET];
-  data["sheet"].isColorIndex = true;
-  data["helix"].color[0] = Colors::sec_colors[Colors::HELIX];
-  data["helix"].isColorIndex = true;
-  data["ca_colors"].b = m_node && (m_node->ribbon_coloring != 0);
-  data["save"].b = false;
+  GenericDataDialog dlg(this);
+  dlg.setWindowTitle("Set Ribbon Colors");
+  dlg.addColorIndexField("Helix:", Colors::sec_colors[Colors::HELIX]);
+  dlg.addColorIndexField("Sheet:", Colors::sec_colors[Colors::SHEET]);
+  dlg.addColorIndexField("Coil:", Colors::sec_colors[Colors::COIL]);
+  dlg.addBoolField("Use CA atom color:", m_node && (m_node->ribbon_coloring != 0));
+  dlg.addBoolField("Save:", false);
 
-  dlg.order("helix");
-  dlg.order("sheet");
-  dlg.order("coil");
-  dlg.order("ca_colors");
-  dlg.order("save");
-
-  dlg.label("helix","Helix:");
-  dlg.label("sheet","Sheet:");
-  dlg.label("coil","Coil:");
-  dlg.label("ca_colors","Use CA atom color:");
-  dlg.label("save","Save:");
-
-
-  if (!dlg.GetResults(data)) {
+  if (dlg.exec() != QDialog::Accepted) {
     return;
   }
 
-  Colors::sec_colors[Colors::COIL] = data["coil"].color[0];
-  Colors::sec_colors[Colors::HELIX] = data["helix"].color[0];
-  Colors::sec_colors[Colors::SHEET] = data["sheet"].color[0];
+  Colors::sec_colors[Colors::HELIX] = dlg.value(0).toInt();
+  Colors::sec_colors[Colors::SHEET] = dlg.value(1).toInt();
+  Colors::sec_colors[Colors::COIL] = dlg.value(2).toInt();
   if (m_node) {
-    m_node->ribbon_coloring = data["ca_colors"].b;
+    m_node->ribbon_coloring = dlg.value(3).toBool();
   }
-  if (data["save"].b) {
+  if (dlg.value(4).toBool()) {
     Application::instance()->Write();
   }
   std::vector<Bond>::iterator iter = m_node->getBonds().begin();
@@ -6797,57 +6644,35 @@ void MIGLWidget::OnAddWater() {
     oldspgpno = emap->GetMapHeader()->spgpno;
   }
 
-  MIData data;
-  data["dmax"].f = dmax;
-  data["dmin"].f = dmin;
-  data["xmax"].f = xmax;
-  data["xmin"].f = xmin;
-  data["ymax"].f = ymax;
-  data["ymin"].f = ymin;
-  data["zmax"].f = zmax;
-  data["zmin"].f = zmin;
-  data["level"].i = level;
-  data["maxadd"].i = maxadd;
-
-  MIGenericDialog dlg(this, "Add Waters to Map");
-  dlg.order("dmin");
-  dlg.order("dmax");
-  dlg.order("level");
-  dlg.order("maxadd");
-  dlg.order("xmin");
-  dlg.order("xmax");
-  dlg.order("ymin");
-  dlg.order("ymax");
-  dlg.order("zmin");
-  dlg.order("zmax");
-
-  dlg.label("dmin","Minimum Distance:");
-  dlg.label("dmax", "Maximum Distance From Protein:");
-  dlg.label("level","Minimum map level (1 sigma = 50):");
-  dlg.label("maxadd","Maximum Number of Waters to Add:");
-  dlg.label("xmin", "ASU Xmin:");
-  dlg.label("xmax", "ASU Xmax:");
-  dlg.label("ymin", "ASU Ymin:");
-  dlg.label("ymax", "ASU Ymax:");
-  dlg.label("zmin", "ASU Zmin:");
-  dlg.label("zmax", "ASU Zmax:");
+  GenericDataDialog dlg(this);
+  dlg.setWindowTitle("Add Waters to Map");
+  dlg.addDoubleField("Minimum Distance:", dmin);
+  dlg.addDoubleField("Maximum Distance From Protein:", dmax);
+  dlg.addIntField("Minimum map level (1 sigma = 50):", level);
+  dlg.addIntField("Maximum Number of Waters to Add:", maxadd);
+  dlg.addDoubleField("ASU Xmin:", xmin);
+  dlg.addDoubleField("ASU Xmax:", xmax);
+  dlg.addDoubleField("ASU Ymin:", ymin);
+  dlg.addDoubleField("ASU Ymax:", ymax);
+  dlg.addDoubleField("ASU Zmin:", zmin);
+  dlg.addDoubleField("ASU Zmax:", zmax);
 
 
-  if (dlg.GetResults(data)) {
+  if (dlg.exec() == QDialog::Accepted) {
     // Checkpoint the model
     if (!SaveModelFile(model, "Before adding waters")) {
       Logger::message("Warning: Unable to save model - will not be able to Undo");
     }
-    dmax = data["dmax"].f;
-    dmin = data["dmin"].f;
-    xmax = data["xmax"].f;
-    xmin = data["xmin"].f;
-    ymax = data["ymax"].f;
-    ymin = data["ymin"].f;
-    zmax = data["zmax"].f;
-    zmin = data["zmin"].f;
-    level = data["level"].i;
-    maxadd = data["maxadd"].i;
+    dmin = dlg.value(0).toDouble();
+    dmax = dlg.value(1).toDouble();
+    level = dlg.value(2).toInt();
+    maxadd = dlg.value(3).toInt();
+    xmin = dlg.value(4).toDouble();
+    xmax = dlg.value(5).toDouble();
+    ymin = dlg.value(6).toDouble();
+    ymax = dlg.value(7).toDouble();
+    zmin = dlg.value(8).toDouble();
+    zmax = dlg.value(9).toDouble();
 
     RESIDUE* last;
     RESIDUE* first = model->getResidues();
@@ -8110,27 +7935,20 @@ void MIGLWidget::OnObjectShowsidechainrange() {
 
 void MIGLWidget::OnObjectWhenshowncolor() {
 
-  MIGenericDialog dlg(this, "Choose Color");
-  MIData data;
-  data["Color:"].color[0] = (unsigned char)WhenShownColor;
-  data["Color:"].isColorIndex = true;
+  GenericDataDialog dlg(this);
+  dlg.setWindowTitle("Choose Color");
+  dlg.addColorIndexField("Color:", WhenShownColor);
+  QStringList methods;
+  methods << "Carbon Only" << "All Atoms" << "Secondary Structure" << "B-Value" << "Atom Type"
+          << "Hydrophobicity" << "Shapley";
+  dlg.addComboField("Method:", methods, WhenShownColorMethod);
 
-  data["Method:"].radio = WhenShownColorMethod;
-  data["Method:"].radio_count = 7;
-  data["Method:"].radio_labels.push_back("Carbon Only");
-  data["Method:"].radio_labels.push_back("All Atoms");
-  data["Method:"].radio_labels.push_back("Secondary Structure");
-  data["Method:"].radio_labels.push_back("B-Value");
-  data["Method:"].radio_labels.push_back("Atom Type");
-  data["Method:"].radio_labels.push_back("Hydrophobicity");
-  data["Method:"].radio_labels.push_back("Shapley");
-
-  if (!dlg.GetResults(data)) {
+  if (dlg.exec() != QDialog::Accepted) {
     PaletteChanged = false;
     return;
   }
-  WhenShownColor = data["Color:"].color[0];
-  WhenShownColorMethod = data["Method:"].radio;
+  WhenShownColor = dlg.value(0).toInt();
+  WhenShownColorMethod = dlg.value(1).toInt();
   PaletteChanged = true;
 }
 
@@ -9774,62 +9592,34 @@ void MIGLWidget::OnEditClearlabels() {
 }
 
 void MIGLWidget::OnEditLabels() {
-  MIGenericDialog dlg(this, "Label Options");
-  MIData data;
-  data["style"].radio = ATOMLABEL::defaultStyle();
-  data["style"].radio_count = 9;
-  data["style"].radio_labels.push_back("GLU 100 A CA");
-  data["style"].radio_labels.push_back("GLU 100 A");
-  data["style"].radio_labels.push_back("GLU 100");
-  data["style"].radio_labels.push_back("GLU");
-  data["style"].radio_labels.push_back("100");
-  data["style"].radio_labels.push_back("CA");
-  data["style"].radio_labels.push_back("E 100 A");
-  data["style"].radio_labels.push_back("E 100");
-  data["style"].radio_labels.push_back("E");
+  GenericDataDialog dlg(this);
+  dlg.setWindowTitle("Label Options");
+  QStringList styles;
+  styles << "GLU 100 A CA" << "GLU 100 A" << "GLU 100" << "GLU" << "100"
+          << "CA" << "E 100 A" << "E 100" << "E";
+  dlg.addComboField("Label Style:", styles, ATOMLABEL::defaultStyle());
+  dlg.addIntField("Label Size:", ATOMLABEL::defaultSize());
+  dlg.addColorField("Label Color:", QColor(ATOMLABEL::defaultRed(), ATOMLABEL::defaultGreen(), ATOMLABEL::defaultBlue()));
+  dlg.addBoolField("Label picked atoms:", Application::instance()->LabelPicks);
+  dlg.addBoolField("Toggle labels when picked again:", Application::instance()->LabelToggle);
+  dlg.addBoolField("Save these options as my defaults:", false);
 
-  data["size"].i = ATOMLABEL::defaultSize();
-
-  data["color"].isColor = true;
-  data["color"].color[0] = ATOMLABEL::defaultRed();
-  data["color"].color[1] = ATOMLABEL::defaultGreen();
-  data["color"].color[2] = ATOMLABEL::defaultBlue();
-
-  data["picks"].b = Application::instance()->LabelPicks != 0;
-  data["toggle"].b = Application::instance()->LabelToggle != 0;
-  data["save"].b = false;
-
-  dlg.order("style");
-  dlg.order("size");
-  dlg.order("color");
-  dlg.order("picks");
-  dlg.order("toggle");
-  dlg.order("save");
-
-  dlg.label("style","Label Style:");
-  dlg.label("size","Label Size:");
-  dlg.label("color", "Label Color:");
-  dlg.label("picks","Label picked atoms:");
-  dlg.label("toggle","Toggle labels when picked again:");
-  dlg.label("save","Save these options as my defaults:");
-
-  if (!dlg.GetResults(data)) {
+  if (dlg.exec() != QDialog::Accepted) {
     return;
   }
 
-  unsigned int style = data["style"].radio;
+  unsigned int style = dlg.value(0).toInt();
   bool doAtomLabelUpdate = false;
   if (style != (unsigned int)ATOMLABEL::defaultStyle()) {
     ATOMLABEL::defaultStyle(style);
     doAtomLabelUpdate = true;
   }
-  ATOMLABEL::defaultSize(data["size"].i);
-  Application::instance()->LabelToggle = data["toggle"].b;
-  Application::instance()->LabelPicks = data["picks"].b;
-  ATOMLABEL::defaultColor(data["color"].color[0],
-                          data["color"].color[1],
-                          data["color"].color[2]);
-  if (data["save"].b) {
+  ATOMLABEL::defaultSize(dlg.value(1).toInt());
+  QColor color = dlg.value(2).value<QColor>();
+  ATOMLABEL::defaultColor(color.red(), color.green(), color.blue());
+  Application::instance()->LabelPicks = dlg.value(3).toBool();
+  Application::instance()->LabelToggle = dlg.value(4).toBool();
+  if (dlg.value(5).toBool()) {
     MIConfig::Instance()->WriteProfileInt("View Parameters", "LabelStyle", ATOMLABEL::defaultStyle());
     MIConfig::Instance()->WriteProfileInt("View Parameters", "LabelSize", ATOMLABEL::defaultSize());
     MIConfig::Instance()->WriteProfileInt("View Parameters", "LabelColorRed", ATOMLABEL::defaultRed());
@@ -10010,21 +9800,17 @@ bool MIGLWidget::IsXMLDocument(const char* pathname) {
 }
 
 void MIGLWidget::OnEditAnnotation() {
-  MIGenericDialog dlg(this, "Edit Annotation");
-  MIData data;
-  data["Text:"].str = std::string(CurrentAnnotation->GetText());
-  data["Color:"].color[0] = CurrentAnnotation->m_color.red;
-  data["Color:"].color[1] = CurrentAnnotation->m_color.green;
-  data["Color:"].color[2] = CurrentAnnotation->m_color.blue;
-  data["Color:"].isColor = true;
-  dlg.order("Text:");
-  dlg.order("Color:");
-  if (dlg.GetResults(data)) {
-    CurrentAnnotation->m_text = data["Text:"].str.c_str();
+  GenericDataDialog dlg(this);
+  dlg.setWindowTitle("Edit Annotation");
+  dlg.addStringField("Text:", CurrentAnnotation->GetText());
+  dlg.addColorField("Color:", QColor(CurrentAnnotation->m_color.red, CurrentAnnotation->m_color.green, CurrentAnnotation->m_color.blue));
+  if (dlg.exec() == QDialog::Accepted) {
+    CurrentAnnotation->m_text = dlg.value(0).toString().toStdString();
+    QColor color = dlg.value(1).value<QColor>();
     CurrentAnnotation->m_color = PaletteColor(
-      (unsigned char)data["Color:"].color[0],
-      (unsigned char)data["Color:"].color[1],
-      (unsigned char)data["Color:"].color[2]);
+      (unsigned char)color.red(),
+      (unsigned char)color.green(),
+      (unsigned char)color.blue());
     Modify(true);
     ReDraw();
   }

@@ -30,7 +30,7 @@
 #include "MIEventHandler.h"
 #include "MIMainWindow.h"
 #include "MIQTreeWidget.h"
-
+#include "GenericDataDialog.h"
 #include "ui/MIDialog.h"
 
 #include "surf.h"
@@ -1014,26 +1014,20 @@ void ResiduesTree::ColorItem() {
   }
 
 
-  MIGenericDialog dlg(this, "Choose Color");
-  MIData data;
-  data["Color:"].color[0] = (unsigned char)view->WhenShownColor;
-  data["Color:"].isColorIndex = true;
+  GenericDataDialog dlg(this);
+  dlg.setWindowTitle("Choose Color");
 
-  data["Method:"].radio = view->WhenShownColorMethod;
-  data["Method:"].radio_count = 7;
-  data["Method:"].radio_labels.push_back("Carbon Only");
-  data["Method:"].radio_labels.push_back("All Atoms");
-  data["Method:"].radio_labels.push_back("Secondary Structure");
-  data["Method:"].radio_labels.push_back("B-Value");
-  data["Method:"].radio_labels.push_back("Atom Type");
-  data["Method:"].radio_labels.push_back("Hydrophobicity");
-  data["Method:"].radio_labels.push_back("Shapley");
+  dlg.addColorIndexField("Color:", view->WhenShownColor);
+  QStringList methods;
+  methods << "Carbon Only" << "All Atoms" << "Secondary Structure" << "B-Value"
+          << "Atom Type" << "Hydrophobicity" << "Shapley";
+  dlg.addComboField("Method:", methods, view->WhenShownColorMethod);
 
-  if (!dlg.GetResults(data)) {
+  if (dlg.exec() != QDialog::Accepted) {
     return;
   }
-  int color = (int)data["Color:"].color[0];
-  int colorMethod = (int)data["Method:"].radio;
+  int color = dlg.value(0).toInt();
+  int colorMethod = dlg.value(1).toInt();
 
   model->setResiduesColor(residues, color, colorMethod);
 }
@@ -3265,26 +3259,20 @@ void ModelsTree::currentMapChanged(EMap* oldMap, EMap* newMap) {
 }
 
 bool ModelsTree::colorDialog(int& color, int& colorMethod) {
-  MIGenericDialog dlg(this, "Choose Color");
-  MIData data;
-  data["Color:"].color[0] = (unsigned char)view->WhenShownColor;
-  data["Color:"].isColorIndex = true;
+  GenericDataDialog dlg(this);
+  dlg.setWindowTitle("Choose Color");
+  dlg.addColorIndexField("Color:", view->WhenShownColor);
 
-  data["Method:"].radio = view->WhenShownColorMethod;
-  data["Method:"].radio_count = 7;
-  data["Method:"].radio_labels.push_back("Carbon Only");
-  data["Method:"].radio_labels.push_back("All Atoms");
-  data["Method:"].radio_labels.push_back("Secondary Structure");
-  data["Method:"].radio_labels.push_back("B-Value");
-  data["Method:"].radio_labels.push_back("Atom Type");
-  data["Method:"].radio_labels.push_back("Hydrophobicity");
-  data["Method:"].radio_labels.push_back("Shapley");
+  QStringList methods;
+  methods << "Carbon Only" << "All Atoms" << "Secondary Structure" << "B-Value" << "Atom Type"
+          << "Hydrophobicity" << "Shapley";
+  dlg.addComboField("Method:", methods, view->WhenShownColorMethod);
 
-  if (!dlg.GetResults(data)) {
+  if (dlg.exec() != QDialog::Accepted) {
     return false;
   }
-  color = (int)data["Color:"].color[0];
-  colorMethod = (int)data["Method:"].radio;
+  color = dlg.value(0).toInt();
+  colorMethod = dlg.value(1).toInt();
   return true;
 }
 

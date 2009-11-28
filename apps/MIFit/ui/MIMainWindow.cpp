@@ -45,6 +45,7 @@
 #include "MIEventHandlerMacros.h"
 #include "GLFormatDialog.h"
 #include "tools.h"
+#include "GenericDataDialog.h"
 
 #ifdef _WIN32
 #include <images/mifit_icon_32x32.xpm>
@@ -945,23 +946,25 @@ void MIMainWindow::OnLoadDictAppend() {
 
 
 void MIMainWindow::OnEditDictResidue() {
-  std::string type;
-  std::vector<std::string> choices = MIFitDictionary()->GetDictResList();
-  if (choices.size() == 0) {
+  std::vector<std::string> resList = MIFitDictionary()->GetDictResList();
+  if (!resList.empty()) {
     Logger::message("No residues in dictionary to edit");
     return;
   }
 
-  MIGenericDialog dlg(this, "Edit Residue");
-  dlg.label("choice","Select a residue to edit");
-  MIData data;
-  data["choice"].radio=0;
-  data["choice"].radio_count = choices.size();
-  data["choice"].radio_labels = choices;
-  if (!dlg.GetResults(data)) {
+  QStringList choices;
+  foreach (const std::string &res, resList)
+  {
+      choices += res.c_str();
+  }
+
+  GenericDataDialog dlg(this);
+  dlg.setWindowTitle("Edit Residue");
+  dlg.addComboField("Select a residue to edit", choices, 0);
+  if (dlg.exec() != QDialog::Accepted) {
     return;
   }
-  type = choices[data["choice"].radio];
+  std::string type = resList[dlg.value(0).toInt()];
 
   if (MIFitDictionary()->DictContains(type.c_str())) {
     if (MIFitGeomRefiner()->EditEntry(type.c_str())) {

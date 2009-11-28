@@ -15,7 +15,6 @@
 #include "MIDialog.h"
 
 // local dialog class definitions
-#include "MIDataDialog.h"
 #include "MIColorPickerDlg.h"
 #include "SelectCrystal.h"
 #include "SmilesDialog.h"
@@ -26,6 +25,7 @@
 #include "AtomColors.h"
 #include "LSQFitDialog.h"
 #include "CustomJobDialog.h"
+#include "GenericDataDialog.h"
 
 MIDialog::MIDialog(QWidget* parent, const std::string& name) : _qparent(parent), _name(name) {
   // Note:
@@ -68,53 +68,23 @@ bool MIDialog::GetResults(MIData& data) {
   return ret;
 }
 
-//
-// Generic
-//
-MIGenericDialog::MIGenericDialog(QWidget* parent, const std::string& name)
-  : MIDialog(parent, name) {
-  _qdlg=new MIDataDialog(_qparent);
-  _qdlg->setWindowTitle(name.c_str());
-}
-
-
-void MIGenericDialog::order(const std::string& key) {
-  ((MIDataDialog*)_qdlg)->order(key);
-}
-
-void MIGenericDialog::label(const std::string& key, const std::string& label){
-  ((MIDataDialog*)_qdlg)->label(key,label);
-}
-
-bool MIGenericDialog::PromptForResults(MIData& data) {
-  ((MIDataDialog*)_qdlg)->setMIData(&data);
-  if (_qdlg->exec() != QDialog::Accepted)
-    return false;
-  return true;
-}
-
-MIGenericDialog::~MIGenericDialog() {
-  delete _qdlg;
-}
-
-
 
 int MIGetSingleChoiceIndex(const std::string& message,
                            const std::string& caption,
                            const std::vector<std::string>& choices,
                            QWidget *parent) {
 
-  MIGenericDialog dialog(parent, caption);
-  MIData data;
-  data["choice"].radio = 0;
-  data["choice"].radio_count = choices.size();
-  data["choice"].radio_labels = choices;
-  dialog.label("choice",message);
-  if (!dialog.GetResults(data)) {
+  GenericDataDialog dialog(parent);
+  dialog.setWindowTitle(caption.c_str());
+  QStringList choiceList;
+  foreach (const std::string &choice, choices)
+      choiceList += choice.c_str();
+  dialog.addComboField(message.c_str(), choiceList, 0);
+  if (dialog.exec() != QDialog::Accepted) {
     return -1;
   }
 
-  return data["choice"].radio;
+  return dialog.value(0).toInt();
 }
 
 

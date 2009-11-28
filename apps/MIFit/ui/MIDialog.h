@@ -25,20 +25,6 @@ private:
 };
 
 
-class MIGenericDialog : public MIDialog {
-public:
-  MIGenericDialog(QWidget* parent, const std::string& name);
-  ~MIGenericDialog();
-
-  void order(const std::string& key);
-  void label(const std::string& key, const std::string& label);
-
-private:
-  bool PromptForResults(MIData& data);
-   QDialog *_qdlg;
-};
-
-//NOTE: wraps MIGenericDialog with a radio data item with labels for the choices
 int MIGetSingleChoiceIndex(const std::string& message,
                            const std::string& caption,
                            const std::vector<std::string>& choices,
