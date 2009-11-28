@@ -163,16 +163,6 @@ private:
 bool MIGetFontFromUser(std::string &fontDesc);
 
 
-class MISelectDirectoryDialog : public MIDialog {
-public:
-  MISelectDirectoryDialog(QWidget* parent, const std::string& name,
-                          const std::string& deft = ".");
-private:
-  bool PromptForResults(MIData& data);
-  std::string _deft;
-  //variables: dir.str
-};
-
 const unsigned int MI_OPEN_MODE=0;
 const unsigned int MI_SAVE_MODE=2;
 

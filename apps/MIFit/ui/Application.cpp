@@ -934,11 +934,9 @@ void Application::SetShelxHome(bool reset) {
   if (config->Read("SHELXHOME", tmp))
     ShelxHome=tmp.c_str();
   if (reset || ShelxHome.empty() || !QFileInfo(ShelxHome.c_str()).exists()) {
-    MISelectDirectoryDialog dlg(NULL, "Find the Shelx home directory");
-    MIData data;
-    if (dlg.GetResults(data)) {
-      ShelxHome = data["dir"].str.c_str();
-    }
+    QString str = QFileDialog::getExistingDirectory(0, "Find the Shelx home directory");
+    if (!str.isEmpty())
+        ShelxHome = str.toStdString();
   }
 }
 

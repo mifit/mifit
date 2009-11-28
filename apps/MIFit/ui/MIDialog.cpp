@@ -447,26 +447,6 @@ bool MIGetFontFromUser(std::string &fontDesc) {
 
 
 //
-// SelectDirectory
-//
-MISelectDirectoryDialog::MISelectDirectoryDialog(QWidget* parent,
-                                                 const std::string& name,
-                                                 const std::string& deft)
-  : MIDialog(parent, name),_deft(deft) {
-}
-
-bool MISelectDirectoryDialog::PromptForResults(MIData& data) {
-  QString str=QFileDialog::getExistingDirectory(_qparent, _name.c_str(),_deft.c_str());
-
-  if (str.isEmpty()) {
-    return false;
-  }
-  data["dir"].str = str.toStdString();
-  return true;
-}
-
-
-//
 // File
 //
 MIFileDialog::MIFileDialog(QWidget* parent, const std::string& message,
@@ -583,26 +563,6 @@ std::string MIFileSelector(const std::string& title,
   MIData data;
   data["path"].str = "";
   data["pathList"].strList=std::vector<std::string>();
-
-  // if filter is of form "All files (*)|*|..." set correct filter index
-//   if (defaultExtension.size() != 0 && filter2.find_first_of('|') != std::string::npos) {
-//     int filterIndex = 0;
-
-//     wxArrayString descriptions, filters;
-//     // don't care about errors, handled already by wxFileDialog
-//     (void)wxParseCommonDialogsFilter(filter2.c_str(), descriptions, filters);
-//     for (size_t n = 0; n < filters.GetCount(); n++) {
-//       if (filters[n].Contains(defaultExtension.c_str())) {
-//         filterIndex = n;
-//         break;
-//       }
-//     }
-
-//     if (filterIndex > 0) {
-//       data["filterIndex"].radio = filterIndex;
-//       data["filterIndex"].radio_count = filters.GetCount();
-//     }
-//   }
 
   std::string filename;
   if (fileDialog.GetResults(data)) {
