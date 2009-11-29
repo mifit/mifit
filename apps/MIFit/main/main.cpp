@@ -9,6 +9,9 @@ int main(int argc, char **argv)
 {
   int result = -1;
   QApplication app(argc, argv);
+#ifdef Q_OS_LINUX
+  QApplication::setStyle("Plastique");
+#endif
   Application::instance();
 
   try {
