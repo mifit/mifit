@@ -20,29 +20,31 @@
 
 namespace
 {
-    void setButtonColor(QAbstractButton *button, const QColor &color)
-    {
-      QPalette palette = button->palette();
-      palette.setColor(QPalette::Window, color);
-      button->setPalette(palette);
+void setButtonColor(QAbstractButton *button, const QColor &color)
+{
+    QPalette palette = button->palette();
+    palette.setColor(QPalette::Window, color);
+    button->setPalette(palette);
 
-      QPixmap p(32, 32);
-      p.fill(color);
-      QIcon icon(p);
-      button->setIcon(icon);
+    QPixmap p(32, 32);
+    p.fill(color);
+    QIcon icon(p);
+    button->setIcon(icon);
+}
+
+
+class ColorIndexButton
+    : public QToolButton
+{
+    Q_OBJECT
+public:
+    ColorIndexButton(QWidget *parent = 0)
+        : QToolButton(parent)
+    {
     }
 
-
-    class ColorIndexButton : public QToolButton
-    {
-        Q_OBJECT
-    public:
-        ColorIndexButton(QWidget *parent = 0)
-            : QToolButton(parent)
-        {}
-
-        int colorIndex;
-    };
+    int colorIndex;
+};
 }
 
 #include "GenericDataDialog.moc"
@@ -55,7 +57,7 @@ GenericDataDialog::GenericDataDialog(QWidget *parent, Qt::WindowFlags f)
     formLayout_ = new QFormLayout;
     layout->addLayout(formLayout_, 1);
 
-    QDialogButtonBox* buttons = new QDialogButtonBox;
+    QDialogButtonBox *buttons = new QDialogButtonBox;
     buttons->addButton(QDialogButtonBox::Ok);
     buttons->addButton(QDialogButtonBox::Cancel);
     layout->addWidget(buttons);
@@ -163,52 +165,52 @@ void GenericDataDialog::accept()
             switch (fieldTypes_.at(i))
             {
             case Bool:
-                {
-                    QCheckBox *checkBox = static_cast<QCheckBox*>(widget);
-                    values_[i] = checkBox->isChecked();
-                }
-                break;
+            {
+                QCheckBox *checkBox = static_cast<QCheckBox*>(widget);
+                values_[i] = checkBox->isChecked();
+            }
+            break;
             case Int:
-                {
-                    QLineEdit *lineEdit = static_cast<QLineEdit*>(widget);
-                    values_[i] = lineEdit->text().toInt();
-                }
-                break;
+            {
+                QLineEdit *lineEdit = static_cast<QLineEdit*>(widget);
+                values_[i] = lineEdit->text().toInt();
+            }
+            break;
             case UInt:
-                {
-                    QLineEdit *lineEdit = static_cast<QLineEdit*>(widget);
-                    values_[i] = lineEdit->text().toUInt();
-                }
-                break;
+            {
+                QLineEdit *lineEdit = static_cast<QLineEdit*>(widget);
+                values_[i] = lineEdit->text().toUInt();
+            }
+            break;
             case Double:
-                {
-                    QLineEdit *lineEdit = static_cast<QLineEdit*>(widget);
-                    values_[i] = lineEdit->text().toDouble();
-                }
-                break;
+            {
+                QLineEdit *lineEdit = static_cast<QLineEdit*>(widget);
+                values_[i] = lineEdit->text().toDouble();
+            }
+            break;
             case String:
-                {
-                    QLineEdit *lineEdit = static_cast<QLineEdit*>(widget);
-                    values_[i] = lineEdit->text();
-                }
-                break;
+            {
+                QLineEdit *lineEdit = static_cast<QLineEdit*>(widget);
+                values_[i] = lineEdit->text();
+            }
+            break;
             case Combo:
-                {
-                    QComboBox *comboBox = static_cast<QComboBox*>(widget);
-                    values_[i] = comboBox->currentIndex();
-                }
-                break;
+            {
+                QComboBox *comboBox = static_cast<QComboBox*>(widget);
+                values_[i] = comboBox->currentIndex();
+            }
+            break;
             case Color:
-                {
-                    QToolButton *button = static_cast<QToolButton*>(widget);
-                    values_[i] = button->palette().color(QPalette::Normal, QPalette::Window);
-                }
-                break;
+            {
+                QToolButton *button = static_cast<QToolButton*>(widget);
+                values_[i] = button->palette().color(QPalette::Normal, QPalette::Window);
+            }
+            break;
             case ColorIndex:
-                {
-                    ColorIndexButton *button = static_cast<ColorIndexButton*>(widget);
-                    values_[i] = button->colorIndex;
-                }
+            {
+                ColorIndexButton *button = static_cast<ColorIndexButton*>(widget);
+                values_[i] = button->colorIndex;
+            }
             }
         }
     }

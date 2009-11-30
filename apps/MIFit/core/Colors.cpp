@@ -106,12 +106,13 @@ const int Colors::SHEET = 1;
 const int Colors::COIL = 2;
 const int Colors::TURN = 3;
 
-char Colors::colornames[Colors_NUMBERCOLORS][8] = {
-  "Black", "Yellow", "Red", "Blue", "Cyan", "Green", "Magenta",
-  "Pink", "Orange", "Brown", "White",
-  "User 1", "User 2", "User 3", "User 4", "User 5", "User 6", "User 7", "User 8", "User 9", "User 10",
-  "Map 1", "Map 2", "Map 3", "Map 4", "Map 5", "Map 6", "Map 7", "Map 8", "Map 9", "Map 10",
-  "Level 1", "Level 2", "Level 3", "Level 4", "Level 5", "Level 6", "Level 7", "Level 8", "Level 9", "Level10"
+char Colors::colornames[Colors_NUMBERCOLORS][8] =
+{
+    "Black", "Yellow", "Red", "Blue", "Cyan", "Green", "Magenta",
+    "Pink", "Orange", "Brown", "White",
+    "User 1", "User 2", "User 3", "User 4", "User 5", "User 6", "User 7", "User 8", "User 9", "User 10",
+    "Map 1", "Map 2", "Map 3", "Map 4", "Map 5", "Map 6", "Map 7", "Map 8", "Map 9", "Map 10",
+    "Level 1", "Level 2", "Level 3", "Level 4", "Level 5", "Level 6", "Level 7", "Level 8", "Level 9", "Level10"
 };
 
 std::vector<std::string> Colors::atomnames;
@@ -129,11 +130,13 @@ unsigned char Colors::BPallette[Colors_NUMBERPALETTE];
 int Colors::sec_colors[] = {MAGENTA, RED, BLUE, GREEN};
 
 //BValue colors
-int Colors::BValueColors[Colors_NumBValueColors] = {
-  PCONTOUR1, PCONTOUR2, PCONTOUR3, PCONTOUR4, PCONTOUR5, PCONTOUR6, PCONTOUR7, PCONTOUR8, PCONTOUR9, PCONTOUR10
+int Colors::BValueColors[Colors_NumBValueColors] =
+{
+    PCONTOUR1, PCONTOUR2, PCONTOUR3, PCONTOUR4, PCONTOUR5, PCONTOUR6, PCONTOUR7, PCONTOUR8, PCONTOUR9, PCONTOUR10
 };
 
-int Colors::BValueRanges[Colors_NumBValueColors] = {
-  300, 600, 1000, 1500, 2000, 2500, 3500, 5000, 7500, 10000
+int Colors::BValueRanges[Colors_NumBValueColors] =
+{
+    300, 600, 1000, 1500, 2000, 2500, 3500, 5000, 7500, 10000
 };
 

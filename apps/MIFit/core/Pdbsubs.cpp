@@ -1,8 +1,8 @@
 #include <nongui/nonguilib.h>
 #include <chemlib/chemlib.h>
 
-using namespace std;
 using namespace chemlib;
+using namespace std;
 
 #define X 0
 #define Y 1

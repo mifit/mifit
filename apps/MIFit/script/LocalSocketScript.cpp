@@ -12,8 +12,9 @@
 #include <process.h>
 #endif
 
-LocalSocketScript::LocalSocketScript(QObject* parent)
-    : QObject(parent), engine(0)
+LocalSocketScript::LocalSocketScript(QObject *parent)
+    : QObject(parent),
+      engine(0)
 {
     uint id = static_cast<uint>(getpid());
     name_ = "MIFit-" + QString::number(id, 16);
@@ -33,22 +34,25 @@ QString LocalSocketScript::name() const
 
 void LocalSocketScript::handleConnection()
 {
-    if (!engine) {
+    if (!engine)
+    {
         engine = new QScriptEngine(this);
-        QObject* mifitObject = new MIFitScriptObject(engine, this);
+        QObject *mifitObject = new MIFitScriptObject(engine, this);
         QScriptValue objectValue = engine->newQObject(mifitObject);
         engine->globalObject().setProperty("mifit", objectValue);
     }
 
-    QLocalSocket* connection = localServer->nextPendingConnection();
+    QLocalSocket *connection = localServer->nextPendingConnection();
     connect(connection, SIGNAL(disconnected()),
             connection, SLOT(deleteLater()));
-    if (connection) {
+    if (connection)
+    {
         QString script;
         bool moreInput = true;
         QDataStream stream(connection);
         stream.setVersion(QDataStream::Qt_4_0);
-        while (moreInput) {
+        while (moreInput)
+        {
             if (!connection->waitForReadyRead())
                 return;
             if (stream.atEnd())
@@ -56,7 +60,8 @@ void LocalSocketScript::handleConnection()
             QString str;
             stream >> str;
             int i = str.indexOf('\b');
-            if (i >= 0) {
+            if (i >= 0)
+            {
                 str = str.mid(0, i);
                 moreInput = false;
             }
@@ -66,14 +71,17 @@ void LocalSocketScript::handleConnection()
 
         QString result;
         QScriptValue scriptResult = engine->evaluate(script, name_);
-        if (engine->hasUncaughtException()) {
+        if (engine->hasUncaughtException())
+        {
             QScriptValue exception = engine->uncaughtException();
             int lineNumber = engine->uncaughtExceptionLineNumber();
             QStringList backtrace = engine->uncaughtExceptionBacktrace();
             result = QString("Exception %1 on line %2\n\t%3")
-                              .arg(exception.toString()).arg(lineNumber)
-                              .arg(backtrace.join("\n\t"));
-        } else {
+                     .arg(exception.toString()).arg(lineNumber)
+                     .arg(backtrace.join("\n\t"));
+        }
+        else
+        {
             result = scriptResult.toString();
         }
 

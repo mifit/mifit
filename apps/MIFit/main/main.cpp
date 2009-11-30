@@ -7,25 +7,28 @@
 
 int main(int argc, char **argv)
 {
-  int result = -1;
-  QApplication app(argc, argv);
+    int result = -1;
+    QApplication app(argc, argv);
 #ifdef Q_OS_LINUX
-  QApplication::setStyle("Plastique");
+    QApplication::setStyle("Plastique");
 #endif
-  Application::instance();
+    Application::instance();
 
-  try {
-    MIMainWindow * mw = MIMainWindow::instance();
-    QTimer::singleShot(500, mw, SLOT(AfterInit()));
+    try
+    {
+        MIMainWindow *mw = MIMainWindow::instance();
+        QTimer::singleShot(500, mw, SLOT(AfterInit()));
 
-    mw->show();
+        mw->show();
 
-    result = app.exec();
-    delete mw;
-  } catch(...) {
-    std::cerr << "MIFit: unknown exception\n";
-    result = 1;
-  }
-  delete Application::instance();
-  return result;
+        result = app.exec();
+        delete mw;
+    }
+    catch (...)
+    {
+        std::cerr << "MIFit: unknown exception\n";
+        result = 1;
+    }
+    delete Application::instance();
+    return result;
 }

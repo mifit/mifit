@@ -4,43 +4,50 @@
 #include <opengl/Frustum.h>
 #include <opengl/StereoView.h>
 
-using namespace mi::opengl;
 using namespace chemlib;
+using namespace mi::opengl;
 
-DictEditBondPickingRenderable::DictEditBondPickingRenderable(StereoView* stereoView, std::vector<Bond>& bonds, Frustum* frustum)
-  : stereoView(stereoView) {
+DictEditBondPickingRenderable::DictEditBondPickingRenderable(StereoView *stereoView, std::vector<Bond> &bonds, Frustum *frustum)
+    : stereoView(stereoView)
+{
 
-  renderer = new GLRenderer();
-  renderer->setPickingEnabled(true);
-  renderer->setFrustum(frustum);
-  renderer->setRenderStyle(RenderStyle::getDefaultStick());
+    renderer = new GLRenderer();
+    renderer->setPickingEnabled(true);
+    renderer->setFrustum(frustum);
+    renderer->setRenderStyle(RenderStyle::getDefaultStick());
 
-  bondRenderable = new DictEditBondRenderable(renderer, bonds);
-
-}
-
-DictEditBondPickingRenderable::~DictEditBondPickingRenderable() {
-  delete renderer;
-  delete bondRenderable;
-}
-
-void DictEditBondPickingRenderable::render() {
-  stereoView->render(*bondRenderable);
-}
-
-Bond* DictEditBondPickingRenderable::getBond(int id) {
-  Bond* e = renderer->getBond(id);
-  renderer->clearPickNames();
-  return e;
-}
-
-DictEditBondRenderable::DictEditBondRenderable(GLRenderer* renderer, std::vector<Bond>& bonds)
-  : bonds(bonds), renderer(renderer) {
+    bondRenderable = new DictEditBondRenderable(renderer, bonds);
 
 }
 
-void DictEditBondRenderable::render() {
-  renderer->clearPickNames();
-  renderer->drawBonds(bonds);
+DictEditBondPickingRenderable::~DictEditBondPickingRenderable()
+{
+    delete renderer;
+    delete bondRenderable;
+}
+
+void DictEditBondPickingRenderable::render()
+{
+    stereoView->render(*bondRenderable);
+}
+
+Bond*DictEditBondPickingRenderable::getBond(int id)
+{
+    Bond *e = renderer->getBond(id);
+    renderer->clearPickNames();
+    return e;
+}
+
+DictEditBondRenderable::DictEditBondRenderable(GLRenderer *renderer, std::vector<Bond> &bonds)
+    : bonds(bonds),
+      renderer(renderer)
+{
+
+}
+
+void DictEditBondRenderable::render()
+{
+    renderer->clearPickNames();
+    renderer->drawBonds(bonds);
 }
 

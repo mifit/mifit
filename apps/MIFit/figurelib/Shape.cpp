@@ -2,13 +2,16 @@
 
 #include "Drawing.h"
 
-namespace moldraw {
+namespace moldraw
+{
 
-Shape::Shape(Drawing* dp) {
-  _dp = dp;
+Shape::Shape(Drawing *dp)
+{
+    _dp = dp;
 }
 
-Shape::~Shape() {
+Shape::~Shape()
+{
 }
 
 

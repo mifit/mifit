@@ -6,8 +6,9 @@
 #include <ui/uilib.h>
 #include <jobs/BatchJobManager.h>
 
-MIFitScriptObject::MIFitScriptObject(QScriptEngine* engine, QObject* parent)
-    : QObject(parent), engine(engine)
+MIFitScriptObject::MIFitScriptObject(QScriptEngine *engine, QObject *parent)
+    : QObject(parent),
+      engine(engine)
 {
 }
 
@@ -36,18 +37,20 @@ void MIFitScriptObject::setScriptPort(const QString &scriptPort)
     scriptPort_ = scriptPort;
 }
 
-bool MIFitScriptObject::writeCurrentModel(const QString& file)
+bool MIFitScriptObject::writeCurrentModel(const QString &file)
 {
     if (file == "test.pdb")
         engine->currentContext()->throwError("invalid file");
 
-    MIGLWidget* doc = MIMainWindow::instance()->currentMIGLWidget();
-    if (!doc) {
+    MIGLWidget *doc = MIMainWindow::instance()->currentMIGLWidget();
+    if (!doc)
+    {
         engine->currentContext()->throwError("no current document");
         return false;
     }
-    Molecule* model = doc->GetDisplaylist()->GetCurrentModel();
-    if (!model) {
+    Molecule *model = doc->GetDisplaylist()->GetCurrentModel();
+    if (!model)
+    {
         engine->currentContext()->throwError("no current model");
         return false;
     }
@@ -59,7 +62,8 @@ QStringList MIFitScriptObject::dictionaryResidueList()
 {
     QStringList result;
     std::vector<std::string> choices = MIFitDictionary()->GetDictResList();
-    for (size_t i = 0; i < choices.size(); ++i) {
+    for (size_t i = 0; i < choices.size(); ++i)
+    {
         result << choices[i].c_str();
     }
     return result;
@@ -70,7 +74,8 @@ QStringList MIFitScriptObject::spacegroupList()
     std::vector<std::string> sg;
     MIGetSpacegroups(sg);
     QStringList result;
-    for (size_t i = 0; i < sg.size(); ++i) {
+    for (size_t i = 0; i < sg.size(); ++i)
+    {
         result << sg[i].c_str();
     }
     return result;

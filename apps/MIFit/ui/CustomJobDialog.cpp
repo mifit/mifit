@@ -15,59 +15,62 @@
 #include <QFileDialog>
 
 
-CustomJobDialog::CustomJobDialog(QWidget *parent) : MIQDialog(parent) {
-  setupUi(this);
+CustomJobDialog::CustomJobDialog(QWidget *parent)
+    : MIQDialog(parent)
+{
+    setupUi(this);
 
-  new MIBrowsePair(commandPushButton, commandLineEdit,"Command file (*.* *)");
-  new MIBrowsePair(workingDirPushButton, workingDirLineEdit,"", true);
-  new MIBrowsePair(modelPushButton, modelLineEdit,"PDB file (*.pdb *.ent)");
-  new MIBrowsePair(dataPushButton, dataLineEdit,"PDB file (*.pdb *.ent)");
-  
-  _okButton = buttonBox->button(QDialogButtonBox::Ok);
+    new MIBrowsePair(commandPushButton, commandLineEdit, "Command file (*.* *)");
+    new MIBrowsePair(workingDirPushButton, workingDirLineEdit, "", true);
+    new MIBrowsePair(modelPushButton, modelLineEdit, "PDB file (*.pdb *.ent)");
+    new MIBrowsePair(dataPushButton, dataLineEdit, "PDB file (*.pdb *.ent)");
 
-  QTimer *timer = new QTimer(this);
-  connect(timer, SIGNAL(timeout()), this, SLOT(validateTimeout()));
-  timer->start(100);
+    _okButton = buttonBox->button(QDialogButtonBox::Ok);
+
+    QTimer *timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(validateTimeout()));
+    timer->start(100);
 }
 
-void CustomJobDialog::validateTimeout() {
-  bool globalEnabled = true;
+void CustomJobDialog::validateTimeout()
+{
+    bool globalEnabled = true;
 
-  bool thisEnabled;
-  markEnabled(jobNameLineEdit, jobNameLineEdit->text().size()!=0, globalEnabled);
+    bool thisEnabled;
+    markEnabled(jobNameLineEdit, jobNameLineEdit->text().size()!=0, globalEnabled);
 
-  thisEnabled = (QFileInfo(commandLineEdit->text()).exists());
-  markEnabled(commandLineEdit, thisEnabled, globalEnabled);
+    thisEnabled = (QFileInfo(commandLineEdit->text()).exists());
+    markEnabled(commandLineEdit, thisEnabled, globalEnabled);
 
-  thisEnabled=QFileInfo(workingDirLineEdit->text()).exists() &&
-    QFileInfo(workingDirLineEdit->text()).isDir();
-  markEnabled(workingDirLineEdit, thisEnabled, globalEnabled);
+    thisEnabled = QFileInfo(workingDirLineEdit->text()).exists()
+                  && QFileInfo(workingDirLineEdit->text()).isDir();
+    markEnabled(workingDirLineEdit, thisEnabled, globalEnabled);
 
-  thisEnabled = (!fileModelRadioButton->isChecked() ||
-                 QFileInfo(modelLineEdit->text()).exists());
-  markEnabled(modelLineEdit, thisEnabled, globalEnabled);
+    thisEnabled = (!fileModelRadioButton->isChecked()
+                   || QFileInfo(modelLineEdit->text()).exists());
+    markEnabled(modelLineEdit, thisEnabled, globalEnabled);
 
-  thisEnabled = (dataLineEdit->text().size()==0 ||
-                 QFileInfo(dataLineEdit->text()).exists());
-  markEnabled(dataLineEdit, thisEnabled, globalEnabled);
+    thisEnabled = (dataLineEdit->text().size()==0
+                   || QFileInfo(dataLineEdit->text()).exists());
+    markEnabled(dataLineEdit, thisEnabled, globalEnabled);
 
-  if (_okButton)
-    _okButton->setEnabled(globalEnabled);
+    if (_okButton)
+        _okButton->setEnabled(globalEnabled);
 }
 
-void CustomJobDialog::setJobName(const QString& jobName)
+void CustomJobDialog::setJobName(const QString &jobName)
 {
     jobNameLineEdit->setText(jobName);
 
 }
 
-void CustomJobDialog::setProgram(const QString& program)
+void CustomJobDialog::setProgram(const QString &program)
 {
     commandLineEdit->setText(program);
 
 }
 
-void CustomJobDialog::setArguments(const QString& arguments)
+void CustomJobDialog::setArguments(const QString &arguments)
 {
     argumentsLineEdit->setText(arguments);
 
@@ -75,24 +78,27 @@ void CustomJobDialog::setArguments(const QString& arguments)
 
 void CustomJobDialog::setModelMode(CustomJobDialog::ModelMode mode)
 {
-    if (mode == CURRENT) {
+    if (mode == CURRENT)
+    {
         currentModelRadioButton->setChecked(true);
-    } else {
+    }
+    else
+    {
         fileModelRadioButton->setChecked(true);
     }
 }
 
-void CustomJobDialog::setWorkingDirectory(const QString& dir)
+void CustomJobDialog::setWorkingDirectory(const QString &dir)
 {
     workingDirLineEdit->setText(dir);
 }
 
-void CustomJobDialog::setModelFile(const QString& modelFile)
+void CustomJobDialog::setModelFile(const QString &modelFile)
 {
     modelLineEdit->setText(modelFile);
 }
 
-void CustomJobDialog::setDataFile(const QString& dataFile)
+void CustomJobDialog::setDataFile(const QString &dataFile)
 {
     dataLineEdit->setText(dataFile);
 }

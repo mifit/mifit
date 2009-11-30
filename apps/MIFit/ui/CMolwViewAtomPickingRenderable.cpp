@@ -14,66 +14,80 @@
 using namespace chemlib;
 using namespace mi::opengl;
 
-CMolwViewAtomPickingRenderable::CMolwViewAtomPickingRenderable(StereoView* stereoView)
-  : stereoView(stereoView) {
+CMolwViewAtomPickingRenderable::CMolwViewAtomPickingRenderable(StereoView *stereoView)
+    : stereoView(stereoView)
+{
 
-  renderer = new GLRenderer();
-  renderer->setPickingEnabled(true);
-  atomRenderable = new CMolwViewAtomRenderable(renderer);
-
-}
-
-CMolwViewAtomPickingRenderable::~CMolwViewAtomPickingRenderable() {
-  delete renderer;
-  delete atomRenderable;
-}
-
-void CMolwViewAtomPickingRenderable::render() {
-  stereoView->render(*atomRenderable);
-}
-
-MIAtom* CMolwViewAtomPickingRenderable::getAtom(int id) {
-  MIAtom* a = renderer->getAtom(id);
-  renderer->clearPickNames();
-  return a;
+    renderer = new GLRenderer();
+    renderer->setPickingEnabled(true);
+    atomRenderable = new CMolwViewAtomRenderable(renderer);
 
 }
 
-void CMolwViewAtomPickingRenderable::setModels(Displaylist* displaylist) {
-  atomRenderable->setModels(displaylist);
+CMolwViewAtomPickingRenderable::~CMolwViewAtomPickingRenderable()
+{
+    delete renderer;
+    delete atomRenderable;
 }
 
-void CMolwViewAtomPickingRenderable::setFrustum(Frustum* frustum) {
-  renderer->setFrustum(frustum);
+void CMolwViewAtomPickingRenderable::render()
+{
+    stereoView->render(*atomRenderable);
 }
 
-void CMolwViewAtomPickingRenderable::setCamera(Camera* camera) {
-  renderer->setCamera(camera);
-}
-
-void CMolwViewAtomPickingRenderable::setRenderStyle(RenderStyle renderStyle) {
-  renderer->setRenderStyle(renderStyle);
-}
-
-CMolwViewAtomRenderable::CMolwViewAtomRenderable(GLRenderer* renderer)
-  : displaylist(NULL), renderer(renderer) {
+MIAtom*CMolwViewAtomPickingRenderable::getAtom(int id)
+{
+    MIAtom *a = renderer->getAtom(id);
+    renderer->clearPickNames();
+    return a;
 
 }
 
-void CMolwViewAtomRenderable::render() {
-  if (displaylist == NULL) {
-    return;
-  }
-  renderer->clearPickNames();
-  std::list<Molecule*>::iterator node = displaylist->getMolecules().begin();
-  while (node != displaylist->getMolecules().end()) {
-    renderer->drawMolecule(*node);
-    renderer->drawSymmetryMolecule(*node, false);
-    node++;
-  }
+void CMolwViewAtomPickingRenderable::setModels(Displaylist *displaylist)
+{
+    atomRenderable->setModels(displaylist);
 }
 
-void CMolwViewAtomRenderable::setModels(Displaylist* displaylist) {
-  this->displaylist = displaylist;
+void CMolwViewAtomPickingRenderable::setFrustum(Frustum *frustum)
+{
+    renderer->setFrustum(frustum);
+}
+
+void CMolwViewAtomPickingRenderable::setCamera(Camera *camera)
+{
+    renderer->setCamera(camera);
+}
+
+void CMolwViewAtomPickingRenderable::setRenderStyle(RenderStyle renderStyle)
+{
+    renderer->setRenderStyle(renderStyle);
+}
+
+CMolwViewAtomRenderable::CMolwViewAtomRenderable(GLRenderer *renderer)
+    : displaylist(NULL),
+      renderer(renderer)
+{
+
+}
+
+void CMolwViewAtomRenderable::render()
+{
+    if (displaylist == NULL)
+    {
+        return;
+    }
+    renderer->clearPickNames();
+    std::list<Molecule*>::iterator node = displaylist->getMolecules().begin();
+    while (node != displaylist->getMolecules().end())
+    {
+        renderer->drawMolecule(*node);
+        renderer->drawSymmetryMolecule(*node, false);
+        node++;
+    }
+}
+
+void CMolwViewAtomRenderable::setModels(Displaylist *displaylist)
+{
+    this->displaylist = displaylist;
 }
 

@@ -3,9 +3,9 @@
 #include <QPushButton>
 #include <QSettings>
 
-GLFormatEdit::GLFormatEdit(QWidget *parent) :
-    QDialog(parent),
-    m_ui(new Ui::GLFormatEdit)
+GLFormatEdit::GLFormatEdit(QWidget *parent)
+    : QDialog(parent),
+      m_ui(new Ui::GLFormatEdit)
 {
     m_ui->setupUi(this);
 
@@ -24,7 +24,8 @@ QGLFormat GLFormatEdit::format() const
     result.setDoubleBuffer(m_ui->doubleBuffer->isChecked());
     result.setDirectRendering(m_ui->direct->isChecked());
     int rgbSize = m_ui->rgbSize->value();
-    if (rgbSize >= 0) {
+    if (rgbSize >= 0)
+    {
         result.setRedBufferSize(rgbSize);
         result.setGreenBufferSize(rgbSize);
         result.setBlueBufferSize(rgbSize);
@@ -58,7 +59,7 @@ QGLFormat GLFormatEdit::format() const
     return result;
 }
 
-void GLFormatEdit::setFormat(const QGLFormat& format)
+void GLFormatEdit::setFormat(const QGLFormat &format)
 {
     format_ = format;
     reset();
@@ -87,33 +88,34 @@ void GLFormatEdit::reset()
     m_ui->swapInterval->setValue(format_.swapInterval());
 }
 
-void GLFormatEdit::buttonClicked(QAbstractButton* button)
+void GLFormatEdit::buttonClicked(QAbstractButton *button)
 {
     if (button == m_ui->buttonBox->button(QDialogButtonBox::Reset))
         reset();
 }
 
-namespace {
-    const QString DOUBLE_BUFFER("doubleBuffer");
-    const QString DIRECT_RENDER("directRender");
-    const QString RGB_SIZE("rgbSize");
-    const QString RGBA("rgba");
-    const QString ALPHA("alpha");
-    const QString ALPHA_SIZE("alphaSize");
-    const QString DEPTH("depth");
-    const QString DEPTH_SIZE("depthSize");
-    const QString ACCUM("accum");
-    const QString ACCUM_SIZE("accumSize");
-    const QString STENCIL("stencil");
-    const QString STENCIL_SIZE("stencilSize");
-    const QString SAMPLE_BUFFERS("sampleBuffers");
-    const QString SAMPLE_BUFFERS_SIZE("sampleBuffersSize");
-    const QString STEREO("stereo");
-    const QString PLANE("plane");
-    const QString SWAP_INTERVAL("swapInterval");
+namespace
+{
+const QString DOUBLE_BUFFER("doubleBuffer");
+const QString DIRECT_RENDER("directRender");
+const QString RGB_SIZE("rgbSize");
+const QString RGBA("rgba");
+const QString ALPHA("alpha");
+const QString ALPHA_SIZE("alphaSize");
+const QString DEPTH("depth");
+const QString DEPTH_SIZE("depthSize");
+const QString ACCUM("accum");
+const QString ACCUM_SIZE("accumSize");
+const QString STENCIL("stencil");
+const QString STENCIL_SIZE("stencilSize");
+const QString SAMPLE_BUFFERS("sampleBuffers");
+const QString SAMPLE_BUFFERS_SIZE("sampleBuffersSize");
+const QString STEREO("stereo");
+const QString PLANE("plane");
+const QString SWAP_INTERVAL("swapInterval");
 }
 
-QGLFormat GLFormatEdit::readSettings(const QSettings& settings)
+QGLFormat GLFormatEdit::readSettings(const QSettings &settings)
 {
     QGLFormat result;
 
@@ -122,7 +124,8 @@ QGLFormat GLFormatEdit::readSettings(const QSettings& settings)
 
     bool intOk;
     int rgbSize = settings.value(RGB_SIZE).toInt(&intOk);
-    if (intOk && rgbSize >= 0) {
+    if (intOk && rgbSize >= 0)
+    {
         result.setRedBufferSize(rgbSize);
         result.setGreenBufferSize(rgbSize);
         result.setBlueBufferSize(rgbSize);
@@ -168,7 +171,7 @@ QGLFormat GLFormatEdit::readSettings(const QSettings& settings)
     return result;
 }
 
-void GLFormatEdit::writeSettings(QSettings& settings, const QGLFormat& format)
+void GLFormatEdit::writeSettings(QSettings &settings, const QGLFormat &format)
 {
     settings.setValue(DOUBLE_BUFFER, format.doubleBuffer());
     settings.setValue(DIRECT_RENDER, format.directRendering());

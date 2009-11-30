@@ -2,24 +2,29 @@
 
 #include "Drawing.h"
 
-namespace moldraw {
+namespace moldraw
+{
 
-Atom::Atom(Drawing* dp,
+Atom::Atom(Drawing *dp,
            float x,
            float y,
            float r,
-           const PaletteColor &color) : Shape(dp) {
-  _x = x;
-  _y = y;
-  _r = r;
-  _color = color;
+           const PaletteColor &color)
+    : Shape(dp)
+{
+    _x = x;
+    _y = y;
+    _r = r;
+    _color = color;
 }
 
-Atom::~Atom() {
+Atom::~Atom()
+{
 }
 
-void Atom::Draw() {
-  _dp->DrawAtom(_x, _y, _r, _color);
+void Atom::Draw()
+{
+    _dp->DrawAtom(_x, _y, _r, _color);
 }
 
 }

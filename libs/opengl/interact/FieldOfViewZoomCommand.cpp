@@ -2,20 +2,26 @@
 
 #include <opengl/Frustum.h>
 
-namespace mi {
-namespace opengl {
-namespace interact {
+namespace mi
+{
+namespace opengl
+{
+namespace interact
+{
 
-FieldOfViewZoomCommand::FieldOfViewZoomCommand(Frustum* frustum)
-  : frustum(frustum) {
+FieldOfViewZoomCommand::FieldOfViewZoomCommand(Frustum *frustum)
+    : frustum(frustum)
+{
 }
 
-float FieldOfViewZoomCommand::getValue() {
-  return frustum->getFieldOfView();
+float FieldOfViewZoomCommand::getValue()
+{
+    return frustum->getFieldOfView();
 }
 
-void FieldOfViewZoomCommand::setValue(float value) {
-  frustum->setFieldOfView(value);
+void FieldOfViewZoomCommand::setValue(float value)
+{
+    frustum->setFieldOfView(value);
 }
 
 }

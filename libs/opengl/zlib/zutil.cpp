@@ -1,29 +1,32 @@
 /* zutil.c -- target dependent utility functions for the compression library
  * Copyright (C) 1995-1998 Jean-loup Gailly.
- * For conditions of distribution and use, see copyright notice in zlib.h 
+ * For conditions of distribution and use, see copyright notice in zlib.h
  */
 
 /* @(#) $Id$ */
 
 #include "zutil.h"
 
-struct internal_state      {int dummy;}; /* for buggy compilers */
+struct internal_state {int dummy;
+};                                       /* for buggy compilers */
 
 #ifndef STDC
 extern void exit OF((int));
 #endif
 
-const char *z_errmsg[10] = {
-"need dictionary",     /* Z_NEED_DICT       2  */
-"stream end",          /* Z_STREAM_END      1  */
-"",                    /* Z_OK              0  */
-"file error",          /* Z_ERRNO         (-1) */
-"stream error",        /* Z_STREAM_ERROR  (-2) */
-"data error",          /* Z_DATA_ERROR    (-3) */
-"insufficient memory", /* Z_MEM_ERROR     (-4) */
-"buffer error",        /* Z_BUF_ERROR     (-5) */
-"incompatible version",/* Z_VERSION_ERROR (-6) */
-""};
+const char *z_errmsg[10] =
+{
+    "need dictionary", /* Z_NEED_DICT       2  */
+    "stream end",      /* Z_STREAM_END      1  */
+    "",                /* Z_OK              0  */
+    "file error",      /* Z_ERRNO         (-1) */
+    "stream error",    /* Z_STREAM_ERROR  (-2) */
+    "data error",      /* Z_DATA_ERROR    (-3) */
+    "insufficient memory", /* Z_MEM_ERROR     (-4) */
+    "buffer error",    /* Z_BUF_ERROR     (-5) */
+    "incompatible version", /* Z_VERSION_ERROR (-6) */
+    ""
+};
 
 
 #ifdef DEBUG
@@ -33,7 +36,7 @@ const char *z_errmsg[10] = {
 #  endif
 int z_verbose = verbose;
 
-void z_error (const char* m)
+void z_error (const char *m)
 {
     fprintf(stderr, "%s\n", m);
     exit(1);
@@ -43,37 +46,40 @@ void z_error (const char* m)
 
 #ifndef HAVE_MEMCPY
 
-void zmemcpy(Bytef* dest, const Bytef* source, uInt  len)
+void zmemcpy(Bytef *dest, const Bytef *source, uInt len)
 {
     if (len == 0) return;
-    do {
+    do
+    {
         *dest++ = *source++; /* ??? to be unrolled */
     } while (--len != 0);
 }
 
 int zmemcmp(
-    const Bytef* s1,
-    const Bytef* s2,
-    uInt  len)
+    const Bytef *s1,
+    const Bytef *s2,
+    uInt len)
 {
     uInt j;
 
-    for (j = 0; j < len; j++) {
+    for (j = 0; j < len; j++)
+    {
         if (s1[j] != s2[j]) return 2*(s1[j] > s2[j])-1;
     }
     return 0;
 }
 
 void zmemzero(
-    Bytef* dest,
-    uInt  len)
+    Bytef *dest,
+    uInt len)
 {
     if (len == 0) return;
-    do {
+    do
+    {
         *dest++ = 0;  /* ??? to be unrolled */
     } while (--len != 0);
 }
-#endif
+#endif // ifndef HAVE_MEMCPY
 
 #ifdef __TURBOC__
 #if (defined( __BORLANDC__) || !defined(SMALL_MEDIUM)) && !defined(__32BIT__)
@@ -93,7 +99,8 @@ void zmemzero(
 
 local int next_ptr = 0;
 
-typedef struct ptr_table_s {
+typedef struct ptr_table_s
+{
     voidpf org_ptr;
     voidpf new_ptr;
 } ptr_table;
@@ -114,10 +121,13 @@ voidpf zcalloc (voidpf opaque, unsigned items, unsigned size)
     /* If we allocate less than 65520 bytes, we assume that farmalloc
      * will return a usable pointer which doesn't have to be normalized.
      */
-    if (bsize < 65520L) {
+    if (bsize < 65520L)
+    {
         buf = farmalloc(bsize);
         if (*(ush*)&buf != 0) return buf;
-    } else {
+    }
+    else
+    {
         buf = farmalloc(bsize + 16L);
     }
     if (buf == NULL || next_ptr >= MAX_PTR) return NULL;
@@ -125,7 +135,7 @@ voidpf zcalloc (voidpf opaque, unsigned items, unsigned size)
 
     /* Normalize the pointer to seg:0 */
     *((ush*)&buf+1) += ((ush)((uch*)buf-0) + 15) >> 4;
-    *(ush*)&buf = 0;
+    *(ush*) &buf = 0;
     table[next_ptr++].new_ptr = buf;
     return buf;
 }
@@ -133,16 +143,19 @@ voidpf zcalloc (voidpf opaque, unsigned items, unsigned size)
 void  zcfree (voidpf opaque, voidpf ptr)
 {
     int n;
-    if (*(ush*)&ptr != 0) { /* object < 64K */
+    if (*(ush*)&ptr != 0)   /* object < 64K */
+    {
         farfree(ptr);
         return;
     }
     /* Find the original pointer */
-    for (n = 0; n < next_ptr; n++) {
+    for (n = 0; n < next_ptr; n++)
+    {
         if (ptr != table[n].new_ptr) continue;
 
         farfree(table[n].org_ptr);
-        while (++n < next_ptr) {
+        while (++n < next_ptr)
+        {
             table[n-1] = table[n];
         }
         next_ptr--;
@@ -151,7 +164,7 @@ void  zcfree (voidpf opaque, voidpf ptr)
     ptr = opaque; /* just to make some compilers happy */
     Assert(0, "zcfree: ptr not found");
 }
-#endif
+#endif // if (defined( __BORLANDC__) || !defined(SMALL_MEDIUM)) && !defined(__32BIT__)
 #endif /* __TURBOC__ */
 
 
@@ -183,8 +196,8 @@ void  zcfree (voidpf opaque, voidpf ptr)
 #ifndef MY_ZCALLOC /* Any system without a special alloc function */
 
 #ifndef STDC
-extern voidp  calloc OF((uInt items, uInt size));
-extern void   free   OF((voidpf ptr));
+extern voidp calloc OF((uInt items, uInt size));
+extern void free OF((voidpf ptr));
 #endif
 
 voidpf zcalloc (
