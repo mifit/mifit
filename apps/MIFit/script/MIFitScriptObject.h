@@ -11,8 +11,8 @@ class MIFitScriptObject : public QObject
     Q_OBJECT
     Q_PROPERTY( QString version READ version )
 
-public
-        : MIFitScriptObject(QScriptEngine *engine, QObject *parent = 0);
+public:
+    MIFitScriptObject(QScriptEngine *engine, QObject *parent = 0);
 
     void setJobMenu(QMenu *jobMenu);
     void setScriptPort(const QString &scriptPort);
@@ -25,6 +25,7 @@ public slots:
     QStringList dictionaryResidueList();
     QStringList spacegroupList();
     void addJob(const QString &menuName, const QString &jobName, const QString &executable, const QStringList &arguments);
+    void setJobWorkDir(const QString &jobId, const QString &workDir);
 
 private:
     QScriptEngine *engine;

@@ -1,5 +1,6 @@
 import sys, os, pickle, subprocess
 from PyQt4 import QtCore, QtGui, uic
+import mifit
 
 
 class RefinementDialog(QtGui.QDialog):
@@ -164,6 +165,7 @@ class RefinementDialog(QtGui.QDialog):
         settings = QtCore.QSettings("MIFit", "MIExpert")
         settings.setValue("refine", pickle.dumps(config))
 
+        mifit.setJobWorkDir(str(QtCore.QFileInfo(config['workdir']).absoluteFilePath()))
         miexpert = os.path.join(os.path.dirname(sys.argv[0]), "MIExpert.py")
         args = [ sys.executable, miexpert, "refine" ]
         args += [ "--mifithome", str(QtCore.QFileInfo(self.mifitDir).absoluteFilePath()) ]

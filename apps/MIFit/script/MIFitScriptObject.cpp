@@ -1,10 +1,11 @@
 #include "MIFitScriptObject.h"
 #include <core/Version.h>
+#include <jobs/BatchJob.h>
+#include <jobs/BatchJobManager.h>
 #include <QDebug>
 #include <QFileInfo>
 #include <QScriptEngine>
 #include <ui/uilib.h>
-#include <jobs/BatchJobManager.h>
 
 MIFitScriptObject::MIFitScriptObject(QScriptEngine *engine, QObject *parent)
     : QObject(parent),
@@ -83,6 +84,25 @@ QStringList MIFitScriptObject::spacegroupList()
 
 void MIFitScriptObject::addJob(const QString &menuName, const QString &jobName, const QString &executable, const QStringList &arguments)
 {
-    QAction *jobAction = MIMainWindow::instance()->GetJobManager()->customJobAction(menuName, jobName, executable, arguments);
+    QAction *jobAction = MIMainWindow::instance()->GetJobManager()->customJobAction(menuName, jobName, executable, arguments, scriptPort_);
     jobMenu->addAction(jobAction);
+}
+
+void MIFitScriptObject::setJobWorkDir(const QString &jobId, const QString &workDir)
+{
+    bool ok;
+    unsigned long jobIdNum = jobId.toULong(&ok);
+    if (ok)
+    {
+        std::vector<BatchJob*> &jobs = *MIMainWindow::instance()->GetJobManager()->GetJobList();
+        foreach (BatchJob *job, jobs)
+        {
+            if (jobIdNum == job->jobId())
+            {
+                job->setWorkingDirectory(workDir);
+                break;
+            }
+        }
+    }
+
 }

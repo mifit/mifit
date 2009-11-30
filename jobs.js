@@ -34,7 +34,7 @@ var jobs = [
         menuName: "C&ocrystal Solution",
         jobName: "Cocrystal Solution",
         executable: "python",
-        arguments: [ mifit.directory() + "/MIExpert/mi_bng_ui.py", mifit.scriptPort() ]
+        arguments: [ mifit.directory() + "/MIExpert/mi_bng_ui.py" ]
     },
     
 // Uncomment this section when the mi_deposit3d_ui.py script is working

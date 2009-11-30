@@ -35,7 +35,8 @@ public:
     ~BatchJobManager();
 
     QAction *customJobAction(const QString &menuName, const QString &jobName,
-                             const QString &executable, const QStringList &arguments);
+                             const QString &executable, const QStringList &arguments,
+                             const QString &scriptPort);
 
     /**
      * Returns a pointer to the ith job in the list (indexed from 0).

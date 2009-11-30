@@ -1,5 +1,6 @@
 import sys, os, pickle, subprocess
 from PyQt4 import QtCore, QtGui, QtNetwork, uic
+import mifit
 
 
 class BindNGrindDialog(QtGui.QDialog):
@@ -368,72 +369,8 @@ if __name__ == '__main__':
     resList = None
 
     if len(sys.argv) >= 2:
-        sock = QtNetwork.QLocalSocket()
-        sock.connectToServer(sys.argv[1])
-        if sock.waitForConnected():
-
-            stream = QtCore.QDataStream(sock)
-            stream.setVersion(QtCore.QDataStream.Qt_4_0)
-
-            script = QtCore.QString("mifit.spacegroupList()\b")
-            stream << script
-            sock.flush()
-
-            dataSize = 0
-            waitForData = True
-            while waitForData:
-                if not sock.waitForReadyRead(5000):
-                    break
-                if dataSize == 0:
-                    if sock.bytesAvailable() < 8:
-                      continue
-                    dataSize = stream.readInt64()
-                if stream.atEnd():
-                    break
-                if sock.bytesAvailable() < dataSize:
-                    continue
-                waitForData = False
-                sgList = QtCore.QString()
-                stream >> sgList
-
-            sock.close()
-        else:
-            print 'error connecting to local socket', sys.argv[1]
-        sock = None
-
-        sock = QtNetwork.QLocalSocket()
-        sock.connectToServer(sys.argv[1])
-        if sock.waitForConnected():
-
-            stream = QtCore.QDataStream(sock)
-            stream.setVersion(QtCore.QDataStream.Qt_4_0)
-
-            script = QtCore.QString("mifit.dictionaryResidueList()\b")
-            stream << script
-            sock.flush()
-
-            dataSize = 0
-            waitForData = True
-            while waitForData:
-                if not sock.waitForReadyRead(5000):
-                    break
-                if dataSize == 0:
-                    if sock.bytesAvailable() < 8:
-                      continue
-                    dataSize = stream.readInt64()
-                if stream.atEnd():
-                    break
-                if sock.bytesAvailable() < dataSize:
-                    continue
-                waitForData = False
-                resList = QtCore.QString()
-                stream >> resList
-
-            sock.close()
-        else:
-            print 'error connecting to local socket', sys.argv[1]
-        sock = None
-
+        sgList = mifit.exec_script("mifit.spacegroupList()")
+        resList = mifit.exec_script("mifit.dictionaryResidueList()")
 
     dialog = BindNGrindDialog(sgList, resList)
 

@@ -65,15 +65,18 @@ struct CustomJob
     QString jobName;
     QString executable;
     QStringList arguments;
+    QString scriptPort;
 
     CustomJob()
     {
     }
 
-    CustomJob(const QString &jobName, const QString &executable, const QStringList &arguments)
+    CustomJob(const QString &jobName, const QString &executable, const QStringList &arguments,
+              const QString& scriptPort)
         : jobName(jobName),
           executable(executable),
-          arguments(arguments)
+          arguments(arguments),
+          scriptPort(scriptPort)
     {
     }
 };
@@ -98,10 +101,11 @@ BatchJobManager::~BatchJobManager()
 }
 
 QAction*BatchJobManager::customJobAction(const QString &menuName, const QString &jobName,
-                                         const QString &executable, const QStringList &arguments)
+                                         const QString &executable, const QStringList &arguments,
+                                         const QString &scriptPort)
 {
     QAction *jobAction = new QAction(menuName, this);
-    jobAction->setData(QVariant::fromValue(CustomJob(jobName, executable, arguments)));
+    jobAction->setData(QVariant::fromValue(CustomJob(jobName, executable, arguments, scriptPort)));
     connect(jobAction, SIGNAL(triggered()), this, SLOT(handleCustomJobAction()));
     return jobAction;
 }
@@ -124,6 +128,7 @@ void BatchJobManager::handleCustomJobAction()
         job->setProgram(customJob.executable);
     }
     job->setArguments(customJob.arguments);
+    job->setScriptPort(customJob.scriptPort);
     job->StartJob();
 }
 

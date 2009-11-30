@@ -41,6 +41,8 @@ public:
 
     void setArguments(const QString &arguments);
 
+    void setScriptPort(const QString &scriptPort);
+
     void setCommandLine(const QString &command);
 
     /**
@@ -100,6 +102,7 @@ protected:
     QString jobName_;
     QString program_;
     QStringList arguments_;
+    QString scriptPort_;
     QString workingDirectory_;
     QString logFile;
 

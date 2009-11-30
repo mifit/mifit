@@ -125,24 +125,24 @@ void OpenJobResults::prompt(const std::string &workdir, const std::string &jobNa
         QString res = mlwFiles.at(dlg.value(mlwField).toInt());
         if (res != "None")
         {
-            files.push_back(res.toStdString());
+            files.push_back(dir.absoluteFilePath(res).toStdString());
             newWin = false;
         }
     }
     if (pdbField != -1)
     {
-        QString res = pdbFiles.at(dlg.value(mlwField).toInt());
+        QString res = pdbFiles.at(dlg.value(pdbField).toInt());
         if (res != "None")
         {
-            files.push_back(res.toStdString());
+            files.push_back(dir.absoluteFilePath(res).toStdString());
         }
     }
     if (mtzField != -1)
     {
-        QString res = mtzFiles.at(dlg.value(mlwField).toInt());
+        QString res = mtzFiles.at(dlg.value(mtzField).toInt());
         if (res != "None")
         {
-            files.push_back(res.toStdString());
+            files.push_back(dir.absoluteFilePath(res).toStdString());
         }
     }
     MIMainWindow::instance()->OpenFiles(files, newWin);
