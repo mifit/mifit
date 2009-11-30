@@ -1,35 +1,20 @@
-#include <math/mathlib.h>
-#include <chemlib/chemlib.h>
-#include <chemlib/RESIDUE_.h>
-
 #include "FlexTorsion.h"
+#include <chemlib/RESIDUE_.h>
+#include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/breadth_first_search.hpp>
+#include <boost/graph/graph_traits.hpp>
+#include <boost/graph/visitors.hpp>
+#include <chemlib/chemlib.h>
+#include <math/mathlib.h>
 
 using namespace chemlib;
 using namespace conflib;
-using namespace std;
 
-//Boost graph library
-#include <boost/graph/graph_traits.hpp>
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/breadth_first_search.hpp>
-#include <boost/graph/visitors.hpp>
-#include <boost/property_map.hpp>
-using namespace boost;
+typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS> AtomGraph;
+typedef boost::graph_traits<AtomGraph>::vertices_size_type AtomGraphIndex; //effectively an int
 
 
-
-
-//Typedefs for boost graphs
-//struct atom_address_t {
-//	typedef vertex_property_tag kind;
-//};
-//typedef property<atom_address_t, MIAtom*> AtomAddressProperty;
-typedef adjacency_list<vecS, vecS, undirectedS> AtomGraph;
-typedef graph_traits<AtomGraph>::vertices_size_type AtomGraphIndex; //effectively an int
-//typedef typename property_map<AtomGraph, atom_address_t>::type AtomAddressMap;
-
-
-FlexTorsion::FlexTorsion(const TORSION &t, const vector<Bond> &bonds, bool set)
+FlexTorsion::FlexTorsion(const TORSION &t, const std::vector<Bond> &bonds, bool set)
 {
     //Look up the central bond of this torsion from the sequence of bonds, and
     //store the order for use in determining ideal angle values
@@ -110,8 +95,8 @@ void FlexTorsion::Set()
                rot_angle,
                mat);
 
-    vector<MIAtom*>::iterator i = _flex_atoms.begin();
-    vector<MIAtom*>::iterator e = _flex_atoms.end();
+    std::vector<MIAtom*>::iterator i = _flex_atoms.begin();
+    std::vector<MIAtom*>::iterator e = _flex_atoms.end();
     float x, y, z;
     while (i != e)
     {
@@ -289,13 +274,13 @@ int SumDistances(const AtomGraph &graph, AtomGraphIndex *distances, AtomGraphInd
     //Search the graph, recording distances in the distances array
     breadth_first_search(graph,
                          vertex(source, graph),
-                         visitor(make_bfs_visitor(record_distances(distances, on_tree_edge()))) );
+                         visitor(make_bfs_visitor(record_distances(distances, boost::on_tree_edge()))) );
 
     //Count up the distances
     return std::accumulate(distances, distances + num_vertices(graph), 0);
 }
 
-void GatherFlexAtoms(const AtomGraphIndex *distances, const RESIDUE *res, vector<MIAtom*> &atoms)
+void GatherFlexAtoms(const AtomGraphIndex *distances, const RESIDUE *res, std::vector<MIAtom*> &atoms)
 {
     int i;
     for (i = 0; i < res->atomCount(); ++i)
@@ -311,7 +296,7 @@ MIAtom *SetUpTorsion(const RESIDUE *res,
                      const std::vector<Bond> &bonds,
                      MIAtom *atom1,
                      MIAtom *atom2,
-                     vector<MIAtom*> &flex_atoms)
+                     std::vector<MIAtom*> &flex_atoms)
 {
     AtomGraph ag(res->atomCount());
 
