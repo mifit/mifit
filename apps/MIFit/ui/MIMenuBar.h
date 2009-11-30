@@ -8,11 +8,14 @@
 class QAction;
 class MIMenu;
 
-class MIMenuBar : public QMenuBar {
-  public:
+class MIMenuBar : public QMenuBar
+{
+public:
     friend class MIToolBar;
 
-    MIMenuBar(QMenuBar *mb) : _mb(mb) {}
+    MIMenuBar(QMenuBar *mb) : _mb(mb)
+    {
+    }
     void Append(MIMenu *menu, const std::string &title);
 
     void Enable(unsigned int id, bool state);
@@ -37,7 +40,7 @@ class MIMenuBar : public QMenuBar {
     // only for hidden menu for toolbar actions which don't have parent menu item
     void AppendHidden(MIMenu *menu);
 
-  private:
+private:
     QMenuBar *_mb;
     std::vector<MIMenu*> _menus;
 };

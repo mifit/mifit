@@ -6,100 +6,105 @@
 #include <math/Quaternion.h>
 #include <math/Vector3.h>
 
-namespace mi {
-namespace opengl {
+namespace mi
+{
+    namespace opengl
+    {
 
-class Viewpoint;
+        class Viewpoint;
 
-namespace interact {
+        namespace interact
+        {
 
 /**
  * MouseArcBall is a mouse interaction object that lets users control the
  * rotation of an object via a mouse using quaterion math.
  */
-class MouseArcBall {
+            class MouseArcBall
+            {
 
-  int controlSizeX;
+                int controlSizeX;
 
-  int controlSizeY;
+                int controlSizeY;
 
-  float controlAspectX;
+                float controlAspectX;
 
-  float controlAspectY;
+                float controlAspectY;
 
-  mi::opengl::Viewpoint* relativeToViewpoint;
+                mi::opengl::Viewpoint *relativeToViewpoint;
 
 
-  /**
-   * Converts window coordinates to sphere coordinates.
-   */
-  void windowToSphereCoordinates(mi::math::Vector3<float>& vect);
+                /**
+                 * Converts window coordinates to sphere coordinates.
+                 */
+                void windowToSphereCoordinates(mi::math::Vector3<float> &vect);
 
-  void setCurrentVector(int x, int y);
+                void setCurrentVector(int x, int y);
 
-protected:
+            protected:
 
-  mi::math::Point3<float> center;
+                mi::math::Point3<float> center;
 
-  float radius;
+                float radius;
 
-  bool invertRotation;
+                bool invertRotation;
 
-  mi::math::Quaternion<float> historicalQuat;
+                mi::math::Quaternion<float> historicalQuat;
 
-  mi::opengl::Viewpoint* viewpoint;
+                mi::opengl::Viewpoint *viewpoint;
 
-  mi::math::Quaternion<float> currentQuat;
+                mi::math::Quaternion<float> currentQuat;
 
-  mi::math::Vector3<float> currentVector;
+                mi::math::Vector3<float> currentVector;
 
-  mi::math::Vector3<float>* startVector;
+                mi::math::Vector3<float> *startVector;
 
-  mi::math::Quaternion<float> relativeStartQuat;
+                mi::math::Quaternion<float> relativeStartQuat;
 
-  virtual void initializeRotation();
+                virtual void initializeRotation();
 
-  virtual void applyRotation();
+                virtual void applyRotation();
 
-public:
+            public:
 
-  MouseArcBall(mi::opengl::Viewpoint* viewpoint, mi::math::Point3<float>& center, float radius);
+                MouseArcBall(mi::opengl::Viewpoint *viewpoint, mi::math::Point3<float> &center, float radius);
 
-  MouseArcBall(mi::opengl::Viewpoint* viewpoint);
+                MouseArcBall(mi::opengl::Viewpoint *viewpoint);
 
-  virtual ~MouseArcBall() {
-  }
+                virtual ~MouseArcBall()
+                {
+                }
 
-  void setRelativeToViewpoint(mi::opengl::Viewpoint* relativeToViewpoint);
+                void setRelativeToViewpoint(mi::opengl::Viewpoint *relativeToViewpoint);
 
-  void setPlace(const mi::math::Point3<float>& center, float radius);
+                void setPlace(const mi::math::Point3<float> &center, float radius);
 
-  mi::math::Point3<float>& getCenter();
+                mi::math::Point3<float>&getCenter();
 
-  float getRadius();
+                float getRadius();
 
-  void setRadius(float radius);
+                void setRadius(float radius);
 
-  bool isInvertRotation();
+                bool isInvertRotation();
 
-  void setInvertRotation(bool invertRotation);
+                void setInvertRotation(bool invertRotation);
 
-  mi::math::Vector3<float>* getStartVector();
-  mi::math::Vector3<float>* getCurrentVector();
+                mi::math::Vector3<float> *getStartVector();
+                mi::math::Vector3<float> *getCurrentVector();
 
-  void beginRotate(int x, int y);
+                void beginRotate(int x, int y);
 
-  void rotate(int x, int y);
+                void rotate(int x, int y);
 
-  void endRotate();
+                void endRotate();
 
-  void setControlSize(int x, int y);
+                void setControlSize(int x, int y);
 
-  void getControlSize(int& x, int& y);
+                void getControlSize(int &x, int &y);
 
-};
+            };
+        }
+    }
 }
-}
-}
 
-#endif
+#endif // ifndef mi_opengl_interact_MouseArcBall_h

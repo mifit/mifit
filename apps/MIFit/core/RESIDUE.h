@@ -45,18 +45,18 @@ float psi(const chemlib::RESIDUE*, const chemlib::RESIDUE*);
 // This function is defunct with the new XML format.
 // It is needed for backwards compatibility.
 //@}
-int read_colors(const chemlib::RESIDUE* res, char* buf, int nbuf);
+int read_colors(const chemlib::RESIDUE *res, char *buf, int nbuf);
 //@{
 // Read the radii into a residue from a buffer for loading.
 // This function is defunct with the new XML format.
 // It is needed for backwards compatibility.
 //@}
-int read_radii(const chemlib::RESIDUE* res, char* buf, int nbuf);
+int read_radii(const chemlib::RESIDUE *res, char *buf, int nbuf);
 
 //@{
 // Makes a string for listing a chain in the tree control
 //@}
-const std::string chainstring(const chemlib::RESIDUE* res);
+const std::string chainstring(const chemlib::RESIDUE *res);
 
 //@{
 // Move the residue(s) in source onto target.
@@ -64,54 +64,57 @@ const std::string chainstring(const chemlib::RESIDUE* res);
 // @param target the residue(s) to be targeted (stays still).
 // @param nres the number of residues to move starting at source and target in the linked lists.
 //@}
-bool MoveOnto(const chemlib::RESIDUE* source, chemlib::RESIDUE* target, int nres = 1);
+bool MoveOnto(const chemlib::RESIDUE *source, chemlib::RESIDUE *target, int nres = 1);
 
 //@{
 // Calculates the symmetry residues around a center point.
 //@}
-chemlib::RESIDUE* SymmResidue(const chemlib::RESIDUE *Model, CMapHeaderBase * mh, float center[3], float r = 10.0F, int color = Colors::MAGENTA);
+chemlib::RESIDUE*SymmResidue(const chemlib::RESIDUE *Model, CMapHeaderBase * mh, float center[3], float r = 10.0F, int color = Colors::MAGENTA);
 
 //@{
 // Function for the backbone builder.
 //@}
-chemlib::RESIDUE* matchvec(const std::vector<chemlib::MIAtom*>& CA, const std::vector<chemlib::MIAtom*>& CB, std::string& pentdir, FILE*);
+chemlib::RESIDUE *matchvec(const std::vector<chemlib::MIAtom*> &CA, const std::vector<chemlib::MIAtom*> &CB, std::string &pentdir, FILE*);
 //@{
 // Function for the backbone builder.
 //@}
-chemlib::RESIDUE* pdbvec(std::string& pentdir, const std::vector<chemlib::MIAtom*>& CA, const std::vector<chemlib::MIAtom*>& CB);
+chemlib::RESIDUE *pdbvec(std::string &pentdir, const std::vector<chemlib::MIAtom*> &CA, const std::vector<chemlib::MIAtom*> &CB);
 
 //@{
 // Function for the backbone builder.
 //@}
-int atomvector(const chemlib::MIAtom* atom1, const chemlib::MIAtom* atom2);
+int atomvector(const chemlib::MIAtom *atom1, const chemlib::MIAtom *atom2);
 
 //@{
 // build a residue from a list of atoms.
 // the other residue still need to be filled in.
 //@}
-chemlib::RESIDUE* make_res(const std::vector<chemlib::MIAtom*>& atoms);
+chemlib::RESIDUE *make_res(const std::vector<chemlib::MIAtom*> &atoms);
 //@{
 // Build a chain.
 //@}
-void getchain(unsigned short chainid, chemlib::RESIDUE* reslist, chemlib::RESIDUE*& nter, chemlib::RESIDUE*& cter);
+void getchain(unsigned short chainid, chemlib::RESIDUE *reslist, chemlib::RESIDUE* &nter, chemlib::RESIDUE* &cter);
 //@{
 // Figures out the correct order for two residues providing both are in the list.
 // Very useful for ordering two picks by the user into a useful range.
 //@}
-int order_ends(chemlib::RESIDUE*& nter, chemlib::RESIDUE*& cter, chemlib::RESIDUE* reslist);
+int order_ends(chemlib::RESIDUE* &nter, chemlib::RESIDUE* &cter, chemlib::RESIDUE *reslist);
 
 //@{
 // Returns the color for atoms being fit or refined.
 // If the atom is being both fit and refined, the color will be for fitting.
 //@}
-inline int getColor(const chemlib::MIAtom* a) {
-  if (a->type() & chemlib::AtomType::FITATOM) {
-    return Colors::GREEN;
-  }
-  if (a->type() & chemlib::AtomType::REFIATOM) {
-    return Colors::CYAN;
-  }
-  return (int)a->color();
+inline int getColor(const chemlib::MIAtom *a)
+{
+    if (a->type() & chemlib::AtomType::FITATOM)
+    {
+        return Colors::GREEN;
+    }
+    if (a->type() & chemlib::AtomType::REFIATOM)
+    {
+        return Colors::CYAN;
+    }
+    return (int)a->color();
 }
 
 #endif /*MIFIT_MODEL_RESIDUE_H_*/

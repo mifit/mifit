@@ -4,54 +4,58 @@
 #include <math/Vector3.h>
 #include <math/Quaternion.h>
 
-namespace mi {
-namespace opengl {
+namespace mi
+{
+    namespace opengl
+    {
 
-class Viewpoint;
+        class Viewpoint;
 
-namespace interact {
+        namespace interact
+        {
 
-class SimpleMouseRotator {
+            class SimpleMouseRotator
+            {
 
-  Viewpoint* viewpoint;
+                Viewpoint *viewpoint;
 
-  int previousX;
+                int previousX;
 
-  int previousY;
+                int previousY;
 
-  float angle;
+                float angle;
 
-  mi::math::Vector3<float> verticalAxis;
-  mi::math::Vector3<float> horizontalAxis;
+                mi::math::Vector3<float> verticalAxis;
+                mi::math::Vector3<float> horizontalAxis;
 
-public:
+            public:
 
-  SimpleMouseRotator(Viewpoint* viewpoint, float angle = 1.0f);
+                SimpleMouseRotator(Viewpoint *viewpoint, float angle = 1.0f);
 
-  ~SimpleMouseRotator();
+                ~SimpleMouseRotator();
 
-  float getAngle();
+                float getAngle();
 
-  void setAngle(float angle);
+                void setAngle(float angle);
 
-  mi::math::Vector3<float> getVerticalAxis();
+                mi::math::Vector3<float> getVerticalAxis();
 
-  void setVerticalAxis(mi::math::Vector3<float>& verticalAxis);
+                void setVerticalAxis(mi::math::Vector3<float> &verticalAxis);
 
-  mi::math::Vector3<float> getHorizontalAxis();
+                mi::math::Vector3<float> getHorizontalAxis();
 
-  void setHorizontalAxis(mi::math::Vector3<float>& horizontalAxis);
+                void setHorizontalAxis(mi::math::Vector3<float> &horizontalAxis);
 
-  void beginRotate(int x, int y);
+                void beginRotate(int x, int y);
 
-  void rotate(int x, int y);
+                void rotate(int x, int y);
 
-  void endRotate();
+                void endRotate();
 
-};
+            };
 
+        }
+    }
 }
-}
-}
 
-#endif
+#endif // ifndef mi_opengl_interact_SimpleMouseRotator_h

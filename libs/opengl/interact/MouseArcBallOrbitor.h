@@ -5,36 +5,40 @@
 #include <math/Point3.h>
 #include <math/Quaternion.h>
 
-namespace mi {
-namespace opengl {
+namespace mi
+{
+    namespace opengl
+    {
 
-class Viewpoint;
+        class Viewpoint;
 
-namespace interact {
+        namespace interact
+        {
 
-class MouseArcBallOrbitor : public MouseArcBall {
+            class MouseArcBallOrbitor : public MouseArcBall
+            {
 
-  mi::math::Quaternion<float> startQuat;
+                mi::math::Quaternion<float> startQuat;
 
-  float distanceToTarget;
+                float distanceToTarget;
 
-  virtual void initializeRotation();
+                virtual void initializeRotation();
 
-  virtual void applyRotation();
+                virtual void applyRotation();
 
-public:
+            public:
 
-  MouseArcBallOrbitor(mi::opengl::Viewpoint* viewpoint, float distanceToTarget);
+                MouseArcBallOrbitor(mi::opengl::Viewpoint *viewpoint, float distanceToTarget);
 
-  MouseArcBallOrbitor(mi::opengl::Viewpoint* viewpoint, mi::math::Point3<float>& center, float radius, float distanceToTarget);
+                MouseArcBallOrbitor(mi::opengl::Viewpoint *viewpoint, mi::math::Point3<float> &center, float radius, float distanceToTarget);
 
-  void setDistanceToTarget(float distanceToTarget);
+                void setDistanceToTarget(float distanceToTarget);
 
-};
+            };
 
+        }
+    }
 }
-}
-}
 
-#endif
+#endif // ifndef mi_opengl_interact_MouseArcBallOrbitor_h
 

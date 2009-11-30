@@ -4,37 +4,38 @@
 #include <Python.h>
 #include <qobject.h>
 
-class PythonEngine : public QObject {
+class PythonEngine : public QObject
+{
 
-  Q_OBJECT
+    Q_OBJECT
 
-  static QString ps1;
-  static QString ps2;
+    static QString ps1;
+    static QString ps2;
 
-  PyObject* main_dict;
-  QString currentPrompt;
-  bool started;
+    PyObject *main_dict;
+    QString currentPrompt;
+    bool started;
 
-  PythonEngine(const PythonEngine&);
-  PythonEngine& operator=(const PythonEngine&);
+    PythonEngine(const PythonEngine&);
+    PythonEngine&operator=(const PythonEngine&);
 
 public:
 
-  PythonEngine();
-  ~PythonEngine();
+    PythonEngine();
+    ~PythonEngine();
 
-  void start();
+    void start();
 
-  void write(const char* text);
-  void writeln(const char* text);
-  void flush(void);
+    void write(const char *text);
+    void writeln(const char *text);
+    void flush(void);
 
-public Q_SLOTS:
-  void command(const QString& text);
+    public Q_SLOTS :
+    void command(const QString &text);
 
 Q_SIGNALS:
-  void message(const QString& text);
-  void prompt(const QString& prompt);
+    void message(const QString &text);
+    void prompt(const QString &prompt);
 };
 
-#endif
+#endif // ifndef PythonEngine_h

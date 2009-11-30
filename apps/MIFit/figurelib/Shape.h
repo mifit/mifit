@@ -3,22 +3,24 @@
 
 #include <vector>
 
-namespace moldraw {
-class Drawing;
+namespace moldraw
+{
+    class Drawing;
 
-class Shape {
-public:
-  Shape(Drawing* dp);
-  virtual ~Shape();
+    class Shape
+    {
+    public:
+        Shape(Drawing *dp);
+        virtual ~Shape();
 
-  virtual void Draw() = 0;
+        virtual void Draw() = 0;
 
-protected:
-  Drawing* _dp;
-  float _line_width;
-};
+    protected:
+        Drawing *_dp;
+        float _line_width;
+    };
 
 
 }
 
-#endif
+#endif // ifndef mifit_figurelib_Shape_h

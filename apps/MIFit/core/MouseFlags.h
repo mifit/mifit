@@ -21,4 +21,4 @@
 #define MK_ALT      0x0020
 #define MK_META     0x0040
 
-#endif
+#endif // ifndef MACWINDOWS

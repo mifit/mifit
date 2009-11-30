@@ -4,8 +4,9 @@
 #include <string>
 
 
-namespace chemlib {
-std::string MIFirstToken(FILE* fp);
+namespace chemlib
+{
+    std::string MIFirstToken(FILE *fp);
 }
 #endif
 

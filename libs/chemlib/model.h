@@ -6,9 +6,10 @@
 #include <string>
 
 
-namespace chemlib {
+namespace chemlib
+{
 
-class RESIDUE;
+    class RESIDUE;
 
 
 // move these to "system"
@@ -82,24 +83,25 @@ class RESIDUE;
 
 #define NELEMENTS   104
 
-namespace AtomType {
+    namespace AtomType
+    {
 /**
  * first byte used for radius type
  */
-const unsigned int TYPEMASK = ((unsigned int)0x000000FF);
-const unsigned int BONDED = ((unsigned int)0x00000100);
-const unsigned int TORSIONATOM = ((unsigned int)0x00000200);
-const unsigned int RIBBONATOM = ((unsigned int)0x00000400);
-const unsigned int DELETEDATOM = ((unsigned int)0x00000800);
-const unsigned int MAINCHAIN = ((unsigned int)0x00001000);
-const unsigned int SIDECHAIN = ((unsigned int)0x00002000);
-const unsigned int FITATOM = ((unsigned int)0x00004000);
-const unsigned int REFIATOM = ((unsigned int)0x00008000);
-const unsigned int INVISIBLE = ((unsigned int)0x00100000);
-const unsigned int DUMMYATOM = ((unsigned int)0x00020000);
-const unsigned int FREEZE = ((unsigned int)0x00040000);
-const unsigned int SYMMATOM = ((unsigned int)0x00080000);
-};
+        const unsigned int TYPEMASK = ((unsigned int)0x000000FF);
+        const unsigned int BONDED = ((unsigned int)0x00000100);
+        const unsigned int TORSIONATOM = ((unsigned int)0x00000200);
+        const unsigned int RIBBONATOM = ((unsigned int)0x00000400);
+        const unsigned int DELETEDATOM = ((unsigned int)0x00000800);
+        const unsigned int MAINCHAIN = ((unsigned int)0x00001000);
+        const unsigned int SIDECHAIN = ((unsigned int)0x00002000);
+        const unsigned int FITATOM = ((unsigned int)0x00004000);
+        const unsigned int REFIATOM = ((unsigned int)0x00008000);
+        const unsigned int INVISIBLE = ((unsigned int)0x00100000);
+        const unsigned int DUMMYATOM = ((unsigned int)0x00020000);
+        const unsigned int FREEZE = ((unsigned int)0x00040000);
+        const unsigned int SYMMATOM = ((unsigned int)0x00080000);
+    };
 
 
 } //namespace chemlib

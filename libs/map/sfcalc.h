@@ -6,9 +6,10 @@
 #include "CREFL.h"
 #include "CMapHeaderBase.h"
 
-namespace chemlib {
-class RESIDUE;
-class MIAtom;
+namespace chemlib
+{
+    class RESIDUE;
+    class MIAtom;
 }
 
 #define MAXTYPES 20
@@ -19,15 +20,15 @@ class MIAtom;
 #endif
 
 //private
-float ComputeScale(std::vector<CREFL>& refl, CMapHeaderBase* mh);
-int ApplyScale(std::vector<CREFL>& refl, float scale, CMapHeaderBase* mh);
+float ComputeScale(std::vector<CREFL> &refl, CMapHeaderBase *mh);
+int ApplyScale(std::vector<CREFL> &refl, float scale, CMapHeaderBase *mh);
 float ComputeScale2(CREFL refl[], int nrefl, CMapHeaderBase *mh);
-float RePhase(std::vector<CREFL>& refl, CMapHeaderBase* mh);
+float RePhase(std::vector<CREFL> &refl, CMapHeaderBase *mh);
 int sfcalc(chemlib::RESIDUE *  res, CREFL refl[], int nrefl, CMapHeaderBase *mh, int init);
 int AtomDeriv();
-int ScattIndex(const char* aname, const char* restype);
+int ScattIndex(const char *aname, const char *restype);
 int CalcBulkSolvent(CREFL refl[], int nrefl, CMapHeaderBase *mh);
-float EstimateBulkSolvent(CREFL refl[], int nrefl, float* B, float* K, int ntimes, CMapHeaderBase *mh);
+float EstimateBulkSolvent(CREFL refl[], int nrefl, float *B, float *K, int ntimes, CMapHeaderBase *mh);
 int sfcalcatom(chemlib::MIAtom *atoms[], int natoms, CREFL refl[], int nrefl, CMapHeaderBase *mh, int init);
 void sfinit();
 

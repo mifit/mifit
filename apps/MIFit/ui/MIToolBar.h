@@ -8,10 +8,13 @@ class QToolBar;
 class QAction;
 class QMainWindow;
 
-class MIToolBar {
-  public:
-    MIToolBar(MIMenuBar *mb, QMainWindow* parent=0);
-    ~MIToolBar() {}
+class MIToolBar
+{
+public:
+    MIToolBar(MIMenuBar *mb, QMainWindow *parent = 0);
+    ~MIToolBar()
+    {
+    }
 
     void AddTool(unsigned int id, const char **xpm_data);
     void AddSeparator();
@@ -19,9 +22,9 @@ class MIToolBar {
 
     void doUpdates();
 
-  private:
+private:
     QAction *findAction(unsigned int id);
-    
+
     MIMenuBar *_mb;  // not owned by this class
     QToolBar *_tb;   // not owned by this class
     std::vector<unsigned int> _ids;

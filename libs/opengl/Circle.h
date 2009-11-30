@@ -1,40 +1,43 @@
 #ifndef mi_opengl_Circle_h
 #define mi_opengl_Circle_h
 
-namespace mi {
-namespace opengl {
+namespace mi
+{
+    namespace opengl
+    {
 
-class Circle {
+        class Circle
+        {
 
-  float radius;
+            float radius;
 
-  int detail;
+            int detail;
 
-  float angle;
+            float angle;
 
-public:
+        public:
 
-  Circle(float radius);
+            Circle(float radius);
 
-  Circle(float radius, float angle);
+            Circle(float radius, float angle);
 
-  float getRadius();
+            float getRadius();
 
-  void setRadius(float radius);
+            void setRadius(float radius);
 
-  int getDetail();
+            int getDetail();
 
-  void setDetail(int detail);
+            void setDetail(int detail);
 
-  float getAngle();
+            float getAngle();
 
-  void setAngle(float angle);
+            void setAngle(float angle);
 
-  void render();
+            void render();
 
-};
+        };
 
+    }
 }
-}
 
-#endif
+#endif // ifndef mi_opengl_Circle_h

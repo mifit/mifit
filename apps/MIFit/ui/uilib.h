@@ -39,4 +39,4 @@
 #include "MIEventHandler.h"
 #include "MIGLWidget.h"
 
-#endif
+#endif // ifndef MI_ui_LIBRARY_H

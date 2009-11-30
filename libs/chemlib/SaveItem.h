@@ -6,21 +6,23 @@
 
 #include "SaveAtom.h"
 
-namespace chemlib {
+namespace chemlib
+{
 
-class MIMoleculeBase;
+    class MIMoleculeBase;
 
 /**
  * Save a state for undo function.
  */
-class SaveItem {
-public:
-  SaveItem();
-  SaveItem(MIMoleculeBase* node, std::string title);
-  MIMoleculeBase* SaveMolecule;
-  std::string Title;
-  std::vector<SaveAtom> SaveSet;
-};
+    class SaveItem
+    {
+    public:
+        SaveItem();
+        SaveItem(MIMoleculeBase *node, std::string title);
+        MIMoleculeBase *SaveMolecule;
+        std::string Title;
+        std::vector<SaveAtom> SaveSet;
+    };
 
 }
-#endif
+#endif // ifndef mifit_SaveItem_h

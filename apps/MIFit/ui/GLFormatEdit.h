@@ -4,7 +4,8 @@
 #include <QtGui/QDialog>
 #include <QtOpenGL/QGLFormat>
 
-namespace Ui {
+namespace Ui
+{
     class GLFormatEdit;
 }
 class QAbstractButton;
@@ -17,7 +18,8 @@ class QSettings;
  * a main window is created. The default selected by Qt may not
  * work properly on some computers.
  */
-class GLFormatEdit : public QDialog {
+class GLFormatEdit : public QDialog
+{
     Q_OBJECT
 public:
     GLFormatEdit(QWidget *parent = 0);
@@ -25,11 +27,11 @@ public:
 
     QGLFormat format() const;
 
-    static QGLFormat readSettings(const QSettings& settings);
-    static void writeSettings(QSettings& settings, const QGLFormat& format);
+    static QGLFormat readSettings(const QSettings &settings);
+    static void writeSettings(QSettings &settings, const QGLFormat &format);
 
 public slots:
-    void setFormat(const QGLFormat& format);
+    void setFormat(const QGLFormat &format);
     void reset();
 
 private:
@@ -37,7 +39,7 @@ private:
     QGLFormat format_;
 
 private slots:
-    void buttonClicked(QAbstractButton* button);
+    void buttonClicked(QAbstractButton *button);
 };
 
 #endif // GLFORMATEDIT_H

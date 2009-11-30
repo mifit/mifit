@@ -4,38 +4,42 @@
 #include <math/Point3.h>
 #include <math/Vector3.h>
 
-namespace mi {
-namespace opengl {
+namespace mi
+{
+    namespace opengl
+    {
 
-class Circle;
-class Arc;
+        class Circle;
+        class Arc;
 
-namespace interact {
+        namespace interact
+        {
 
-class ArcBallFeedback {
-  mi::opengl::Circle* ball;
+            class ArcBallFeedback
+            {
+                mi::opengl::Circle *ball;
 
-  mi::opengl::Arc* arc;
+                mi::opengl::Arc *arc;
 
-  mi::math::Point3<float> arcColor;
+                mi::math::Point3<float> arcColor;
 
-  mi::math::Point3<float> ballColor;
+                mi::math::Point3<float> ballColor;
 
-public:
+            public:
 
-  ArcBallFeedback(float radius, float* color);
+                ArcBallFeedback(float radius, float *color);
 
-  void render();
+                void render();
 
-  void setRadius(float radius);
+                void setRadius(float radius);
 
-  void setFrom(mi::math::Vector3<float>& from);
+                void setFrom(mi::math::Vector3<float> &from);
 
-  void setTo(mi::math::Vector3<float>& to);
+                void setTo(mi::math::Vector3<float> &to);
 
-};
+            };
+        }
+    }
 }
-}
-}
 
-#endif
+#endif // ifndef ARCBALLFEEDBACK_H_

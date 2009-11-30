@@ -21,4 +21,4 @@ public slots:
     void on_checkpointDirectoryButton_pressed();
 };
 
-#endif
+#endif // ifndef ENVIRONMENT_PREFERENCES_H

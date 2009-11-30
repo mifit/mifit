@@ -15,7 +15,7 @@
  * message slot simply appends the text. The prompt slot appends the text and
  * sets a new start of command position. The start of command position is what
  * restricts the editing capabilities to the command line.
- * 
+ *
  * Note that a prompt is not automatically displayed after each command is
  * signaled. A call to the prompt slot must be performed for each prompting
  * of a new command.
@@ -26,55 +26,56 @@
  * The default font is "Lucida Console" with a style hint for TypeWriter. To
  * change the font, see the QTextEdit documentation.
  */
-class Console : public QTextEdit {
+class Console : public QTextEdit
+{
 
-  Q_OBJECT
+    Q_OBJECT
 
-  /**
-   * Location marking the beginning of the command line.
-   */
-  int commandStart;
+    /**
+     * Location marking the beginning of the command line.
+     */
+    int commandStart;
 
 protected:
 
-  /**
-   * Filters and processes key events for restricted editing behavior.
-   */
-  virtual void keyPressEvent(QKeyEvent* event);
+    /**
+     * Filters and processes key events for restricted editing behavior.
+     */
+    virtual void keyPressEvent(QKeyEvent *event);
 
 Q_SIGNALS:
 
-  /**
-   * Signals the text for a command when return or enter pressed.
-   */
-  void command(const QString& text);
+    /**
+     * Signals the text for a command when return or enter pressed.
+     */
+    void command(const QString &text);
 
 public:
 
-  /**
-   * Creates an empty Console with given parent.
-   * See QTextEdit for details.
-   */
-  Console(QWidget* parent = 0);
-  
-  /**
-   * Creates an Console with given parent and text.
-   * See QTextEdit for details.
-   */
-  Console(const QString& text, QWidget* parent = 0);
+    /**
+     * Creates an empty Console with given parent.
+     * See QTextEdit for details.
+     */
+    Console(QWidget *parent = 0);
 
-public Q_SLOTS:
+    /**
+     * Creates an Console with given parent and text.
+     * See QTextEdit for details.
+     */
+    Console(const QString &text, QWidget *parent = 0);
 
-  /**
-   * Appends the prompt and sets a new start of command position.
-   */
-  void prompt(const QString& prompt);
+    public Q_SLOTS :
 
-  /**
-   * Appends the text.
-   */
-  void message(const QString& text);
-  
+    /**
+     * Appends the prompt and sets a new start of command position.
+     */
+    void prompt(const QString &prompt);
+
+    /**
+     * Appends the text.
+     */
+    void message(const QString &text);
+
 };
 
-#endif
+#endif // ifndef CONSOLE_h

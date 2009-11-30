@@ -6,11 +6,12 @@
 /**
  * A contact between two atoms. A contact is drawn as a line with a distance printed at the middle..
  */
-class CONTACT {
+class CONTACT
+{
 public:
-  chemlib::Bond line;
-  float d;
-  short color;
+    chemlib::Bond line;
+    float d;
+    short color;
 };
 
 #endif /*MIFIT_MODEL_CONTACT_H_*/

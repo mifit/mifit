@@ -20,18 +20,21 @@
 //created an Ligand that corresponds to an MIFit molecule. -KWB
 
 
-namespace chemlib {
+namespace chemlib
+{
 
-class AtomTyper {
-public:
-  virtual ~AtomTyper() {
-  }
+    class AtomTyper
+    {
+    public:
+        virtual ~AtomTyper()
+        {
+        }
 
-  virtual char* AtomType(const MIAtom* atom) const = 0;
-  AtomTyper(const RESIDUE& res, const std::vector<Bond>& bonds);
-protected:
-  Ligand m_mol;
-};
+        virtual char *AtomType(const MIAtom *atom) const = 0;
+        AtomTyper(const RESIDUE &res, const std::vector<Bond> &bonds);
+    protected:
+        Ligand m_mol;
+    };
 }
 
 #endif //ATOM_TYPER_BASE_CLASS_H

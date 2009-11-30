@@ -3,5 +3,5 @@
 
 #include <map/maplib.h>
 
-char* symmtrim(char* line);
+char *symmtrim(char *line);
 #endif

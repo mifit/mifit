@@ -3,30 +3,35 @@
 
 #include <chemlib/chemlib.h>
 
-class Cluster {
+class Cluster
+{
 public:
-  std::vector<chemlib::MIAtom*> atoms;
+    std::vector<chemlib::MIAtom*> atoms;
 };
 
-class ClusterList {
-  std::vector<Cluster> clusters;
-  float dmax;
+class ClusterList
+{
+    std::vector<Cluster> clusters;
+    float dmax;
 public:
-  size_t size() {
-    return clusters.size();
-  }
+    size_t size()
+    {
+        return clusters.size();
+    }
 
-  float GetMaxDistance() {
-    return dmax;
-  }
+    float GetMaxDistance()
+    {
+        return dmax;
+    }
 
-  void SetMaxDistance(float d) {
-    dmax = d;
-  }
+    void SetMaxDistance(float d)
+    {
+        dmax = d;
+    }
 
-  chemlib::RESIDUE* BuildClusters(chemlib::RESIDUE* first, chemlib::RESIDUE* last = NULL, int min_size = 5);
-  ClusterList();
-  virtual ~ClusterList();
+    chemlib::RESIDUE *BuildClusters(chemlib::RESIDUE *first, chemlib::RESIDUE *last = NULL, int min_size = 5);
+    ClusterList();
+    virtual ~ClusterList();
 
 };
 

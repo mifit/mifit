@@ -12,14 +12,14 @@ class QLineEdit;
 class MIBrowsePair : public QObject
 {
     Q_OBJECT
-  public:
-    MIBrowsePair(QPushButton *button, QLineEdit *lineEdit, 
-      const QString & filter="",bool isDir=false);
+public:
+    MIBrowsePair(QPushButton *button, QLineEdit *lineEdit,
+                 const QString &filter = "", bool isDir = false);
 
-  private slots:
+private slots:
     void buttonClicked();
 
-  private:
+private:
     // these are *not* owned by this class
     QPushButton *_button;
     QLineEdit *_lineEdit;
@@ -27,4 +27,4 @@ class MIBrowsePair : public QObject
     QString _filter;
 };
 
-#endif
+#endif // ifndef MI_BROWSE_PAIR_H

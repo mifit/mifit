@@ -29,4 +29,4 @@ private:
     MIData data;
 };
 
-#endif
+#endif // ifndef __AtomColors_H__

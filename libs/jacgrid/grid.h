@@ -7,7 +7,7 @@
 //start
 class gridT
 {
-  public:
+public:
     unsigned int npts[3]; /* number of divisions in each direction -- the dimension */
     float unit[3];        /* length of a single edge in each dimension*/
     float size[3];        /* length of entire grid in each dimension */
@@ -21,23 +21,29 @@ class gridT
 
     //endvars
     gridT();
-    gridT(float InitVal, 
-          unsigned int dimx, unsigned int dimy,unsigned int dimz,
-          bool with_surface_fields=false);
+    gridT(float InitVal,
+          unsigned int dimx, unsigned int dimy, unsigned int dimz,
+          bool with_surface_fields = false);
     ~gridT();
 
-    bool IsValid() const { return _valid; }
-    unsigned int GetSize() const { return _size; }
+    bool IsValid() const
+    {
+        return _valid;
+    }
+    unsigned int GetSize() const
+    {
+        return _size;
+    }
 
     void Clear();
     bool Resize(float InitVal,
-                unsigned int dimx, unsigned int dimy,unsigned int dimz,
-                bool with_surface_fields=false);
+                unsigned int dimx, unsigned int dimy, unsigned int dimz,
+                bool with_surface_fields = false);
 
-  private:
+private:
     bool _valid;
     unsigned int _size;
 };
 
 
-#endif
+#endif // ifndef JAC_GRID_H

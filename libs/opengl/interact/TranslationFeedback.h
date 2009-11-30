@@ -4,36 +4,40 @@
 #include <math/Vector3.h>
 #include <math/Point3.h>
 
-namespace mi {
-namespace opengl {
-namespace interact {
+namespace mi
+{
+    namespace opengl
+    {
+        namespace interact
+        {
 
-class TranslationFeedback {
+            class TranslationFeedback
+            {
 
-  mi::math::Vector3<float> beginPosition;
+                mi::math::Vector3<float> beginPosition;
 
-  mi::math::Vector3<float> endPosition;
+                mi::math::Vector3<float> endPosition;
 
-  mi::math::Point3<float> color;
+                mi::math::Point3<float> color;
 
-  float length;
+                float length;
 
-public:
+            public:
 
-  TranslationFeedback(float* color);
+                TranslationFeedback(float *color);
 
-  void setLength(float length);
+                void setLength(float length);
 
-  void render();
+                void render();
 
-  void setFrom(const mi::math::Vector3<float>& from);
+                void setFrom(const mi::math::Vector3<float> &from);
 
-  void setTo(const mi::math::Vector3<float>& to);
+                void setTo(const mi::math::Vector3<float> &to);
 
-};
+            };
 
+        }
+    }
 }
-}
-}
 
-#endif
+#endif // ifndef mi_opengl_interact_TranslationFeedback_h

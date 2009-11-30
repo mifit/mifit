@@ -18,4 +18,4 @@
 #include <OpenGL/glu.h>
 #endif
 
-#endif
+#endif // ifndef mi_opengl_OpenGL_h

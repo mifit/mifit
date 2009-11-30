@@ -15,8 +15,8 @@ public:
     ManageCrystals(QWidget *parent = 0);
     ~ManageCrystals();
 
-  private slots:
-    void on_crystalListBox_itemClicked(QListWidgetItem *);
+private slots:
+    void on_crystalListBox_itemClicked(QListWidgetItem*);
     void on_newCrystalButton_clicked();
     void on_copyCrystalButton_clicked();
     void on_deleteCrystalButton_clicked();
@@ -32,7 +32,7 @@ public:
 
     void dialog_finished(int);
 
-  private:
+private:
     void scanCrystalsDirectory();
     void updateDetails();
     void updateSpacegroupDetails();
@@ -40,9 +40,9 @@ public:
     void lookupSpaceGroup();
     void loadSelectedCrystal();
     void saveCrystal(bool deleteOldCrystal = true);
-    void saveAs(const std::string& name);
-    bool crystalFileExists(std::string& crystal);
-    void deleteCrystal(std::string& crystal);
+    void saveAs(const std::string &name);
+    bool crystalFileExists(std::string &crystal);
+    void deleteCrystal(std::string &crystal);
     void clearDetails();
     void promptSaveIfModified();
 
@@ -51,4 +51,4 @@ public:
     bool fieldModified;
 };
 
-#endif
+#endif // ifndef MANAGE_CRYSTALS_DIALOG_H

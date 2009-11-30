@@ -17,4 +17,4 @@ public slots:
     void on_browseButton_clicked();
 };
 
-#endif
+#endif // ifndef SMILESDIALOG_H

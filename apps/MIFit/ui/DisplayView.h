@@ -5,18 +5,19 @@
 
 class MIGLWidget;
 
-class DisplayView : public ViewSyncedPanel {
+class DisplayView : public ViewSyncedPanel
+{
 
 protected:
 
-  virtual QWidget* createPanelForView(MIGLWidget* view, QWidget* parent);
-  virtual void destroyContentsForView(MIGLWidget* view, QWidget* panel);
+    virtual QWidget *createPanelForView(MIGLWidget *view, QWidget *parent);
+    virtual void destroyContentsForView(MIGLWidget *view, QWidget *panel);
 
 public:
 
-  DisplayView(QWidget* parent);
-  virtual ~DisplayView();
+    DisplayView(QWidget *parent);
+    virtual ~DisplayView();
 
 };
 
-#endif
+#endif // ifndef mifit_ui_DisplayView_h

@@ -4,28 +4,32 @@
 #include <vector>
 #include <opengl/OpenGL.h>
 
-namespace mi {
-namespace opengl {
+namespace mi
+{
+    namespace opengl
+    {
 
-class Frustum;
-class Renderable;
+        class Frustum;
+        class Renderable;
 
-namespace interact {
+        namespace interact
+        {
 
-class MousePicker {
+            class MousePicker
+            {
 
-  int selectBufferLength;
-  GLuint* selectBuffer;
+                int selectBufferLength;
+                GLuint *selectBuffer;
 
-public:
+            public:
 
-  MousePicker();
-  ~MousePicker();
+                MousePicker();
+                ~MousePicker();
 
-  std::vector<GLuint> pick(int x, int y, Frustum* frustum, Renderable* scene);
-};
+                std::vector<GLuint> pick(int x, int y, Frustum *frustum, Renderable *scene);
+            };
+        }
+    }
 }
-}
-}
 
-#endif
+#endif // ifndef mi_opengl_interact_MousePicker_h

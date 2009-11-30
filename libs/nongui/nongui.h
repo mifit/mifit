@@ -19,30 +19,35 @@
 
 #include <string>
 
-class Logger {
+class Logger
+{
 public:
-  static void log(const char* format, ...);
-  static void debug(const char* format, ...);
+    static void log(const char *format, ...);
+    static void debug(const char *format, ...);
 
-  static void message(const char* format, ...);
-  static void footer(const char* format, ...);
+    static void message(const char *format, ...);
+    static void footer(const char *format, ...);
 
 
-  static void log(const std::string& str) {
-    log(str.c_str());
-  }
+    static void log(const std::string &str)
+    {
+        log(str.c_str());
+    }
 
-  static void debug(const std::string& str) {
-    debug(str.c_str());
-  }
+    static void debug(const std::string &str)
+    {
+        debug(str.c_str());
+    }
 
-  static void message(const std::string& str) {
-    message(str.c_str());
-  }
+    static void message(const std::string &str)
+    {
+        message(str.c_str());
+    }
 
-  static void footer(const std::string& str) {
-    footer(str.c_str());
-  }
+    static void footer(const std::string &str)
+    {
+        footer(str.c_str());
+    }
 
 };
 
@@ -52,14 +57,15 @@ public:
 // When the subroutine exits, the WaitCursor object will automatically
 // and the cursor restored to its previous state.
 //@}
-class WaitCursor {
-  std::string op_name;
+class WaitCursor
+{
+    std::string op_name;
 public:
-  bool CheckForAbort();
-  WaitCursor(const char* op);
-  ~WaitCursor();
+    bool CheckForAbort();
+    WaitCursor(const char *op);
+    ~WaitCursor();
 };
 
 
 
-#endif
+#endif // ifndef MI_NONGUI_H

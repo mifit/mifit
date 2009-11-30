@@ -21,46 +21,63 @@
 
 // overload ROUND instead of macro for performance reasons.  Unnecessary
 // conversion to double (which would happen w/just a single macro version) is slower than necessary
-inline int ROUND(float a) { return (a > 0.0f ? (int)(a+0.5f) : (int)(a-0.5f)); }
-inline int ROUND(double a) { return (a > 0.0 ? (int)(a+0.5) : (int)(a-0.5)); }
-inline int ROUND(int a) { return (a > 0 ? (int)(a+0.5) : (int)(a-0.5)); }
+inline int ROUND(float a)
+{
+    return (a > 0.0f ? (int)(a+0.5f) : (int)(a-0.5f));
+}
+inline int ROUND(double a)
+{
+    return (a > 0.0 ? (int)(a+0.5) : (int)(a-0.5));
+}
+inline int ROUND(int a)
+{
+    return (a > 0 ? (int)(a+0.5) : (int)(a-0.5));
+}
 
 #define SIGN(a)  ((a) >= 0 ? (1) : (-1))
 #define fRAND_MAX ((float)RAND_MAX)
 #define absolute(x) ((x) >= 0 ? (x) : -(x))
 
-inline float frand2(float range) {
-  return ((2.0F*(float)rand()/fRAND_MAX*range) - range);
-};
+inline float frand2(float range)
+{
+    return ((2.0F*(float)rand()/fRAND_MAX*range) - range);
+}
 
-inline float grand(float range) {
-  return (frand2(range)*frand2(range)*frand2(range));
-};
+inline float grand(float range)
+{
+    return (frand2(range)*frand2(range)*frand2(range));
+}
 
-inline float frand() {
-  return (float)rand()/fRAND_MAX;
-};
+inline float frand()
+{
+    return (float)rand()/fRAND_MAX;
+}
 
-inline float frand(float range) {
-  return (float)rand()/fRAND_MAX*range;
-};
+inline float frand(float range)
+{
+    return (float)rand()/fRAND_MAX*range;
+}
 
-inline int irand(int range) {
-  float r = frand();
-  int i = (int)(r*(float)range);
-  if (i < 0) {
-    i = 0;
-  }
-  if (i >= range) {
-    i = range -1;
-  }
-  return i;
-};
-
-
-inline bool MIIsNan(double x) {
-  return x != x;
+inline int irand(int range)
+{
+    float r = frand();
+    int i = (int)(r*(float)range);
+    if (i < 0)
+    {
+        i = 0;
+    }
+    if (i >= range)
+    {
+        i = range -1;
+    }
+    return i;
 }
 
 
-#endif
+inline bool MIIsNan(double x)
+{
+    return x != x;
+}
+
+
+#endif // ifndef MI_MATHLIB_H

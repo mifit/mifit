@@ -1,9 +1,10 @@
 #ifndef chemlib_MIMoleculeBase_fwd_h
 #define chemlib_MIMoleculeBase_fwd_h
 
-namespace chemlib {
+namespace chemlib
+{
 
-class MIMoleculeBase;
+    class MIMoleculeBase;
 
 }
 

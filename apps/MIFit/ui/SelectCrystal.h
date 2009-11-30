@@ -13,10 +13,10 @@ public:
     SelectCrystal(const std::string &info, QWidget *parent = 0);
     const std::string getLabel();
 
-  private:
+private:
     void scanCrystalsDirectory();
 
-  private slots:
+private slots:
     void on_crystalListWidget_itemClicked(QListWidgetItem *item);
     void on_selectCrystalRadioButton_clicked();
     void on_specifyParametersRadioButton_clicked();
@@ -25,4 +25,4 @@ public:
     void on_spaceGroupLineEdit_textEdited(const QString &str);
 };
 
-#endif
+#endif // ifndef SELECT_CRYSTAL_DIALOG_H

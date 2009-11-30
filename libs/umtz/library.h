@@ -120,7 +120,7 @@ extern "C" {
 /* may vary.                                                                */
 /*                                                                          */
 /* <identifying the platform>=                                              */
-#if defined (__hpux) 
+#if defined (__hpux)
 #  define KNOWN_MACHINE
 #  define CALL_LIKE_HPUX 1
 #endif
@@ -142,7 +142,7 @@ extern "C" {
 /* \idx{Solbourne}s are \idx{Sun} clones.                                   */
 /*                                                                          */
 /* <identifying the platform>=                                              */
-#if defined (solbourne) 
+#if defined (solbourne)
 #  ifndef sun
 #   define sun               /* don't know whether it's defined or not */
 #  endif
@@ -155,7 +155,7 @@ extern "C" {
 #  define CALL_LIKE_SUN 1
 #  if !defined(__STDC__) || defined(__GNUC__)
 #    if !defined(G77)
-      extern char *sys_errlist [];
+extern char *sys_errlist [];
 #     define strerror(i) sys_errlist[i] /* k&r compiler doesn't have it */
 #    endif
 #  endif
@@ -189,7 +189,7 @@ extern "C" {
 
 /* First attemt at porting to nt wsing the visual fortran and MVC++         */
 /* MVS stands for Microsoft Visual Studio - better than VMS                 */
-#if defined(_MVS) 
+#if defined(_MVS)
 #  define CALL_LIKE_MVS 1
 #  define KNOWN_MACHINE
 #endif
@@ -222,7 +222,7 @@ extern "C" {
 /* it would if un-indented, even when the test is false.                    */
 /*                                                                          */
 /* <guarded code>=                                                          */
-#if ! defined (KNOWN_MACHINE)
+#if !defined (KNOWN_MACHINE)
 #  error System type is not known -- see the Installation Guide
 #else
 /* At this stage we've identified the platform and are in business.  Here   */
@@ -272,9 +272,9 @@ extern "C" {
 #ifndef NOUNISTD
 #  include <unistd.h>
 #else
-#  ifndef VMS 
+#  ifndef VMS
 #    ifndef _MVS
-#      include <sys/file.h>     /* ESV, old Concentrix */ /* non-POSIX */
+#      include <sys/file.h> /* ESV, old Concentrix */     /* non-POSIX */
 #    endif
 #  endif
 #endif
@@ -285,8 +285,8 @@ extern "C" {
 //#include <errno.h>
 #include <ctype.h>
 
-#if defined(_AIX) || defined (__hpux) || defined(F2C) ||\
-    defined(G77) || defined(_WIN32)/* would do no harm on others, though */
+#if defined(_AIX) || defined (__hpux) || defined(F2C)   \
+    || defined(G77) || defined(_WIN32) /* would do no harm on others, though */
 #  include <time.h>
 #endif
 /* We need INT_MAX and DBL_MAX defined for routine Hgetlimits               */
@@ -346,11 +346,12 @@ extern "C" {
 #endif /* ! SEEK_SET */
 /* <[[#define]]s>=                                                          */
 #if defined (ardent) || defined (titan) || defined (stardent)
-  struct Str_Desc {
+struct Str_Desc
+{
     char *Str_pointer;
-    int  Str_length;
+    int Str_length;
     int id;
-  };
+};
 #endif
 /* \subsection{File mode definitions}                                       */
 /*                                                                          */
@@ -360,7 +361,7 @@ extern "C" {
 /*                                                                          */
 /* <[[#define]]s>=                                                          */
 #define BYTE  0
-#define INT16 1   
+#define INT16 1
 #define INT32 6
 #define FLOAT32 2
 #define COMP32  3
@@ -550,22 +551,23 @@ union float_uint_uchar {
     uint32 i;
     uint8 c[4];
 /*    sint8 s[4]; */
-  };
-#endif
+};
+#endif // if !defined (KNOWN_MACHINE)
 
 /*  =================  Machine-dependent definitions  =================== */
 
-typedef   char     *        pstr;
+typedef   char*pstr;
 
 #ifdef CALL_LIKE_STARDENT
-  /* SStrParam is used in Ardent-like machines' fortran calls */
-  /* for passing a string parameter */
-  DefineStructure(SStrPar)
-  struct SStrPar  {
+/* SStrParam is used in Ardent-like machines' fortran calls */
+/* for passing a string parameter */
+DefineStructure(SStrPar)
+struct SStrPar
+{
     pstr S;
-    int  len;
-    int  id;
-  };
+    int len;
+    int id;
+};
 #endif
 
 
@@ -573,9 +575,9 @@ typedef   char     *        pstr;
      Macro  FORTRAN_SUBR(NAME,name,p_send,p_sstruct,p_sflw)
    makes function header statements that allow for linking with
    programs written in FORTRAN.
-  
+
      Parameters:
-  
+
      NAME      name of the FORTRAN subroutine in capital letters
      name      name of the FORTRAN subroutine in small letters
      p_send    parameter list (in brackets) with string lengths
@@ -585,22 +587,22 @@ typedef   char     *        pstr;
      p_sflw    parameter list (in brackets) with string lengths
                following immediately the string parameters
                (see below)
-  
+
      All non-string parameters must be passed as pointers, in
    the same order as they enter the FORTRAN call. Rules for
    the string parameters are as follows.
-  
+
      1. All strings should be specified as of 'fpstr' type.
         The 'fpstr' type is defined below and depends on the
         platform:
-  
+
           a) whenever length of string is passed as a separate
              parameter ( CALL_LIKE_SUN, CALL_LIKE_HPUX,
              CALL_LIKE_MVS )  'fpstr' is identical to 'pstr'.
              You may choose arbitrary name for the string,
              but you MUST use the same name, appended with
              suffix '_len', for its length (see example below).
-  
+
           b) whenever string and its length are passed as
              complex parameter, 'fpstr' is identical to the
              pointer on the corresponding structure:
@@ -608,77 +610,77 @@ typedef   char     *        pstr;
                    'fpstr' is identical to 'PSStrPar'
                CALL_LIKE_VMS      :
                    'fpstr' is identical to 'dsc$descriptor_s *'
-  
+
         With 'fpstr' type, two important macro definition come:
-  
+
           i)  FTN_STR(s)  - returns pointer to fortran-passed
                             string s. This pointer is always
                             of 'pstr' type
           ii) FTN_LEN(s)  - returns integer length of fortran-
                             passed string s. For this macro to
                             work properly with SUN- and MVS-like
-                            machines, always use suffix '_len' 
+                            machines, always use suffix '_len'
                             for the string length parameters as
                             described in a) above.
-  
+
      2. Three parameter lists, each enclosed in brackets, should
         be given. These lists retain the general order of
         parameters in the corresponding fortran call. Non-string
         parameters are passed as pointers. String parameters
         and their lengths are passed differently in different
         lists:
-  
+
          p_send    strings enter their place in the list as in
                    the corresponding FORTRAN call, having 'fpstr'
                    parameter type. Their lengths are appended as
                    'int' to the end of the list. They should
                    retain the order in which the strings appear
                    in the list.
-  
+
          p_sstruct strings enter their place in the list as in
                    the corresponding FORTRAN call, having 'fpstr'
                    parameter type.
-  
+
          p_sflw    strings enter their place in the list as in
                    the corresponding FORTRAN call, having 'fpstr'
                    type and being immediately followed by their
                    lengths as 'int' parameters.
-  
-  
-  
+
+
+
    Example:
-  
+
      FORTRAN statement
-  
+
        subroutine  SomeSub ( k,s1,a,s2,m )
        integer       k,m
        real          a
        character*(*) s1,s2
-  
+
      is translated to
-  
+
        FORTRAN_SUBR ( SOMESUB, somesub,
          ( int * k, fpstr s1, float * a, fpstr s2, int * m,
            int s1_len, int s2_len ),
          ( int * k, fpstr s1, float * a, fpstr s2, int * m ),
          ( int * k, fpstr s1, int s1_len, float * a,
            fpstr s2, int s2_len, int * m ) )
-  
-  
+
+
      The macro should replace ordinary function header
    statements to assure compatibility with FORTRAN links.
    In header files, do not forget to add semicolumn:
-  
+
      FORTRAN_SUBR ( .... );
-  
+
    while in source files use simply
-  
+
      FORTRAN_SUBR ( .... )  {
       <source body, operators>
      }
-  
-  
-  
+
+
+
      Macro  FORTRAN_CALL(NAME,name,p_send,p_sstruct,p_sflw)
    calls function defined with macro FORTRAN_SUBR(...), from
    a C/C++ application. Its parameters and their meaning are
@@ -688,159 +690,159 @@ typedef   char     *        pstr;
 
 #if  defined(CALL_LIKE_SUN)
 
-  typedef pstr fpstr;
+typedef pstr fpstr;
 
 #  define FTN_STR(s)  s
-#  define FTN_LEN(s)  s##_len
+#  define FTN_LEN(s)  s ## _len
 
 #  define char_struct(s)           \
-    pstr  s;                       \
-    int   s##_len;
-#  define fill_char_struct(s,str)  \
+    pstr s;                       \
+    int s ## _len;
+#  define fill_char_struct(s, str)  \
     s  = str;                      \
-    s##_len = strlen(str);
-#  define init_char_struct(s,str,size)  \
+    s ## _len = strlen(str);
+#  define init_char_struct(s, str, size)  \
     s  = str;                      \
-    s##_len = size;
+    s ## _len = size;
 
-#  define FORTRAN_SUBR(NAME,name,p_sun,p_stardent,p_mvs) \
-    void name##_ p_sun
-#  define FORTRAN_CALL(NAME,name,p_sun,p_stardent,p_mvs) \
-    name##_ p_sun
-#  define FORTRAN_FUN(val,NAME,name,p_sun,p_stardent,p_mvs) \
-    val name##_ p_sun
+#  define FORTRAN_SUBR(NAME, name, p_sun, p_stardent, p_mvs) \
+    void name ## _ p_sun
+#  define FORTRAN_CALL(NAME, name, p_sun, p_stardent, p_mvs) \
+    name ## _ p_sun
+#  define FORTRAN_FUN(val, NAME, name, p_sun, p_stardent, p_mvs) \
+    val name ## _ p_sun
 #elif defined(CALL_LIKE_HPUX)
 
-  typedef pstr fpstr;
+typedef pstr fpstr;
 
 #  define FTN_STR(s)  s
-#  define FTN_LEN(s)  s##_len
+#  define FTN_LEN(s)  s ## _len
 
 #  define char_struct(s)  \
-    pstr  s;              \
-    int   s##_len;
-#  define fill_char_struct(s,str)  \
+    pstr s;              \
+    int s ## _len;
+#  define fill_char_struct(s, str)  \
     s  = str;                      \
-    s##_len = strlen(str);
-#  define init_char_struct(s,str,size)  \
+    s ## _len = strlen(str);
+#  define init_char_struct(s, str, size)  \
     s  = str;                      \
-    s##_len = size;
+    s ## _len = size;
 
-#  define FORTRAN_SUBR(NAME,name,p_sun,p_stardent,p_mvs) \
+#  define FORTRAN_SUBR(NAME, name, p_sun, p_stardent, p_mvs) \
     void name p_sun
-#  define FORTRAN_CALL(NAME,name,p_sun,p_stardent,p_mvs) \
+#  define FORTRAN_CALL(NAME, name, p_sun, p_stardent, p_mvs) \
     name p_sun
-#  define FORTRAN_FUN(val,NAME,name,p_sun,p_stardent,p_mvs) \
+#  define FORTRAN_FUN(val, NAME, name, p_sun, p_stardent, p_mvs) \
     val name p_sun
 #elif defined(CALL_LIKE_STARDENT)
 
-  typedef PStrPar fpstr;
+typedef PStrPar fpstr;
 
 #  define FTN_STR(s)  s->Str_pointer
 #  define FTN_LEN(s)  s->Str_length
 
 #  define char_struct(s)           \
     SStrPar s;
-#  define fill_char_struct(s,str)  \
+#  define fill_char_struct(s, str)  \
     s.S   = str;                   \
     s.len = strlen(FName);         \
     s.id  = 0;
-#  define init_char_struct(s,str,size)  \
+#  define init_char_struct(s, str, size)  \
     s.S   = str;                   \
     s.len = size;         \
     s.id  = 0;
 
-#  define FORTRAN_SUBR(NAME,name,p_send,p_sstruct,p_sflw) \
+#  define FORTRAN_SUBR(NAME, name, p_send, p_sstruct, p_sflw) \
     void NAME p_stardent
-#  define FORTRAN_CALL(NAME,name,p_send,p_sstruct,p_sflw) \
+#  define FORTRAN_CALL(NAME, name, p_send, p_sstruct, p_sflw) \
     NAME p_stardent
-#  define FORTRAN_FUN(val,NAME,name,p_send,p_sstruct,p_sflw) \
+#  define FORTRAN_FUN(val, NAME, name, p_send, p_sstruct, p_sflw) \
     val NAME p_stardent
 
 #elif defined(CALL_LIKE_VMS)
 
-  typedef dsc$descriptor_s * fpstr;
+typedef dsc$descriptor_s*fpstr;
 
 #  define FTN_STR(s)  s->dsc$a_pointer;
 #  define FTN_LEN(s)  s->dsc$w_length;
 
 #  define char_struct(s)                \
     dsc$descriptor_s s;
-#  define fill_char_struct(s,str)     \
+#  define fill_char_struct(s, str)     \
     s.dsc$a_pointer = str;            \
     s.dsc$w_length  = strlen(str);    \
     s.dsc$b_dtype   = DSC$K_DTYPE_T;  \
     s.dsc$b_class   = DSC$K_CLASS_S;
-#  define init_char_struct(s,str,size)     \
+#  define init_char_struct(s, str, size)     \
     s.dsc$a_pointer = str;            \
     s.dsc$w_length  = size;    \
     s.dsc$b_dtype   = DSC$K_DTYPE_T;  \
     s.dsc$b_class   = DSC$K_CLASS_S;
 
-#  define FORTRAN_SUBR(NAME,name,p_sun,p_stardent,p_mvs) \
+#  define FORTRAN_SUBR(NAME, name, p_sun, p_stardent, p_mvs) \
     void NAME p_stardent
-#  define FORTRAN_CALL(NAME,name,p_sun,p_stardent,p_mvs) \
+#  define FORTRAN_CALL(NAME, name, p_sun, p_stardent, p_mvs) \
     NAME p_stardent
-#  define FORTRAN_FUN(val,NAME,name,p_sun,p_stardent,p_mvs) \
+#  define FORTRAN_FUN(val, NAME, name, p_sun, p_stardent, p_mvs) \
     val NAME p_stardent
 
 #elif defined(CALL_LIKE_MVS)
 
-  typedef pstr fpstr;
+typedef pstr fpstr;
 
 #  define FTN_STR(s)  s
-#  define FTN_LEN(s)  s##_len
+#  define FTN_LEN(s)  s ## _len
 
 #  define char_struct(s)  \
-    pstr  s;              \
-    int   s##_len;
-#  define fill_char_struct(s,str)  \
+    pstr s;              \
+    int s ## _len;
+#  define fill_char_struct(s, str)  \
     s  = str;                      \
-    s##_len = strlen(str);
-#  define init_char_struct(s,str,size)  \
+    s ## _len = strlen(str);
+#  define init_char_struct(s, str, size)  \
     s  = str;                      \
-    s##_len = size;
+    s ## _len = size;
 
-#  define FORTRAN_SUBR(NAME,name,p_sun,p_stardent,p_mvs) \
+#  define FORTRAN_SUBR(NAME, name, p_sun, p_stardent, p_mvs) \
     void __stdcall NAME p_mvs
-#  define FORTRAN_CALL(NAME,name,p_sun,p_stardent,p_mvs) \
+#  define FORTRAN_CALL(NAME, name, p_sun, p_stardent, p_mvs) \
     NAME p_mvs
-#  define FORTRAN_FUN(val,NAME,name,p_sun,p_stardent,p_mvs) \
+#  define FORTRAN_FUN(val, NAME, name, p_sun, p_stardent, p_mvs) \
     val __stdcall NAME p_mvs
 
-#else
+#else // if  defined(CALL_LIKE_SUN)
 
 #  error  Unknown machine!!!
 
-  typedef pstr fpstr;
+typedef pstr fpstr;
 
 #  define FTN_STR(s)  s
-#  define FTN_LEN(s)  s##_len
+#  define FTN_LEN(s)  s ## _len
 
 #  define char_struct(s)  \
-    pstr  s;              \
-    int   s##_len;
-#  define fill_char_struct(s,str)  \
+    pstr s;              \
+    int s ## _len;
+#  define fill_char_struct(s, str)  \
     s  = str;                      \
-    s##_len = strlen(str);
-#  define init_char_struct(s,str,size)  \
+    s ## _len = strlen(str);
+#  define init_char_struct(s, str, size)  \
     s  = str;                      \
-    s##_len = size;
+    s ## _len = size;
 
-#  define FORTRAN_SUBR(NAME,name,p_sun,p_stardent,p_mvs) \
-    void name##_ p_sun
-#  define FORTRAN_CALL(NAME,name,p_sun,p_stardent,p_mvs) \
-    name##_ p_sun
-#  define FORTRAN_FUN(val,NAME,name,p_sun,p_stardent,p_mvs) \
-    val name##_ p_sun
+#  define FORTRAN_SUBR(NAME, name, p_sun, p_stardent, p_mvs) \
+    void name ## _ p_sun
+#  define FORTRAN_CALL(NAME, name, p_sun, p_stardent, p_mvs) \
+    name ## _ p_sun
+#  define FORTRAN_FUN(val, NAME, name, p_sun, p_stardent, p_mvs) \
+    val name ## _ p_sun
 
-#endif
+#endif // if  defined(CALL_LIKE_SUN)
 
 /*
 
-CCP4 library.c macro definitions
+   CCP4 library.c macro definitions
 
-*/
+ */
 
 #ifndef FALSE
 #define FALSE 0
@@ -851,39 +853,39 @@ CCP4 library.c macro definitions
 
 typedef struct { double r;             /* real component and */
                  double i;             /* imaginary component of */
-               } COMPLEX;              /* a complex number */
+} COMPLEX;                             /* a complex number */
 
 typedef struct { double r;             /* radial and */
                  double phi;           /* angular component of */
-               } POLAR;                /* a complex number */
+} POLAR;                               /* a complex number */
 
 #define SQR(x) ((x)*(x))
-#define DEGREE(x) ((((x < 0)?(x)+2*M_PI:(x))*360)/(2*M_PI))
-#define RADIAN(x) ((((x<0)?(x)+360:(x))*2*M_PI)/360)
-#define MAX(x, y) (((x)>(y))?(x):(y))
-#define MIN(x, y) (((x)<(y))?(x):(y))
-#define ABS(x) (((x)<0)?-(x):(x))
+#define DEGREE(x) ((((x < 0) ? (x)+2*M_PI : (x))*360)/(2*M_PI))
+#define RADIAN(x) ((((x<0) ? (x)+360 : (x))*2*M_PI)/360)
+#define MAX(x, y) (((x)>(y)) ? (x) : (y))
+#define MIN(x, y) (((x)<(y)) ? (x) : (y))
+#define ABS(x) (((x)<0) ? -(x) : (x))
 #ifndef SIGN
-#define SIGN(x) (((x)<0)?-1:1)
+#define SIGN(x) (((x)<0) ? -1 : 1)
 #endif
 #ifndef M_PI
 #define M_PI (3.1415926535897932384626433832795028841972)
 #endif
 /****************************************************************************
- * Function prototypes                                                      *
- ****************************************************************************/
+* Function prototypes                                                      *
+****************************************************************************/
 
-size_t ccp4_flength (char *, int);
+size_t ccp4_flength (char*, int);
 
-void CCP4_fatal (const char *);
+void CCP4_fatal (const char*);
 
-void qprint (const char *);
+void qprint (const char*);
 
-void file_fatal (char *, char *);
+void file_fatal (char*, char*);
 
-int ccp4_ustenv (char *);
+int ccp4_ustenv (char*);
 
-int ccp4_qopen (const char *, int);
+int ccp4_qopen (const char*, int);
 
 int ccp4_qrarch ( int, int);
 
@@ -893,13 +895,13 @@ int ccp4_qclose (int);
 
 int ccp4_qmode (int, int);
 
-int ccp4_qread (int, uint8 *, int);
+int ccp4_qread (int, uint8*, int);
 
-int ccp4_qreadc (int, char *, size_t);
+int ccp4_qreadc (int, char*, size_t);
 
-int ccp4_qwrite (int, uint8 *, int);
+int ccp4_qwrite (int, uint8*, int);
 
-int ccp4_qwritc (int, char *, size_t);
+int ccp4_qwritc (int, char*, size_t);
 
 long ccp4_qseek (int, int, int, int);
 
@@ -909,20 +911,20 @@ long ccp4_qback (int, int);
 
 long ccp4_qskip (int, int);
 
-long ccp4_cqinq (int, char *);
+long ccp4_cqinq (int, char*);
 
 long ccp4_qlocate (int);
 
 union float_uint_uchar ccp4_nan ();
 
-int ccp4_isnan (union float_uint_uchar *);
+int ccp4_isnan (union float_uint_uchar*);
 
 /****************************************************************************
-*  End of prototypes                                                        *
-*****************************************************************************/
+ *  End of prototypes                                                        *
+ *****************************************************************************/
 #ifdef  __cplusplus
 }
 #endif
 
 
-#endif
+#endif // ifndef CCP4_LIBRARY_C

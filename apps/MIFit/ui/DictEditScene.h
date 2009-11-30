@@ -9,76 +9,80 @@ class Displaylist;
 class GLRenderer;
 class Stack;
 
-namespace mi {
-namespace opengl {
-class Light;
-class Viewpoint;
-class Frustum;
-class Camera;
-namespace interact {
-class ArcBallFeedback;
-class MouseArcBallOrbitor;
-class MouseTranslator;
-class TargetFeedback;
+namespace mi
+{
+    namespace opengl
+    {
+        class Light;
+        class Viewpoint;
+        class Frustum;
+        class Camera;
+        namespace interact
+        {
+            class ArcBallFeedback;
+            class MouseArcBallOrbitor;
+            class MouseTranslator;
+            class TargetFeedback;
+        }
+    }
 }
-}
-}
 
-class DictEditScene : public mi::opengl::Scene {
+class DictEditScene : public mi::opengl::Scene
+{
 
-  friend class DictEditCanvas;
+    friend class DictEditCanvas;
 
-  mi::opengl::Light* light;
+    mi::opengl::Light *light;
 
-  mi::opengl::Viewpoint* viewpoint;
+    mi::opengl::Viewpoint *viewpoint;
 
-  mi::opengl::Frustum* frustum;
+    mi::opengl::Frustum *frustum;
 
-  mi::opengl::Camera* camera;
+    mi::opengl::Camera *camera;
 
-  mi::opengl::interact::MouseArcBallOrbitor* cameraMouseOrbitor;
+    mi::opengl::interact::MouseArcBallOrbitor *cameraMouseOrbitor;
 
-  mi::opengl::interact::MouseTranslator* mouseTranslator;
+    mi::opengl::interact::MouseTranslator *mouseTranslator;
 
-  mi::opengl::interact::ArcBallFeedback* arcBallFeedback;
+    mi::opengl::interact::ArcBallFeedback *arcBallFeedback;
 
-  mi::opengl::interact::TargetFeedback* targetFeedback;
+    mi::opengl::interact::TargetFeedback *targetFeedback;
 
-  float glUnitsPerPixel;
+    float glUnitsPerPixel;
 
-  bool showAtomLabels;
+    bool showAtomLabels;
 
-  GLRenderer* renderer;
+    GLRenderer *renderer;
 
-  Displaylist* models;
+    Displaylist *models;
 
-  Stack* atomStack;
+    Stack *atomStack;
 
-  chemlib::Bond* pickedBond;
+    chemlib::Bond *pickedBond;
 
-  chemlib::ANGLE* pickedAngle;
+    chemlib::ANGLE *pickedAngle;
 
-  chemlib::PLANE* pickedPlane;
+    chemlib::PLANE *pickedPlane;
 
-  mi::opengl::Viewport* viewport;
+    mi::opengl::Viewport *viewport;
 
 public:
 
-  DictEditScene();
-  virtual ~DictEditScene();
+    DictEditScene();
+    virtual ~DictEditScene();
 
-  virtual void setViewport(mi::opengl::Viewport* viewport);
+    virtual void setViewport(mi::opengl::Viewport *viewport);
 
-  virtual void initializeForRender();
+    virtual void initializeForRender();
 
-  virtual void preCameraRender();
+    virtual void preCameraRender();
 
-  virtual void render();
+    virtual void render();
 
-  virtual void renderOverlay();
+    virtual void renderOverlay();
 
-  virtual void render2DOverlay();
+    virtual void render2DOverlay();
 
 };
 
-#endif
+#endif // ifndef MIFIT_UI_DICTEDITSCENE_H_

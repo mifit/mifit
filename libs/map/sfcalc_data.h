@@ -58,15 +58,15 @@ double dfiano[] = {0.001, .009, .018, .032, 0.557,  3.204, 6.295, 7.297, 7.686, 
 
 int MAXFTABLE;
 double Bscale = 20.0;
-double** ftable;
+double **ftable;
 int default_atom_type = 0;
-char** rtypes;
-char** atypes;
-int* atypelen;
-double* a1, * a2, * a3, * a4,
-* b1, * b2, * b3, * b4, * co;
-double* fiano;
-double* frano;
-double* zeff;
+char **rtypes;
+char **atypes;
+int *atypelen;
+double *a1, *a2, *a3, *a4,
+*b1, *b2, *b3, *b4, *co;
+double *fiano;
+double *frano;
+double *zeff;
 
 #endif // SFCALC_PRIVATE_H

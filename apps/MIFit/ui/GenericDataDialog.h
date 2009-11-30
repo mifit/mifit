@@ -52,5 +52,5 @@ private slots:
 
 };
 
-#endif
+#endif // ifndef mifit_ui_GenericDataDialog_h
 

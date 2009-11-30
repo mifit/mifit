@@ -5,51 +5,55 @@
 
 #include <vector>
 
-namespace conflib {
+namespace conflib
+{
 
-class LigRefiner {
-public:
-  std::vector<chemlib::BondLength> RefiBonds;
-  std::vector<chemlib::Angle> RefiAngles;
-  std::vector<chemlib::Plane> RefiPlanes;
-  std::vector<chemlib::Improper> RefiTorsions;
-  std::vector<chemlib::Bump> RefiBumps;
-  std::vector<chemlib::Residue*> RefiRes;
+    class LigRefiner
+    {
+    public:
+        std::vector<chemlib::BondLength> RefiBonds;
+        std::vector<chemlib::Angle> RefiAngles;
+        std::vector<chemlib::Plane> RefiPlanes;
+        std::vector<chemlib::Improper> RefiTorsions;
+        std::vector<chemlib::Bump> RefiBumps;
+        std::vector<chemlib::Residue*> RefiRes;
 
-  float BondWeight, AngleWeight, PlaneWeight, TorsionWeight, BumpWeight;
+        float BondWeight, AngleWeight, PlaneWeight, TorsionWeight, BumpWeight;
 
-  chemlib::Ligand* CurrentModel;
+        chemlib::Ligand *CurrentModel;
 
-  int nCycles;
-  bool RefiVerbose;
+        int nCycles;
+        bool RefiVerbose;
 
-  LigRefiner();
+        LigRefiner();
 
-  double Refine();
-  double minimize_bonds(chemlib::BondLength*, unsigned int);
-  double minimize_angles(chemlib::Angle*, unsigned int);
-  double minimize_planes(chemlib::Plane*, unsigned int);
-  double minimize_bumps(chemlib::Bump* bumps, unsigned int nbumps);
-  double minimize_torsions();
-  int resetderivatives();
-  int applyderivatives();
+        double Refine();
+        double minimize_bonds(chemlib::BondLength*, unsigned int);
+        double minimize_angles(chemlib::Angle*, unsigned int);
+        double minimize_planes(chemlib::Plane*, unsigned int);
+        double minimize_bumps(chemlib::Bump *bumps, unsigned int nbumps);
+        double minimize_torsions();
+        int resetderivatives();
+        int applyderivatives();
 
-  void AddRefiRes(chemlib::Residue* res);
-  long SetRefiRes(std::vector<chemlib::Residue*>::iterator res1,
-                  std::vector<chemlib::Residue*>::iterator res2);
-  void SetModel(chemlib::Ligand* model);
-  int BuildBumps();
-  void Clear();
+        void AddRefiRes(chemlib::Residue *res);
+        long SetRefiRes(std::vector<chemlib::Residue*>::iterator res1,
+                        std::vector<chemlib::Residue*>::iterator res2);
+        void SetModel(chemlib::Ligand *model);
+        int BuildBumps();
+        void Clear();
 
-  int GetNumberCycles() {
-    return nCycles;
-  }
+        int GetNumberCycles()
+        {
+            return nCycles;
+        }
 
-  void SetNumberCycles(int n) {
-    nCycles = n;
-  }
+        void SetNumberCycles(int n)
+        {
+            nCycles = n;
+        }
 
-};
+    };
 
 } //namespace conflib
 

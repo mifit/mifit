@@ -11,17 +11,17 @@ class LocalSocketScript : public QObject
     Q_OBJECT
 
 public:
-    LocalSocketScript(QObject* parent = 0);
+    LocalSocketScript(QObject *parent = 0);
 
     QString name() const;
 
 private:
     QString name_;
-    QLocalServer* localServer;
-    QScriptEngine* engine;
+    QLocalServer *localServer;
+    QScriptEngine *engine;
 
 private slots:
     void handleConnection();
 };
 
-#endif
+#endif // ifndef script_LocalSocketScript_h

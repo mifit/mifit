@@ -3,9 +3,10 @@
 
 #include <string>
 
-class OpenJobResults {
+class OpenJobResults
+{
 public:
-  static void prompt(const std::string& workdir, const std::string& jobName = "");
+    static void prompt(const std::string &workdir, const std::string &jobName = "");
 };
 
 #endif

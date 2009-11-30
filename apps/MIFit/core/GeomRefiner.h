@@ -5,16 +5,17 @@
 
 class Molecule;
 
-class GeomRefiner : public MIMolOpt {
+class GeomRefiner : public MIMolOpt
+{
 public:
-  bool EditEntry(const char* type);
-  void EditEntryCleanup(bool);
-  unsigned long FindGeomErrors(Molecule* model, float error_threshold);
+    bool EditEntry(const char *type);
+    void EditEntryCleanup(bool);
+    unsigned long FindGeomErrors(Molecule *model, float error_threshold);
 };
 
 // get DictResList converted from vector of std::string to vector of std::string
-std::vector<std::string> GetDictResList(GeomRefiner* gr);
+std::vector<std::string> GetDictResList(GeomRefiner *gr);
 
 
 
-#endif
+#endif // ifndef MI_GEOM_REFINER_H

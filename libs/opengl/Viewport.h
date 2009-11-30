@@ -1,41 +1,44 @@
 #ifndef mi_opengl_Viewport_h
 #define mi_opengl_Viewport_h
 
-namespace mi {
-namespace opengl {
+namespace mi
+{
+    namespace opengl
+    {
 
-class Viewport {
+        class Viewport
+        {
 
-  int width;
+            int width;
 
-  int height;
+            int height;
 
-  int x;
+            int x;
 
-  int y;
+            int y;
 
-public:
+        public:
 
-  Viewport();
+            Viewport();
 
-  void set(int x, int y, int width, int height);
+            void set(int x, int y, int width, int height);
 
-  int getX();
+            int getX();
 
-  int getY();
+            int getY();
 
-  int getWidth();
+            int getWidth();
 
-  int getHeight();
+            int getHeight();
 
-  int* toArray();
+            int *toArray();
 
-  void render();
+            void render();
 
-};
+        };
 
+    }
 }
-}
 
-#endif
+#endif // ifndef mi_opengl_Viewport_h
 

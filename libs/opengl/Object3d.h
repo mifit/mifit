@@ -5,59 +5,62 @@
 #include <string>
 #include <iostream>
 
-namespace mi {
-namespace opengl {
+namespace mi
+{
+    namespace opengl
+    {
 
-class Object3d {
+        class Object3d
+        {
 
-  std::vector<std::vector<float> > vertexsets;
-  std::vector<std::vector<float> > vertexsetsnorms;
-  std::vector<std::vector<float> > vertexsetstexs;
-  std::vector<std::vector<int> > faces;
+            std::vector<std::vector<float> > vertexsets;
+            std::vector<std::vector<float> > vertexsetsnorms;
+            std::vector<std::vector<float> > vertexsetstexs;
+            std::vector<std::vector<int> > faces;
 
-  std::vector<std::vector<std::string> > facesGroups;
-  std::vector<std::vector<int> > facestexs;
-  std::vector<std::vector<int> > facesnorms;
+            std::vector<std::vector<std::string> > facesGroups;
+            std::vector<std::vector<int> > facestexs;
+            std::vector<std::vector<int> > facesnorms;
 
-  int objectlist;
+            int objectlist;
 
-  int numpolys;
+            int numpolys;
 
-  void cleanup();
+            void cleanup();
 
-  void loadobject(std::istream& input);
+            void loadobject(std::istream &input);
 
-  void centerObject();
+            void centerObject();
 
-public:
+        public:
 
-  float toppoint;
-  float bottompoint;
-  float leftpoint;
-  float rightpoint;
-  float farpoint;
-  float nearpoint;
+            float toppoint;
+            float bottompoint;
+            float leftpoint;
+            float rightpoint;
+            float farpoint;
+            float nearpoint;
 
-  Object3d(std::istream& input, bool centerit);
+            Object3d(std::istream &input, bool centerit);
 
-  float getXWidth();
+            float getXWidth();
 
-  float getYHeight();
+            float getYHeight();
 
-  float getZDepth();
+            float getZDepth();
 
-  int numpolygons();
+            int numpolygons();
 
-  void createList();
+            void createList();
 
-  void render();
+            void render();
 
-  std::vector<std::string>& getGroups(int index);
+            std::vector<std::string>&getGroups(int index);
 
-};
+        };
 
+    }
 }
-}
 
-#endif
+#endif // ifndef mi_opengl_Object3d_h
 

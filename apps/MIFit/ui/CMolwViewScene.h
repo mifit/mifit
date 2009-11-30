@@ -12,92 +12,96 @@ class Displaylist;
 class PLINE;
 class Stack;
 class ViewPoint;
-namespace mi {
-namespace opengl {
-class Axes;
-class Camera;
-class Frustum;
-class Viewport;
-class ViewportRelativeViewpoint;
-namespace interact {
-class TargetFeedback;
+namespace mi
+{
+    namespace opengl
+    {
+        class Axes;
+        class Camera;
+        class Frustum;
+        class Viewport;
+        class ViewportRelativeViewpoint;
+        namespace interact
+        {
+            class TargetFeedback;
+        }
+    }
 }
-}
-}
 
-class CMolwViewScene : public mi::opengl::Scene {
+class CMolwViewScene : public mi::opengl::Scene
+{
 
-  friend class CMolwView;
-  friend class MIGLWidget;
+    friend class CMolwView;
+    friend class MIGLWidget;
 
-  mi::opengl::Viewport* viewport;
+    mi::opengl::Viewport *viewport;
 
-  mi::opengl::Frustum* frustum;
+    mi::opengl::Frustum *frustum;
 
-  mi::opengl::Camera* camera;
+    mi::opengl::Camera *camera;
 
-  mi::opengl::Camera* frontCamera;
+    mi::opengl::Camera *frontCamera;
 
-  mi::opengl::interact::TargetFeedback* targetFeedback;
+    mi::opengl::interact::TargetFeedback *targetFeedback;
 
-  float glUnitsPerPixel;
+    float glUnitsPerPixel;
 
-  bool showAtomLabels;
+    bool showAtomLabels;
 
-  GLRenderer* renderer;
+    GLRenderer *renderer;
 
-  Displaylist* models;
-  
-  Molecule* pentamerModel;
+    Displaylist *models;
 
-  Stack* atomStack;
+    Molecule *pentamerModel;
 
-  ViewPoint* viewpoint;
+    Stack *atomStack;
 
-  std::map<void*,mi::opengl::Axes*> axes;
+    ViewPoint *viewpoint;
 
-  static std::string labelsFontFile;
+    std::map<void*, mi::opengl::Axes*> axes;
 
-  bool ShowLabels;
-  bool ShowContacts;
-  bool ShowStack;
-  bool ShowGnomon;
-  bool topView;
-  bool showUnitCell;
-  bool showSymmetryAsBackbone;
+    static std::string labelsFontFile;
 
-  std::vector<PLINE> torsionArrow;
+    bool ShowLabels;
+    bool ShowContacts;
+    bool ShowStack;
+    bool ShowGnomon;
+    bool topView;
+    bool showUnitCell;
+    bool showSymmetryAsBackbone;
 
-  std::string message;
+    std::vector<PLINE> torsionArrow;
 
-  mi::math::Vector3<float>* corners;
+    std::string message;
 
-  float targetFeedbackSize;
+    mi::math::Vector3<float> *corners;
+
+    float targetFeedbackSize;
 
 public:
 
-  CMolwViewScene();
-  virtual ~CMolwViewScene();
+    CMolwViewScene();
+    virtual ~CMolwViewScene();
 
-  virtual void setViewport(mi::opengl::Viewport* viewport);
+    virtual void setViewport(mi::opengl::Viewport *viewport);
 
-  virtual void initializeForRender();
+    virtual void initializeForRender();
 
-  virtual void preCameraRender();
+    virtual void preCameraRender();
 
-  virtual void render();
+    virtual void render();
 
-  virtual void renderOverlay();
+    virtual void renderOverlay();
 
-  virtual void render2DOverlay();
+    virtual void render2DOverlay();
 
-  void setMessage(const std::string& message);
+    void setMessage(const std::string &message);
 
-  void setCorners(mi::math::Vector3<float>* corners);
+    void setCorners(mi::math::Vector3<float> *corners);
 
-  float getTargetSize();
-  void setTargetSize(float size);
+    float getTargetSize();
+    void setTargetSize(float size);
 
 };
 
-#endif
+#endif // ifndef mifit_ui_CMolwViewScene_h

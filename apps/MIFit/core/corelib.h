@@ -33,4 +33,4 @@
 #include "ViewPoint.h"
 #include "xmlarchive.h"
 
-#endif
+#endif // ifndef MI_CORELIB_H

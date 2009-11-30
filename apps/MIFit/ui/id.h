@@ -410,5 +410,5 @@
 // this value is added to the solidsurface menu items for use in the models tree
 #define ID_SOLIDSURFACE_TREE_OFFSET 30000
 
-#endif
+#endif // ifndef ID_H
 

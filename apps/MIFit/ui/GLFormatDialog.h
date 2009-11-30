@@ -4,8 +4,9 @@
 #include <QtGui/QDialog>
 #include <QtOpenGL/QGLFormat>
 
-namespace Ui {
-  class GLFormatDialog;
+namespace Ui
+{
+    class GLFormatDialog;
 }
 
 /**
@@ -17,23 +18,24 @@ namespace Ui {
  * information by copy/paste.
  *
  */
-class GLFormatDialog : public QDialog {
-  Q_OBJECT
+class GLFormatDialog : public QDialog
+{
+    Q_OBJECT
 public:
-  GLFormatDialog(QWidget *parent = 0);
-  ~GLFormatDialog();
+    GLFormatDialog(QWidget *parent = 0);
+    ~GLFormatDialog();
 
 public slots:
-  void setCurrentFormat(const QGLFormat& format);
+    void setCurrentFormat(const QGLFormat &format);
 
 private:
-  Ui::GLFormatDialog *m_ui;
-  QGLFormat currentFormat;
+    Ui::GLFormatDialog *m_ui;
+    QGLFormat currentFormat;
 
 private slots:
-  void formatTypeChanged(const QString& type);
-  void changeDefault();
-  void resetToQtDefault();
+    void formatTypeChanged(const QString &type);
+    void changeDefault();
+    void resetToQtDefault();
 
 };
 

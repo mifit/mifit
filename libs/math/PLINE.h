@@ -6,10 +6,11 @@
 /**
  * Line between two points.
  */
-class PLINE {
+class PLINE
+{
 public:
-  APOINT p1;
-  APOINT p2;
+    APOINT p1;
+    APOINT p2;
 };
 
 

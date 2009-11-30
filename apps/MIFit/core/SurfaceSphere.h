@@ -4,28 +4,29 @@
 #include <vector>
 #include <math/mathlib.h>
 
-class SurfaceSphere {
+class SurfaceSphere
+{
 
-  float spacing;
+    float spacing;
 
-  float radius;
+    float radius;
 
-  std::vector<APOINT> points;
+    std::vector<APOINT> points;
 
 public:
 
-  SurfaceSphere();
+    SurfaceSphere();
 
-  void build(float radius, float spacing);
+    void build(float radius, float spacing);
 
-  float getRadius();
+    float getRadius();
 
-  float getSpacing();
+    float getSpacing();
 
-  std::vector<APOINT>& getPoints();
+    std::vector<APOINT>&getPoints();
 
-  void clearPoints();
+    void clearPoints();
 
 };
 
-#endif
+#endif // ifndef mifit_model_SurfaceSphere_h

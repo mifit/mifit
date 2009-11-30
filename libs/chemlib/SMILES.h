@@ -7,24 +7,28 @@
 #include <vector>
 #include "MIMolIOBase.h"
 
-namespace chemlib {
+namespace chemlib
+{
 
-class SMILES : public Reader {
-public:
-  SMILES();
-  virtual ~SMILES();
-  virtual std::string getDescription() {
-    return "SMILES (*.smi)";
-  }
+    class SMILES : public Reader
+    {
+    public:
+        SMILES();
+        virtual ~SMILES();
+        virtual std::string getDescription()
+        {
+            return "SMILES (*.smi)";
+        }
 
-  virtual std::string getExtension() {
-    return "*.smi";
-  }
+        virtual std::string getExtension()
+        {
+            return "*.smi";
+        }
 
-  virtual bool Read(FILE* fp, MIMolInfo& mol);
-  bool Read(const std::string& smiles, MIMolInfo& mol);
-};
+        virtual bool Read(FILE *fp, MIMolInfo &mol);
+        bool Read(const std::string &smiles, MIMolInfo &mol);
+    };
 
 }
 
-#endif
+#endif // ifndef mifit_fios_SMILES_h

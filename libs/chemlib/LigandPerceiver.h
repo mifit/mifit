@@ -5,28 +5,30 @@
 #include "Residue.h"
 #include "Ligand.h"
 
-namespace chemlib {
-class LigandPerceiver {
-public:
-  void AssignImpHydrogens(Ligand* lig);
-  void AssignImpHydrogens(Residue& res, const std::vector<Bond> bonds);
-  void AssignImpHydrogens(MIAtom& atom, const std::vector<Bond> bonds);
+namespace chemlib
+{
+    class LigandPerceiver
+    {
+    public:
+        void AssignImpHydrogens(Ligand *lig);
+        void AssignImpHydrogens(Residue &res, const std::vector<Bond> bonds);
+        void AssignImpHydrogens(MIAtom &atom, const std::vector<Bond> bonds);
 
-  void AssignChirality(Ligand*);
-  void AssignChirality(Residue&, Ligand*);
-  int DefaultChiralClass(MIAtom&);
+        void AssignChirality(Ligand*);
+        void AssignChirality(Residue&, Ligand*);
+        int DefaultChiralClass(MIAtom&);
 
-  void AssignHybridization(Ligand*);
-  void AssignHybridization(Residue&, Ligand*);
-  void AssignHybridization(MIAtom*, Ligand*);
-  void AdjustHybridization(MIAtom*, Ligand*);
-  void AssignAtomGeom(Ligand*);
-  void AssignAtomGeom(Residue&);
-  void AssignAtomGeom(MIAtom&);
+        void AssignHybridization(Ligand*);
+        void AssignHybridization(Residue&, Ligand*);
+        void AssignHybridization(MIAtom*, Ligand*);
+        void AdjustHybridization(MIAtom*, Ligand*);
+        void AssignAtomGeom(Ligand*);
+        void AssignAtomGeom(Residue&);
+        void AssignAtomGeom(MIAtom&);
 
-};
+    };
 
-bool Is_Onium(MIAtom& atom, std::vector<Bond> bonds);
+    bool Is_Onium(MIAtom &atom, std::vector<Bond> bonds);
 
 //	void PrepPolarAtom(MIAtom &atom);
 //	void PrepPolarAtoms(Residue &res);

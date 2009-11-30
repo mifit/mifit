@@ -1,16 +1,18 @@
 #ifndef MIFIT_MODEL_MOLECULETYPE_H_
 #define MIFIT_MODEL_MOLECULETYPE_H_
 
-class MoleculeType {
+class MoleculeType
+{
 public:
-  enum {
-    PDB,
-    mmCIF,
-    XML,
-    New,
-    Pentamer,
-    Other
-  };
+    enum
+    {
+        PDB,
+        mmCIF,
+        XML,
+        New,
+        Pentamer,
+        Other
+    };
 };
 
 

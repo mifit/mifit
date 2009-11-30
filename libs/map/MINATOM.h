@@ -7,11 +7,11 @@
  */
 typedef struct minatom
 {
-  float fx, fy, fz;
-  float tx, ty, tz;
-  float cx, cy, cz;
-  char type;
-  int symm;
+    float fx, fy, fz;
+    float tx, ty, tz;
+    float cx, cy, cz;
+    char type;
+    int symm;
 } MINATOM;
 
 #endif

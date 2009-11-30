@@ -3,128 +3,132 @@
 
 #include <math/Vector3.h>
 
-namespace mi {
-namespace opengl {
+namespace mi
+{
+    namespace opengl
+    {
 
-class Viewport;
-class Plane;
+        class Viewport;
+        class Plane;
 
-class Frustum {
+        class Frustum
+        {
 
-  float nearClipping;
+            float nearClipping;
 
-  float farClipping;
+            float farClipping;
 
-  float fieldOfView;
+            float fieldOfView;
 
-  bool perspective;
+            bool perspective;
 
-  float frustumTop;
+            float frustumTop;
 
-  float frustumBottom;
+            float frustumBottom;
 
-  float frustumLeft;
+            float frustumLeft;
 
-  float frustumRight;
+            float frustumRight;
 
-  float frustumOffset;
+            float frustumOffset;
 
-  Plane** planes;
+            Plane **planes;
 
-  float focalLength;
+            float focalLength;
 
-  float* projection;
-  float* modelview;
-  float* planesMatrix;
+            float *projection;
+            float *modelview;
+            float *planesMatrix;
 
-  bool picking;
+            bool picking;
 
-  int pickPointX;
+            int pickPointX;
 
-  int pickPointY;
+            int pickPointY;
 
-  float getPerspectiveTop(float z);
+            float getPerspectiveTop(float z);
 
-public:
+        public:
 
-  static const int TOP;
+            static const int TOP;
 
-  static const int BOTTOM;
+            static const int BOTTOM;
 
-  static const int LEFT;
+            static const int LEFT;
 
-  static const int RIGHT;
+            static const int RIGHT;
 
-  static const int NEARPLANE;
+            static const int NEARPLANE;
 
-  static const int FARPLANE;
-
-
-  Frustum();
-  ~Frustum();
-
-  void setFieldOfView(float fieldOfView);
-
-  bool isPerspective();
-
-  void setPerspective(bool perspective);
-
-  void beginPicking(int x, int y);
-
-  void endPicking();
-
-  void render(Viewport& viewport);
-
-  void render(Viewport& viewport, float offset);
-  void setHeight(float height);
-  void updateFrustum(Viewport& viewport);
-
-  mi::math::Vector3<float>* getCorners();
-
-  enum CullingResult {
-    OUTSIDE, INTERSECT, INSIDE
-  };
+            static const int FARPLANE;
 
 
-  float getFrustumWidth();
-  float getFrustumHeight();
+            Frustum();
+            ~Frustum();
 
-  float getNearClipping();
+            void setFieldOfView(float fieldOfView);
 
-  float getFieldOfView();
+            bool isPerspective();
 
-  float getFrustumOffset();
+            void setPerspective(bool perspective);
 
-  void setFrustumOffset(float frustumAsymmetry);
+            void beginPicking(int x, int y);
 
-  void updatePlanes();
+            void endPicking();
 
-  CullingResult pointInFrustum(mi::math::Vector3<float>& position);
+            void render(Viewport &viewport);
 
-  CullingResult sphereInFrustum(mi::math::Vector3<float>& position, float radius);
-  float getPerspectiveHeight(float z);
+            void render(Viewport &viewport, float offset);
+            void setHeight(float height);
+            void updateFrustum(Viewport &viewport);
 
-  float getFrustumHeight(float z);
+            mi::math::Vector3<float> *getCorners();
 
-  void setNearClipping(float nearClipping);
-  float getFarClipping();
+            enum CullingResult
+            {
+                OUTSIDE, INTERSECT, INSIDE
+            };
 
-  void setFarClipping(float farClipping);
 
-  float getFocalLength();
+            float getFrustumWidth();
+            float getFrustumHeight();
 
-  void setFocalLength(float focalLength);
+            float getNearClipping();
 
-  float getHeight();
+            float getFieldOfView();
 
-  float getWidth();
+            float getFrustumOffset();
 
-  Plane** getPlanes();
+            void setFrustumOffset(float frustumAsymmetry);
 
-};
+            void updatePlanes();
 
+            CullingResult pointInFrustum(mi::math::Vector3<float> &position);
+
+            CullingResult sphereInFrustum(mi::math::Vector3<float> &position, float radius);
+            float getPerspectiveHeight(float z);
+
+            float getFrustumHeight(float z);
+
+            void setNearClipping(float nearClipping);
+            float getFarClipping();
+
+            void setFarClipping(float farClipping);
+
+            float getFocalLength();
+
+            void setFocalLength(float focalLength);
+
+            float getHeight();
+
+            float getWidth();
+
+            Plane **getPlanes();
+
+        };
+
+    }
 }
-}
 
 
-#endif
+#endif // ifndef mi_opengl_Frustum_h

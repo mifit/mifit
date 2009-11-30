@@ -1,24 +1,29 @@
 #ifndef mi_opengl_interact_PropertyCommand_h
 #define mi_opengl_interact_PropertyCommand_h
 
-namespace mi {
-namespace opengl {
-namespace interact {
+namespace mi
+{
+    namespace opengl
+    {
+        namespace interact
+        {
 
-class PropertyCommand {
+            class PropertyCommand
+            {
 
-public:
-  virtual ~PropertyCommand() {
-  }
+            public:
+                virtual ~PropertyCommand()
+                {
+                }
 
-  virtual float getValue() = 0;
+                virtual float getValue() = 0;
 
-  virtual void setValue(float value) = 0;
+                virtual void setValue(float value) = 0;
 
-};
+            };
 
+        }
+    }
 }
-}
-}
 
-#endif
+#endif // ifndef mi_opengl_interact_PropertyCommand_h

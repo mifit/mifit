@@ -7,8 +7,8 @@
 //@}
 typedef struct peak
 {
-  int ix, iy, iz;
-  int rho;
+    int ix, iy, iz;
+    int rho;
 } PEAK;
 
 

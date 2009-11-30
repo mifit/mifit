@@ -3,103 +3,106 @@
 
 #include <math/Vector3.h>
 
-namespace mi {
-namespace opengl {
+namespace mi
+{
+    namespace opengl
+    {
 
-class Frustum;
-class Camera;
-class Viewport;
-class Scene;
-class Renderable;
+        class Frustum;
+        class Camera;
+        class Viewport;
+        class Scene;
+        class Renderable;
 
-class StereoView {
+        class StereoView
+        {
 
-  Frustum* frustum;
+            Frustum *frustum;
 
-  Frustum* overlayFrustum;
+            Frustum *overlayFrustum;
 
-  Camera* camera;
+            Camera *camera;
 
-  Camera* stereoCamera;
+            Camera *stereoCamera;
 
-  Camera* overlayCamera;
+            Camera *overlayCamera;
 
-  Viewport* viewport;
+            Viewport *viewport;
 
-  bool glStereo;
+            bool glStereo;
 
-  bool stereo;
+            bool stereo;
 
-  bool hardwareStereo;
+            bool hardwareStereo;
 
-  Viewport* rightViewport;
+            Viewport *rightViewport;
 
-  Viewport* leftViewport;
+            Viewport *leftViewport;
 
-  float eyeSeparation;
+            float eyeSeparation;
 
-  float imageSeparation;
+            float imageSeparation;
 
-  bool crossEyed;
+            bool crossEyed;
 
-  void resetView(int flags);
+            void resetView(int flags);
 
-  Viewport* prepareRightEye(float cameraOffset, float frustumAsymmetry);
+            Viewport *prepareRightEye(float cameraOffset, float frustumAsymmetry);
 
-  Viewport* prepareLeftEye(float cameraOffset, float frustumAsymmetry);
+            Viewport *prepareLeftEye(float cameraOffset, float frustumAsymmetry);
 
-  void calcStereoParameters(float* cameraOffset, float* frustumAsymmetry);
+            void calcStereoParameters(float *cameraOffset, float *frustumAsymmetry);
 
-public:
+        public:
 
-  StereoView(Frustum* frustum, Camera* camera);
+            StereoView(Frustum *frustum, Camera *camera);
 
-  ~StereoView();
+            ~StereoView();
 
-  bool isGLStereo();
+            bool isGLStereo();
 
-  bool isStereo();
+            bool isStereo();
 
-  void setStereo(bool stereo);
+            void setStereo(bool stereo);
 
-  bool isHardwareStereo();
+            bool isHardwareStereo();
 
-  void setHardwareStereo(bool hardwareStereo);
+            void setHardwareStereo(bool hardwareStereo);
 
-  Viewport* getViewport();
+            Viewport *getViewport();
 
-  Viewport* getLeftViewport();
+            Viewport *getLeftViewport();
 
-  Viewport* getRightViewport();
+            Viewport *getRightViewport();
 
-  void render(Scene& scene);
+            void render(Scene &scene);
 
-  void render(Renderable& renderable);
+            void render(Renderable &renderable);
 
-  Frustum* getFrustum();
+            Frustum *getFrustum();
 
-  void setFrustum(Frustum* frustum);
+            void setFrustum(Frustum *frustum);
 
-  Camera* getCamera();
+            Camera *getCamera();
 
-  void setCamera(Camera* camera);
+            void setCamera(Camera *camera);
 
-  void setSize(int width, int height);
+            void setSize(int width, int height);
 
-  bool isCrossEyed();
+            bool isCrossEyed();
 
-  void setCrossEyed(bool crossEyed);
+            void setCrossEyed(bool crossEyed);
 
-  float getEyeSeparation();
+            float getEyeSeparation();
 
-  void setEyeSeparation(float eyeSeparation);
+            void setEyeSeparation(float eyeSeparation);
 
-  float getImageSeparation();
+            float getImageSeparation();
 
-  void setImageSeparation(float imageSeparation);
+            void setImageSeparation(float imageSeparation);
 
-};
+        };
+    }
 }
-}
 
-#endif
+#endif // ifndef mi_opengl_StereoView_h

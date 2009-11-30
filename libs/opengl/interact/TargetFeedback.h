@@ -4,32 +4,36 @@
 #include <math/Vector3.h>
 #include <math/Point3.h>
 
-namespace mi {
-namespace opengl {
-namespace interact {
+namespace mi
+{
+    namespace opengl
+    {
+        namespace interact
+        {
 
-class TargetFeedback {
+            class TargetFeedback
+            {
 
-  mi::math::Vector3<float> target;
+                mi::math::Vector3<float> target;
 
-  mi::math::Point3<float> color;
+                mi::math::Point3<float> color;
 
-  float length;
+                float length;
 
-public:
+            public:
 
-  TargetFeedback(float* color);
+                TargetFeedback(float *color);
 
-  void setLength(float length);
+                void setLength(float length);
 
-  void setTarget(const mi::math::Vector3<float>& target);
+                void setTarget(const mi::math::Vector3<float> &target);
 
-  void render();
+                void render();
 
-};
+            };
 
+        }
+    }
 }
-}
-}
 
-#endif
+#endif // ifndef mi_opengl_interact_TargetFeedback_h

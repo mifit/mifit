@@ -3,27 +3,31 @@
 
 #include <opengl/interact/PropertyCommand.h>
 
-namespace mi {
-namespace opengl {
+namespace mi
+{
+    namespace opengl
+    {
 
-class Frustum;
+        class Frustum;
 
-namespace interact {
+        namespace interact
+        {
 
-class FieldOfViewZoomCommand : public PropertyCommand {
+            class FieldOfViewZoomCommand : public PropertyCommand
+            {
 
-  Frustum* frustum;
+                Frustum *frustum;
 
-public:
+            public:
 
-  FieldOfViewZoomCommand(Frustum* frustum);
+                FieldOfViewZoomCommand(Frustum *frustum);
 
-  virtual float getValue();
+                virtual float getValue();
 
-  virtual void setValue(float value);
-};
+                virtual void setValue(float value);
+            };
+        }
+    }
 }
-}
-}
 
-#endif
+#endif // ifndef mi_opengl_interact_FieldOfViewZoomCommand_h

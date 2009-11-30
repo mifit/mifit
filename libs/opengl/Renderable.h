@@ -1,18 +1,22 @@
 #ifndef mi_opengl_Renderable_h
 #define mi_opengl_Renderable_h
 
-namespace mi {
-namespace opengl {
+namespace mi
+{
+    namespace opengl
+    {
 
-class Renderable {
-public:
-  virtual ~Renderable() {
-  }
+        class Renderable
+        {
+        public:
+            virtual ~Renderable()
+            {
+            }
 
-  virtual void render() = 0;
+            virtual void render() = 0;
 
-};
+        };
+    }
 }
-}
 
-#endif
+#endif // ifndef mi_opengl_Renderable_h

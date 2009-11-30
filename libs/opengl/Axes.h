@@ -3,40 +3,43 @@
 
 #include <memory>
 
-namespace mi {
-namespace opengl {
+namespace mi
+{
+    namespace opengl
+    {
 
-class GLFont;
+        class GLFont;
 
-class Axes {
+        class Axes
+        {
 
-  static int labelsFontSize;
+            static int labelsFontSize;
 
-  std::auto_ptr<GLFont> labelsFont;
+            std::auto_ptr<GLFont> labelsFont;
 
-  int fontSize;
+            int fontSize;
 
-  int length;
+            int length;
 
-  float glUnitsPerPixel;
+            float glUnitsPerPixel;
 
-  void drawText(const char* text, float x, float y, float z, float offset, float scale, float inverseRotation[16]);
+            void drawText(const char *text, float x, float y, float z, float offset, float scale, float inverseRotation[16]);
 
-public:
+        public:
 
-  Axes(std::auto_ptr<GLFont> font);
+            Axes(std::auto_ptr<GLFont> font);
 
-  void setFontSize(int fontSize);
+            void setFontSize(int fontSize);
 
-  void setLength(int length);
+            void setLength(int length);
 
-  void setGlUnitsPerPixel(float glUnitsPerPixel);
+            void setGlUnitsPerPixel(float glUnitsPerPixel);
 
-  void render();
+            void render();
 
-};
+        };
 
+    }
 }
-}
 
-#endif
+#endif // ifndef mi_opengl_Axes_h

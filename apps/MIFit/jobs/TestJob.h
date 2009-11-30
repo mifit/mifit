@@ -3,11 +3,12 @@
 
 #include "BatchJob.h"
 
-class TestJob {
+class TestJob
+{
 public:
-  TestJob();
-  ~TestJob();
-  void StartJob(BatchJob* job);
+    TestJob();
+    ~TestJob();
+    void StartJob(BatchJob *job);
 };
 
 #endif

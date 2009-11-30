@@ -35,8 +35,9 @@
 #include "CHIRALDICT.h"
 #include "ANGLE.h"
 #include "TORSION.h"
-namespace chemlib {
-  class PLANE;
+namespace chemlib
+{
+    class PLANE;
 }
 
 #include "mol_util.h"
@@ -53,4 +54,4 @@ namespace chemlib {
 #include "MIMolInfo.h"
 #include "MIMolIOBase.h"
 
-#endif
+#endif // ifndef MI_CHEMLIB_H

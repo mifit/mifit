@@ -10,12 +10,12 @@ class QMenu;
 class Tools : public QObject
 {
     Q_OBJECT
-    
+
 public:
-    static Tools& instance();
-    
+    static Tools&instance();
+
     void FillToolsMenu(QMenu*);
-    
+
 private:
     Tools();
 
@@ -27,4 +27,4 @@ private slots:
 
 };
 
-#endif
+#endif // ifndef MI_TOOLS_H

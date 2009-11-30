@@ -8,46 +8,50 @@
 class Displaylist;
 class GLRenderer;
 
-namespace mi {
-namespace opengl {
-class Frustum;
-class StereoView;
-}
+namespace mi
+{
+    namespace opengl
+    {
+        class Frustum;
+        class StereoView;
+    }
 }
 
 class DictEditAtomRenderable;
 
-class DictEditAtomPickingRenderable : public mi::opengl::Renderable {
+class DictEditAtomPickingRenderable : public mi::opengl::Renderable
+{
 
-  mi::opengl::StereoView* stereoView;
+    mi::opengl::StereoView *stereoView;
 
-  GLRenderer* renderer;
+    GLRenderer *renderer;
 
-  DictEditAtomRenderable* atomRenderable;
-
-public:
-
-  DictEditAtomPickingRenderable(mi::opengl::StereoView* stereoView, Displaylist* displaylist, mi::opengl::Frustum* frustum);
-  virtual ~DictEditAtomPickingRenderable();
-
-  virtual void render();
-
-  chemlib::MIAtom* getAtom(int id);
-
-};
-
-class DictEditAtomRenderable : public mi::opengl::Renderable {
-
-  Displaylist* displaylist;
-
-  GLRenderer* renderer;
+    DictEditAtomRenderable *atomRenderable;
 
 public:
 
-  DictEditAtomRenderable(GLRenderer* renderer, Displaylist* displaylist);
+    DictEditAtomPickingRenderable(mi::opengl::StereoView *stereoView, Displaylist *displaylist, mi::opengl::Frustum *frustum);
+    virtual ~DictEditAtomPickingRenderable();
 
-  virtual void render();
+    virtual void render();
+
+    chemlib::MIAtom *getAtom(int id);
 
 };
 
-#endif
+class DictEditAtomRenderable : public mi::opengl::Renderable
+{
+
+    Displaylist *displaylist;
+
+    GLRenderer *renderer;
+
+public:
+
+    DictEditAtomRenderable(GLRenderer *renderer, Displaylist *displaylist);
+
+    virtual void render();
+
+};
+
+#endif // ifndef MIFIT_UI_DICTEDITATOMPICKINGRENDERABLE_H_

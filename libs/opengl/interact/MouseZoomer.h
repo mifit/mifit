@@ -1,49 +1,53 @@
 #ifndef mi_opengl_interact_MouseZoomer_h
 #define mi_opengl_interact_MouseZoomer_h
 
-namespace mi {
-namespace opengl {
-namespace interact {
+namespace mi
+{
+    namespace opengl
+    {
+        namespace interact
+        {
 
-class PropertyCommand;
+            class PropertyCommand;
 
-class MouseZoomer {
+            class MouseZoomer
+            {
 
-  PropertyCommand* propertyCommand;
+                PropertyCommand *propertyCommand;
 
-  int previousX;
+                int previousX;
 
-  int previousY;
+                int previousY;
 
-  float startValue;
+                float startValue;
 
-  float currentValue;
+                float currentValue;
 
-  float scaling;
+                float scaling;
 
-public:
+            public:
 
-  MouseZoomer(PropertyCommand* propertyCommand, float scaling);
+                MouseZoomer(PropertyCommand *propertyCommand, float scaling);
 
-  float getScaling();
+                float getScaling();
 
-  void setScaling(float angle);
+                void setScaling(float angle);
 
-  float getStartValue();
+                float getStartValue();
 
-  float getCurrentValue();
+                float getCurrentValue();
 
-  void beginZoom(int x, int y);
+                void beginZoom(int x, int y);
 
-  void zoom(int x, int y);
+                void zoom(int x, int y);
 
-  void endZoom();
+                void endZoom();
 
-};
+            };
 
+        }
+    }
 }
-}
-}
 
-#endif
+#endif // ifndef mi_opengl_interact_MouseZoomer_h
 

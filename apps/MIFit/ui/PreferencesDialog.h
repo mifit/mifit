@@ -13,10 +13,10 @@ class PreferencesDialog : public QDialog, public Ui::PreferencesDialog
 public:
     PreferencesDialog(QWidget *parent = 0);
     void savePreferences();
-  private:
+private:
     GeneralPreferences *generalPrefs;
     EnvironmentPreferences *environmentPrefs;
     ContourOptions *contourOptions;
 };
 
-#endif
+#endif // ifndef PREFERENCES_DIALOG_H

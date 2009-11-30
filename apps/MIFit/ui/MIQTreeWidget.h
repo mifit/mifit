@@ -10,14 +10,17 @@
 
 class TreeData;
 
-class MIQTreeWidget : public QTreeWidget {
-Q_OBJECT
+class MIQTreeWidget : public QTreeWidget
+{
+    Q_OBJECT
 public:
-    MIQTreeWidget(QWidget *parent) : QTreeWidget(parent) {}
+    MIQTreeWidget(QWidget *parent) : QTreeWidget(parent)
+    {
+    }
     ~MIQTreeWidget();
 
-    void GetSelections(QList<QTreeWidgetItem *> &selected);
-    TreeData *GetItemData(QTreeWidgetItem* item);
+    void GetSelections(QList<QTreeWidgetItem*> &selected);
+    TreeData *GetItemData(QTreeWidgetItem *item);
     void AssignImageList(std::vector<QIcon> &imageList);
 
     void Delete(QTreeWidgetItem *item);
@@ -27,28 +30,28 @@ public:
                                 const std::string &name,
                                 int image = -1,
                                 int selImage = -1,
-                                TreeData *data=0);
+                                TreeData *data = 0);
 
     QTreeWidgetItem *insertItem(QTreeWidgetItem *parent,
                                 QTreeWidgetItem *previous,
                                 const std::string &name,
                                 int image = -1,
                                 int selImage = -1,
-                                TreeData *data=0);
+                                TreeData *data = 0);
 
     QTreeWidgetItem *prependItem(QTreeWidgetItem *parent,
                                  const std::string &name,
                                  int image = -1,
                                  int selImage = -1,
-                                 TreeData *data=0);
+                                 TreeData *data = 0);
 
-    QIcon &GetIcon(unsigned int image_num);
+    QIcon&GetIcon(unsigned int image_num);
 
-  protected:
+protected:
 
     std::vector<QIcon> _imageList;
 
-  private:
+private:
     void itemInit(QTreeWidgetItem *item, const std::string &name, int image, TreeData *data);
 };
 
@@ -56,4 +59,4 @@ public:
 // this is required so that TreeData can be stored in a QVariant
 Q_DECLARE_METATYPE(TreeData*);
 
-#endif
+#endif // ifndef MIQTREEWIDGET_H

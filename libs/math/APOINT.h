@@ -4,12 +4,13 @@
 /**
  * A point structure.
  */
-class APOINT {
+class APOINT
+{
 public:
-  float x;
-  float y;
-  float z;
-  short color;
+    float x;
+    float y;
+    float z;
+    short color;
 };
 
 

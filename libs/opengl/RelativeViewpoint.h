@@ -5,25 +5,28 @@
 #include <math/Quaternion.h>
 #include <opengl/Viewpoint.h>
 
-namespace mi {
-namespace opengl {
+namespace mi
+{
+    namespace opengl
+    {
 
-class RelativeViewpoint : public Viewpoint {
+        class RelativeViewpoint : public Viewpoint
+        {
 
-protected:
+        protected:
 
-  Viewpoint* reference;
+            Viewpoint *reference;
 
-public:
+        public:
 
-  RelativeViewpoint(Viewpoint* reference);
+            RelativeViewpoint(Viewpoint *reference);
 
-  virtual mi::math::Quaternion<float> getRotation();
+            virtual mi::math::Quaternion<float> getRotation();
 
-  virtual void setRotation(mi::math::Quaternion<float>& rotation);
+            virtual void setRotation(mi::math::Quaternion<float> &rotation);
 
-};
+        };
+    }
 }
-}
 
-#endif
+#endif // ifndef mi_opengl_RelativeViewpoint_h

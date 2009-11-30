@@ -9,7 +9,8 @@
 //FIXME: clean up usage of fns in this file and make as private as possible
 
 
-namespace chemlib {
+namespace chemlib
+{
 /////////////////////////////////////////////////////////////////////////////
 // Function:    void_mem_fun_ref (with functor class void_mem_fun_ref_t)
 // Purpose:		Produces a function object that can be used with void member
@@ -23,25 +24,29 @@ namespace chemlib {
 //				in the STL.  Alas, in Visual C++ this does not seem to work for
 //				void functions.  Hence, this new version.
 /////////////////////////////////////////////////////////////////////////////
-template<class T>
-class void_mem_fun_ref_t : public std::unary_function<T, void> {
-public:
-  explicit void_mem_fun_ref_t(void(T::* funct)()) : ptr(funct) {
-  }
+    template<class T>
+    class void_mem_fun_ref_t : public std::unary_function<T, void>
+    {
+    public:
+        explicit void_mem_fun_ref_t(void(T::*funct)()) : ptr(funct)
+        {
+        }
 
-  void operator()(T& input_obj) const {
-    (input_obj.*ptr)();
-  }
+        void operator()(T &input_obj) const
+        {
+            (input_obj.*ptr)();
+        }
 
-private:
-  void (T::*ptr)();
-};
+    private:
+        void (T::*ptr)();
+    };
 
 
-template<class T> inline
-void_mem_fun_ref_t<T> void_mem_fun_ref(void (T::* _funct)()) {
-  return (void_mem_fun_ref_t<T>(_funct));
-}
+    template<class T> inline
+    void_mem_fun_ref_t<T> void_mem_fun_ref(void (T::*_funct)())
+    {
+        return (void_mem_fun_ref_t<T>(_funct));
+    }
 
 /////////////////////////////////////////////////////////////////////////////
 // Function:    void_mem_fun (with functor class void_mem_fun_t)
@@ -56,24 +61,28 @@ void_mem_fun_ref_t<T> void_mem_fun_ref(void (T::* _funct)()) {
 //				in the STL.  Alas, in Visual C++ this does not seem to work for
 //				void functions.  Hence, this new version.
 /////////////////////////////////////////////////////////////////////////////
-template<class T>
-class void_mem_fun_t : public std::unary_function<T*, void> {
-public:
-  explicit void_mem_fun_t(void(T::* funct)()) : ptr(funct) {
-  }
+    template<class T>
+    class void_mem_fun_t : public std::unary_function<T*, void>
+    {
+    public:
+        explicit void_mem_fun_t(void(T::*funct)()) : ptr(funct)
+        {
+        }
 
-  void operator()(T* input_obj_ptr) const {
-    (input_obj_ptr->*ptr)();
-  }
+        void operator()(T *input_obj_ptr) const
+        {
+            (input_obj_ptr->*ptr)();
+        }
 
-private:
-  void (T::*ptr)();
-};
+    private:
+        void (T::*ptr)();
+    };
 
-template<class T> inline
-void_mem_fun_t<T> void_mem_fun(void (T::* funct)()) {
-  return (void_mem_fun_t<T>(funct));
-}
+    template<class T> inline
+    void_mem_fun_t<T> void_mem_fun(void (T::*funct)())
+    {
+        return (void_mem_fun_t<T>(funct));
+    }
 
 //From Joe Gottman, posted to the Boost mailing list
 //http://lists.boost.org/MailArchives/boost/msg21093.php
@@ -95,19 +104,26 @@ void_mem_fun_t<T> void_mem_fun(void (T::* funct)()) {
 //				   See Scott Meyers "Effective STL", page 83 for a discussion of equivalence
 //				   and equality.
 /////////////////////////////////////////////////////////////////////////////
-template <typename Iterator1, typename Iterator2>
-bool Has_Intersection(Iterator1 start1, Iterator1 end1, Iterator2 start2, Iterator2 end2) {
-  while ((start1 != end1) && (start2 != end2)) {
-    if (*start1 < *start2) {                        //Walk the iterator that points to the lower
-      ++start1;                                     //value up one notch
-    } else if (*start2 < *start1) {
-      ++start2;
-    } else {
-      return true;                  //We've found 2 equivalent elements!
+    template <typename Iterator1, typename Iterator2>
+    bool Has_Intersection(Iterator1 start1, Iterator1 end1, Iterator2 start2, Iterator2 end2)
+    {
+        while ((start1 != end1) && (start2 != end2))
+        {
+            if (*start1 < *start2)                  //Walk the iterator that points to the lower
+            {
+                ++start1;                           //value up one notch
+            }
+            else if (*start2 < *start1)
+            {
+                ++start2;
+            }
+            else
+            {
+                return true;        //We've found 2 equivalent elements!
+            }
+        }
+        return false;       //If we reach here, there are no equivalent elements
     }
-  }
-  return false;             //If we reach here, there are no equivalent elements
-}
 
 /////////////////////////////////////////////////////////////////////////////
 // Function:    AppendFromMap
@@ -141,13 +157,15 @@ bool Has_Intersection(Iterator1 start1, Iterator1 end1, Iterator2 start2, Iterat
 // Output:		None
 // Requires:
 /////////////////////////////////////////////////////////////////////////////
-template <typename T, typename Iterator>
-void AppendFromPairs(std::vector<T>& target, Iterator start, Iterator end) {
-  while (start != end) {
-    target.push_back(start->second);
-    ++start;
-  }
-}
+    template <typename T, typename Iterator>
+    void AppendFromPairs(std::vector<T> &target, Iterator start, Iterator end)
+    {
+        while (start != end)
+        {
+            target.push_back(start->second);
+            ++start;
+        }
+    }
 
 /////////////////////////////////////////////////////////////////////////////
 // Function:    CopyKeys
@@ -177,13 +195,17 @@ void AppendFromPairs(std::vector<T>& target, Iterator start, Iterator end) {
 // Requires:	That the user doesn't mind a little bias! If RAND_MAX isn't divisible
 //				by the range, lower numbers will come up a bit more often.
 /////////////////////////////////////////////////////////////////////////////
-inline size_t irand_approx(int range) {
-  if (range < 1) {
-    return 0;
-  } else {
-    return rand() % range;
-  }
-}
+    inline size_t irand_approx(int range)
+    {
+        if (range < 1)
+        {
+            return 0;
+        }
+        else
+        {
+            return rand() % range;
+        }
+    }
 
 } //namespace chemlib
 

@@ -14,147 +14,197 @@ class MISingleInstanceChecker;
 class GeomRefiner;
 class QSettings;
 
-class Application {
-  static Application* instance_;
+class Application
+{
+    static Application *instance_;
 
-  // eventually, we should revoke this friendship, but it's grandfathered in now
-  friend class EnvironmentPreferences;
-  friend class GeneralPreferences;
-  friend class Tools;
-  friend class CMapHeader;
+    // eventually, we should revoke this friendship, but it's grandfathered in now
+    friend class EnvironmentPreferences;
+    friend class GeneralPreferences;
+    friend class Tools;
+    friend class CMapHeader;
 
-  friend class MIGLWidget;
-  friend class MIMainWindow;
+    friend class MIGLWidget;
+    friend class MIMainWindow;
 
-  MIConfig* config;
-  GeomRefiner* geomrefiner;
+    MIConfig *config;
+    GeomRefiner *geomrefiner;
 
-  bool dimNonactiveModels;
-  bool hardwareStereoAvailable;
-  bool incrementallyColorModels;
-  bool onCloseSaveActiveModelToPdb;
-  bool silent_mode;
-  bool xfitMouseMode;
+    bool dimNonactiveModels;
+    bool hardwareStereoAvailable;
+    bool incrementallyColorModels;
+    bool onCloseSaveActiveModelToPdb;
+    bool silent_mode;
+    bool xfitMouseMode;
 
-  std::string CrystalData;
-  std::string HTMLBrowser;
-  std::string MIbin;
-  std::string MolimageHome;
-  std::string PentDir;
-  std::string ShelxHome;
-  std::string SmilesDbCommand;
-  std::string XFitDict;
-  std::string XFitDictSetting;
-  std::string appname;
-  std::string checkpointDirectory;
-  std::string userSettingsDir;
+    std::string CrystalData;
+    std::string HTMLBrowser;
+    std::string MIbin;
+    std::string MolimageHome;
+    std::string PentDir;
+    std::string ShelxHome;
+    std::string SmilesDbCommand;
+    std::string XFitDict;
+    std::string XFitDictSetting;
+    std::string appname;
+    std::string checkpointDirectory;
+    std::string userSettingsDir;
 
-  QDir jobLogsDir;
+    QDir jobLogsDir;
 
 
-  MIPalette* lpal;
-  void BuildPalette();
-  PaletteColor BackgroundColor;
-  int GammaCorrection;
-  int concurrentJobLimit;
+    MIPalette *lpal;
+    void BuildPalette();
+    PaletteColor BackgroundColor;
+    int GammaCorrection;
+    int concurrentJobLimit;
 
-  chemlib::RESIDUE* ResidueBuffer;
+    chemlib::RESIDUE *ResidueBuffer;
 
-  Application();
+    Application();
 
-  void WriteProfiles();  // Write the profiles to the registry (Windows) or the ~/.MIFitrc file.
-  void WritePalette();   // Write the profiles to the registry (Windows) or the ~/.MIFitrc file.
-  void WriteSecStr();    // Write the secondary structure settings to the registry (Windows) or the ~/.MIFitrc file.
-  void WriteBValues();   // Write the b-value settings to the registry (Windows) or the ~/.MIFitrc file.
-  void WriteAtomTypes(); // Write the atom type coloring info to the registry (Windows) or the ~/.MIFitrc file.
+    void WriteProfiles(); // Write the profiles to the registry (Windows) or the ~/.MIFitrc file.
+    void WritePalette(); // Write the profiles to the registry (Windows) or the ~/.MIFitrc file.
+    void WriteSecStr();  // Write the secondary structure settings to the registry (Windows) or the ~/.MIFitrc file.
+    void WriteBValues(); // Write the b-value settings to the registry (Windows) or the ~/.MIFitrc file.
+    void WriteAtomTypes(); // Write the atom type coloring info to the registry (Windows) or the ~/.MIFitrc file.
 
-  void MixBackgroundColor(); // Mixes the background color into the palette for proper depthcueing.
+    void MixBackgroundColor(); // Mixes the background color into the palette for proper depthcueing.
 
-  // Gamma is currently defaulted to 1 and not changed, so all this is kind of useless
-  int ApplyGammaCorrection(const int color);
-  void SetGammaCorrection(const double gamma) { GammaCorrection = ROUND(gamma*1000.0); }
-  double GetGammaCorrection() {return (double)GammaCorrection/1000.0; }
+    // Gamma is currently defaulted to 1 and not changed, so all this is kind of useless
+    int ApplyGammaCorrection(const int color);
+    void SetGammaCorrection(const double gamma)
+    {
+        GammaCorrection = ROUND(gamma*1000.0);
+    }
+    double GetGammaCorrection()
+    {
+        return (double)GammaCorrection/1000.0;
+    }
 
-  void LoadDictionary();     // reload the current dictionary as specified by  XFitDictSetting
-  void saveDict();
+    void LoadDictionary();   // reload the current dictionary as specified by  XFitDictSetting
+    void saveDict();
 
 public:
-  static Application* instance();
+    static Application *instance();
 
-  ~Application();
-  void Init();
+    ~Application();
+    void Init();
 
-  void Write();
-  void SetEnv();
+    void Write();
+    void SetEnv();
 
-  std::string getDictionary();
-  bool SetDictionary(const std::string& dict);
+    std::string getDictionary();
+    bool SetDictionary(const std::string &dict);
 
-  bool GetSilentMode() { return silent_mode; };
-  void SetSilentMode(bool t) { silent_mode = t; }
+    bool GetSilentMode()
+    {
+        return silent_mode;
+    }
+    void SetSilentMode(bool t)
+    {
+        silent_mode = t;
+    }
 
-  const std::string& GetBinDirectory();
+    const std::string&GetBinDirectory();
 
-  const std::string& GetMolimageHome() const { return MolimageHome; }
-  void SetMolimageHome(bool reset = false);
+    const std::string&GetMolimageHome() const
+    {
+        return MolimageHome;
+    }
+    void SetMolimageHome(bool reset = false);
 
-  const std::string& GetShelxHome();
-  void SetShelxHome(bool reset = false);
+    const std::string&GetShelxHome();
+    void SetShelxHome(bool reset = false);
 
-  const std::string &GetCrystalData() { return CrystalData; }
-  std::string GetCrystalData(const char* crystal, const char* key);
-  void SetCrystalData(bool reset = false);
+    const std::string&GetCrystalData()
+    {
+        return CrystalData;
+    }
+    std::string GetCrystalData(const char *crystal, const char *key);
+    void SetCrystalData(bool reset = false);
 
-  QString latestFileBrowseDirectory(const QString& path);
-  QDir jobLogsDirectory() const { return jobLogsDir; }
+    QString latestFileBrowseDirectory(const QString &path);
+    QDir jobLogsDirectory() const
+    {
+        return jobLogsDir;
+    }
 
-  static QString getOpenFileName(QWidget* parent, const QString& caption, const QString& filter = QString());
-  static QString getExistingDirectory(QWidget* parent, const QString& caption, const QString& filter);
+    static QString getOpenFileName(QWidget *parent, const QString &caption, const QString &filter = QString());
+    static QString getExistingDirectory(QWidget *parent, const QString &caption, const QString &filter);
 
 
-  bool isHardwareStereoAvailable() { return hardwareStereoAvailable; };
-  void setHardwareStereoAvailable(bool t) { hardwareStereoAvailable = t; }
+    bool isHardwareStereoAvailable()
+    {
+        return hardwareStereoAvailable;
+    }
+    void setHardwareStereoAvailable(bool t)
+    {
+        hardwareStereoAvailable = t;
+    }
 
-  bool GetCrystalCell(const char* crystal, float& a, float& b, float& c,float& alpha, float& beta, float& gamma);
-  int GetCrystalNCSSymmops(const char* crystal, float ncrsymm[MISymmop::MAXNCRSYMMOPS][12]);
+    bool GetCrystalCell(const char *crystal, float &a, float &b, float &c, float &alpha, float &beta, float &gamma);
+    int GetCrystalNCSSymmops(const char *crystal, float ncrsymm[MISymmop::MAXNCRSYMMOPS][12]);
 
-  MIPalette* GetLPpal() {return lpal; } // Returns a pointer to the palette.
+    MIPalette *GetLPpal()
+    {
+        return lpal;
+    }                                   // Returns a pointer to the palette.
 
-  void backgroundColor();
-  PaletteColor GetBackgroundColor() { return BackgroundColor; } //Returns the background color.  The colors are defined in colors.h.
-  void SetBackgroundColor(PaletteColor c) { BackgroundColor = c; } // Change the background color.  The colors are defined in colors.h.
+    void backgroundColor();
+    PaletteColor GetBackgroundColor()
+    {
+        return BackgroundColor;
+    }                                                           //Returns the background color.  The colors are defined in colors.h.
+    void SetBackgroundColor(PaletteColor c)
+    {
+        BackgroundColor = c;
+    }                                                              // Change the background color.  The colors are defined in colors.h.
 
-  bool GetXfitMouseMode() { return xfitMouseMode; } // Returns the mouse mode - true if it is Xfit emulation mode.
-  void SetXfitMouseMode(bool m) { xfitMouseMode = m; } // Sets the Xfit mouse emulation mode
+    bool GetXfitMouseMode()
+    {
+        return xfitMouseMode;
+    }                                               // Returns the mouse mode - true if it is Xfit emulation mode.
+    void SetXfitMouseMode(bool m)
+    {
+        xfitMouseMode = m;
+    }                                                  // Sets the Xfit mouse emulation mode
 
-  bool LabelPicks; // if true then picked atoms are labeled.
-  bool LabelToggle; // If true then picking an atom for the second time toggles the label off.
+    bool LabelPicks; // if true then picked atoms are labeled.
+    bool LabelToggle; // If true then picking an atom for the second time toggles the label off.
 
-  void ClearResidueBuffer();  // Frees and clears the residue buffer.
-  chemlib::RESIDUE* GetResidueBuffer() { return ResidueBuffer; } // Returns a pointer to the residue buffer.
-  bool CopyResidueBuffer(const chemlib::RESIDUE* buffer); // Copy one residue to the to the end of the ResidueBuffer list.
+    void ClearResidueBuffer(); // Frees and clears the residue buffer.
+    chemlib::RESIDUE *GetResidueBuffer()
+    {
+        return ResidueBuffer;
+    }                                                            // Returns a pointer to the residue buffer.
+    bool CopyResidueBuffer(const chemlib::RESIDUE *buffer); // Copy one residue to the to the end of the ResidueBuffer list.
 
-  GeomRefiner* GetGeomRefiner() { return geomrefiner;  } //The geometry refiner is a helper class for refining model geometry and real-space refinement
+    GeomRefiner *GetGeomRefiner()
+    {
+        return geomrefiner;
+    }                                                    //The geometry refiner is a helper class for refining model geometry and real-space refinement
 
-  void toggleStereo();
-  void toggleHardwareStereo();
+    void toggleStereo();
+    void toggleHardwareStereo();
 
-  long GetPid();
+    long GetPid();
 };
 
-GeomRefiner* MIFitGeomRefiner();
-chemlib::MIMolDictionary* MIFitDictionary();
+GeomRefiner *MIFitGeomRefiner();
+chemlib::MIMolDictionary *MIFitDictionary();
 
 class QProgressDialog;
 
-class MIBusyManager {
-  public:
+class MIBusyManager
+{
+public:
     static MIBusyManager *instance();
 
     bool Busy() const ;
     void SetBusy(bool busy);
 
-    void SetLabel(const char *);
+    void SetLabel(const char*);
 
     void ForceAbort();
     bool CheckForAbort();
@@ -163,7 +213,7 @@ class MIBusyManager {
     void StartWaitCursor();
     void StopWaitCursor();
 
-  private:
+private:
     MIBusyManager();
     void SetCursor(int);
 
@@ -174,7 +224,7 @@ class MIBusyManager {
     unsigned int PROG_VALUE;
     int PROG_DIRECTION;
 
-    static MIBusyManager* _instance;
+    static MIBusyManager *_instance;
 };
 
 

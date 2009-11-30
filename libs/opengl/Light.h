@@ -5,49 +5,52 @@
 #include <opengl/OpenGL.h>
 
 
-namespace mi {
-namespace opengl {
+namespace mi
+{
+    namespace opengl
+    {
 
-class Light {
+        class Light
+        {
 
-  int lightId;
+            int lightId;
 
-  float* ambientColor;
+            float *ambientColor;
 
-  float* diffuseColor;
+            float *diffuseColor;
 
-  float* specularColor;
+            float *specularColor;
 
-  float* position;
+            float *position;
 
-public:
+        public:
 
-  Light(int lightId = GL_LIGHT1, float* ambientColor = NULL);
+            Light(int lightId = GL_LIGHT1, float *ambientColor = NULL);
 
-  void setPosition(mi::math::Vector4<float>& position);
+            void setPosition(mi::math::Vector4<float> &position);
 
-  void setAmbientColor(float color0, float color1, float color2, float color3);
+            void setAmbientColor(float color0, float color1, float color2, float color3);
 
-  void setDiffuseColor(float color0, float color1, float color2, float color3);
+            void setDiffuseColor(float color0, float color1, float color2, float color3);
 
-  void setSpecularColor(float color0, float color1, float color2, float color3);
+            void setSpecularColor(float color0, float color1, float color2, float color3);
 
-  void render();
+            void render();
 
-  mi::math::Vector4<float> getPosition();
+            mi::math::Vector4<float> getPosition();
 
-  float* getAmbientColor();
+            float *getAmbientColor();
 
-  float* getDiffuseColor();
+            float *getDiffuseColor();
 
-  float* getSpecularColor();
+            float *getSpecularColor();
 
-  void glEnable();
+            void glEnable();
 
-  void glDisable();
-};
+            void glDisable();
+        };
 
+    }
 }
-}
 
-#endif
+#endif // ifndef mi_opengl_Light_h

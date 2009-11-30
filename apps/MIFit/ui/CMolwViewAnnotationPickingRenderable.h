@@ -9,54 +9,58 @@ class GLRenderer;
 class Displaylist;
 class MIGLWidget;
 
-namespace mi {
-namespace opengl {
-class Frustum;
-class StereoView;
-}
+namespace mi
+{
+    namespace opengl
+    {
+        class Frustum;
+        class StereoView;
+    }
 }
 
 class CMolwViewAnnotationRenderable;
 
-class CMolwViewAnnotationPickingRenderable : public mi::opengl::Renderable {
+class CMolwViewAnnotationPickingRenderable : public mi::opengl::Renderable
+{
 
-  mi::opengl::StereoView* stereoView;
+    mi::opengl::StereoView *stereoView;
 
-  GLRenderer* renderer;
+    GLRenderer *renderer;
 
-  CMolwViewAnnotationRenderable* annotationRenderable;
-
-public:
-
-  CMolwViewAnnotationPickingRenderable(mi::opengl::StereoView* stereoView, mi::opengl::Frustum* frustum, MIGLWidget* canvas);
-  virtual ~CMolwViewAnnotationPickingRenderable();
-
-  virtual void render();
-
-  Annotation* getAnnotation(int id);
-
-  void updateTextScale(float glUnitsPerPixel);
-
-  void setModels(Displaylist* displaylist);
-
-  void setFontSize(int size);
-
-};
-
-class CMolwViewAnnotationRenderable : public mi::opengl::Renderable {
-
-  Displaylist* displaylist;
-
-  GLRenderer* renderer;
+    CMolwViewAnnotationRenderable *annotationRenderable;
 
 public:
 
-  CMolwViewAnnotationRenderable(GLRenderer* renderer);
+    CMolwViewAnnotationPickingRenderable(mi::opengl::StereoView *stereoView, mi::opengl::Frustum *frustum, MIGLWidget *canvas);
+    virtual ~CMolwViewAnnotationPickingRenderable();
 
-  virtual void render();
+    virtual void render();
 
-  void setModels(Displaylist* displaylist);
+    Annotation *getAnnotation(int id);
+
+    void updateTextScale(float glUnitsPerPixel);
+
+    void setModels(Displaylist *displaylist);
+
+    void setFontSize(int size);
 
 };
 
-#endif
+class CMolwViewAnnotationRenderable : public mi::opengl::Renderable
+{
+
+    Displaylist *displaylist;
+
+    GLRenderer *renderer;
+
+public:
+
+    CMolwViewAnnotationRenderable(GLRenderer *renderer);
+
+    virtual void render();
+
+    void setModels(Displaylist *displaylist);
+
+};
+
+#endif // ifndef mifig_ui_CMolwViewAnnotationPickingRenderable_h

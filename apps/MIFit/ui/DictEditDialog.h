@@ -8,25 +8,26 @@ class QFrame;
 class QGridLayout;
 class QMenuBar;
 
-class DictEditDialog : public QDialog {
-Q_OBJECT
+class DictEditDialog : public QDialog
+{
+    Q_OBJECT
 
 public:
-  // constructors and destructors
-  DictEditDialog(QWidget* parent);
-  QWidget *getFrame();
-  QMenuBar *getMenuBar();
+    // constructors and destructors
+    DictEditDialog(QWidget *parent);
+    QWidget *getFrame();
+    QMenuBar *getMenuBar();
 
 public slots:
-  void accept();
-  void reject();
+    void accept();
+    void reject();
 
 private:
-  DictEditCanvas* canvas;
-  QFrame *_frame;
-  QGridLayout *_layout;
-  QMenuBar *_menuBar;
+    DictEditCanvas *canvas;
+    QFrame *_frame;
+    QGridLayout *_layout;
+    QMenuBar *_menuBar;
 
 };
 
-#endif
+#endif // if !defined (__DictEditDialog_H__)

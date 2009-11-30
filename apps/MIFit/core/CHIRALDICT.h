@@ -3,6 +3,6 @@
 
 #include <chemlib/chemlib.h>
 
-void CopyChiral(chemlib::CHIRALDICT* chiral, const chemlib::CHIRAL& chiralSource);
+void CopyChiral(chemlib::CHIRALDICT *chiral, const chemlib::CHIRAL &chiralSource);
 
 #endif /*MIFIT_MODEL_CHIRALDICT_H_*/

@@ -7,8 +7,8 @@
 
 int MIMapFactor(int ntest, int prime, int even, int inc);
 unsigned int MIMapInitializeScatteringFactorTables(
-  const std::string& crystal_data_dir,
-  const std::string& molimage_home_dir);
+    const std::string &crystal_data_dir,
+    const std::string &molimage_home_dir);
 unsigned int MIMapFreeScatteringFactorTables();
 
 #include "CMapHeaderBase.h"
@@ -30,4 +30,4 @@ unsigned int MIMapFreeScatteringFactorTables();
 
 
 
-#endif
+#endif // ifndef MI_MAPLIB_H

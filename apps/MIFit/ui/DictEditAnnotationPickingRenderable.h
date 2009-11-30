@@ -10,48 +10,52 @@ class GLRenderer;
 class Displaylist;
 class DictEditCanvas;
 
-namespace mi {
-namespace opengl {
-class Frustum;
-class StereoView;
-}
+namespace mi
+{
+    namespace opengl
+    {
+        class Frustum;
+        class StereoView;
+    }
 }
 
 class DictEditAnnotationRenderable;
 
-class DictEditAnnotationPickingRenderable : public mi::opengl::Renderable {
+class DictEditAnnotationPickingRenderable : public mi::opengl::Renderable
+{
 
-  mi::opengl::StereoView* stereoView;
+    mi::opengl::StereoView *stereoView;
 
-  GLRenderer* renderer;
+    GLRenderer *renderer;
 
-  DictEditAnnotationRenderable* annotationRenderable;
-
-public:
-
-  DictEditAnnotationPickingRenderable(mi::opengl::StereoView* stereoView, Displaylist* displaylist, mi::opengl::Frustum* frustum, DictEditCanvas* canvas);
-  virtual ~DictEditAnnotationPickingRenderable();
-
-  virtual void render();
-
-  Annotation* getAnnotation(int id);
-
-  void updateTextScale(float glUnitsPerPixel);
-
-};
-
-class DictEditAnnotationRenderable : public mi::opengl::Renderable {
-
-  Displaylist* displaylist;
-
-  GLRenderer* renderer;
+    DictEditAnnotationRenderable *annotationRenderable;
 
 public:
 
-  DictEditAnnotationRenderable(GLRenderer* renderer, Displaylist* displaylist);
+    DictEditAnnotationPickingRenderable(mi::opengl::StereoView *stereoView, Displaylist *displaylist, mi::opengl::Frustum *frustum, DictEditCanvas *canvas);
+    virtual ~DictEditAnnotationPickingRenderable();
 
-  virtual void render();
+    virtual void render();
+
+    Annotation *getAnnotation(int id);
+
+    void updateTextScale(float glUnitsPerPixel);
 
 };
 
-#endif
+class DictEditAnnotationRenderable : public mi::opengl::Renderable
+{
+
+    Displaylist *displaylist;
+
+    GLRenderer *renderer;
+
+public:
+
+    DictEditAnnotationRenderable(GLRenderer *renderer, Displaylist *displaylist);
+
+    virtual void render();
+
+};
+
+#endif // ifndef MIFIT_UI_DICTEDITANNOTATIONPICKINGRENDERABLE_H_

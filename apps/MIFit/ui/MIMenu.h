@@ -10,24 +10,24 @@
 
 class MIMenu : public QMenu
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  public:
+public:
     // NOTE: if receiver is null, then events are sent to MIMainWindow::instance()
-    MIMenu(MIEventHandler &receiver, QWidget *parent=0);
+    MIMenu(MIEventHandler &receiver, QWidget *parent = 0);
     ~MIMenu();
 
     // append an item to the menu
     QAction *Append(unsigned int event_id, const std::string &menu_text,
-                    const std::string &tooltip="", bool checkable = false);
+                    const std::string &tooltip = "", bool checkable = false);
 
     // Note: same as append with checkable==true
     QAction *AppendCheckItem(unsigned int event_id, const std::string &menu_text,
-                             const std::string &tooltip="");
+                             const std::string &tooltip = "");
 
     // Note: event_id unused
     void Append(unsigned int /* event_id */, const std::string &menu_text,
-                MIMenu* submenu);
+                MIMenu *submenu);
 
     void AppendSeparator();
 
@@ -37,7 +37,10 @@ class MIMenu : public QMenu
     bool isChecked(unsigned int id);
     bool isEnabled(unsigned int id);
 
-    MIEventHandler& GetReceiver() { return _receiver; }
+    MIEventHandler&GetReceiver()
+    {
+        return _receiver;
+    }
     void ClearMenu();
 
     // useful for toolbars, find the action for the given id
@@ -61,11 +64,11 @@ class MIMenu : public QMenu
     // do QMenu::exec(), respecting test mode
     QAction *doExec(const QPoint &p);
 
-  private slots:
+private slots:
     void triggered(bool);
     void showHandler();
 
-  private:
+private:
     // returns true if the given id has a handler registered
     bool validateAction(unsigned int id);
 
@@ -75,6 +78,6 @@ class MIMenu : public QMenu
     std::map<QAction*, unsigned int> _actionToId;
     std::map<unsigned int, QAction*> _idToAction;
     MIEventHandler &_receiver;
-    std::vector<MIMenu *> _submenus;
+    std::vector<MIMenu*> _submenus;
 };
-#endif
+#endif // ifndef MIMENU_H

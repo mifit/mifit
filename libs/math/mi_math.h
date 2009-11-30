@@ -165,40 +165,45 @@ void ml_mat_transpose33(double mat[3][3], double mat_trans[3][3]);
 //@{
 // Translates a float to a character string.
 //@}
-const char* ftoa(float);
+const char *ftoa(float);
 //@{
 // Translates a long integer to a character string.
 //@}
-const char* ftoa(long);
+const char *ftoa(long);
 //@{
 // Translates a integer to a character string.
 //@}
-const char* ftoa(int);
+const char *ftoa(int);
 
 template<typename T>
-inline bool equals(T a, T b) {
-  return abs(a - b) <= std::numeric_limits<T>::epsilon();
+inline bool equals(T a, T b)
+{
+    return abs(a - b) <= std::numeric_limits<T>::epsilon();
 }
 
-inline double toRadians(double degrees) {
-  return degrees*M_PI/180.0;
+inline double toRadians(double degrees)
+{
+    return degrees*M_PI/180.0;
 }
 
-inline double toDegrees(double radians) {
-  return radians*180.0/M_PI;
+inline double toDegrees(double radians)
+{
+    return radians*180.0/M_PI;
 }
 
 #if defined ( _MSC_VER ) && !defined ( __NUTC__ )
-inline double rint(double v) {
-  double theFloor = floor(v);
-  double theCeil  = ceil(v);
+inline double rint(double v)
+{
+    double theFloor = floor(v);
+    double theCeil  = ceil(v);
 
-  if (fabs(v - theFloor) < fabs(v - theCeil) ) {
-    return theFloor;
-  }
+    if (fabs(v - theFloor) < fabs(v - theCeil) )
+    {
+        return theFloor;
+    }
 
-  return theCeil;
+    return theCeil;
 }
 #endif
 
-#endif
+#endif // ifndef mifit_math_math_h

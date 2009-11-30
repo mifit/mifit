@@ -15,4 +15,4 @@ public:
 
 };
 
-#endif
+#endif // ifndef GENERAL_PREFERENCES_H

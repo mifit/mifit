@@ -1,28 +1,31 @@
 #ifndef mi_opengl_Sphere_h
 #define mi_opengl_Sphere_h
 
-namespace mi {
-namespace opengl {
+namespace mi
+{
+    namespace opengl
+    {
 
-class Sphere {
+        class Sphere
+        {
 
-  float* vertexBuffer;
+            float *vertexBuffer;
 
-  float* normalBuffer;
+            float *normalBuffer;
 
-  float* textureBuffer;
+            float *textureBuffer;
 
-  int vertexCount;
+            int vertexCount;
 
-public:
+        public:
 
-  Sphere(float radius, int slices, int stacks);
+            Sphere(float radius, int slices, int stacks);
 
-  void render();
+            void render();
 
-};
+        };
 
+    }
 }
-}
 
-#endif
+#endif // ifndef mi_opengl_Sphere_h

@@ -8,110 +8,111 @@
 /**
  * An atom label structure.
  */
-class ATOMLABEL {
+class ATOMLABEL
+{
 
-  /**
-   * Pointer to atom labeled. If atom x,y,z is changed label follows.
-   */
-  const chemlib::MIAtom* atom_;
+    /**
+     * Pointer to atom labeled. If atom x,y,z is changed label follows.
+     */
+    const chemlib::MIAtom *atom_;
 
-  const chemlib::RESIDUE* residue_;
+    const chemlib::RESIDUE *residue_;
 
-  bool useDefaultStyle_;
+    bool useDefaultStyle_;
 
-  mutable int style_;
+    mutable int style_;
 
-  bool customLabel;
+    bool customLabel;
 
-  mutable std::string label_;
+    mutable std::string label_;
 
-  bool visible_;
+    bool visible_;
 
-  /**
-   * pixel offset from computed x y position
-   */
-  int xo;
+    /**
+     * pixel offset from computed x y position
+     */
+    int xo;
 
-  /**
-   * pixel offset from computed x y position
-   */
-  int yo;
+    /**
+     * pixel offset from computed x y position
+     */
+    int yo;
 
-  bool useDefaultColor_;
-  unsigned char red_;
-  unsigned char green_;
-  unsigned char blue_;
+    bool useDefaultColor_;
+    unsigned char red_;
+    unsigned char green_;
+    unsigned char blue_;
 
-  bool useDefaultSize_;
-  int size_;
+    bool useDefaultSize_;
+    int size_;
 
-  static int defaultStyle_;
-  static unsigned char defaultRed_;
-  static unsigned char defaultGreen_;
-  static unsigned char defaultBlue_;
-  static int defaultSize_;
+    static int defaultStyle_;
+    static unsigned char defaultRed_;
+    static unsigned char defaultGreen_;
+    static unsigned char defaultBlue_;
+    static int defaultSize_;
 
 public:
 
-  ATOMLABEL();
+    ATOMLABEL();
 
-  ATOMLABEL(const chemlib::RESIDUE* residue, const chemlib::MIAtom* atom);
+    ATOMLABEL(const chemlib::RESIDUE *residue, const chemlib::MIAtom *atom);
 
-  const chemlib::RESIDUE* residue() const;
+    const chemlib::RESIDUE *residue() const;
 
-  const chemlib::MIAtom* atom() const;
+    const chemlib::MIAtom *atom() const;
 
-  bool useDefaultStyle() const;
+    bool useDefaultStyle() const;
 
-  void useDefaultStyle(bool value);
+    void useDefaultStyle(bool value);
 
-  int style() const;
+    int style() const;
 
-  void style(int value);
+    void style(int value);
 
-  bool isCustomLabel();
+    bool isCustomLabel();
 
-  bool isVisible() const;
+    bool isVisible() const;
 
-  void visible(bool on);
+    void visible(bool on);
 
-  const std::string& label() const;
-  void label(const char* text);
+    const std::string&label() const;
+    void label(const char *text);
 
-  int xOffset() const;
-  void xOffset(int offset);
+    int xOffset() const;
+    void xOffset(int offset);
 
-  int yOffset() const;
-  void yOffset(int offset);
+    int yOffset() const;
+    void yOffset(int offset);
 
-  bool useDefaultColor() const;
-  void useDefaultColor(bool value);
+    bool useDefaultColor() const;
+    void useDefaultColor(bool value);
 
-  unsigned char red() const;
-  void red(unsigned char value);
+    unsigned char red() const;
+    void red(unsigned char value);
 
-  unsigned char green() const;
-  void green(unsigned char value);
+    unsigned char green() const;
+    void green(unsigned char value);
 
-  unsigned char blue() const;
-  void blue(unsigned char value);
+    unsigned char blue() const;
+    void blue(unsigned char value);
 
-  bool useDefaultSize() const;
-  void useDefaultSize(bool value);
+    bool useDefaultSize() const;
+    void useDefaultSize(bool value);
 
-  int size() const;
-  void size(int value);
+    int size() const;
+    void size(int value);
 
-  static void defaultColor(unsigned char red, unsigned char green, unsigned char blue);
-  static unsigned char defaultRed();
-  static unsigned char defaultGreen();
-  static unsigned char defaultBlue();
-  static int defaultStyle();
-  static void defaultStyle(int value);
-  static int defaultSize();
-  static void defaultSize(int value);
+    static void defaultColor(unsigned char red, unsigned char green, unsigned char blue);
+    static unsigned char defaultRed();
+    static unsigned char defaultGreen();
+    static unsigned char defaultBlue();
+    static int defaultStyle();
+    static void defaultStyle(int value);
+    static int defaultSize();
+    static void defaultSize(int value);
 
-  static std::string labelString(const chemlib::RESIDUE* res, const chemlib::MIAtom* atom, int style);
+    static std::string labelString(const chemlib::RESIDUE *res, const chemlib::MIAtom *atom, int style);
 };
 
-#endif
+#endif // ifndef mifit_model_ATOMLABEL_H

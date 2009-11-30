@@ -108,5 +108,5 @@ void uinv(float mat[3][3], float imat[3][3]);
 float vectorangle(float v1[3], float v2[3]);
 
 
-#endif
+#endif // ifndef MATRICES_H
 

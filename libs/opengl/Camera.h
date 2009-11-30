@@ -5,26 +5,29 @@
 #include <math/Quaternion.h>
 #include <opengl/Viewpoint.h>
 
-namespace mi {
-namespace opengl {
+namespace mi
+{
+    namespace opengl
+    {
 
-class Camera : public Viewpoint {
+        class Camera : public Viewpoint
+        {
 
-public:
+        public:
 
-  Camera();
+            Camera();
 
-  mi::math::Vector3<float> getEye();
+            mi::math::Vector3<float> getEye();
 
-  void setEye(const mi::math::Vector3<float>& eye);
+            void setEye(const mi::math::Vector3<float> &eye);
 
-  void render();
+            void render();
 
-  void lookAt(const mi::math::Vector3<float>& target);
+            void lookAt(const mi::math::Vector3<float> &target);
 
-};
+        };
 
+    }
 }
-}
 
-#endif
+#endif // ifndef mi_opengl_Camera_h

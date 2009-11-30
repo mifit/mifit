@@ -21,7 +21,7 @@ public:
     /**
      * @param working_directory - the directory to run the command in - if blank, uses current directory
      */
-    BatchJob(const QString& working_directory);
+    BatchJob(const QString &working_directory);
 
     virtual ~BatchJob();
 
@@ -29,17 +29,19 @@ public:
 
     virtual QString Info();
 
-    void setProgram(const QString& program) {
+    void setProgram(const QString &program)
+    {
         program_ = program;
     }
 
-    void setArguments(const QStringList& arguments) {
+    void setArguments(const QStringList &arguments)
+    {
         arguments_ = arguments;
     }
 
-    void setArguments(const QString& arguments);
+    void setArguments(const QString &arguments);
 
-    void setCommandLine(const QString& command);
+    void setCommandLine(const QString &command);
 
     /**
      * Start the job running
@@ -47,37 +49,41 @@ public:
     virtual bool StartJob();
 
     /**
-   * Aborts the job by sending a kill to the operating system
-   */
+     * Aborts the job by sending a kill to the operating system
+     */
     void AbortJob();
 
     /**
-   * returns true if the job is still running
-   */
+     * returns true if the job is still running
+     */
     bool isRunning();
 
     /**
-   * returns true if the job is a success
-   */
-    bool isSuccess() {
+     * returns true if the job is a success
+     */
+    bool isSuccess()
+    {
         return process && process->exitCode() == 0;
     }
 
     /**
-   * A unique job id
-   */
-    unsigned long jobId() const {
+     * A unique job id
+     */
+    unsigned long jobId() const
+    {
         return jobId_;
     }
 
     QString workingDirectory() const;
-    void setWorkingDirectory(const QString& dir);
+    void setWorkingDirectory(const QString &dir);
 
-    QString jobName() const {
+    QString jobName() const
+    {
         return jobName_;
     }
 
-    void setJobName(const QString& jobName) {
+    void setJobName(const QString &jobName)
+    {
         jobName_ = jobName;
     }
 
@@ -97,7 +103,7 @@ protected:
     QString workingDirectory_;
     QString logFile;
 
-    QProcess* process;
+    QProcess *process;
 
     static QStringList parseArgs(const QString &program);
 
@@ -111,13 +117,13 @@ class JobFinishedStatusLabel : public QLabel
 {
     Q_OBJECT
 public:
-    JobFinishedStatusLabel(const QString& text, int timeout, QStatusBar* parent = 0);
+    JobFinishedStatusLabel(const QString &text, int timeout, QStatusBar *parent = 0);
 
 private:
-    QStatusBar* statusBar;
+    QStatusBar *statusBar;
 
 private slots:
     void remove();
 };
 
-#endif
+#endif // ifndef mifit_jobs_BatchJob_h

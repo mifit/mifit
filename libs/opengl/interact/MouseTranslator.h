@@ -3,60 +3,64 @@
 
 #include <math/Vector3.h>
 
-namespace mi {
-namespace opengl {
+namespace mi
+{
+    namespace opengl
+    {
 
-class Viewpoint;
-class Axis;
+        class Viewpoint;
+        class Axis;
 
-namespace interact {
+        namespace interact
+        {
 
-class MouseTranslator {
+            class MouseTranslator
+            {
 
-  Viewpoint* viewpoint;
+                Viewpoint *viewpoint;
 
-  Viewpoint* relativeToViewpoint;
+                Viewpoint *relativeToViewpoint;
 
-  int previousX;
+                int previousX;
 
-  int previousY;
+                int previousY;
 
-  mi::math::Vector3<float>* startPosition;
+                mi::math::Vector3<float> *startPosition;
 
-  mi::math::Vector3<float>* currentPosition;
+                mi::math::Vector3<float> *currentPosition;
 
-  float scaling;
+                float scaling;
 
-  Axis* axes;
+                Axis *axes;
 
-  Axis* currentAxes;
+                Axis *currentAxes;
 
-public:
+            public:
 
-  MouseTranslator(Viewpoint* viewpoint, Viewpoint* relativeToViewpoint, float scaling);
+                MouseTranslator(Viewpoint *viewpoint, Viewpoint *relativeToViewpoint, float scaling);
 
-  ~MouseTranslator();
+                ~MouseTranslator();
 
-  float getScaling();
+                float getScaling();
 
-  void setScaling(float angle);
+                void setScaling(float angle);
 
-  mi::math::Vector3<float>* getStartPosition();
+                mi::math::Vector3<float> *getStartPosition();
 
-  mi::math::Vector3<float>* getCurrentPosition();
+                mi::math::Vector3<float> *getCurrentPosition();
 
-  void setAxes(const Axis& axes);
+                void setAxes(const Axis &axes);
 
-  void beginTranslate(int x, int y);
+                void beginTranslate(int x, int y);
 
-  void endTranslate();
+                void endTranslate();
 
-  void translate(int x, int y);
+                void translate(int x, int y);
 
-};
+            };
 
+        }
+    }
 }
-}
-}
 
-#endif
+#endif // ifndef mi_opengl_interact_MouseTranslator_h

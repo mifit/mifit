@@ -4,18 +4,19 @@
 #include <vector>
 #include <chemlib/chemlib.h>
 
-class LigDictEntry {
+class LigDictEntry
+{
 public:
-  LigDictEntry(chemlib::RESIDUE* r);  // note takes ownership of r!
+    LigDictEntry(chemlib::RESIDUE *r); // note takes ownership of r!
 
-  ~LigDictEntry();
+    ~LigDictEntry();
 
-  chemlib::RESIDUE* res;
-  std::vector<chemlib::Bond> bonds;
-  std::vector<chemlib::ANGLE> angles;
-  std::vector<chemlib::TORSDICT> torsions;
-  std::vector<chemlib::PLANEDICT> planes;
-  std::vector<chemlib::CHIRALDICT> chirals;
+    chemlib::RESIDUE *res;
+    std::vector<chemlib::Bond> bonds;
+    std::vector<chemlib::ANGLE> angles;
+    std::vector<chemlib::TORSDICT> torsions;
+    std::vector<chemlib::PLANEDICT> planes;
+    std::vector<chemlib::CHIRALDICT> chirals;
 
 };
-#endif
+#endif // ifndef mifit_ligand_LigDictEntry_h
