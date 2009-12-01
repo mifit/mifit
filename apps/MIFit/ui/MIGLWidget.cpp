@@ -10776,6 +10776,7 @@ void MIGLWidget::mouseMoveEvent(QMouseEvent *e)
     {
         mouse.x = e->x();
         mouse.y = e->y();
+        OnMouseMove(flags, CPoint(e->x(), e->y()));
     }
     else
     {

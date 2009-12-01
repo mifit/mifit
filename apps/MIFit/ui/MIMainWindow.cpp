@@ -1655,7 +1655,7 @@ void MIMainWindow::SetCursor(int id, QWidget *w)
     if (id >=0 && id <= (int)imhCount)
         w->setCursor(*cursors[id]);
     else
-        w->setCursor(QCursor());
+        w->unsetCursor();
 }
 
 void MIMainWindow::updateNavigator()
