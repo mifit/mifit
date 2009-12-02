@@ -1,11 +1,10 @@
 var jobs = [
-// Uncomment this section when the mi_integrate_ui.py script is working
-//    {
-//        menuName: "&Integrate with d*TREK",
-//        jobName: "Integrate",
-//        executable: "python",
-//        arguments: [ mifit.directory() + "/MIExpert/mi_integrate_ui.py" ]
-//    },
+    {
+        menuName: "&Integrate with d*TREK",
+        jobName: "Integrate",
+        executable: "python",
+        arguments: [ mifit.directory() + "/MIExpert/mi_integrate_ui.py" ]
+    },
 
 // Uncomment this section when the mi_molrep_ui.py script is working
 //    {
