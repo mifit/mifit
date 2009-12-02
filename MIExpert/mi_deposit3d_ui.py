@@ -1,5 +1,26 @@
 import sys, os, pickle, subprocess
 from PyQt4 import QtCore, QtGui, uic
+import mifit
+
+def buildAbsPath(path):
+    return str(QtCore.QFileInfo(path).absoluteFilePath())
+
+def boolYesNo(value):
+    if value:
+        return "yes"
+    else:
+        return "no"
+
+def markEnabled(w, thisEnabled, globalEnabled):
+    w.setAutoFillBackground(True)
+    if not thisEnabled:
+        pal = w.palette()
+        pal.setColor(QtGui.QPalette.Normal, QtGui.QPalette.Base, QtGui.QColor(255, 255, 128))
+        w.setPalette(pal)
+    else:
+        w.setPalette(QtGui.QPalette())
+
+    return globalEnabled and thisEnabled
 
 
 class JobReportDialog(QtGui.QDialog):
@@ -8,26 +29,28 @@ class JobReportDialog(QtGui.QDialog):
         self.mifitDir = QtCore.QString()
 
         config = {
-            #  data["workdir"].str = "";
-            #  data["mtzfile"].str = "";
-            #  data["pdbfile"].str = "";
-            #  data["libfile"].str = "none";
-            #  data["seqfile"].str = "none";
-            #  data["templatefile"].str = "none";
-            #  data["datalogfile"].str = "none";
-            #
-            #  data["cif_write"].b = false; // mmCIF report
-            #  data["map_write"].b = false;
-            #  data["map_border"].f = FLT_MIN;
-            #  data["text_report"].b = false;
-            #  data["html_report"].b = false;
-            #  data["hkl_write"].b = false; // mmCIF data
-            #
-            #  data["html_report"].b = false;
-            #  data["report_title"].str = "";
-            #  data["image1"].str = "";
-            #
-            #  data["rootname"].str = "";
+            'workdir' : "",
+            'mtzfile' : "",
+            'pdbfile' : "",
+            'libfile' : "none",
+            'seqfile' : "none",
+            'templatefile' : "none",
+            'datalogfile' : "none",
+
+            'cif_write' : False,
+            'map_write' : False,
+            'map_border' : 0,
+            'text_report' : False,
+            'html_report' : False,
+            'hkl_write' : False,
+
+            'html_report' : False,
+            'report_title' : "",
+            'image1' : "",
+            'image2' : "",
+            'image3' : "",
+
+            'rootname' : ""
           }
         settings = QtCore.QSettings("MIFit", "MIExpert")
         appSettings = settings.value("deposit3d").toString()
@@ -37,191 +60,296 @@ class JobReportDialog(QtGui.QDialog):
         uiFile = os.path.join(os.path.dirname(sys.argv[0]), "mi_deposit3d.ui")
         uic.loadUi(uiFile, self)
 
-        #  new MIBrowsePair(workingDirPushButton, workingDirLineEdit, "", true);
-        #  new MIBrowsePair(modelPushButton, modelLineEdit,"PDB Files (*.pdb *.ent)");
-        #  new MIBrowsePair(dataPushButton, dataLineEdit, "Data file (*.mtz)");
-        #  new MIBrowsePair(dictionaryPushButton, dictionaryLineEdit, "Dictionary file (*.cif *.lib)");
-        #  new MIBrowsePair(sequencePushButton, sequenceLineEdit, "Sequence file (*.faa *.seq *.fasta)");
-        #  new MIBrowsePair(processingLogPushButton, processingLogLineEdit, "Processing log file (*.*)");
-        #  new MIBrowsePair(annotationPushButton, annotationLineEdit, "Annotation file (*.*)");
-        #  new MIBrowsePair(image1PushButton, image1LineEdit, "Image file (*.jpg *.gif *.tif *.jpeg *.png)");
-        #  new MIBrowsePair(image2PushButton, image2LineEdit, "Image file (*.jpg *.gif *.tif *.jpeg *.png)");
-        #  new MIBrowsePair(image3PushButton, image3LineEdit, "Image file (*.jpg *.gif *.tif *.jpeg *.png)");
-        #
-        #  _okButton = 0;
-        #  QList<QAbstractButton*> buttons=buttonBox->buttons();
-        #  for (int i=0; i < buttons.size(); ++i) {
-        #    if (buttonBox->buttonRole(buttons[i]) == QDialogButtonBox::AcceptRole) {
-        #      _okButton=buttons[i];
-        #      break;
-        #    }
-        #  }
-        #
-        #  QTimer *timer = new QTimer(this);
-        #  connect(timer, SIGNAL(timeout()), this, SLOT(validateTimeout()));
-        #  timer->start(100);
+        self.workingDirLineEdit.setText(config['workdir'])
+        self.modelLineEdit.setText(config['pdbfile'])
+        self.dataLineEdit.setText(config['mtzfile'])
+
+
+        self.fileRootnameCheckBox.setChecked(False)
+        if len(config['rootname']) != 0:
+            self.fileRootnameCheckBox.setChecked(True)
+            self.fileRootnameLineEdit.setText(config['rootname'])
+
+        self.dictionaryCheckBox.setChecked(False)
+        if config['libfile'] != 'none':
+            self.dictionaryCheckBox.setChecked(True)
+            self.dictionaryLineEdit.setText(config['libfile'])
+
+        self.sequenceCheckBox.setChecked(False)
+        if config['seqfile'] != 'none':
+            self.sequenceCheckBox.setChecked(True)
+            self.sequenceLineEdit.setText(config['seqfile'])
+
+        self.processingLogCheckBox.setChecked(False)
+        if config['datalogfile'] != 'none':
+            self.processingLogCheckBox.setChecked(True)
+            self.processingLogLineEdit.setText(config['datalogfile'])
+
+        self.annotationCheckBox.setChecked(False)
+        if config['templatefile'] != 'none':
+            self.annotationCheckBox.setChecked(True)
+            self.annotationLineEdit.setText(config['templatefile'])
+
+        self.mmCIFReportCheckBox.setChecked(config['cif_write'])
+
+        self.ligandDensityMapCheckBox.setChecked(config['map_write'])
+        self.borderSpinBox.setValue(config['map_border'])
+        self.textReportCheckBox.setChecked(config['text_report'])
+        self.mmCIFDataCheckBox.setChecked(config['hkl_write'])
+
+        self.htmlReportGroupBox.setChecked(config['html_report'])
+
+        self.reportTitleCheckBox.setChecked(False)
+        if len(config['report_title']) != 0:
+            self.reportTitleCheckBox.setChecked(True)
+            self.reportTitleLineEdit.setText(config['report_title'])
+
+        self.image1CheckBox.setChecked(False)
+        if len(config['image1']) != 0:
+            self.image1CheckBox.setChecked(True)
+            self.image1LineEdit.setText(config['image1'])
+
+        self.image2CheckBox.setChecked(False)
+        if len(config['image2']) != 0:
+            self.image2CheckBox.setChecked(True)
+            self.image2LineEdit.setText(config['image2'])
+
+        self.image3CheckBox.setChecked(False)
+        if len(config['image3']) != 0:
+            self.image3CheckBox.setChecked(True)
+            self.image3LineEdit.setText(config['image3'])
+
+        self.timer = QtCore.QTimer(self)
+        self.connect(self.timer, QtCore.SIGNAL("timeout()"),
+                     self, QtCore.SLOT("validate()"))
+        self.timer.start(100)
+
+    @QtCore.pyqtSlot()
+    def on_workingDirPushButton_clicked(self):
+        dir = QtGui.QFileDialog.getExistingDirectory(None, "", self.workingDirLineEdit.text())
+        if not dir.isEmpty():
+            self.workingDirLineEdit.setText(dir)
+
+    def browseFile(self, lineEdit, filter):
+        f = QtGui.QFileDialog.getOpenFileName(None, "Select a file", lineEdit.text(), filter)
+        if not f.isEmpty():
+            lineEdit.setText(f)
+
+    @QtCore.pyqtSlot()
+    def on_modelPushButton_clicked(self):
+        self.browseFile(self.modelLineEdit, "PDB files (*.pdb *.ent)")
+
+    @QtCore.pyqtSlot()
+    def on_dataPushButton_clicked(self):
+        self.browseFile(self.dataLineEdit, "Data file (*.mtz)")
+
+    @QtCore.pyqtSlot()
+    def on_dictionaryPushButton_clicked(self):
+        self.browseFile(self.dictionaryLineEdit, "Dictionary file (*.cif *.lib)")
+
+    @QtCore.pyqtSlot()
+    def on_sequencePushButton_clicked(self):
+        self.browseFile(self.sequenceLineEdit, "Sequence file (*.faa *.seq *.fasta)")
+
+    @QtCore.pyqtSlot()
+    def on_processingLogPushButton_clicked(self):
+        self.browseFile(self.processingLogLineEdit, "Processing log file (*.*)")
+
+    @QtCore.pyqtSlot()
+    def on_annotationPushButton_clicked(self):
+        self.browseFile(self.annotationLineEdit, "Annotation file (*.*)")
+
+    @QtCore.pyqtSlot()
+    def on_image1PushButton_clicked(self):
+        self.browseFile(self.image1LineEdit, "Image file (*.jpg *.gif *.tif *.jpeg *.png)")
+
+    @QtCore.pyqtSlot()
+    def on_image2PushButton_clicked(self):
+        self.browseFile(self.image2LineEdit, "Image file (*.jpg *.gif *.tif *.jpeg *.png)")
+
+    @QtCore.pyqtSlot()
+    def on_image3PushButton_clicked(self):
+        self.browseFile(self.image3LineEdit, "Image file (*.jpg *.gif *.tif *.jpeg *.png)")
+
 
     def runJob(self):
 
-        #settings = QtCore.QSettings("MIFit", "MIExpert")
-        #settings.setValue("deposit3d", pickle.dumps(config))
+        data = {
+            'workdir' : "",
+            'mtzfile' : "",
+            'pdbfile' : "",
+            'libfile' : "none",
+            'seqfile' : "none",
+            'templatefile' : "none",
+            'datalogfile' : "none",
 
+            'cif_write' : False,
+            'map_write' : False,
+            'map_border' : 0,
+            'text_report' : False,
+            'html_report' : False,
+            'hkl_write' : False,
+
+            'html_report' : False,
+            'report_title' : "",
+            'image1' : "",
+            'image2' : "",
+            'image3' : "",
+
+            'rootname' : ""
+          }
+
+        data["workdir"] = str(self.workingDirLineEdit.text())
+        data["mtzfile"] = str(self.dataLineEdit.text())
+        data["pdbfile"] = str(self.modelLineEdit.text())
+
+        if self.dictionaryCheckBox.isChecked() and self.dictionaryLineEdit.text().size() != 0:
+            data["libfile"] = str(self.dictionaryLineEdit.text())
+        else:
+            data["libfile"] = "none"
+
+        if self.sequenceCheckBox.isChecked() and self.sequenceLineEdit.text().size() != 0:
+            data["seqfile"] = str(self.sequenceLineEdit.text())
+        else:
+            data["seqfile"] = "none"
+
+        if self.annotationCheckBox.isChecked() and self.annotationLineEdit.text().size() != 0:
+            data["templatefile"] = str(self.annotationLineEdit.text())
+        else:
+            data["templatefile"] = "none"
+
+        if self.processingLogCheckBox.isChecked() and self.processingLogLineEdit.text().size() != 0:
+            data["datalogfile"] = str(self.processingLogLineEdit.text())
+        else:
+            data["datalogfile"] = "none"
+
+        data["cif_write"] = self.mmCIFReportCheckBox.isChecked()
+        data["map_write"] = self.ligandDensityMapCheckBox.isChecked()
+        data["map_border"] = self.borderSpinBox.value()
+        data["text_report"] = self.textReportCheckBox.isChecked()
+        data["hkl_write"] = self.mmCIFDataCheckBox.isChecked()
+
+        data["report_title"] = ""
+        if self.reportTitleCheckBox.isChecked():
+            data["report_title"] = str(self.reportTitleLineEdit.text())
+
+        data["image1"] = ""
+        if self.image1CheckBox.isChecked():
+            data["image1"] = str(self.image1LineEdit.text())
+
+        data["image2"] = ""
+        if self.image2CheckBox.isChecked():
+            data["image2"] = str(self.image2LineEdit.text())
+
+        data["image3"] = ""
+        if self.image3CheckBox.isChecked():
+            data["image3"] = str(self.image3LineEdit.text())
+
+        data["rootname"] = ""
+        if self.fileRootnameCheckBox.isChecked():
+            data["rootname"] = str(self.fileRootnameLineEdit.text())
+
+        settings = QtCore.QSettings("MIFit", "MIExpert")
+        settings.setValue("deposit3d", pickle.dumps(data))
+
+        mifit.setJobWorkDir(str(QtCore.QFileInfo(data['workdir']).absoluteFilePath()))
         miexpert = os.path.join(os.path.dirname(sys.argv[0]), "MIExpert.py")
         args = [ sys.executable, miexpert, "deposit3d" ]
 
-        #  QStringList args;
-        #  args << MIExpertPy() << "deposit3d"
-        #          << "--workdir" << buildAbsPath(data["workdir"].str.c_str())
-        #          << "--mtzfile" << buildAbsPath(data["mtzfile"].str.c_str())
-        #          << "--pdbfile" << buildAbsPath(data["pdbfile"].str.c_str())
-        #          << "--molimagehome" << buildAbsPath(Application::instance()->MolimageHome.c_str())
-        #          << "--libfile" << buildAbsPath(data["libfile"].str.c_str())
-        #          << "--seqfile" << buildAbsPath(data["seqfile"].str.c_str())
-        #          << "--templatefile" << buildAbsPath(data["templatefile"].str.c_str())
-        #          << "--datalogfile" << buildAbsPath(data["datalogfile"].str.c_str())
-        #          << "--cif_write" << (data["cif_write"].b ? "yes" : "no");
-        #
-        #  if (data["map_write"].b) {
-        #    args << "--map_write" << "yes"
-        #            << "--map_border" << QString::number(data["map_border"].f);
-        #  }
-        #  args << "--text_write" << (data["text_report"].b ? "yes" : "no")
-        #          << "--html_write" << (data["html_report"].b ? "yes" : "no")
-        #          << "--hkl_write" << (data["hkl_write"].b ? "yes" : "no");
-        #  if (data["html_report"].b) {
-        #    if (data["report_title"].str.empty()) {
-        #      args << "--title" << data["report_title"].str.c_str();
-        #    }
-        #    if (!data["image1"].str.empty()) {
-        #      args << "--image1" << buildAbsPath(data["image1"].str.c_str());
-        #    }
-        #    if (!data["image2"].str.empty()) {
-        #      args << "--image2" << buildAbsPath(data["image2"].str.c_str());
-        #    }
-        #    if (!data["image3"].str.empty()) {
-        #      args << "--image3" << buildAbsPath(data["image3"].str.c_str());
-        #    }
-        #  }
-        #  if (!data["rootname"].str.empty()) {
-        #    args << "--rootname" << buildAbsPath(data["rootname"].str.c_str());
-        #  }
+        args += [ "--workdir", buildAbsPath(data["workdir"]),
+                  "--mtzfile", buildAbsPath(data["mtzfile"]),
+                  "--pdbfile", buildAbsPath(data["pdbfile"]),
+                  "--molimagehome", buildAbsPath(self.mifitDir),
+                  "--libfile", buildAbsPath(data["libfile"]),
+                  "--seqfile", buildAbsPath(data["seqfile"]),
+                  "--templatefile", buildAbsPath(data["templatefile"]),
+                  "--datalogfile", buildAbsPath(data["datalogfile"]),
+                ]
+        args += [ "--cif_write", boolYesNo(data["cif_write"]) ]
+
+        if data["map_write"]:
+            args += [ "--map_write", "yes", "--map_border",  str(data["map_border"]) ]
+
+        args += [ "--text_write",  boolYesNo(data["text_report"]),
+                  "--html_write", boolYesNo(data["html_report"]),
+                  "--hkl_write", boolYesNo(data["hkl_write"]) ]
+
+        if data["html_report"]:
+            if len(data["report_title"]) != 0:
+               args += [ "--title", data["report_title"] ]
+            if len(data["image1"]) != 0:
+                args += [ "--image1", buildAbsPath(data["image1"]) ]
+            if len(data["image2"]) != 0:
+                args += [ "--image2", buildAbsPath(data["image2"]) ]
+            if len(data["image3"]) != 0:
+                args += [ "--image3", buildAbsPath(data["image3"]) ]
+        if len(data["rootname"]) != 0:
+            args += [ "--rootname", buildAbsPath(data["rootname"]) ]
 
         result = subprocess.call(args)
         exit(result)
 
-#bool JobReport::GetData(MIData &data) {
-#  data["workdir"].str=workingDirLineEdit->text().toStdString();
-#  data["mtzfile"].str = dataLineEdit->text().toStdString();
-#  data["pdbfile"].str = modelLineEdit->text().toStdString();
-#
-#  if (dictionaryCheckBox->isChecked() && dictionaryLineEdit->text().size())
-#    data["libfile"].str = dictionaryLineEdit->text().toStdString();
-#  else
-#    data["libfile"].str = "none";
-#
-#  if (sequenceCheckBox->isChecked() && sequenceLineEdit->text().size())
-#    data["seqfile"].str = sequenceLineEdit->text().toStdString();
-#  else
-#    data["seqfile"].str = "none";
-#
-#  if (annotationCheckBox->isChecked() && annotationLineEdit->text().size())
-#    data["templatefile"].str = annotationLineEdit->text().toStdString();
-#  else
-#    data["templatefile"].str = "none";
-#
-#  if (processingLogCheckBox->isChecked() && processingLogLineEdit->text().size())
-#    data["datalogfile"].str = processingLogLineEdit->text().toStdString();
-#  else
-#    data["datalogfile"].str = "none";
-#
-#  data["cif_write"].b = mmCIFReportCheckBox->isChecked();
-#  data["map_write"].b = ligandDensityMapCheckBox->isChecked();
-#  data["map_border"].f = borderSpinBox->value();
-#  data["text_report"].b = textReportCheckBox->isChecked();
-#  data["hkl_write"].b = mmCIFDataCheckBox->isChecked();
-#
-#  data["report_title"].str = "";
-#  if (reportTitleCheckBox->isChecked())
-#    data["report_title"].str = reportTitleLineEdit->text().toStdString();
-#
-#  data["image1"].str = "";
-#  if (image1CheckBox->isChecked())
-#    data["image1"].str = image1LineEdit->text().toStdString();
-#
-#  data["image2"].str = "";
-#  if (image2CheckBox->isChecked())
-#    data["image2"].str = image2LineEdit->text().toStdString();
-#
-#  data["image3"].str = "";
-#  if (image3CheckBox->isChecked())
-#    data["image3"].str = image3LineEdit->text().toStdString();
-#
-#  data["rootname"].str = "";
-#  if (fileRootnameCheckBox->isChecked())
-#    data["rootname"].str = fileRootnameLineEdit->text().toStdString();
-#  return true;
-#}
 
-#void JobReport::validateTimeout() {
-#  bool globalEnabled = true;
-#
-#  bool thisEnabled;
-#
-#  thisEnabled = (QFileInfo(workingDirLineEdit->text()).exists() &&
-#                  QFileInfo(workingDirLineEdit->text()).isDir());
-#  markEnabled(workingDirLineEdit, thisEnabled, globalEnabled);
-#
-#  thisEnabled = QFileInfo(modelLineEdit->text()).exists();
-#  markEnabled(modelLineEdit, thisEnabled, globalEnabled);
-#
-#  thisEnabled = QFileInfo(dataLineEdit->text()).exists();
-#  markEnabled(dataLineEdit, thisEnabled, globalEnabled);
-#
-#  thisEnabled = (!dictionaryCheckBox->isChecked() || 
-#                 QFileInfo(dictionaryLineEdit->text()).exists());
-#  markEnabled(dictionaryLineEdit, thisEnabled, globalEnabled);
-#
-#  thisEnabled = (!sequenceCheckBox->isChecked() || 
-#                 QFileInfo(sequenceLineEdit->text()).exists());
-#  markEnabled(sequenceLineEdit, thisEnabled, globalEnabled);
-#
-#  thisEnabled = (!processingLogCheckBox->isChecked() || 
-#                 QFileInfo(processingLogLineEdit->text()).exists());
-#  markEnabled(processingLogLineEdit, thisEnabled, globalEnabled);
-#
-#  thisEnabled = (!annotationCheckBox->isChecked() || 
-#                 QFileInfo(annotationLineEdit->text()).exists());
-#  markEnabled(annotationLineEdit, thisEnabled, globalEnabled);
-#
-#
-#  thisEnabled = (!image1CheckBox->isChecked() || 
-#                 QFileInfo(image1LineEdit->text()).exists());
-#  markEnabled(image1LineEdit, thisEnabled, globalEnabled);
-#
-#  thisEnabled = (!image2CheckBox->isChecked() || 
-#                 QFileInfo(image2LineEdit->text()).exists());
-#  markEnabled(image2LineEdit, thisEnabled, globalEnabled);
-#
-#  thisEnabled = (!image3CheckBox->isChecked() || 
-#                 QFileInfo(image3LineEdit->text()).exists());
-#  markEnabled(image3LineEdit, thisEnabled, globalEnabled);
-#
-#
-#  thisEnabled = (!reportTitleCheckBox->isChecked() || 
-#                 reportTitleLineEdit->text().size());
-#  markEnabled(reportTitleLineEdit, thisEnabled, globalEnabled);
-#
-#  thisEnabled = (!reportTitleCheckBox->isChecked() || 
-#                 reportTitleLineEdit->text().size());
-#  markEnabled(reportTitleLineEdit, thisEnabled, globalEnabled);
-#
-#  thisEnabled = (!fileRootnameCheckBox->isChecked() || 
-#                 fileRootnameLineEdit->text().size());
-#  markEnabled(fileRootnameLineEdit, thisEnabled, globalEnabled);
-#
-#  if (_okButton)
-#    _okButton->setEnabled(globalEnabled);
-#}
+    @QtCore.pyqtSlot()
+    def validate(self):
+        globalEnabled = True
+
+        thisEnabled = (QtCore.QFileInfo(self.workingDirLineEdit.text()).exists() and
+                          QtCore.QFileInfo(self.workingDirLineEdit.text()).isDir())
+        globalEnabled = markEnabled(self.workingDirLineEdit, thisEnabled, globalEnabled)
+
+        thisEnabled = QtCore.QFileInfo(self.modelLineEdit.text()).exists();
+        globalEnabled = markEnabled(self.modelLineEdit, thisEnabled, globalEnabled);
+
+        thisEnabled = QtCore.QFileInfo(self.dataLineEdit.text()).exists();
+        globalEnabled = markEnabled(self.dataLineEdit, thisEnabled, globalEnabled);
+
+        thisEnabled = (not self.dictionaryCheckBox.isChecked() or
+                         QtCore.QFileInfo(self.dictionaryLineEdit.text()).exists());
+        globalEnabled = markEnabled(self.dictionaryLineEdit, thisEnabled, globalEnabled);
+
+        thisEnabled = (not self.sequenceCheckBox.isChecked() or
+                         QtCore.QFileInfo(self.sequenceLineEdit.text()).exists());
+        globalEnabled = markEnabled(self.sequenceLineEdit, thisEnabled, globalEnabled);
+
+        thisEnabled = (not self.processingLogCheckBox.isChecked() or
+                         QtCore.QFileInfo(self.processingLogLineEdit.text()).exists());
+        globalEnabled = markEnabled(self.processingLogLineEdit, thisEnabled, globalEnabled);
+
+        thisEnabled = (not self.annotationCheckBox.isChecked() or
+                         QtCore.QFileInfo(self.annotationLineEdit.text()).exists());
+        globalEnabled = markEnabled(self.annotationLineEdit, thisEnabled, globalEnabled);
+
+
+        thisEnabled = (not self.image1CheckBox.isChecked() or
+                         QtCore.QFileInfo(self.image1LineEdit.text()).exists());
+        globalEnabled = markEnabled(self.image1LineEdit, thisEnabled, globalEnabled);
+
+        thisEnabled = (not self.image2CheckBox.isChecked() or
+                         QtCore.QFileInfo(self.image2LineEdit.text()).exists());
+        globalEnabled = markEnabled(self.image2LineEdit, thisEnabled, globalEnabled);
+
+        thisEnabled = (not self.image3CheckBox.isChecked() or
+                         QtCore.QFileInfo(self.image3LineEdit.text()).exists());
+        globalEnabled = markEnabled(self.image3LineEdit, thisEnabled, globalEnabled);
+
+
+        thisEnabled = (not self.reportTitleCheckBox.isChecked() or
+                         self.reportTitleLineEdit.text().size());
+        globalEnabled = markEnabled(self.reportTitleLineEdit, thisEnabled, globalEnabled);
+
+        thisEnabled = (not self.reportTitleCheckBox.isChecked() or
+                         self.reportTitleLineEdit.text().size());
+        globalEnabled = markEnabled(self.reportTitleLineEdit, thisEnabled, globalEnabled);
+
+        thisEnabled = (not self.fileRootnameCheckBox.isChecked() or
+                         self.fileRootnameLineEdit.text().size());
+        globalEnabled = markEnabled(self.fileRootnameLineEdit, thisEnabled, globalEnabled);
+
+        okButton = self.buttonBox.button(QtGui.QDialogButtonBox.Ok)
+        if okButton:
+            okButton.setEnabled(globalEnabled)
+
 
 if __name__ == '__main__':
 

@@ -37,13 +37,12 @@ var jobs = [
         arguments: [ mifit.directory() + "/MIExpert/mi_bng_ui.py" ]
     },
     
-// Uncomment this section when the mi_deposit3d_ui.py script is working
-//    {
-//        menuName: "Re&port",
-//        jobName: "Report",
-//        executable: "python",
-//        arguments: [ mifit.directory() + "/MIExpert/mi_deposit3d_ui.py" ]
-//    },
+    {
+        menuName: "Re&port",
+        jobName: "Report",
+        executable: "python",
+        arguments: [ mifit.directory() + "/MIExpert/mi_deposit3d_ui.py" ]
+    },
 
 // Uncomment this section when the mi_ncsmodeler_ui.py script is working
 //    {
