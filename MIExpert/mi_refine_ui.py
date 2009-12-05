@@ -6,7 +6,6 @@ import mifit
 class RefinementDialog(QtGui.QDialog):
     def __init__(self, parent=None):
         super(RefinementDialog, self).__init__(parent)
-        self.mifitDir = QtCore.QString()
 
         config = {
             'workdir': '',
@@ -30,8 +29,6 @@ class RefinementDialog(QtGui.QDialog):
         appSettings = settings.value("refine").toString()
         if not appSettings.isEmpty():
             config = pickle.loads(str(appSettings))
-
-        self.shelxDir = QtCore.QString(config['shelx_dir'])
 
         uiFile = os.path.join(os.path.dirname(sys.argv[0]), "mi_refine.ui")
         uic.loadUi(uiFile, self)
@@ -160,7 +157,6 @@ class RefinementDialog(QtGui.QDialog):
         config['tls_file_value'] = str(self.tlsSpecificationLineEdit.text())
         config['libfile'] = self.dictionaryCheckBox.isChecked()
         config['libfile_value'] = str(self.dictionaryLineEdit.text())
-        config['shelx_dir'] = str(self.shelxDir)
 
         settings = QtCore.QSettings("MIFit", "MIExpert")
         settings.setValue("refine", pickle.dumps(config))
@@ -168,15 +164,15 @@ class RefinementDialog(QtGui.QDialog):
         mifit.setJobWorkDir(str(QtCore.QFileInfo(config['workdir']).absoluteFilePath()))
         miexpert = os.path.join(os.path.dirname(sys.argv[0]), "MIExpert.py")
         args = [ sys.executable, miexpert, "refine" ]
-        args += [ "--mifithome", str(QtCore.QFileInfo(self.mifitDir).absoluteFilePath()) ]
+        args += [ "--mifithome", str(QtCore.QFileInfo(mifit.mifitDir).absoluteFilePath()) ]
         args += [ "--workdir", str(QtCore.QFileInfo(config['workdir']).absoluteFilePath()) ]
         args += [ "--pdbfile", str(QtCore.QFileInfo(config['pdbfile']).absoluteFilePath()) ]
         args += [ "--mtzfile", str(QtCore.QFileInfo(config['mtzfile']).absoluteFilePath()) ]
         args += [ "--weight", str(config['weight']) ]
         args += [ "--cycles", str(config['cycles']) ]
 
-        if not self.shelxDir.isEmpty():
-           args += [ "--shelx_dir", str(QtCore.QFileInfo(self.shelxDir).absoluteFilePath()) ]
+        if mifit.shelxDir != None:
+           args += [ "--shelx_dir", str(QtCore.QFileInfo(mifit.shelxDir).absoluteFilePath()) ]
 
         if config['water_cycles']:
             args += [ "--water_cycles", str(config['water_cycles_value']) ]
@@ -202,12 +198,6 @@ if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
 
     dialog = RefinementDialog()
-
-    if 'MIFIT_DIR' in os.environ.keys():
-        dialog.mifitDir = os.environ['MIFIT_DIR']
-
-    if 'SHELX_DIR' in os.environ.keys():
-        dialog.shelxDir = os.environ['SHELX_DIR']
 
     if dialog.exec_():
         dialog.runJob()

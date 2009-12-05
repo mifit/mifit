@@ -26,7 +26,6 @@ def markEnabled(w, thisEnabled, globalEnabled):
 class JobReportDialog(QtGui.QDialog):
     def __init__(self, parent=None):
         super(JobReportDialog, self).__init__(parent)
-        self.mifitDir = QtCore.QString()
 
         config = {
             'workdir' : "",
@@ -259,7 +258,7 @@ class JobReportDialog(QtGui.QDialog):
         args += [ "--workdir", buildAbsPath(data["workdir"]),
                   "--mtzfile", buildAbsPath(data["mtzfile"]),
                   "--pdbfile", buildAbsPath(data["pdbfile"]),
-                  "--molimagehome", buildAbsPath(self.mifitDir),
+                  "--molimagehome", buildAbsPath(mifit.mifitDir),
                   "--libfile", buildAbsPath(data["libfile"]),
                   "--seqfile", buildAbsPath(data["seqfile"]),
                   "--templatefile", buildAbsPath(data["templatefile"]),
@@ -356,12 +355,6 @@ if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
 
     dialog = JobReportDialog()
-
-    if 'MIFIT_DIR' in os.environ.keys():
-        dialog.mifitDir = os.environ['MIFIT_DIR']
-
-    if 'SHELX_DIR' in os.environ.keys():
-        dialog.shelxDir = os.environ['SHELX_DIR']
 
     if dialog.exec_():
         dialog.runJob()

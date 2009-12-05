@@ -1,6 +1,16 @@
 import os
 from PyQt4 import QtCore, QtGui, QtNetwork
 
+mifitDir = None
+shelxDir = None
+
+if 'MIFIT_DIR' in os.environ.keys():
+    mifitDir = os.environ['MIFIT_DIR']
+
+if 'SHELX_DIR' in os.environ.keys():
+    shelxDir = os.environ['SHELX_DIR']
+
+
 def exec_script(script):
     socketId = os.environ['MIFIT_SOCKET_ID']
     result = None

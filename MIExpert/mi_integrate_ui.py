@@ -20,7 +20,6 @@ def markEnabled(w, thisEnabled, globalEnabled):
 class IntegrateDialog(QtGui.QDialog):
     def __init__(self, parent=None):
         super(IntegrateDialog, self).__init__(parent)
-        self.mifitDir = QtCore.QString()
 
         self.data = {
             "template_image" : "",
@@ -155,12 +154,6 @@ if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
 
     dialog = IntegrateDialog()
-
-    if 'MIFIT_DIR' in os.environ.keys():
-        dialog.mifitDir = os.environ['MIFIT_DIR']
-
-    if 'SHELX_DIR' in os.environ.keys():
-        dialog.shelxDir = os.environ['SHELX_DIR']
 
     if dialog.exec_():
         dialog.runJob()

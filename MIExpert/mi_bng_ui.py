@@ -6,7 +6,6 @@ import mifit
 class BindNGrindDialog(QtGui.QDialog):
     def __init__(self, spaceGroupList=None, resList=None, parent=None):
         super(BindNGrindDialog, self).__init__(parent)
-        self.mifitDir = QtCore.QString()
 
         config = {
             'hklin': [],
@@ -314,7 +313,7 @@ class BindNGrindDialog(QtGui.QDialog):
 
         miexpert = os.path.join(os.path.dirname(sys.argv[0]), "MIExpert.py")
         args = [ sys.executable, miexpert, "bng" ]
-        args += [ "--molimagehome", str(QtCore.QFileInfo(self.mifitDir).absoluteFilePath()) ]
+        args += [ "--molimagehome", str(QtCore.QFileInfo(mifit.mifitDir).absoluteFilePath()) ]
         args += [ "--hklin", str(QtCore.QFileInfo(config['hklin']).absoluteFilePath()) ]
         args += [ "--pdbin", str(QtCore.QFileInfo(config['pdbin']).absoluteFilePath()) ]
         args += [ "--process_engine", str(config['process_engine']) ]
@@ -369,12 +368,6 @@ if __name__ == '__main__':
     resList = mifit.exec_script("mifit.dictionaryResidueList()")
 
     dialog = BindNGrindDialog(sgList, resList)
-
-    if 'MIFIT_DIR' in os.environ.keys():
-        dialog.mifitDir = os.environ['MIFIT_DIR']
-
-    if 'SHELX_DIR' in os.environ.keys():
-        dialog.shelxDir = os.environ['SHELX_DIR']
 
     if dialog.exec_():
         dialog.runJob()

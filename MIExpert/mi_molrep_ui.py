@@ -5,7 +5,6 @@ from PyQt4 import QtCore, QtGui, uic
 class MolRepDialog(QtGui.QDialog):
     def __init__(self, parent=None):
         super(MolRepDialog, self).__init__(parent)
-        self.mifitDir = QtCore.QString()
 
         config = {
             #  data["workdir"].str="";
@@ -143,12 +142,6 @@ if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
 
     dialog = MolRepDialog()
-
-    if 'MIFIT_DIR' in os.environ.keys():
-        dialog.mifitDir = os.environ['MIFIT_DIR']
-
-    if 'SHELX_DIR' in os.environ.keys():
-        dialog.shelxDir = os.environ['SHELX_DIR']
 
     if dialog.exec_():
         dialog.runJob()
