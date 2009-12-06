@@ -51,3 +51,7 @@ def exec_script(script):
 def setJobWorkDir(dir):
     script = "mifit.setJobWorkDir('" + os.environ['MIFIT_JOB_ID'] + "', '" + dir + "')"
     exec_script(script)
+
+def writeCurrentModel(file):
+    script = "mifit.writeCurrentModel('" + file + "')"
+    exec_script(script)

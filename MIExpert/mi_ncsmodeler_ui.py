@@ -1,183 +1,195 @@
 import sys, os, pickle, subprocess
 from PyQt4 import QtCore, QtGui, uic
+import mifit
+
+def buildAbsPath(path):
+    return str(QtCore.QFileInfo(path).absoluteFilePath())
+
+def boolYesNo(value):
+    if value:
+        return "yes"
+    else:
+        return "no"
+
+def markEnabled(w, thisEnabled, globalEnabled):
+    w.setAutoFillBackground(True)
+    if not thisEnabled:
+        pal = w.palette()
+        pal.setColor(QtGui.QPalette.Normal, QtGui.QPalette.Base, QtGui.QColor(255, 255, 128))
+        w.setPalette(pal)
+    else:
+        w.setPalette(QtGui.QPalette())
+
+    return globalEnabled and thisEnabled
 
 
 class NCSModelingDialog(QtGui.QDialog):
     def __init__(self, parent=None):
         super(NCSModelingDialog, self).__init__(parent)
 
-        config = {
-            #  data["workdir"].str = "";
-            #  data["mtzfile"].str = "";
-            #  data["pdbfile"].str = "";
-            #  data["libfile"].str = "none";
-            #  data["seqfile"].str = "none";
-            #  data["templatefile"].str = "none";
-            #  data["datalogfile"].str = "none";
-            #
-            #  data["cif_write"].b = false; // mmCIF report
-            #  data["map_write"].b = false;
-            #  data["map_border"].f = FLT_MIN;
-            #  data["text_report"].b = false;
-            #  data["html_report"].b = false;
-            #  data["hkl_write"].b = false; // mmCIF data
-            #
-            #  data["html_report"].b = false;
-            #  data["report_title"].str = "";
-            #  data["image1"].str = "";
-            #
-            #  data["rootname"].str = "";
+        data = {
+            "workdir" : '',
+            "model" : '',
+            "mtzdata" : '',
+            "maskadditions" : '',
+            "chainid" : '',
+            "phasecalc" : 0,
+
           }
         settings = QtCore.QSettings("MIFit", "MIExpert")
         appSettings = settings.value("ncsmodeler").toString()
         if not appSettings.isEmpty():
-            config = pickle.loads(str(appSettings))
+            data = pickle.loads(str(appSettings))
 
         uiFile = os.path.join(os.path.dirname(sys.argv[0]), "mi_ncsmodeler.ui")
         uic.loadUi(uiFile, self)
 
-        #  new MIBrowsePair(workingDirPushButton, workingDirLineEdit,"", true);
-        #  new MIBrowsePair(modelPushButton, modelLineEdit,"Exclude file (*.txt)");
-        #  new MIBrowsePair(dataPushButton, dataLineEdit,"Data files (*.mtz)");
-        #  new MIBrowsePair(maskAdditionsPushButton, maskAdditionsLineEdit,"Include file (*.txt)");
-        #  
-        #  _okButton = 0;
-        #  QList<QAbstractButton*> buttons=buttonBox->buttons();
-        #  for (int i=0; i < buttons.size(); ++i) {
-        #    if (buttonBox->buttonRole(buttons[i]) == QDialogButtonBox::AcceptRole) {
-        #      _okButton=buttons[i];
-        #      break;
-        #    }
-        #  }
-        #
-        #  QTimer *timer = new QTimer(this);
-        #  connect(timer, SIGNAL(timeout()), this, SLOT(validateTimeout()));
-        #  timer->start(100);
-        #
-        #  connect(dataCheckBox, SIGNAL(toggled(bool)), 
-        #          this, SLOT(togglePhaseOptions(bool)));
-        #  togglePhaseOptions(false);
+        self.workingDirLineEdit.setText(data["workdir"])
 
-#void NCSModeling::togglePhaseOptions(bool state) {
-#  phaseOptions->setEnabled(state);
-#  maskAdditionsCheckBox->setEnabled(state);
-#  maskAdditionsLineEdit->setEnabled(state);
-#  maskAdditionsPushButton->setEnabled(state);
-#}
-#
-#// create data array with all proper elements, but unset.
-#// this is for encapsulation purposes --- instead of having the knowlege
-#// about which fields will be set spread across multiple files, it's all
-#// contained here.
-#
-#void NCSModeling::GetInitialData(MIData &data) { // static
-#  data["workdir"].str="";
-#  data["model"].str = "";
-#  data["mtzdata"].str = "";
-#  data["maskadditions"].str="";
-#  data["chainid"].str;
-#  data["phasecalc"].radio;
-#  data["phasecalc"].radio_count=3;
-#}
-#
-#
-#void NCSModeling::validateTimeout() {
-#  bool globalEnabled = true;
-#
-#  bool thisEnabled=QFileInfo(workingDirLineEdit->text()).exists() &&
-#    QFileInfo(workingDirLineEdit->text()).isDir();
-#  markEnabled(workingDirLineEdit, thisEnabled, globalEnabled);
-#
-#  thisEnabled=(!modelCheckBox->isChecked() || 
-#               QFileInfo(modelLineEdit->text()).exists());
-#  markEnabled(modelLineEdit, thisEnabled, globalEnabled);
-#
-#  thisEnabled = (!dataCheckBox->isChecked() || 
-#                 QFileInfo(dataLineEdit->text()).exists());
-#  markEnabled(dataLineEdit, thisEnabled, globalEnabled);
-#
-#  thisEnabled = (!maskAdditionsCheckBox->isChecked() || 
-#                 QFileInfo(maskAdditionsLineEdit->text()).exists());
-#  markEnabled(maskAdditionsLineEdit, thisEnabled, globalEnabled);
-#
-#  if (_okButton)
-#    _okButton->setEnabled(globalEnabled);
-#}
-#
-#
-#void NCSModeling::InitializeFromData(const MIData &)
-#{
-#  //FIXME: pre-populate chain/data?
-#}
-#
-#bool NCSModeling::GetData(MIData &data) {
-#  data["workdir"].str = workingDirLineEdit->text().toStdString();
-#
-#  data["model"].str = "";
-#  if (modelCheckBox->isChecked())
-#    data["model"].str = modelLineEdit->text().toStdString();
-#
-#  data["mtzdata"].str = "";
-#  if (dataCheckBox->isChecked())
-#    data["mtzdata"].str = dataLineEdit->text().toStdString();
-#
-#
-#  data["chainid"].str=primaryChainIDLineEdit->text().toStdString();
-#
-#  data["maskadditions"].str = "";
-#  if (maskAdditionsCheckBox->isChecked()) 
-#    data["maskadditions"].str=maskAdditionsLineEdit->text().toStdString();
-#
-#  if (calculatedRadioButton->isChecked())
-#    data["phasecalc"].radio=0;
-#  else if (averageRadioButton->isChecked())
-#    data["phasecalc"].radio=1;
-#  else if (combinedRadioButton->isChecked())
-#    data["phasecalc"].radio=2;
-#  return true;
-#}
+        self.modelCheckBox.setChecked(False)
+        if len(data["model"]) > 0:
+            self.modelCheckBox.setChecked(True)
+            self.modelLineEdit.setText(data["model"])
+
+        self.dataCheckBox.setChecked(False)
+        if len(data["mtzdata"]) > 0:
+            self.dataCheckBox.setChecked(True)
+            self.dataLineEdit.setText(data["mtzdata"])
+
+        self.primaryChainIDLineEdit.setText(data["chainid"])
+
+        self.maskAdditionsCheckBox.setChecked(False)
+        if len(data["maskadditions"]) > 0:
+            self.maskAdditionsCheckBox.setChecked(True)
+            self.maskAdditionsLineEdit.setText(data["maskadditions"])
+
+        if data["phasecalc"] == 1:
+            self.averageRadioButton.setChecked(True)
+        elif data["phasecalc"] == 2:
+            self.combinedRadioButton.setChecked(True)
+        else:
+            self.calculatedRadioButton.setChecked(True)
+
+        self.timer = QtCore.QTimer(self)
+        self.connect(self.timer, QtCore.SIGNAL("timeout()"),
+                     self, QtCore.SLOT("validateTimeout()"))
+        self.timer.start(100)
+
+        self.connect(self.dataCheckBox, QtCore.SIGNAL("toggled(bool)"),
+                     self, QtCore.SLOT("togglePhaseOptions(bool)"))
+        self.togglePhaseOptions(False)
+
+    @QtCore.pyqtSlot()
+    def on_workingDirPushButton_clicked(self):
+        dir = QtGui.QFileDialog.getExistingDirectory(None, "", self.workingDirLineEdit.text())
+        if not dir.isEmpty():
+            self.workingDirLineEdit.setText(dir)
+
+    def browseFile(self, lineEdit, filter):
+        f = QtGui.QFileDialog.getOpenFileName(None, "Select a file", lineEdit.text(), filter)
+        if not f.isEmpty():
+            lineEdit.setText(f)
+
+    @QtCore.pyqtSlot()
+    def on_modelPushButton_clicked(self):
+        self.browseFile(self.modelLineEdit, "Exclude file (*.txt)")
+
+    @QtCore.pyqtSlot()
+    def on_dataPushButton_clicked(self):
+        self.browseFile(self.dataLineEdit, "Data files (*.mtz)")
+
+    @QtCore.pyqtSlot()
+    def on_maskAdditionsPushButton_clicked(self):
+        self.browseFile(self.maskAdditionsLineEdit, "Include file (*.txt)")
+
+    @QtCore.pyqtSlot(bool)
+    def togglePhaseOptions(self, enable):
+        self.phaseOptions.setEnabled(enable)
+        self.maskAdditionsCheckBox.setEnabled(enable)
+        self.maskAdditionsLineEdit.setEnabled(enable)
+        self.maskAdditionsPushButton.setEnabled(enable)
+
+    @QtCore.pyqtSlot()
+    def validateTimeout(self):
+        globalEnabled = True
+
+        thisEnabled = QtCore.QFileInfo(self.workingDirLineEdit.text()).exists() and QtCore.QFileInfo(self.workingDirLineEdit.text()).isDir()
+        globalEnabled = markEnabled(self.workingDirLineEdit, thisEnabled, globalEnabled)
+
+        thisEnabled = (not self.modelCheckBox.isChecked() or QFileInfo(self.modelLineEdit.text()).exists())
+        globalEnabled = markEnabled(self.modelLineEdit, thisEnabled, globalEnabled)
+
+        thisEnabled = (not self.dataCheckBox.isChecked() or QtCore.QFileInfo(self.dataLineEdit.text()).exists())
+        globalEnabled = markEnabled(self.dataLineEdit, thisEnabled, globalEnabled)
+
+        thisEnabled = (not self.maskAdditionsCheckBox.isChecked() or QtCore.QFileInfo(self.maskAdditionsLineEdit.text()).exists())
+        globalEnabled = markEnabled(self.maskAdditionsLineEdit, thisEnabled, globalEnabled)
+
+        okButton = self.buttonBox.button(QtGui.QDialogButtonBox.Ok)
+        if okButton:
+            okButton.setEnabled(globalEnabled)
+
 
     def runJob(self):
 
-        #settings = QtCore.QSettings("MIFit", "MIExpert")
-        #settings.setValue("ncsmodeler", pickle.dumps(config))
+        data = {
+            "workdir" : '',
+            "model" : '',
+            "mtzdata" : '',
+            "maskadditions" : '',
+            "chainid" : '',
+            "phasecalc" : 0,
+          }
+        data["workdir"] = str(self.workingDirLineEdit.text())
 
+        data["model"] = ""
+        if self.modelCheckBox.isChecked():
+            data["model"] = str(self.modelLineEdit.text())
+
+        data["mtzdata"] = ""
+        if self.dataCheckBox.isChecked():
+            data["mtzdata"] = str(self.dataLineEdit.text())
+
+
+        data["chainid"] = str(self.primaryChainIDLineEdit.text())
+
+        data["maskadditions"] = ""
+        if self.maskAdditionsCheckBox.isChecked():
+            data["maskadditions"] = str(self.maskAdditionsLineEdit.text())
+
+        if self.averageRadioButton.isChecked():
+            data["phasecalc"] = 1
+        elif self.combinedRadioButton.isChecked():
+            data["phasecalc"] = 2
+        else:
+            data["phasecalc"] = 0
+
+        settings = QtCore.QSettings("MIFit", "MIExpert")
+        settings.setValue("ncsmodeler", pickle.dumps(data))
+
+        # Write a PDB of current model
+        workdir = QtCore.QDir(data["workdir"])
+        pdbout = str(buildAbsPath(workdir.absoluteFilePath(QtCore.QString("model.pdb"))));
+        mifit.writeCurrentModel(pdbout)
+
+        mifit.setJobWorkDir(str(QtCore.QFileInfo(data['workdir']).absoluteFilePath()))
         miexpert = os.path.join(os.path.dirname(sys.argv[0]), "MIExpert.py")
         args = [ sys.executable, miexpert, "ncsmodeler" ]
 
-        #  //Write a PDB of current model
-        #  MIGLWidget* doc = MIMainWindow::instance()->currentMIGLWidget();
-        #  if (!doc)
-        #    return;
-        #  Molecule* model = doc->GetDisplaylist()->GetCurrentModel();
-        #  QDir workdir(data["workdir"].str.c_str());
-        #  QString pdbout = buildAbsPath(workdir.absoluteFilePath(
-        #          QString("%1_out.pdb").arg(QFileInfo(doc->GetTitle().c_str()).fileName())));
-        #  model->SavePDBFile(pdbout.toAscii().constData());
-        #
-        #  QStringList args;
-        #  args << MIExpertPy() << "ncsmodeler"
-        #          << "--pdbfile" << pdbout
-        #          << "--targetchain" << data["chainid"].str.c_str();
-        #  if (!data["model"].str.empty()) {
-        #    args << "--preserve_model" << buildAbsPath(data["model"].str.c_str());
-        #  }
-        #  if (!data["maskadditions"].str.empty()) {
-        #    args << "--maskextras" << buildAbsPath(data["maskadditions"].str.c_str());
-        #  }
-        #  if (!data["mtzdata"].str.empty()) {
-        #    args << "--mtzfile" << buildAbsPath(data["mtzdata"].str.c_str());
-        #    switch (data["phasecalc"].radio) {
-        #      case 0:
-        #        break;
-        #      case 1:
-        #        args << "--phase_prob" << "yes";
-        #        break;
-        #      case 2:
-        #        args << "--phase_comb" << "yes";
-        #        break;
-        #    }
-        #  }
+        args += [ "--pdbfile", pdbout,
+                  "--targetchain", data["chainid"] ]
+        if len(data["model"]) > 0:
+            args += [ "--preserve_model", buildAbsPath(data["model"]) ]
+
+        if len(data["maskadditions"]) > 0:
+            args += [ "--maskextras", buildAbsPath(data["maskadditions"]) ]
+
+        if len(data["mtzdata"]) > 0:
+            args += [ "--mtzfile", buildAbsPath(data["mtzdata"]) ]
+            if data["phasecalc"] == 1:
+                args += [ "--phase_prob", "yes" ]
+            elif data["phasecalc"] == 2:
+                args += [ "--phase_comb", "yes" ]
 
         result = subprocess.call(args)
         exit(result)

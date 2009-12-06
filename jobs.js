@@ -41,13 +41,12 @@ var jobs = [
         arguments: [ mifit.directory() + "/MIExpert/mi_deposit3d_ui.py" ]
     },
 
-// Uncomment this section when the mi_ncsmodeler_ui.py script is working
-//    {
-//        menuName: "&NCS Modeling",
-//        jobName: "NCS Modeling",
-//        executable: "python",
-//        arguments: [ mifit.directory() + "/MIExpert/mi_ncsmodeler_ui.py" ]
-//    },
+    {
+        menuName: "&NCS Modeling",
+        jobName: "NCS Modeling",
+        executable: "python",
+        arguments: [ mifit.directory() + "/MIExpert/mi_ncsmodeler_ui.py" ]
+    },
     
 // Uncomment this section when the mi_ligandoverlap_ui.py script is working
 //    {
