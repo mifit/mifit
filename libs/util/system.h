@@ -38,8 +38,4 @@ void MIStringSplit(const std::string &str,
                    std::vector<std::string> &results);
 
 
-#ifdef _WIN32
-#define strcasecmp(a, b) strcmpi((a), (b))
-#endif
-
 #endif // ifndef MI_SYSTEM_H
