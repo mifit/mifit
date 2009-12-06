@@ -1,141 +1,196 @@
 import sys, os, pickle, subprocess
 from PyQt4 import QtCore, QtGui, uic
+import mifit
 
+def buildAbsPath(path):
+    return str(QtCore.QFileInfo(path).absoluteFilePath())
+
+def boolYesNo(value):
+    if value:
+        return "yes"
+    else:
+        return "no"
+
+def markEnabled(w, thisEnabled, globalEnabled):
+    w.setAutoFillBackground(True)
+    if not thisEnabled:
+        pal = w.palette()
+        pal.setColor(QtGui.QPalette.Normal, QtGui.QPalette.Base, QtGui.QColor(255, 255, 128))
+        w.setPalette(pal)
+    else:
+        w.setPalette(QtGui.QPalette())
+
+    return globalEnabled and thisEnabled
 
 class MolRepDialog(QtGui.QDialog):
     def __init__(self, parent=None):
         super(MolRepDialog, self).__init__(parent)
 
-        config = {
-            #  data["workdir"].str="";
-            #  data["pdbfile"].str = "";
-            #  data["mtzfile"].str = "";
-            #  data["fixed_pdb"].str = "";
-            #
-            #  data["multi_search"].b = false;
-            #  data["match_pdbin"].b = false;
-            #  data["engine"].str= "";
-            #
-            #
-            #  std::vector<std::string> sg;
-            #  MIGetSpacegroups(sg);
-            #  data["spacegroup_no"].radio = 0; 
-            #  data["spacegroup_no"].radio_count = sg.size();
-            #  data["spacegroup_no"].radio_labels = sg;
-            #  data["sg_search"].b = false;
-            #
-            #  data["copies"].u = 1;
-          }
+        data = {
+           "workdir" : '',
+           "pdbfile" : '',
+           "mtzfile" : '',
+           "fixed_pdb" : '',
+
+           "multi_search" : False,
+           "match_pdbin" : False,
+           "engine" : '',
+
+           "spacegroup_no" : 0,
+           "sg_search" : False,
+
+           "copies" : 1,
+        }
         settings = QtCore.QSettings("MIFit", "MIExpert")
         appSettings = settings.value("molrep").toString()
         if not appSettings.isEmpty():
-            config = pickle.loads(str(appSettings))
+            data = pickle.loads(str(appSettings))
 
         uiFile = os.path.join(os.path.dirname(sys.argv[0]), "mi_molrep.ui")
         uic.loadUi(uiFile, self)
 
-        #  new MIBrowsePair(workingDirPushButton, workingDirLineEdit,"", true);
-        #  new MIBrowsePair(modelPushButton, modelLineEdit,"PDB file (*.pdb *.res *.ent *.*)");
-        #  new MIBrowsePair(dataPushButton, dataLineEdit,"Data file (*.mtz *.ref *.sca)");
-        #  new MIBrowsePair(fixedModelPushButton, fixedModelLineEdit,"PDB file (*.pdb *.res *.ent *.*)");
-        #  
-        #  _okButton = 0;
-        #  QList<QAbstractButton*> buttons=buttonBox->buttons();
-        #  for (int i=0; i < buttons.size(); ++i) {
-        #    if (buttonBox->buttonRole(buttons[i]) == QDialogButtonBox::AcceptRole) {
-        #      _okButton=buttons[i];
-        #      break;
-        #    }
-        #  }
-        #
-        #  QTimer *timer = new QTimer(this);
-        #  connect(timer, SIGNAL(timeout()), this, SLOT(validateTimeout()));
-        #  timer->start(100);
+        spaceGroupList = mifit.exec_script("mifit.spacegroupList()")
+        if spaceGroupList:
+            sg = spaceGroupList.split(',')
+            self.spaceGroupComboBox.clear()
+            for i in sg:
+                self.spaceGroupComboBox.addItem(i)
+            self.spaceGroupComboBox.setCurrentIndex(-1)
+
+        self.workingDirLineEdit.setText(data["workdir"])
+        self.modelLineEdit.setText(data["pdbfile"])
+        self.dataLineEdit.setText(data["mtzfile"])
+
+        self.fixedModelCheckBox.setChecked(False)
+        if len(data["fixed_pdb"]) != 0:
+            self.fixedModelCheckBox.setChecked(True)
+            self.fixedModelLineEdit.setText(data["fixed_pdb"])
+
+        self.spaceGroupRadioButton.setChecked(False)
+        if data["spacegroup_no"] > 0:
+            self.spaceGroupRadioButton.setChecked(True)
+            self.spaceGroupComboBox.setCurrentIndex(data["spacegroup_no"]-1)
+
+        self.searchMultipleCheckBox.setChecked(data["multi_search"])
+        self.matchInputCheckBox.setChecked(data["match_pdbin"])
+
+        if data["engine"] == "phaser":
+            self.phaserRadioButton.setChecked(True)
+        else:
+            self.molRepRadioButton.setChecked(True)
+
+        self.copiesSpinBox.setValue(data["copies"])
+
+        self.timer = QtCore.QTimer(self)
+        self.connect(self.timer, QtCore.SIGNAL("timeout()"),
+                     self, QtCore.SLOT("validateTimeout()"))
+        self.timer.start(100)
+
+    @QtCore.pyqtSlot()
+    def on_workingDirPushButton_clicked(self):
+        dir = QtGui.QFileDialog.getExistingDirectory(None, "", self.workingDirLineEdit.text())
+        if not dir.isEmpty():
+            self.workingDirLineEdit.setText(dir)
+
+    def browseFile(self, lineEdit, filter):
+        f = QtGui.QFileDialog.getOpenFileName(None, "Select a file", lineEdit.text(), filter)
+        if not f.isEmpty():
+            lineEdit.setText(f)
+
+    @QtCore.pyqtSlot()
+    def on_modelPushButton_clicked(self):
+        self.browseFile(self.modelLineEdit, "PDB file (*.pdb *.res *.ent *.*)")
+
+    @QtCore.pyqtSlot()
+    def on_fixedModelPushButton_clicked(self):
+        self.browseFile(self.fixedModelLineEdit, "PDB file (*.pdb *.res *.ent *.*)")
+
+    @QtCore.pyqtSlot()
+    def on_dataPushButton_clicked(self):
+        self.browseFile(self.dataLineEdit, "Data file (*.mtz *.ref *.sca)")
 
     def runJob(self):
 
-        #settings = QtCore.QSettings("MIFit", "MIExpert")
-        #settings.setValue("molrep", pickle.dumps(config))
+        data = {
+           "workdir" : '',
+           "pdbfile" : '',
+           "mtzfile" : '',
+           "fixed_pdb" : '',
+
+           "multi_search" : False,
+           "match_pdbin" : False,
+           "engine" : '',
+
+           "spacegroup_no" : 1,
+           "sg_search" : False,
+
+           "copies" : 1,
+        }
+
+        data["workdir"] = str(self.workingDirLineEdit.text())
+        data["pdbfile"] = str(self.modelLineEdit.text())
+        data["mtzfile"] = str(self.dataLineEdit.text())
+
+        if self.fixedModelCheckBox.isChecked():
+            data["fixed_pdb"] = str(self.fixedModelLineEdit.text())
+
+        data["spacegroup_no"] = 0
+        if self.spaceGroupRadioButton.isChecked():
+            data["spacegroup_no"] = self.spaceGroupComboBox.currentIndex() + 1
+
+        data["multi_search"] = self.searchMultipleCheckBox.isChecked()
+        data["match_pdbin"] = self.matchInputCheckBox.isChecked()
+
+        data["engine"] = "molrep"
+        if self.phaserRadioButton.isChecked():
+            data["engine"] = "phaser"
+
+        data["copies"] = self.copiesSpinBox.value()
+
+        settings = QtCore.QSettings("MIFit", "MIExpert")
+        settings.setValue("molrep", pickle.dumps(data))
 
         miexpert = os.path.join(os.path.dirname(sys.argv[0]), "MIExpert.py")
         args = [ sys.executable, miexpert, "molrep" ]
 
-        #  QStringList args;
-        #  args << MIExpertPy() << "molrep";
-        #  args << "--engine" << data["engine"].str.c_str();
-        #  if (data["spacegroup_no"].radio != 0) {
-        #      args << "--spacegroup" << QString::number(data["spacegroup_no"].radio);
-        #  } else if (data["sg_search"].b) {
-        #    args << "--sg_search" << "yes";
-        #  }
-        #  args << "--pdbfile" << buildAbsPath(data["model"].str.c_str())
-        #          << "--mtzfile" << buildAbsPath(data["mtzfile"].str.c_str())
-        #          << "--workdir" << buildAbsPath(data["workdir"].str.c_str())
-        #          << "--multi_search" << (data["multi_search"].b ? "yes": "no")
-        #          << "--match_pdbin" << (data["match_pdbin"].b ? "yes": "no")
-        #          << "--copies" << QString::number(data["copies"].u);
-        #  if (!data["fixed_pdb"].str.empty())
-        #    args << "--fixed_pdb" << buildAbsPath(data["fixed_pdb"].str.c_str());
+        args += [ "--engine", data["engine"] ]
+        if data["spacegroup_no"] > 0:
+            args += [ "--spacegroup", str(data["spacegroup_no"]) ]
+        elif data["sg_search"]:
+          args += [ "--sg_search", "yes" ]
+
+        args += [ "--pdbfile", buildAbsPath(data["pdbfile"]),
+                  "--mtzfile", buildAbsPath(data["mtzfile"]),
+                  "--workdir", buildAbsPath(data["workdir"]),
+                  "--multi_search", boolYesNo(data["multi_search"]),
+                  "--match_pdbin", boolYesNo(data["match_pdbin"]),
+                  "--copies", str(data["copies"]) ]
+        if len(data["fixed_pdb"]) != 0:
+            args += [ "--fixed_pdb", buildAbsPath(data["fixed_pdb"]) ]
 
         result = subprocess.call(args)
         exit(result)
 
-#void MolRep::validateTimeout() {
-#  bool globalEnabled = true;
-#
-#  bool thisEnabled=QFileInfo(workingDirLineEdit->text()).exists() &&
-#    QFileInfo(workingDirLineEdit->text()).isDir();
-#  markEnabled(workingDirLineEdit, thisEnabled, globalEnabled);
-#
-#  thisEnabled = (QFileInfo(modelLineEdit->text()).exists());
-#  markEnabled(modelLineEdit, thisEnabled, globalEnabled);
-#
-#  thisEnabled = (QFileInfo(dataLineEdit->text()).exists());
-#  markEnabled(dataLineEdit, thisEnabled, globalEnabled);
-#
-#  thisEnabled = (!fixedModelCheckBox->isChecked() || 
-#                 QFileInfo(fixedModelLineEdit->text()).exists());
-#  markEnabled(fixedModelLineEdit, thisEnabled, globalEnabled);
-#
-#  if (_okButton)
-#    _okButton->setEnabled(globalEnabled);
-#}
-#
-#
-#void MolRep::InitializeFromData(const MIData &data)
-#{
-#  MIData dat=data;
-#  // populate spacegroup combo box from dat;
-#  spaceGroupComboBox->clear();
-#  for (size_t i=0; i< dat["spacegroup_no"].radio_labels.size(); ++i) {
-#    spaceGroupComboBox->addItem(dat["spacegroup_no"].radio_labels[i].c_str());
-#  }
-#  spaceGroupComboBox->setCurrentIndex(0);
-#}
-#
-#bool MolRep::GetData(MIData &data) {
-#  data["workdir"].str=workingDirLineEdit->text().toStdString();
-#  data["model"].str = modelLineEdit->text().toStdString();
-#  data["mtzfile"].str = dataLineEdit->text().toStdString();
-#
-#  data["fixed_pdb"].str = "";
-#  if (fixedModelCheckBox->isChecked())
-#    data["fixed_pdb"].str = fixedModelLineEdit->text().toStdString();
-#
-#  data["spacegroup_no"].radio = 0;
-#  if (spaceGroupRadioButton->isChecked()) 
-#    data["spacegroup_no"].radio = spaceGroupComboBox->currentIndex() + 1; // first spacegroup is 1, first index is 0
-#
-#  data["multi_search"].b = searchMultipleCheckBox->isChecked();
-#  data["match_pdbin"].b = matchInputCheckBox->isChecked();
-#
-#  data["engine"].str = "molrep";
-#  if (phaserRadioButton->isChecked())
-#    data["engine"].str = "phaser";
-#    
-#  data["copies"].u = copiesSpinBox->value();
-#  return true;
-#}
+    @QtCore.pyqtSlot()
+    def validateTimeout(self):
+        globalEnabled = True
+
+        thisEnabled = QtCore.QFileInfo(self.workingDirLineEdit.text()).exists() and QtCore.QFileInfo(self.workingDirLineEdit.text()).isDir()
+        globalEnabled = markEnabled(self.workingDirLineEdit, thisEnabled, globalEnabled)
+
+        thisEnabled = QtCore.QFileInfo(self.modelLineEdit.text()).exists()
+        globalEnabled = markEnabled(self.modelLineEdit, thisEnabled, globalEnabled)
+
+        thisEnabled = QtCore.QFileInfo(self.dataLineEdit.text()).exists()
+        globalEnabled = markEnabled(self.dataLineEdit, thisEnabled, globalEnabled)
+
+        thisEnabled = (not self.fixedModelCheckBox.isChecked() or QtCore.QFileInfo(self.fixedModelLineEdit.text()).exists())
+        globalEnabled = markEnabled(self.fixedModelLineEdit, thisEnabled, globalEnabled)
+
+        okButton = self.buttonBox.button(QtGui.QDialogButtonBox.Ok)
+        if okButton:
+            okButton.setEnabled(globalEnabled)
+
 
 if __name__ == '__main__':
 
