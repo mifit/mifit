@@ -6,13 +6,12 @@ var jobs = [
         arguments: [ mifit.directory() + "/MIExpert/mi_integrate_ui.py" ]
     },
 
-// Uncomment this section when the mi_molrep_ui.py script is working
-//    {
-//        menuName: "&SAD Phasing",
-//        jobName: "SAD Phasing",
-//        executable: "python",
-//        arguments: [ mifit.directory() + "/MIExpert/mi_sadphase_ui.py" ]
-//    },
+    {
+        menuName: "&SAD Phasing",
+        jobName: "SAD Phasing",
+        executable: "python",
+        arguments: [ mifit.directory() + "/MIExpert/mi_sadphase_ui.py" ]
+    },
 
 // Uncomment this section when the mi_molrep_ui.py script is working
 //    {
