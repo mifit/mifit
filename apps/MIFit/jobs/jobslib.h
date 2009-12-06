@@ -2,6 +2,5 @@
 #define mifit_jobs_jobslib_h
 #include "BatchJob.h"
 #include "BatchJobManager.h"
-#include "TestJob.h"
 #include "OpenJobResults.h"
 #endif
