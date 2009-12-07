@@ -1,6 +1,6 @@
 import sys, os, os.path, getopt, subprocess, pickle
 from PyQt4 import QtCore, QtGui, uic
-
+import mifit
 
 def Usage():
     print "Usage: %s [options]" % sys.argv[0]

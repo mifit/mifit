@@ -69,13 +69,12 @@ var jobs = [
         arguments: [ mifit.directory() + "/MIExpert/mi_convertlib_ui.py", "--refprogram", "cns" ]
     },
     
-// Uncomment this section when the mi_restraints_ui.py script is working
-//    {
-//        menuName: "R&efmac5 restraints",
-//        jobName: "Refmac5 restraints",
-//        executable: "python",
-//        arguments: [ mifit.directory() + "/MIExpert/mi_restraints_ui.py" ]
-//    }
+    {
+        menuName: "R&efmac5 restraints",
+        jobName: "Refmac5 restraints",
+        executable: "python",
+        arguments: [ mifit.directory() + "/MIExpert/mi_restraints_ui.py" ]
+    }
 ];
 
 for (var i = 0; i < jobs.length; ++i)
