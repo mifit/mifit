@@ -364,8 +364,8 @@ if __name__ == '__main__':
 
     app = QtGui.QApplication(sys.argv)
 
-    sgList = mifit.exec_script("mifit.spacegroupList()")
-    resList = mifit.exec_script("mifit.dictionaryResidueList()")
+    sgList = mifit.spacegroupList()
+    resList = mifit.dictionaryResidueList()
 
     dialog = BindNGrindDialog(sgList, resList)
 

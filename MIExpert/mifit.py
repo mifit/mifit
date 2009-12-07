@@ -48,10 +48,25 @@ def exec_script(script):
     sock = None
     return result
 
+def version():
+    return exec_script("mifit.version()")
+
+def directory():
+    return exec_script("mifit.directory()")
+
+def scriptPort():
+    return os.environ['MIFIT_SOCKET_ID']
+
 def setJobWorkDir(dir):
     script = "mifit.setJobWorkDir('" + os.environ['MIFIT_JOB_ID'] + "', '" + dir + "')"
-    exec_script(script)
+    return exec_script(script)
 
 def writeCurrentModel(file):
-    script = "mifit.writeCurrentModel('" + file + "')"
-    exec_script(script)
+    return exec_script("mifit.writeCurrentModel('" + file + "')")
+
+def dictionaryResidueList():
+    return exec_script("mifit.dictionaryResidueList()")
+
+def spacegroupList():
+    return exec_script("mifit.spacegroupList()")
+

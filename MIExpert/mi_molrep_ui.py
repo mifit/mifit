@@ -49,7 +49,7 @@ class MolRepDialog(QtGui.QDialog):
         uiFile = os.path.join(os.path.dirname(sys.argv[0]), "mi_molrep.ui")
         uic.loadUi(uiFile, self)
 
-        spaceGroupList = mifit.exec_script("mifit.spacegroupList()")
+        spaceGroupList = mifit.spacegroupList()
         if spaceGroupList:
             sg = spaceGroupList.split(',')
             self.spaceGroupComboBox.clear()

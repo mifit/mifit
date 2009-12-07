@@ -51,7 +51,7 @@ class SadPhasingDialog(QtGui.QDialog):
         uiFile = os.path.join(os.path.dirname(sys.argv[0]), "mi_sadphase.ui")
         uic.loadUi(uiFile, self)
 
-        spaceGroupList = mifit.exec_script("mifit.spacegroupList()")
+        spaceGroupList = mifit.spacegroupList()
         if spaceGroupList:
             sg = spaceGroupList.split(',')
             self.spaceGroupComboBox.clear()
@@ -151,6 +151,7 @@ class SadPhasingDialog(QtGui.QDialog):
         settings = QtCore.QSettings("MIFit", "MIExpert")
         settings.setValue("sadphase", pickle.dumps(data))
 
+        mifit.setJobWorkDir(str(QtCore.QFileInfo(config['workdir']).absoluteFilePath()))
         miexpert = os.path.join(os.path.dirname(sys.argv[0]), "MIExpert.py")
         args = [ sys.executable, miexpert, "sadphase" ]
 

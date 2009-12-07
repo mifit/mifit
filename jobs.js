@@ -48,13 +48,12 @@ var jobs = [
         arguments: [ mifit.directory() + "/MIExpert/mi_ncsmodeler_ui.py" ]
     },
     
-// Uncomment this section when the mi_ligandoverlap_ui.py script is working
-//    {
-//        menuName: "Cocr&ystal Superposition",
-//        jobName: "Cocrystal Superposition",
-//        executable: "python",
-//        arguments: [ mifit.directory() + "/MIExpert/mi_ligandoverlap_ui.py" ]
-//    },
+    {
+        menuName: "Cocr&ystal Superposition",
+        jobName: "Cocrystal Superposition",
+        executable: "python",
+        arguments: [ mifit.directory() + "/MIExpert/mi_ligandoverlap_ui.py" ]
+    },
 
     {
         menuName: "Convert CIF to &SHELX",

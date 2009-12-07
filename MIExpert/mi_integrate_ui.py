@@ -41,7 +41,7 @@ class IntegrateDialog(QtGui.QDialog):
         uic.loadUi(uiFile, self)
 
         self.spaceGroupComboBox.clear()
-        sgList = mifit.exec_script("mifit.spacegroupList()")
+        sgList = mifit.spacegroupList()
         if sgList:
             sg = sgList.split(',')
             for i in sg:
