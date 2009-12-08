@@ -47,6 +47,8 @@
 #include "tools.h"
 #include "GenericDataDialog.h"
 #include "ui/SmilesDialog.h"
+#include "ui/AtomColors.h"
+#include "ui/BValueColors.h"
 
 #ifdef _WIN32
 #include <images/mifit_icon_32x32.xpm>
@@ -862,24 +864,28 @@ void MIMainWindow::OnPreferences()
 
 void MIMainWindow::OnDefineAtomColors()
 {
-    MIAtomColorsDialog dlg(this, "Define Atom Coloring Scheme");
     MIData data;
+    AtomColors dlg(this);
+    dlg.setWindowTitle("Define Atom Coloring Scheme");
+    dlg.InitializeFromData(data);
+    if (dlg.exec() != QDialog::Accepted)
+    {
+        return;
+    }
+    dlg.GetData(data);
     //  input: atomNames.strList, atomColors.strList
     data["atomNames"].strList = Colors::atomnames;
     data["atomColors"].strList = Colors::atomcolors;
 
-    if (dlg.GetResults(data))
-    {
-        Colors::atomnames = data["atomNames"].strList;
-        Colors::atomcolors = data["atomColors"].strList;
+    Colors::atomnames = data["atomNames"].strList;
+    Colors::atomcolors = data["atomColors"].strList;
 
-        MIGLWidget *mdoc = currentMIGLWidget();
-        if (mdoc)
-        {
-            Molecule *model = mdoc->GetDisplaylist()->CurrentItem();
-            mdoc->ColorModel(model);
-            mdoc->ReDraw();
-        }
+    MIGLWidget *mdoc = currentMIGLWidget();
+    if (mdoc)
+    {
+        Molecule *model = mdoc->GetDisplaylist()->CurrentItem();
+        mdoc->ColorModel(model);
+        mdoc->ReDraw();
     }
 }
 
@@ -909,11 +915,15 @@ void MIMainWindow::OnDefineBValueColors()
     data["level9"].f = Colors::BValueRanges[8]/100.0f;
     data["level10"].f = Colors::BValueRanges[9]/100.0f;
 
-    MIBValueColorsDialog dlg(0, "Define Atom Coloring Scheme");
-    if (!dlg.GetResults(data))
+    BValueColors dlg(this);
+    dlg.setWindowTitle("Define Atom Coloring Scheme");
+    dlg.InitializeFromData(data);
+    if (dlg.exec() != QDialog::Accepted)
     {
         return;
     }
+    dlg.GetData(data);
+
     Colors::BValueColors[0] = data["color1"].i;
     Colors::BValueColors[1] = data["color2"].i;
     Colors::BValueColors[2] = data["color3"].i;
@@ -1034,13 +1044,12 @@ void MIMainWindow::OnLoadLigMol()
     std::string code;
     while (true)
     {
-        std::string str;
-        MIGetStringDialog dlg(0, "Ligand ID", "ID Code (3 letters)");
-        if (!dlg.GetValue("UNK", str) || str.size() == 0)
+        QString str = QInputDialog::getText(this, "Ligand ID", "ID Code (3 letters)", QLineEdit::Normal, "UNK");
+        if (str.isEmpty())
         {
             return;
         }
-        code = str;
+        code = str.toStdString();
         if (code.size() > 3
             || (code.size() > 0 && !isalnum(code[0]))
             || (code.size() > 1 && !isalnum(code[1]))
@@ -1218,21 +1227,16 @@ std::string MIMainWindow::OnLoadLigand(std::string wildcard, std::string filenam
                                             QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
         if (replace == QMessageBox::No)
         {
-            std::string newcode;
-            MIGetStringDialog dlg(0, "Enter Three-Letter Code", "New Code:");
-            if (!dlg.GetValue(newcode, newcode))
-            {
-                return "";
-            }
-            if (newcode.size() == 0)
+            QString newcode = QInputDialog::getText(this, "Enter Three-Letter Code", "New Code:");
+            if (newcode.isEmpty())
             {
                 return "";
             }
             else
             {
-                entry.res->setType(std::string(newcode.c_str()));
+                entry.res->setType(newcode.toStdString());
             }
-            code = std::string(newcode.c_str());
+            code = newcode.toStdString();
         }
         if (replace == QMessageBox::Cancel)
         {

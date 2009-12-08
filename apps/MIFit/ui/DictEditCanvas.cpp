@@ -21,6 +21,7 @@
 #include <QMessageBox>
 #include <QTime>
 #include <QTimer>
+#include <QInputDialog>
 
 #include <nongui/nonguilib.h>
 #include <chemlib/chemlib.h>
@@ -1091,9 +1092,8 @@ void DictEditCanvas::on_changeNameButton_clicked()
     {
         return;
     }
-    std::string s(model->getResidues()->type());
-    MIGetStringDialog dlg(0, "Rename Dictionary Entry", "Enter 3-letter name:");
-    if (!dlg.GetValue(s, s))
+    QString s = QInputDialog::getText(this, "Rename Dictionary Entry", "Enter 3-letter name:", QLineEdit::Normal, model->getResidues()->type().c_str());
+    if (s.isEmpty())
     {
         return;
     }
@@ -1109,7 +1109,7 @@ void DictEditCanvas::on_changeNameButton_clicked()
         vector<std::string>::iterator name = names.begin();
         while (name != names.end())
         {
-            if (std::string(name->c_str()) == s)
+            if (std::string(name->c_str()) == s.toStdString())
             {
                 if (QMessageBox::question(this, "Replace dictionary entry?",
                                           "That name already exists!\nDid you want to replace it?",
@@ -1128,8 +1128,8 @@ void DictEditCanvas::on_changeNameButton_clicked()
         }
 
         // Finalize rename
-        model->getResidues()->setType(s);
-        std::string t = ::format("Dictionary Editor - %s", s.c_str());
+        model->getResidues()->setType(s.toStdString());
+        std::string t = ::format("Dictionary Editor - %s", s.toAscii().constData());
         parent->setWindowTitle(t.c_str());
         ReDraw();
     }
@@ -1658,13 +1658,13 @@ void DictEditCanvas::OnSetAngle()
     b = edge->ideal_length;
     c = acos( ((pickedAngle->ideal_angle * pickedAngle->ideal_angle) - (a*a) - (b*b))/(-2*a*b)) * RAD2DEG;
 
-    MIGetFloatDialog dlg(0, "Set Angle", "Enter new angle in degrees:");
-    float na;
-    if (!dlg.GetValue((float)c, na, 0.0f, 360.0f))
+    bool ok;
+    double na = QInputDialog::getDouble(this, "Set Angle", "Enter new angle in degrees:", c, 0.0, 360.0, 1, &ok);
+    if (!ok)
     {
         return;
     }
-    newangle = (double)na;
+    newangle = na;
 
     c = sqrt( (a*a) + (b*b) - 2*a*b*cos(newangle * DEG2RAD));
     pickedAngle->ideal_angle = c;
@@ -1713,9 +1713,9 @@ void DictEditCanvas::OnSetBondLength()
         return;
     }
 
-    MIGetFloatDialog dlg(0, "Set Ideal Bond Length", "Enter new bond length:");
-    float d;
-    if (dlg.GetValue(pickedBond->ideal_length, d, 0.0f))
+    bool ok;
+    double d = QInputDialog::getDouble(this, "Set Ideal Bond Length", "Enter new bond length:", pickedBond->ideal_length, 0.0, std::numeric_limits<double>::max(), 4, &ok);
+    if (ok)
     {
         OnSetBondLength2(d);
         ReDraw();
@@ -1878,14 +1878,10 @@ void DictEditCanvas::OnChangeBondOrder()
     a1 = pickedBond->getAtom1();
     a2 = pickedBond->getAtom2();
     // Ask the user what they want the bond order to be
-    std::vector<std::string> choices;
-    choices.push_back("Single");
-    choices.push_back("Double");
-    choices.push_back("Triple");
-    choices.push_back("Partial Double");
-    choicei = MIGetSingleChoiceIndex("Change bond order to:",
-                                     "Change bond order",
-                                     choices);
+    QStringList choices;
+    choices << "Single" << "Double" << "Triple" << "Partial Double";
+    QString item = QInputDialog::getItem(this, "Change bond order", "Change bond order to:", choices);
+    choicei = choices.indexOf(item);
     neworder = GetBondOrder((unsigned char) (choicei + 1));
     oldorder = GetBondOrder(pickedBond); //What is bond order for my current bond
 
@@ -2099,7 +2095,7 @@ void DictEditCanvas::OnChangeAtomType()
     MIAtom tatom;
     vector<Bond> edges;
     vector<Bond>::iterator i, e;
-    std::string choices[] =
+    static const char *choices[] =
     {
         "",
         "H", "HE",
@@ -2120,12 +2116,16 @@ void DictEditCanvas::OnChangeAtomType()
         "KH"
     };
 
-    std::vector<std::string> choice_vec;
-    for (unsigned int i = 0; i < 105; ++i)
+    static QStringList choice_vec;
+    if (!choice_vec.size())
     {
-        choice_vec.push_back(choices[i]);
+        for (unsigned int i = 0; i < 105; ++i)
+        {
+            choice_vec += choices[i];
+        }
     }
-    choice = MIGetSingleChoiceIndex("Change atom type to:", "Change Atom Type", choice_vec);
+    QString item = QInputDialog::getItem(this, "Change atom type to:", "Change Atom Type", choice_vec);
+    choice = choice_vec.indexOf(item);
     if (choice < 1)
     {
         return;
@@ -2145,7 +2145,7 @@ void DictEditCanvas::OnChangeAtomType()
     {
         oldname++;
     }
-    newname = choices[choice].c_str();
+    newname = choice_vec.at(choice).toAscii().constData();
     newname += oldname;
     tatom.setName(newname.c_str());
     tatom.setAtomicnumber(choice);
@@ -2571,7 +2571,6 @@ void DictEditCanvas::OnRenameAtom()
     const char *on, *nn;  //oldname ptr and new name ptr
     RESIDUE *res;
     MIAtom *atom;
-    std::string oldname, newname;
     if (AtomStack->empty())
     {
         return;
@@ -2585,9 +2584,8 @@ void DictEditCanvas::OnRenameAtom()
     // Therefore the user may only edit the "number" of the atom i.e. they can
     // rename C65 to C14 and that's okay
 
-    MIGetStringDialog dlg(0, "New Atom Name", "Enter new atom name:");
-    oldname = atom->name();
-    if (!dlg.GetValue(oldname, newname))
+    QString newname = QInputDialog::getText(this, "New Atom Name", "Enter new atom name:", QLineEdit::Normal, atom->name());
+    if (newname.isEmpty())
     {
         return;
     }
@@ -2600,11 +2598,11 @@ void DictEditCanvas::OnRenameAtom()
     }
 
     //Check if user "changed" atom type
-    oldname = Atomic_Name(atom->atomicnumber());
+    std::string oldname = Atomic_Name(atom->atomicnumber());
     MIStringTrim(oldname, false);
     MIStringTrim(oldname); //Trim from both sides
     on = oldname.c_str();
-    nn = newname.c_str();
+    nn = newname.toAscii().constData();
     while (*on != '\0' && *nn != '\0')
     {
         if (*on == *nn)
@@ -2624,7 +2622,7 @@ void DictEditCanvas::OnRenameAtom()
         }
     }
 
-    atom->setName(newname.c_str());
+    atom->setName(newname.toAscii().constData());
     UpdateGeom();
 }
 

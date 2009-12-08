@@ -22,6 +22,7 @@
 #define strncasecmp strnicmp
 #endif
 
+#include <QDialog>
 #include <QDir>
 #include <QString>
 #include <QMenuBar>
@@ -40,6 +41,7 @@
 #include <QMdiSubWindow>
 #include <QMessageBox>
 #include <QLabel>
+#include <QInputDialog>
 
 #include <nongui/nonguilib.h>
 #include <math/mathlib.h>
@@ -81,6 +83,8 @@
 #include "tools.h"
 #include "PhaseFileLoadDialog.h"
 #include "RefinementOptionsDialog.h"
+#include "ui/LSQFitDialog.h"
+#include "ui/SelectCrystal.h"
 
 using namespace chemlib;
 using namespace mi::math;
@@ -2341,9 +2345,9 @@ void MIGLWidget::OnDimNonactiveModels()
 
 void MIGLWidget::OnAmountToDimNonactiveModels()
 {
-    MIGetFloatDialog dlg(this, "Amount to dim non-active models", "Amount to dim non-active models (0.0 to 1.0)");
-    float percent;
-    if (dlg.GetValue(viewpoint->getAmountToDimNonactiveModels(), percent, 0.0f, 1.0f))
+    bool ok;
+    double percent = QInputDialog::getDouble(this, "Amount to dim non-active models", "Amount to dim non-active models (0.0 to 1.0)", viewpoint->getAmountToDimNonactiveModels(), 0.0, 1.0, 2, &ok);
+    if (ok)
     {
         viewpoint->setAmountToDimNonactiveModels(percent);
         scene->renderer->setAmountToDimNonactiveModels(percent);
@@ -2478,17 +2482,18 @@ void MIGLWidget::gotoXyzWithPrompt()
 
     char buf[1024];
     sprintf(buf, "%0.2f %0.2f %0.2f", m_x, m_y, m_z);
-    std::string str(buf);
+    QString str(buf);
 
-    MIGetStringDialog dlg(this, "Go to x,y,z", "Enter the coordinate to center at (Angstroms):", true);
-    if (!dlg.GetValue(str, str))
+    bool ok;
+    str = QInputDialog::getText(this, "Go to x,y,z", "Enter the coordinate to center at (Angstroms):", QLineEdit::Normal, str, &ok);
+    if (!ok)
     {
         return;
     }
 
-    MIStringReplace(str, ",", " ");
+    str.replace(',', " ");
     viewpoint->Do();
-    if (sscanf(str.c_str(), "%f%f%f", &m_x, &m_y, &m_z) == 3)
+    if (sscanf(str.toAscii().constData(), "%f%f%f", &m_x, &m_y, &m_z) == 3)
     {
         gotoXyz(m_x, m_y, m_z);
     }
@@ -4278,72 +4283,76 @@ void MIGLWidget::OnFitLsqsuperpose()
         return;
     }
 
-    MILSQFitDialog dlg(this, "Least-Squares Superposition");
     MIData data;
-    if (dlg.GetResults(data))
+    static LSQFitDialog dlg(this);
+    dlg.setWindowTitle("Least-Squares Superposition");
+    dlg.InitializeFromData(data);
+    if (dlg.exec() != QDialog::Accepted)
     {
-
-        Molecule *source = findMolecule(GetDisplaylist(), data["sourceModel"].str);
-        Molecule *target = findMolecule(GetDisplaylist(), data["targetModel"].str);
-        if (!source || !target)
-            return;
-
-        MIIter<RESIDUE> res = source->GetResidues();
-        int m_chain = res->chain_id();
-        float tx, ty, tz, x, y, z;
-        bool chain_only = data["applyToChain"].b;
-        if (chain_only)
-        {
-            m_chain = data["chainID"].str[0];
-        }
-        // save matrix for later
-        LSQMatrix lsq_matrix;
-        float r[3][3], v[3];
-        r[0][0] = data["r00"].f;
-        r[0][1] = data["r01"].f;
-        r[0][2] = data["r02"].f;
-
-        r[1][0] = data["r10"].f;
-        r[1][1] = data["r11"].f;
-        r[1][2] = data["r12"].f;
-
-        r[2][0] = data["r20"].f;
-        r[2][1] = data["r21"].f;
-        r[2][2] = data["r22"].f;
-
-        v[0] = data["v0"].f;
-        v[1] = data["v1"].f;
-        v[2] = data["v2"].f;
-
-
-        lsq_matrix.SetMatrix(r, v);
-        // Checkpoint the model
-        std::string s = ::format("Before LSQ of %s onto %s", source->compound.c_str(), target->compound.c_str());
-        if (!SaveModelFile(source, s.c_str()))
-        {
-            Logger::message("Warning: Unable to save model - will not be able to Undo");
-        }
-        for (; res; ++res)
-        {
-            if (chain_only && res->chain_id() != m_chain)
-            {
-                continue;
-            }
-            for (int i = 0; i < res->atomCount(); i++)
-            {
-                tx = res->atom(i)->x();
-                ty = res->atom(i)->y();
-                tz = res->atom(i)->z();
-                x = lsq_matrix.Xvalue(tx, ty, tz);
-                y = lsq_matrix.Yvalue(tx, ty, tz);
-                z = lsq_matrix.Zvalue(tx, ty, tz);
-                res->atom(i)->setPosition(x, y, z);
-            }
-        }
-        Modify(true);
-        source->SetCoordsChanged(true);
-        ReDraw();
+        return;
     }
+    dlg.GetData(data);
+
+    Molecule *source = findMolecule(GetDisplaylist(), data["sourceModel"].str);
+    Molecule *target = findMolecule(GetDisplaylist(), data["targetModel"].str);
+    if (!source || !target)
+        return;
+
+    MIIter<RESIDUE> res = source->GetResidues();
+    int m_chain = res->chain_id();
+    float tx, ty, tz, x, y, z;
+    bool chain_only = data["applyToChain"].b;
+    if (chain_only)
+    {
+        m_chain = data["chainID"].str[0];
+    }
+    // save matrix for later
+    LSQMatrix lsq_matrix;
+    float r[3][3], v[3];
+    r[0][0] = data["r00"].f;
+    r[0][1] = data["r01"].f;
+    r[0][2] = data["r02"].f;
+
+    r[1][0] = data["r10"].f;
+    r[1][1] = data["r11"].f;
+    r[1][2] = data["r12"].f;
+
+    r[2][0] = data["r20"].f;
+    r[2][1] = data["r21"].f;
+    r[2][2] = data["r22"].f;
+
+    v[0] = data["v0"].f;
+    v[1] = data["v1"].f;
+    v[2] = data["v2"].f;
+
+
+    lsq_matrix.SetMatrix(r, v);
+    // Checkpoint the model
+    std::string s = ::format("Before LSQ of %s onto %s", source->compound.c_str(), target->compound.c_str());
+    if (!SaveModelFile(source, s.c_str()))
+    {
+        Logger::message("Warning: Unable to save model - will not be able to Undo");
+    }
+    for (; res; ++res)
+    {
+        if (chain_only && res->chain_id() != m_chain)
+        {
+            continue;
+        }
+        for (int i = 0; i < res->atomCount(); i++)
+        {
+            tx = res->atom(i)->x();
+            ty = res->atom(i)->y();
+            tz = res->atom(i)->z();
+            x = lsq_matrix.Xvalue(tx, ty, tz);
+            y = lsq_matrix.Yvalue(tx, ty, tz);
+            z = lsq_matrix.Zvalue(tx, ty, tz);
+            res->atom(i)->setPosition(x, y, z);
+        }
+    }
+    Modify(true);
+    source->SetCoordsChanged(true);
+    ReDraw();
 }
 
 void MIGLWidget::OnFitFitmolecule()
@@ -4988,13 +4997,12 @@ void MIGLWidget::OnFitRenameresidue()
         return;
     }
 
-    MIGetStringDialog dlg(this, "Rename Residue", "Enter new residue name:");
-    std::string newname;
-    if (!dlg.GetValue("", newname))
+    QString newname = QInputDialog::getText(this, "Rename Residue", "Enter new residue name:");
+    if (newname.isEmpty())
     {
         return;
     }
-    res->setName(newname);
+    res->setName(newname.toStdString());
     ReDrawAll();
 }
 
@@ -5076,9 +5084,9 @@ void MIGLWidget::solidSurfaceCommand(int id, std::vector<Molecule*> &mols, std::
         break;
     case ID_SOLIDSURFACE_RESMOOTH:
     {
-        MIGetUnsignedIntegerDialog dlg(this, "Set the number of smoothing steps", "Steps (0-5)");
-        unsigned int val;
-        if (dlg.GetValue(MIGetSurfaceSmoothingSteps(), val, 0, 5))
+        bool ok;
+        unsigned int val = static_cast<unsigned int>(QInputDialog::getInt(this, "Smoothing Steps", "Set the number of smoothing steps", MIGetSurfaceSmoothingSteps(), 0, 5, 1, &ok));
+        if (ok)
         {
             MISetSurfaceSmoothingSteps(val);
         }
@@ -5138,9 +5146,10 @@ void MIGLWidget::solidSurfaceCommand(int id, std::vector<Molecule*> &mols, std::
 
     case ID_SOLIDSURFACE_ALPHA:
     {
-        MIGetFloatDialog dlg(this, "Transparency percentage", "Transparency factor 0.0 (invisible) - 1.0 (solid)");
-        float percent = MIGetSurfaceAlpha();
-        if (dlg.GetValue(percent, percent, 0.0f, 1.0f))
+        bool ok;
+        double percent = MIGetSurfaceAlpha();
+        percent = QInputDialog::getDouble(this, "Transparency percentage", "Transparency factor 0.0 (invisible) - 1.0 (solid)", percent, 0.0, 1.0, 2, &ok);
+        if (ok)
         {
             MISetSurfaceAlpha(percent);
         }
@@ -5149,9 +5158,10 @@ void MIGLWidget::solidSurfaceCommand(int id, std::vector<Molecule*> &mols, std::
 
     case ID_SOLIDSURFACE_MINVAL:
     {
-        MIGetFloatDialog dlg(this, "Minimum gradient", "Enter value to be used as the miniumn value for gradient color interpolation.  Enter 0.0 for min and max to use automatically determined values.");
-        float val = MIGetSurfaceMinValue();
-        if (dlg.GetValue(val, val, FLT_MIN, FLT_MAX))
+        bool ok;
+        double val = MIGetSurfaceMinValue();
+        val = QInputDialog::getDouble(this, "Minimum gradient", "Enter value to be used as the miniumn value for gradient color interpolation.  Enter 0.0 for min and max to use automatically determined values.", val, FLT_MIN, FLT_MAX, 4, &ok);
+        if (ok)
         {
             MISetSurfaceMinValue(val);
         }
@@ -5160,10 +5170,12 @@ void MIGLWidget::solidSurfaceCommand(int id, std::vector<Molecule*> &mols, std::
 
     case ID_SOLIDSURFACE_MAXVAL:
     {
-        MIGetFloatDialog dlg(this, "Maximum gradient", "Enter value to be used as the maxiumn value for gradient color interpolation.  Enter 0.0 for min and max to use automatically determined values.");
-        float val = MIGetSurfaceMaxValue();
-        if (dlg.GetValue(val, val, FLT_MIN, FLT_MAX))
+        bool ok;
+        double val = MIGetSurfaceMaxValue();
+        val = QInputDialog::getDouble(this, "Maximum gradient", "Enter value to be used as the maxiumn value for gradient color interpolation.  Enter 0.0 for min and max to use automatically determined values.", val, FLT_MIN, FLT_MAX, 4, &ok);
+        if (ok)
         {
+
             MISetSurfaceMaxValue(val);
         }
         break;
@@ -5475,9 +5487,8 @@ static EMap *CreateMap(Displaylist *dl,
         else
         {
             MIData data;
-            MISelectCrystalDialog dlg(0, "Select Crystal");
             data["info"].str = CMapHeaderBase().Label();
-            dlg.GetResults(data);
+            SelectCrystal::doSelectCrystal(data);
             CMapHeaderBase mh(data["info"].str);
             map->mapheader->updateSymmetryAndCell(mh);
             map->RecalcResolution();
@@ -5629,9 +5640,8 @@ void MIGLWidget::mapLoadfromfile(const std::string &file)
         else
         {
             MIData data;
-            MISelectCrystalDialog dlg(this, "Select Crystal");
             data["info"].str = CMapHeaderBase().Label();
-            dlg.GetResults(data);
+            SelectCrystal::doSelectCrystal(data);
             CMapHeaderBase mh(data["info"].str);
             map->mapheader->updateSymmetryAndCell(mh);
         }
@@ -5706,13 +5716,16 @@ void MIGLWidget::OnSequenceEnter()
         return;
     }
 
-    MIGetStringDialog dlg(this, "Enter Sequence", "Type in a sequence or paste it from another source", true);
-    MIData data;
-    data["val"].str = "";
-
-    if (dlg.GetResults(data))
+    QDialog dlg(this);
+    dlg.setWindowTitle("Enter Sequence");
+    QVBoxLayout *layout = new QVBoxLayout(&dlg);
+    layout->addWidget(new QLabel("Type in a sequence or paste it from another source", &dlg));
+    QTextEdit *text = new QTextEdit(&dlg);
+    layout->addWidget(text);
+    layout->addWidget(new QDialogButtonBox(&dlg));
+    if (dlg.exec() == QDialog::Accepted)
     {
-        Models->CurrentItem()->SetSequence(data["val"].str.c_str());
+        Models->CurrentItem()->SetSequence(text->toPlainText().toAscii().constData());
         PaletteChanged = true;
         ReDraw();
     }
@@ -7705,15 +7718,14 @@ void MIGLWidget::OnCheckpointModel()
     if (!model)
         return;
 
-    MIGetStringDialog dlg(this, "Checkpoint Description", "Enter a description of checkpoint:");
-    std::string newname;
-    if (!dlg.GetValue("User checkpoint", newname))
+    QString newname = QInputDialog::getText(this, "Checkpoint Description", "Enter a description of checkpoint:", QLineEdit::Normal, "User checkpoint");
+    if (newname.isEmpty())
     {
         Logger::log("Action canceled.");
         return;
     }
 
-    if (!SaveModelFile(model, newname.c_str()))
+    if (!SaveModelFile(model, newname.toAscii().constData()))
     {
         Logger::message("Warning: Unable to save model - will not be able to Undo");
     }
@@ -9026,12 +9038,13 @@ void MIGLWidget::OnFindGeomErrors()
     float errorlevel = 6.0F;
     if (model)
     {
-        MIGetFloatDialog dlg(this, "Enter Error Level",
+        bool ok;
+        errorlevel = QInputDialog::getDouble(this, "Enter Error Level",
                              "Enter the error threshold (default 6.0).\n"
                              "Differences from ideality > error_threshold*tolerance\n"
                              "will be annotated\n"
-                             "To set tolerances use Refine/Refine Options");
-        if (!dlg.GetValue(errorlevel, errorlevel, 0.0f))
+                             "To set tolerances use Refine/Refine Options", errorlevel, 0.0, FLT_MAX, 2 &ok);
+        if (!ok)
         {
             return;
         }
@@ -9066,9 +9079,9 @@ void MIGLWidget::OnLabelEveryNth()
         return;
     }
 
-    MIGetUnsignedIntegerDialog dlg(this, "Every nth residue will be labeled", "Label every nth");
-    unsigned int nth = 10;
-    if (!dlg.GetValue(nth, nth, 0))
+    bool ok;
+    unsigned int nth = static_cast<unsigned int>(QInputDialog::getInt(this, "Label every nth", "Every nth residue will be labeled", 10, 0, INT_MAX, 1 &ok));
+    if (!ok)
     {
         return;
     }
@@ -10370,8 +10383,9 @@ void MIGLWidget::OnObjectSurfaceSpherearoundatom()
     static float radius = 10.0F;
     static float dotsper = 0.5F;
 
-    MIGetFloatDialog dlg(this, "Sphere around atom", "Enter the radius of the sphere:");
-    if (!dlg.GetValue(radius, radius, 0.0f))
+    bool ok;
+    radius = QInputDialog::getDouble(this, "Sphere around atom", "Enter the radius of the sphere:", radius, 0.0, FLT_MAX, 2, &ok);
+    if (!ok)
     {
         return;
     }
@@ -10397,8 +10411,9 @@ void MIGLWidget::OnShowShowwithinsphere()
         return;
     }
 
-    MIGetFloatDialog dlg(this, "Show Within Sphere", "Enter the radius of the sphere:");
-    if (!dlg.GetValue(r, r, 0.0f))
+    bool ok;
+    r = QInputDialog::getDouble(this, "Show Within Sphere", "Enter the radius of the sphere:", r, 0.0, FLT_MAX, 2, &ok);
+    if (!ok)
     {
         return;
     }
@@ -11137,9 +11152,10 @@ void MIGLWidget::select(Molecule *model, RESIDUE *residue, MIAtom *atom, bool la
 void MIGLWidget::OnRenderTargetSize()
 {
 
-    MIGetFloatDialog dlg(this, "Edit view target size", "Edit view target size");
+    bool ok;
     float size = scene->getTargetSize();
-    if (!dlg.GetValue(size, size, 0.0f))
+    size = QInputDialog::getDouble(this, "Edit view target size", "Edit view target size", size, 0.0, FLT_MAX, 2, &ok);
+    if (!ok)
     {
         return;
     }
@@ -11497,11 +11513,10 @@ bool MIGLWidget::OnSaveDocument(const std::string &pathname)
         newpath += "mlw";
         std::string mess("The file does not have the extension 'mlw'\n"
                          "Would this name be OK? (Cancel to use old name)");
-        std::string path(newpath.c_str());
-        MIGetStringDialog dlg(this, "Suggested Extension Change", mess.c_str());
-        if (dlg.GetValue(path, path) && path.size())
+        QString path = QInputDialog::getText(this, "Suggested Extension Change", mess.c_str(), QLineEdit::Normal, newpath.c_str());
+        if (!path.isEmpty())
         {
-            filename = path.c_str();
+            filename = path.toStdString();
         }
     }
     return SaveDocument(filename);
@@ -11686,15 +11701,14 @@ void MIGLWidget::OnAnnotation()
         return;
     }
 
-    std::string str;
-    MIGetStringDialog dlg(this, "Annotation", "Type in the annotation:");
-    if (!dlg.GetValue(str, str))
+    QString str = QInputDialog::getText(this, "Annotation", "Type in the annotation:");
+    if (str.isEmpty())
     {
         return;
     }
 
     ViewPoint *viewpoint = GetViewPoint();
-    node->addAnnotation(str.c_str(), viewpoint->getcenter(0), viewpoint->getcenter(1), viewpoint->getcenter(2));
+    node->addAnnotation(str.toAscii().constData(), viewpoint->getcenter(0), viewpoint->getcenter(1), viewpoint->getcenter(2));
     // make most recently added annotation the CurrentAnnotation
     CurrentAnnotation = node->getAnnotations().back();
 }
@@ -11708,15 +11722,14 @@ void MIGLWidget::Purge(EMap *emap)
 
 void MIGLWidget::OnNewModel()
 {
-    std::string compound;
-    MIGetStringDialog dlg(this, "Input model name", "What do you want to call this model?");
-    if (!dlg.GetValue(compound, compound))
+    QString compound = QInputDialog::getText(this, "Input model name", "What do you want to call this model?");
+    if (compound.isEmpty())
     {
         return;
     }
 
     vector<Bond> connects;
-    Models->AddItem(NULL, compound.c_str(), NULL, &connects, MoleculeType::New);
+    Models->AddItem(NULL, compound.toAscii().constData(), NULL, &connects, MoleculeType::New);
     //OnFitInsertresidue();
     Modify(true);
     ReDrawAll();
@@ -12113,8 +12126,9 @@ void MIGLWidget::OnMapAddFree()
         }
     }
     static unsigned int f = 5;
-    MIGetUnsignedIntegerDialog dlg(this, "Add R-Free Flag Options", "Enter percentage (1-100):");
-    if (!dlg.GetValue(f, f, 1, 100))
+    bool ok;
+    f = static_cast<unsigned int>(QInputDialog::getInt(this, "Add R-Free Flag Options", "Enter percentage (1-100):", f, 1, 100, 1, &ok));
+    if (!ok)
     {
         return;
     }

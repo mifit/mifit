@@ -11,6 +11,7 @@
 #include <QActionGroup>
 #include <QStackedLayout>
 #include <QMessageBox>
+#include <QInputDialog>
 
 #include <set>
 
@@ -33,6 +34,7 @@
 #include "MIQTreeWidget.h"
 #include "GenericDataDialog.h"
 #include "ui/MIDialog.h"
+#include "ui/SelectCrystal.h"
 
 #include "surf.h"
 
@@ -676,13 +678,12 @@ void AtomsTree::EditItem()
     }
     std::string s;
     s = ::format("%0.4f %0.4f", atoms[0]->BValue(), atoms[0]->occ());
-    std::string str;
     float bvalue;
     float occ;
-    MIGetStringDialog dlg(0, "Edit atom", "Edit B-Value and occupancy");
-    if (dlg.GetValue(s.c_str(), str) && str.size())
+    QString str = QInputDialog::getText(this, "Edit atom", "Edit B-Value and occupancy", QLineEdit::Normal, s.c_str());
+    if (!str.isEmpty())
     {
-        sscanf(str.c_str(), "%f%f", &bvalue, &occ);
+        sscanf(str.toAscii().constData(), "%f%f", &bvalue, &occ);
     }
     else
     {
@@ -1407,12 +1408,12 @@ void ResiduesTree::EditItem()
                 RESIDUE *residue = data->residue;
                 std::string s;
                 s = ::format("Enter new starting residue number (%d digits max)", (int)(MAXNAME -1));
-                std::string str(residue->name());
-                MIGetStringDialog dlg(0, "Edit residue number", s.c_str());
-                if (!dlg.GetValue(str, newname) || !newname.size())
+                QString str = QInputDialog::getText(this, "Edit residue number", s.c_str(), QLineEdit::Normal, residue->name().c_str());
+                if (str.isEmpty())
                 {
                     return;
                 }
+                newname = str.toStdString();
             }
         }
     }
@@ -1462,13 +1463,12 @@ void ResiduesTree::EditItemAtoms()
     MIAtom *atom = atoms[0];
     std::string s;
     s = ::format("%0.4f %0.4f", atom->BValue(), atom->occ());
-    std::string str;
     float bvalue;
     float occ;
-    MIGetStringDialog dlg(0, "Edit atom", "Edit B-Value and occupancy");
-    if (dlg.GetValue(s.c_str(), str) && str.size())
+    QString str = QInputDialog::getText(this, "Edit atom", "Edit B-Value and occupancy", QLineEdit::Normal, s.c_str());
+    if (!str.isEmpty())
     {
-        sscanf(str.c_str(), "%f%f", &bvalue, &occ);
+        sscanf(str.toAscii().constData(), "%f%f", &bvalue, &occ);
     }
     else
     {
@@ -2456,11 +2456,10 @@ void ModelsTree::OnSaveToCrystals()
 
         if (data->mapHeader != NULL)
         {
-            MIGetStringDialog dlg(NULL, "Crystal name", "Crystal name:");
-            std::string crystal;
-            if (dlg.GetValue("", crystal) && crystal.size())
+            QString crystal = QInputDialog::getText(this, "Crystal name", "Crystal name:");
+            if (!crystal.isEmpty())
             {
-                data->mapHeader->SaveCrystal(std::string(crystal.c_str()));
+                data->mapHeader->SaveCrystal(crystal.toStdString());
             }
         }
     }
@@ -2763,17 +2762,16 @@ void ModelsTree::EditItem()
             int chain_id = chain->chain_id();
             char chainid = (char)(chain_id&255);
 
-            MIGetStringDialog dlg(0, "Chain ID", "Enter Chain ID (single char)");
-            std::string s;
-            if (dlg.GetValue(std::string(1, chainid), s) && s.size())
+            QString s = QInputDialog::getText(this, "Chain ID", "Enter Chain ID (single char)", QLineEdit::Normal, QString(chainid));
+            if (!s.isEmpty())
             {
-                unsigned char c = s.c_str()[0];
+                unsigned char c = s.toAscii().at(0);
                 model->setChainId(chain, c);
                 chainsModified.insert(model);
             }
-            int n;
-            MIGetIntegerDialog dlg2(0, "Residue number", "Enter number for first residue (rest of chain will also be renumbered)");
-            if (dlg2.GetValue(1, n))
+            bool ok;
+            int n = QInputDialog::getInt(0, "Residue number", "Enter number for first residue (rest of chain will also be renumbered)", 1, 1, 999, 1, &ok);
+            if (ok)
             {
                 model->renumberChain(chain, n);
                 chainsModified.insert(model);
@@ -2783,9 +2781,8 @@ void ModelsTree::EditItem()
     if (crystals.size() > 0)
     {
         MIData data;
-        MISelectCrystalDialog dlg(0, "Select Crystal");
         data["info"].str = crystals[0]->Label();
-        dlg.GetResults(data);
+        SelectCrystal::doSelectCrystal(data);
         std::vector<CMapHeaderBase*>::iterator crystalIter = crystals.begin();
         for (; crystalIter != crystals.end(); ++crystalIter)
         {
@@ -2909,13 +2906,12 @@ void ModelsTree::InsertItem()
         if (data->model != NULL)
         {
             Molecule *model = data->model;
-            std::string chainId("N");
-            MIGetStringDialog dlg(0, "New chain ID", "Chain ID for new chain");
-            if (!dlg.GetValue(chainId, chainId) || !chainId.size())
+            QString chainId = QInputDialog::getText(this, "New chain ID", "Chain ID for new chain", QLineEdit::Normal, "N");
+            if (chainId.isEmpty())
             {
                 return;
             }
-            unsigned char c = chainId.c_str()[0];
+            unsigned char c = chainId.toAscii().at(0);
             RESIDUE *buffer = Application::instance()->GetResidueBuffer();
             model->InsertResidues(model->getResidues(), buffer, 3, (c&255) + 1*256);
             model->Build();

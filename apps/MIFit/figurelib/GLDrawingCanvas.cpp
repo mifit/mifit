@@ -12,6 +12,8 @@
 #include <QDebug>
 #include <QDir>
 #include <QFileDialog>
+#include <QFontDialog>
+#include <QInputDialog>
 #include <QMessageBox>
 #include <QPainter>
 #include <QPrintDialog>
@@ -572,39 +574,36 @@ void GLDrawingCanvas::OnExportImage()
 
 void GLDrawingCanvas::OnSelectFont()
 {
-    std::string f = _current_font;
-    if (MIGetFontFromUser(f))
-    {
-        _current_font = f;
-    }
+    bool ok;
+    QFont f = QFontDialog::getFont(&ok, QFont(_current_font.c_str()), this);
+    if (ok)
+        _current_font = f.toString().toStdString();
 }
 
 void GLDrawingCanvas::OnAddAnnotation()
 {
-    MIGetStringDialog dlg(0, "Get annotation", "Enter annotation");
-    MIData dat;
-    dat["val"].str = "Custom annotation";
-    if (!dlg.GetResults(dat))
+    bool ok;
+    QString str = QInputDialog::getText(this, "Get annotation", "Enter annotation", QLineEdit::Normal, "Custom annotation", &ok);
+    if (!ok)
         return;
 
     float x, y;
     toWorldCoords(QPoint(int(0.3*width()), int(0.2*height())), x, y);
-    DrawLabel(x, y, 0.0f, 0.0f, 0.0f, Drawing::ANNOTATION_LABEL_SIZE, dat["val"].str);
+    DrawLabel(x, y, 0.0f, 0.0f, 0.0f, Drawing::ANNOTATION_LABEL_SIZE, str.toStdString());
     updateGL();
 }
 
 
 void GLDrawingCanvas::OnChangeFonts(const MIActionEvent &evt)
 {
-    std::string f = _current_font;
-    if (!MIGetFontFromUser(f))
-    {
+    bool ok;
+    QFont f = QFontDialog::getFont(&ok, QFont(_current_font.c_str()), this);
+    if (!ok)
         return;
-    }
 
     if (evt.GetId() == ID_ASP_CURRENT_ITEM_FONT && _selected_item != UINT_MAX)
     {
-        _items[_selected_item].font = f;
+        _items[_selected_item].font = f.toString().toStdString();
         updateGL();
         return;
     }
@@ -629,7 +628,7 @@ void GLDrawingCanvas::OnChangeFonts(const MIActionEvent &evt)
         if (item.text.size()
             && (evt.GetId() == ID_ASP_ALL_FONTS || item.font_size == fsize))
         {
-            item.font = f;
+            item.font = f.toString().toStdString();
         }
     }
     updateGL();

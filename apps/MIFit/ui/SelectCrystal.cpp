@@ -113,3 +113,14 @@ const std::string SelectCrystal::getLabel()
 {
     return valueLineEdit->text().toStdString();
 }
+
+bool SelectCrystal::doSelectCrystal(MIData& data) {
+    SelectCrystal dlg(data["info"].str, 0);
+    dlg.setWindowTitle("Select Crystal");
+    if (dlg.exec() != QDialog::Accepted)
+    {
+        return false;
+    }
+    data["info"].str = dlg.getLabel();
+    return true;
+}

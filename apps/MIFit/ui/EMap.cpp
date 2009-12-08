@@ -11,6 +11,10 @@
 #include "Application.h"
 
 #include "MapSettings.h"
+#include "ui/ContourOptions.h"
+#include "ui/SelectCrystal.h"
+#include <QDialog>
+#include <QDialogButtonBox>
 
 struct mmtz_column_;
 
@@ -96,18 +100,37 @@ void EMap::Save(CArchive &ar, int i)
 bool EMap::ContourLevels()
 {
     MIData data;
-    MIContourDialog dlg(0, MapID().c_str());
     MapSettingsToData(*settings, data, mapmin, mapmax);
-    if (dlg.GetResults(data))
+
+    QDialog dlg(0);
+
+    dlg.setWindowTitle(MapID().c_str());
+    dlg.setModal(true);
+    dlg.setSizeGripEnabled(true);
+
+    ContourOptions *co = new ContourOptions(&dlg, false);
+    QDialogButtonBox *bb = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, &dlg);
+    dlg.connect(bb, SIGNAL(accepted()), &dlg, SLOT(accept()));
+    dlg.connect(bb, SIGNAL(rejected()), &dlg, SLOT(reject()));
+
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    mainLayout->addWidget(co);
+    mainLayout->addWidget(bb);
+    dlg.setLayout(mainLayout);
+
+    co->InitializeFromData(data);
+    if (dlg.exec() != QDialog::Accepted)
     {
-        float mapmin, mapmax;
-        DataToMapSettings(data, *settings, mapmin, mapmax);
-        SetMapLinewidth(settings->maplinewidth);
-        //settings->save(); // No longer relevant.  only the preferences are saved
-        mapContourLevelsChanged(this);
-        return true;
+        return false;
     }
-    return false;
+    co->GetData(data);
+
+    float mapmin, mapmax;
+    DataToMapSettings(data, *settings, mapmin, mapmax);
+    SetMapLinewidth(settings->maplinewidth);
+    //settings->save(); // No longer relevant.  only the preferences are saved
+    mapContourLevelsChanged(this);
+    return true;
 }
 
 long EMap::LoadMap(const char *pathname, int type)
@@ -141,9 +164,8 @@ long EMap::LoadCIFMap(const char *pathname, int datablock)
 bool EMap::PromptForCrystal()
 {
     MIData data;
-    MISelectCrystalDialog dlg(0, "Select Crystal");
     data["info"].str = CMapHeaderBase().Label();
-    dlg.GetResults(data);
+    SelectCrystal::doSelectCrystal(data);
     CMapHeaderBase mh(data["info"].str);
     mapheader->updateSymmetryAndCell(mh);
     RecalcResolution();

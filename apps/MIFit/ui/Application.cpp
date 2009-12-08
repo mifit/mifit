@@ -623,7 +623,20 @@ void Application::MixBackgroundColor()
 
 void Application::backgroundColor()
 {
-    PaletteColor color = MIGetColorFromUser(0, BackgroundColor);
+    MIData data;
+    data["red"].u = (unsigned int)BackgroundColor.red;
+    data["green"].u = (unsigned int)BackgroundColor.green;
+    data["blue"].u = (unsigned int)BackgroundColor.blue;
+    MIColorPromptDialog dlg(0, "Color dialog");
+    if (!dlg.GetResults(data))
+    {
+        return;
+    }
+    PaletteColor color;
+    color.red = (unsigned char)data["red"].u;
+    color.green = (unsigned char)data["green"].u;
+    color.blue = (unsigned char)data["blue"].u;
+
     SetBackgroundColor(color);
 }
 
