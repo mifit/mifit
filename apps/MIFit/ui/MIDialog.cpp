@@ -51,7 +51,7 @@ MIDialog::~MIDialog()
 
 void ValidateData(const MIData &data)
 {
-    MIDataConstIter i = data.begin();
+    std::map<std::string, MIDatum>::const_iterator i = data.begin();
     for (; i!= data.end(); ++i)
     {
         MIDatum datum = i->second;
