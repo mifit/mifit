@@ -2,6 +2,7 @@
 #define MI_DIALOG_H
 
 #include "core/corelib.h"
+#include <cfloat>
 #include <climits>
 #include <vector>
 #include <string>
@@ -168,15 +169,6 @@ public:
 private:
     bool PromptForResults(MIData &data);
     //variables: info.str (same format as CMapHeaderBase.Label() generates
-};
-
-class MISmilesImportDialog : public MIDialog
-{
-public:
-    MISmilesImportDialog(QWidget *parent, const std::string &name);
-private:
-    bool PromptForResults(MIData &data);
-    //variables: mode.i filename.str code.str smiles.str dbquery.str
 };
 
 class MIContourDialog : public MIDialog

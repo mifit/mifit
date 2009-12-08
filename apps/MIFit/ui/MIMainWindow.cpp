@@ -46,6 +46,7 @@
 #include "GLFormatDialog.h"
 #include "tools.h"
 #include "GenericDataDialog.h"
+#include "ui/SmilesDialog.h"
 
 #ifdef _WIN32
 #include <images/mifit_icon_32x32.xpm>
@@ -1073,7 +1074,6 @@ void MIMainWindow::OnLoadLigPdb()
 
 void MIMainWindow::OnLoadLigSmi()
 {
-    MISmilesImportDialog dlg(0, "Import Smiles String");
     MIData data;
     data["mode"].radio = 0;
     data["mode"].radio_count = 3;
@@ -1082,10 +1082,13 @@ void MIMainWindow::OnLoadLigSmi()
     data["smiles"].str = "";
     data["dbquery"].str = "";
 
-    if (!dlg.GetResults(data))
+    SmilesDialog dlg(this);
+    dlg.setWindowTitle("Import Smiles String");
+    if (dlg.exec() != QDialog::Accepted)
     {
         return;
     }
+    dlg.GetResults(data);
 
     std::string res;
     switch (data["mode"].radio)

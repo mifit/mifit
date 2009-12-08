@@ -575,26 +575,6 @@ bool MISelectCrystalDialog::PromptForResults(MIData &data)
 
 
 //
-// SmilesImport
-//
-MISmilesImportDialog::MISmilesImportDialog(QWidget *parent, const std::string &name)
-    : MIDialog(parent, name)
-{
-}
-
-bool MISmilesImportDialog::PromptForResults(MIData &data)
-{
-    SmilesDialog dlg(_qparent);
-    if (dlg.exec() != QDialog::Accepted)
-    {
-        return false;
-    }
-    dlg.GetResults(data);
-    return true;
-}
-
-
-//
 // Contour
 //
 MIContourDialog::MIContourDialog(QWidget *parent, const std::string &name)
