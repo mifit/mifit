@@ -375,7 +375,7 @@ Application::~Application()
     {
         if (geomrefiner->dict.GetModified())
         {
-            if (QMessageBox::question(MIMainWindow::instance(), "Dictionary Modified",
+            if (QMessageBox::question(0, "Dictionary Modified",
                                       "The Dictionary has been modified\nDo you want to save it?",
                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes)
             {
