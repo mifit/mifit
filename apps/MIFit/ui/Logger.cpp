@@ -6,6 +6,7 @@
 
 #include "ui/MIDialog.h"
 #include "MIMainWindow.h"
+#include <QMessageBox>
 
 void Logger::log(const char *format, ...)
 {
@@ -22,7 +23,7 @@ void Logger::message(const char *format, ...)
     va_start(argp, format);
     std::string s = format_arg_list(format, argp);
     va_end(argp);
-    MIMessageBox(s.c_str());
+    QMessageBox::information(0, "Info", s.c_str());
 }
 
 void Logger::footer(const char *format, ...)

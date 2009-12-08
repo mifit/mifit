@@ -6,6 +6,7 @@
 
 #include <QDir>
 #include <QFileInfo>
+#include <QMessageBox>
 
 
 ManageCrystals::ManageCrystals(QWidget *parent)
@@ -343,8 +344,7 @@ void ManageCrystals::promptSaveIfModified()
     updateButtons();
     if (modified || fieldModified)
     {
-        if (MIMessageBox("The current crystal has been modifed.\nShould the changes be saved?",
-                         "Save crystal?", MIDIALOG_YES_NO) == MI_YES)
+        if (QMessageBox::question(this, "Save crystal?", "The current crystal has been modifed.\nShould the changes be saved?", QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
         {
             saveCrystal();
         }

@@ -689,7 +689,7 @@ void MIMainWindow::OnExit()
 void MIMainWindow::OnAbout()
 {
     std::string s = ::format("MIFit %s\n", MIFit_version);
-    MIMessageBox(s.c_str(), "About MIFit");
+    QMessageBox::about(this, "About MIFit", s.c_str());
 }
 
 void MIMainWindow::Log(const std::string &msg)
@@ -1045,8 +1045,7 @@ void MIMainWindow::OnLoadLigMol()
             || (code.size() > 1 && !isalnum(code[1]))
             || (code.size() > 2 && !isalnum(code[2])))
         {
-            MIMessageBox("ID Code must be alphanumeric and at most 3 letters long",
-                         "Invalid ID", MIDIALOG_ICON_ERROR);
+            QMessageBox::critical(this, "Invalid ID", "ID Code must be alphanumeric and at most 3 letters long");
         }
         else
         {
@@ -1115,7 +1114,7 @@ void MIMainWindow::OnLoadLigSmi()
             }
             else
             {
-                MIMessageBox("Error running smiles database command.\nCheck the setting in File/Preferences.../Environment.", "Command failed", MIDIALOG_ICON_ERROR);
+                QMessageBox::critical(this, "Command failed", "Error running smiles database command.\nCheck the setting in File/Preferences.../Environment.");
                 proc.kill();
                 return;
             }
@@ -1190,7 +1189,7 @@ std::string MIMainWindow::OnLoadLigand(std::string wildcard, std::string filenam
 
     if (entry.res->atomCount() == 0)
     {
-        MIMessageBox("No atoms were found in the file. Please check the file format.", "Error: No atoms in file", MIDIALOG_ICON_WARNING);
+        QMessageBox::critical(this, "Error: No atoms in file", "No atoms were found in the file. Please check the file format.");
         return "";
     }
 
@@ -1212,10 +1211,9 @@ std::string MIMainWindow::OnLoadLigand(std::string wildcard, std::string filenam
         rplc_warn += entry.res->type().c_str();
         rplc_warn += "\" in the dictionary?";
 
-        int replace = MIMessageBox(rplc_warn.c_str(),
-                                   "Replace residue?",
-                                   MIDIALOG_YES_NO | MIDIALOG_CANCEL);
-        if (replace == MI_NO)
+        int replace = QMessageBox::question(this, "Replace residue?", rplc_warn.c_str(),
+                                            QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+        if (replace == QMessageBox::No)
         {
             std::string newcode;
             MIGetStringDialog dlg(0, "Enter Three-Letter Code", "New Code:");
@@ -1233,7 +1231,7 @@ std::string MIMainWindow::OnLoadLigand(std::string wildcard, std::string filenam
             }
             code = std::string(newcode.c_str());
         }
-        if (replace == MI_CANCEL)
+        if (replace == QMessageBox::Cancel)
         {
             return "";
         }
@@ -1241,8 +1239,7 @@ std::string MIMainWindow::OnLoadLigand(std::string wildcard, std::string filenam
 
     if (DupeAtomNames(entry.res) != 0)
     {
-        if (MIMessageBox("File contains duplicate atom names...Generate unique names?", "Duplicate Atom Names",
-                         MIDIALOG_YES_NO | MIDIALOG_NO_DEFAULT) == MI_YES)
+        if (QMessageBox::question(this, "Duplicate Atom Names", "File contains duplicate atom names...Generate unique names?", QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
         {
             renameResidueAtomsToUnique(entry.res);
         }
@@ -1253,9 +1250,7 @@ std::string MIMainWindow::OnLoadLigand(std::string wildcard, std::string filenam
     }
     if (DupeAtomNames(entry.res) != 0)
     {
-        MIMessageBox("File contains duplicate atom names...please edit with unique names!",
-                     "Error: Duplicate Atom Names",
-                     MIDIALOG_ICON_WARNING);
+        QMessageBox::critical(this, "Error: Duplicate Atom Names", "File contains duplicate atom names...please edit with unique names!");
         return "";
     }
 
@@ -1268,7 +1263,7 @@ std::string MIMainWindow::OnLoadLigand(std::string wildcard, std::string filenam
     {
         std::string message("Unable to load ligand.\n");
         message += ex;
-        MIMessageBox(message.c_str(), "Unable to load ligand.");
+        QMessageBox::critical(this, "Unable to load ligand.", message.c_str());
         return "";
     }
     entry.res->setPrefBonds(entry.bonds);
@@ -1278,10 +1273,10 @@ std::string MIMainWindow::OnLoadLigand(std::string wildcard, std::string filenam
     unsigned int level;
     if (!MIFitDictionary()->DictHCheck(entry.res, level))
     {
-        int ret = MIMessageBox("There is no dictionary, or the number of hydrogens in the dictionary and the residue you are replacing"
+        int ret = QMessageBox::question(this, "H Check", "There is no dictionary, or the number of hydrogens in the dictionary and the residue you are replacing"
                                "are different.\nDo you want to load the appropriate default dictionary?\n"
-                               "\nNote: any changes to the current dictionary will be lost.", "H Check", MIDIALOG_YES_NO|MIDIALOG_CANCEL);
-        if (ret == MI_YES)
+                               "\nNote: any changes to the current dictionary will be lost.", QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+        if (ret == QMessageBox::Yes)
         {
             std::string path, name, ext;
             SplitPath(Application::instance()->getDictionary(), &path, &name, &ext);
@@ -1300,7 +1295,7 @@ std::string MIMainWindow::OnLoadLigand(std::string wildcard, std::string filenam
             }
             MIFitDictionary()->LoadDictionary(path.c_str(), false, true, level);
         }
-        if (ret == MI_CANCEL)
+        if (ret == QMessageBox::Cancel)
         {
             return "";
         }
@@ -1414,7 +1409,6 @@ void MIMainWindow::OnHardwareStereo()
 
 void MIMainWindow::OnScript()
 {
-    MIMessageBox("Testing", "MIFit");
 }
 
 void MIMainWindow::OnSideChainTool()

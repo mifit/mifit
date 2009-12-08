@@ -690,8 +690,7 @@ class myTorsionWritePrompt
 public:
     bool operator()()
     {
-        return (MIMessageBox("Write torsions to file?", "Write Torsions?",
-                             MIDIALOG_YES_NO | MIDIALOG_NO_DEFAULT) == MI_YES);
+        return QMessageBox::question(0, "Write Torsions?", "Write torsions to file?", QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes;
     }
 
 };
@@ -900,8 +899,7 @@ void Application::saveDict()
         {
             if (s != std::string(Application::instance()->XFitDictSetting).c_str())
             {
-                if (MIMessageBox("Do you want to make this the default dictionary?", "Change dictionary",
-                                 MIDIALOG_YES_NO) == MI_YES)
+                if (QMessageBox::question(0, "Change dictionary", "Do you want to make this the default dictionary?", QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
                 {
                     Application::instance()->XFitDictSetting = s.c_str();
                 }
@@ -1253,9 +1251,10 @@ void Application::toggleHardwareStereo()
 {
     bool hardwareStereo = config->GetProfileInt("View Parameters", "hardwareStereo", 0) != 0;
     config->WriteProfileInt("View Parameters", "hardwareStereo", !hardwareStereo);
-//  MIMessageBox("Changing the hardware stereo setting does not affect\n"
-//    "open document or dictionary windows. Re-open documents\n"
-//    "to enable the new setting.", "Hardware Stereo Notice", MIDIALOG_ICON_WARNING, this);
+    //  QMessageBox::warning(this, "Hardware Stereo Notice",
+    //    "Changing the hardware stereo setting does not affect\n"
+    //    "open document or dictionary windows. Re-open documents\n"
+    //    "to enable the new setting.");
 }
 
 

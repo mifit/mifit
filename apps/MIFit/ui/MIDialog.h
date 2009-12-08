@@ -32,42 +32,6 @@ int MIGetSingleChoiceIndex(const std::string &message,
                            QWidget *parent = 0);
 
 
-class MIMessageDialog : public MIDialog
-{
-public:
-    MIMessageDialog(QWidget *parent,
-                    const std::string &name,
-                    const std::string &messsage,
-                    int style);
-
-private:
-    void init(const std::string &messsage, int style);
-
-
-    bool PromptForResults(MIData &data);
-    std::string _message;
-    int _style;
-    //variables: val.i
-};
-
-// wrappers for MIMessageDialog
-const int MI_YES = 1;
-const int MI_NO = 0;
-const int MI_CANCEL = -1;
-
-#define MIDIALOG_YES_NO                0x00000001
-#define MIDIALOG_CANCEL                0x00000002
-#define MIDIALOG_NO_DEFAULT            0x00000004
-
-#define MIDIALOG_ICON_WARNING          0x00000100
-#define MIDIALOG_ICON_ERROR            0x00000200
-#define MIDIALOG_ICON_INFORMATION      0x00000800
-
-int MIMessageBox(const std::string &message, const std::string &caption = "", int style = MIDIALOG_ICON_INFORMATION, QWidget *parent = 0);
-bool MIYesNo(const std::string &message, const std::string &caption = "");
-
-
-
 class MIGetIntegerDialog : public MIDialog
 {
 public:

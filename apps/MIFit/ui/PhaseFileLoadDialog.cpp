@@ -1,6 +1,7 @@
 #include "PhaseFileLoadDialog.h"
 #include <map/maplib.h>
 #include "MIDialog.h"
+#include <QMessageBox>
 
 static const char *F_TEXT = "F = ";
 static const char *FO_TEXT = "Fo = ";
@@ -602,7 +603,7 @@ bool PhaseFileLoadDialog::SetFile(const std::string &fname,
 
     if (!_models.size() && !without_fc_types.size())
     {
-        MIMessageBox("No source of phases for file: " + fname +".  Load model first.");
+        QMessageBox::information(this, "No phases source", ("No source of phases for file: " + fname +".  Load model first.").c_str());
         return false;
     }
 
@@ -656,7 +657,7 @@ bool PhaseFileLoadDialog::SetFile(const std::string &fname,
         std::vector<char> field_types;
         if (!EMapBase::GetMTZColumnInfo(fname, labels, field_types))
         {
-            MIMessageBox("Can't get MTZ file column info for: " + fname);
+            QMessageBox::critical(this, "Error", ("Can't get MTZ file column info for: " + fname).c_str());
             return false;
         }
 
@@ -685,7 +686,7 @@ bool PhaseFileLoadDialog::SetFile(const std::string &fname,
     }
     else
     {
-        MIMessageBox("Unrecognized phase file type: " + fname);
+        QMessageBox::critical(this, "Error", ("Unrecognized phase file type: " + fname).c_str());
         return false;
     }
 

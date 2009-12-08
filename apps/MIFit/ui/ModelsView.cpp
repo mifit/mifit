@@ -10,6 +10,7 @@
 #include <QSettings>
 #include <QActionGroup>
 #include <QStackedLayout>
+#include <QMessageBox>
 
 #include <set>
 
@@ -1255,7 +1256,7 @@ void ResiduesTree::DeleteItem()
         std::string mess;
         RESIDUE *residue = residues[0];
         mess = ::format("Are you sure you want to delete residue %s?", residue->name().c_str());
-        if (MIMessageBox(mess.c_str(), "Confirm Delete Residue", MIDIALOG_YES_NO) == MI_YES)
+        if (QMessageBox::question(this, "Confirm Delete Residue", mess.c_str(), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
         {
             //REDUNDANT: view->Purge(residue);
             model->DeleteRes(residue);
@@ -1265,7 +1266,7 @@ void ResiduesTree::DeleteItem()
     {
         std::string mess;
         mess = ::format("Are you sure you want to delete the %d residues selected?", residues.size());
-        if (MIMessageBox(mess.c_str(), "Confirm Delete Residues", MIDIALOG_YES_NO) == MI_YES)
+        if (QMessageBox::question(this, "Confirm Delete Residues", mess.c_str(), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
         {
 //REDUNDANT
 //       std::vector<RESIDUE*>::iterator iter = residues.begin();
@@ -2646,7 +2647,7 @@ void ModelsTree::DeleteItem()
         {
             mess = ::format("Are you sure you want to delete the %d models selected?", models.size());
         }
-        if (MIMessageBox(mess.c_str(), "Confirm Delete Model", MIDIALOG_YES_NO) == MI_YES)
+        if (QMessageBox::question(this, "Confirm Delete Model", mess.c_str(), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
         {
             std::vector<Molecule*>::iterator iter = models.begin();
             for (; iter != models.end(); ++iter)
@@ -2671,7 +2672,7 @@ void ModelsTree::DeleteItem()
         {
             mess = ::format("Are you sure you want to delete the %d chains selected?", chains.size());
         }
-        if (MIMessageBox(mess.c_str(), "Confirm Delete Chains", MIDIALOG_YES_NO) == MI_YES)
+        if (QMessageBox::question(this, "Confirm Delete Chains", mess.c_str(), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
         {
             std::vector<RESIDUE*>::iterator iter = chains.begin();
             for (; iter != chains.end(); ++iter)
@@ -2702,7 +2703,7 @@ void ModelsTree::DeleteItem()
         {
             mess = ::format("Are you sure you want to delete the %d maps selected?", maps.size());
         }
-        if (MIMessageBox(mess.c_str(), "Confirm Delete Maps", MIDIALOG_YES_NO) == MI_YES)
+        if (QMessageBox::question(this, "Confirm Delete Maps", mess.c_str(), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
         {
             std::vector<EMap*>::iterator iter = maps.begin();
             for (; iter != maps.end(); ++iter)
@@ -2962,7 +2963,7 @@ void ModelsTree::MapProperties()
         if (data->map != NULL)
         {
             EMap *map = data->map;
-            MIMessageBox(map->Info().c_str(), "Map Properties", MIDIALOG_ICON_INFORMATION);
+            QMessageBox::information(this, "Map Properties", map->Info().c_str());
         }
     }
 }

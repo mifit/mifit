@@ -742,7 +742,7 @@ void MIGLWidget::paintGL()
             if (Models->CurrentItem()->modelnumber == 0)
             {
                 // no number if not from .mlw file
-                if (Models->NumberItems() == 1 || MIMessageBox("Center view on new molecule?", "Center view?", MIDIALOG_YES_NO, this) == MI_YES)
+                if (Models->NumberItems() == 1 || QMessageBox::question(this, "Center view?", "Center view on new molecule?", QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
                 {
                     std::string resshow;
                     std::string at("*");
@@ -3163,15 +3163,14 @@ bool MIGLWidget::FitOK()
             return true;
         }
 
-        int ret = MIMessageBox("There are atoms being fit already.  Do you want to apply the changes?", "Accept Fit",
-                               MIDIALOG_CANCEL | MIDIALOG_YES_NO, this);
+        int ret = QMessageBox::question(this, "Accept Fit", "There are atoms being fit already.  Do you want to apply the changes?", QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
         switch (ret)
         {
-        case MI_CANCEL: return false;
+        case QMessageBox::Cancel: return false;
             break;
-        case MI_YES:    ApplyFit();
+        case QMessageBox::Yes:    ApplyFit();
             break;
-        case MI_NO:     cancelFitting();
+        case QMessageBox::No:     cancelFitting();
             break;
         }
     }
@@ -3529,7 +3528,7 @@ void MIGLWidget::replaceResidue(const char *residueType)
     if (!res)
     {
         std::string s = ::format("Type: %s not found in the dictionary", residueType);
-        MIMessageBox(s.c_str(), "Warning", MIDIALOG_ICON_WARNING, this);
+        QMessageBox::warning(this, "Warning", s.c_str());
         return;
     }
     if (res->atomCount() < 1)
@@ -3988,7 +3987,7 @@ void MIGLWidget::OnSchematicSecondaryStructure()
     if (node != NULL)
     {
         int clear = false;
-        clear = MIMessageBox("Do you want to hide residue atoms?", "Show Schematic", MIDIALOG_YES_NO, this) == MI_YES;
+        clear = QMessageBox::question(this, "Show Schematic", "Do you want to hide residue atoms?", QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes;
         if (clear)
         {
             std::string resshow;
@@ -4006,7 +4005,7 @@ void MIGLWidget::OnRibbonSecondaryStructure()
     if (node != NULL)
     {
         int clear = false;
-        clear = MIMessageBox("Do you want to hide residue atoms?", "Show Ribbons", MIDIALOG_YES_NO, this) == MI_YES;
+        clear = QMessageBox::question(this, "Show Ribbons", "Do you want to hide residue atoms?", QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes;
         if (clear)
         {
             std::string resshow;
@@ -4157,21 +4156,20 @@ void MIGLWidget::promptSecondaryStructureOptions(const std::string &type)
 
 void MIGLWidget::OnObjectBackboneribbon()
 {
-    int do_single = MI_NO;
+    int do_single = QMessageBox::No;
     int clear = false;
     if (GetDisplaylist()->NumberItems() > 1)
     {
-        do_single = MIMessageBox("Do you want to build ribbons for all models?\n(No builds ribbons for just the current, active model)",
-                                 "Make Ribbons", MIDIALOG_YES_NO|MIDIALOG_CANCEL, this);
-        if (do_single == MI_CANCEL)
+        do_single = QMessageBox::question(this, "Make Ribbons", "Do you want to build ribbons for all models?\n(No builds ribbons for just the current, active model)", QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+        if (do_single == QMessageBox::Cancel)
         {
             return;
         }
     }
-    clear = MIMessageBox("Do you want to hide residue atoms?", "Make Ribbons", MIDIALOG_YES_NO, this) == MI_YES;
+    clear = QMessageBox::question(this, "Make Ribbons", "Do you want to hide residue atoms?", QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes;
     std::string resshow;
     std::string at("*");
-    if (do_single == MI_NO)
+    if (do_single == QMessageBox::No)
     {
         Molecule *node = GetDisplaylist()->CurrentItem();
         if (node)
@@ -4621,7 +4619,7 @@ void MIGLWidget::deleteResidueOnTopOfStack()
         mess = "Are you sure you want to delete ";
         mess += resid(res).c_str();
         mess += "?";
-        if (MIMessageBox(mess.c_str(), "Confirm", MIDIALOG_YES_NO, this) == MI_NO)
+        if (QMessageBox::question(this, "Confirm", mess.c_str(), QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
         {
             return;
         }
@@ -7586,8 +7584,8 @@ void MIGLWidget::modelReplaceWithSequence()
     std::string s = ::format("About to replace the residues between %s and %s\n"
                              "with the lower sequence.  You can undo with Model/Revert Model.\nOK?",
                              resid(start).c_str(), resid(end).c_str());
-    int answer = MIMessageBox(s.c_str(), "Replace with Sequence", MIDIALOG_YES_NO, this);
-    if (answer == MI_NO)
+    bool answer = QMessageBox::question(this, "Replace with Sequence", s.c_str(), QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes;
+    if (answer)
     {
         return;
     }
@@ -8877,7 +8875,7 @@ void MIGLWidget::findLigandFit()
     }
     else
     {
-        MIMessageBox("To use FitLigand, you must be fitting exactly one (whole) residue.", "", MIDIALOG_ICON_INFORMATION, this);
+        QMessageBox::information(this, "Info", "To use FitLigand, you must be fitting exactly one (whole) residue.");
     }
 
     if (IsFitting() && CurrentAtoms.size() > 0)
@@ -9523,9 +9521,9 @@ bool MIGLWidget::DoYouWantBallAndCylinder()
 {
     if (viewpoint->GetBallandStick() != ViewPoint::BALLANDCYLINDER)
     {
-        if (MIMessageBox("In order to see the effect of this command, the render mode "
+        if (QMessageBox::question(this, "?", "In order to see the effect of this command, the render mode "
                          "needs to be Ball and Cylinder.\n Should I change it for you?",
-                         "?", MIDIALOG_YES_NO, this) == MI_YES)
+                         QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
         {
             viewpoint->SetBallandCylinder();
         }
@@ -11526,21 +11524,21 @@ bool MIGLWidget::OnSaveModified()
         std::string msgTitle = "MIFit: Warning";
         std::string prompt = ::format("Do you want to save changes to document %s?", title.c_str());
 
-        int ret = MIMessageBox(prompt.c_str(), msgTitle.c_str(),
-                               MIDIALOG_YES_NO|MIDIALOG_CANCEL, this);
+        int ret = QMessageBox::question(this, msgTitle.c_str(), prompt.c_str(),
+                                        QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
         switch (ret)
         {
-        case MI_NO:
+        case QMessageBox::No:
             Modify(false);
             return true;
             break;
-        case MI_YES:
+        case QMessageBox::Yes:
             if (_filename.size())
                 return SaveDocument(_filename);
             else
                 return SaveAs();
             break;
-        case MI_CANCEL:
+        case QMessageBox::Cancel:
             return false;
             break;
         }
@@ -12062,21 +12060,22 @@ bool MIGLWidget::Close()
 {
     if (MIBusyManager::instance()->Busy())
     {
-        int answer = MIMessageBox(
+        int answer = QMessageBox::question(this,
+            "Force Background Operation to Abort?",
             "You have background processes running - quitting now may cause a fault\n"
             "(although it will still quit!).To end gracefully, choose Cancel and then\n"
             "use the Stop button on the toolbar to abort the operation or wait for it to end.\n"
             "\n"
             "Yes to force the background process to abort\n"
             "No to continue and perhaps crash, but end the program.\n"
-            "Cancel to go back to what you were doing.", "Force Background Operation to Abort?",
-            MIDIALOG_YES_NO | MIDIALOG_CANCEL, this);
-        if (answer == MI_YES)
+            "Cancel to go back to what you were doing.",
+            QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+        if (answer == QMessageBox::Yes)
         {
             MIBusyManager::instance()->ForceAbort();
             return false;
         }
-        else if (answer == MI_CANCEL)
+        else if (answer == QMessageBox::Cancel)
         {
             return false;
         }
@@ -12108,7 +12107,7 @@ void MIGLWidget::OnMapAddFree()
         std::string s = ::format("%s\nThis reflections set already has an R-Free flag\n"
                                  "Are you sure you want to continue?"
                                  "Doing so could invalidate your R-Free calculations", emap->MapID().c_str());
-        if (MIMessageBox(s.c_str(), "R-Free Flag Already Set", MIDIALOG_YES_NO, this) == MI_NO)
+        if (QMessageBox::question(this, "R-Free Flag Already Set", s.c_str(), QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
         {
             return;
         }

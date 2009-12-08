@@ -219,7 +219,7 @@ void JobsTree::ShowProperties()
     {
         QTreeWidgetItem *id = selected[i];
         BatchJob *job = itemToJob[id];
-        MIMessageBox(job->Info().toStdString(), "Job Properties", MIDIALOG_ICON_INFORMATION);
+        QMessageBox::information(this, "Job Properties", job->Info());
     }
 }
 
@@ -237,8 +237,7 @@ void JobsTree::ShowLog()
 
 void JobsTree::CleanSuccessful()
 {
-    if (MIMessageBox("Are you sure you want to delete all successful jobs?",
-                     "Confirm Delete Jobs", MIDIALOG_YES_NO) != MI_YES)
+    if (QMessageBox::question(this, "Confirm Delete Jobs", "Are you sure you want to delete all successful jobs?", QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
     {
         return;
     }
@@ -247,8 +246,7 @@ void JobsTree::CleanSuccessful()
 
 void JobsTree::CleanAll()
 {
-    if (MIMessageBox("Are you sure you want to delete all jobs?",
-                     "Confirm Delete Jobs", MIDIALOG_YES_NO) != MI_YES)
+    if (QMessageBox::question(this, "Confirm Delete Jobs", "Are you sure you want to delete all jobs?", QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
     {
         return;
     }

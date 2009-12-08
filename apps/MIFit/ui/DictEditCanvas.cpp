@@ -1101,8 +1101,7 @@ void DictEditCanvas::on_changeNameButton_clicked()
     {
         if (s.size() > 3)
         {
-            MIMessageBox("Name cannot be longer than 3 letters", "Invalid name", MIDIALOG_ICON_WARNING);
-            // parent->Raise();
+            QMessageBox::warning(this, "Invalid name", "Name cannot be longer than 3 letters");
             return;
         }
         // Check for collisions
@@ -1282,7 +1281,7 @@ bool DictEditCanvas::removeAtomFromPlane(MIAtom *a, bool atomNotToBeDeleted)
     }
     if ((atoms = (MIAtom**) malloc((pickedPlane->natoms - 1) * sizeof(MIAtom*))) == NULL)
     {
-        MIMessageBox("Memory allocation failed! Aborting remove", "Aborting remove", MIDIALOG_ICON_WARNING);
+        QMessageBox::warning(this, "Aborting remove", "Memory allocation failed! Aborting remove");
         return false;
     }
 
@@ -1358,7 +1357,7 @@ void DictEditCanvas::OnAddPlane()
     p.natoms = AtomStack->size();
     if (p.natoms < 3)
     {
-        MIMessageBox("You must have at least 3 atoms selected to add a plane", "Must have 3 atoms", MIDIALOG_ICON_WARNING);
+        QMessageBox::warning(this, "Must have 3 atoms", "You must have at least 3 atoms selected to add a plane");
         return;
     }
     // Add the atoms to the plane
@@ -1614,7 +1613,7 @@ void DictEditCanvas::OnInvertCenter()
         if (!chemlib::InvertChiralCenter(center, geomrefiner->dict.RefiBonds, error) )
         {
             std::string myerror = ::format("Error: %s", error.c_str());
-            MIMessageBox(myerror.c_str(), myerror.c_str(), MIDIALOG_ICON_WARNING);
+            QMessageBox::warning(this, myerror.c_str(), myerror.c_str());
             confs.Restore(conf);
             UpdateGeom();
             return;
@@ -1646,14 +1645,14 @@ void DictEditCanvas::OnSetAngle()
     edge = SearchBonds(pickedAngle->getAtom1(), pickedAngle->getAtom2());
     if (!edge)
     {
-        MIMessageBox("Unable to find associated bonds for this angle", "Error", MIDIALOG_ICON_WARNING);
+        QMessageBox::warning(this, "Error", "Unable to find associated bonds for this angle");
         return;
     }
     a = edge->ideal_length;
     edge = SearchBonds(pickedAngle->getAtom2(), pickedAngle->atom3);
     if (!edge)
     {
-        MIMessageBox("Unable to find associated bonds for this angle", "Error", MIDIALOG_ICON_WARNING);
+        QMessageBox::warning(this, "Error", "Unable to find associated bonds for this angle");
         return;
     }
     b = edge->ideal_length;
@@ -1671,8 +1670,7 @@ void DictEditCanvas::OnSetAngle()
     pickedAngle->ideal_angle = c;
     if (!needsrefining)
     {
-        MIMessageBox("The new angle has been set. To apply it finish making your changes to angles, bond lengths and order then hit Optimize",
-                     "Must Optimize", MIDIALOG_ICON_WARNING);
+        QMessageBox::warning(this, "Must Optimize", "The new angle has been set. To apply it finish making your changes to angles, bond lengths and order then hit Optimize");
         SetNeedsRefine();
     }
     m = geomrefiner->dict.RefiAngles.size();
@@ -1789,8 +1787,7 @@ void DictEditCanvas::OnSetBondLength2(float newideal)
     }
     if (!needsrefining)
     {
-        MIMessageBox("The new bond length has been set.\nTo apply it finish making your changes to \nangles, bond lengths and order then hit Optimize",
-                     "Optimize required", MIDIALOG_ICON_WARNING);
+        QMessageBox::warning(this, "Optimize required", "The new bond length has been set.\nTo apply it finish making your changes to \nangles, bond lengths and order then hit Optimize");
         SetNeedsRefine();
     }
 }
@@ -1804,7 +1801,7 @@ float DictEditCanvas::GetBondOrder(vector<Bond> &edges)
         curval = GetBondOrder(b->getOrder());
         if (curval == 0)
         {
-            MIMessageBox("Unknown bond type. Aborting Change Bond Order\n", "Error", MIDIALOG_ICON_WARNING);
+            QMessageBox::warning(this, "Error", "Unknown bond type. Aborting Change Bond Order\n");
             return -1.0;
         }
         retval += GetBondOrder((&*b));
@@ -1912,7 +1909,7 @@ void DictEditCanvas::OnChangeBondOrder()
     if (neworder > oldorder  && (neworder > (MaxNumBonds(a1) - a1bo + oldorder)
                                  || neworder > (MaxNumBonds(a2) - a2bo + oldorder)))
     {
-        MIMessageBox("Cannot change bond order, not enough free e-", "Error", MIDIALOG_ICON_WARNING);
+        QMessageBox::warning(this, "Error", "Cannot change bond order, not enough free e-");
         return;
     }
     pickedBond->setOrder(GetBondOrder(neworder));
@@ -2155,7 +2152,7 @@ void DictEditCanvas::OnChangeAtomType()
     tmnb = MaxNumBonds(&tatom);
     if (anb > (float) tmnb)
     {
-        MIMessageBox("The old atom type has more edges than the\nnew atom type can support. Plese delete\nsome of the edges.", "Error", MIDIALOG_ICON_WARNING);
+        QMessageBox::warning(this, "Error", "The old atom type has more edges than the\nnew atom type can support. Plese delete\nsome of the edges.");
         return;
     }
 
@@ -2383,7 +2380,7 @@ void DictEditCanvas::GrowPlane(int size)
     }
     if ((newatoms = (MIAtom**) malloc((pickedPlane->natoms + size) * sizeof(MIAtom*))) == NULL)
     {
-        MIMessageBox("Memory allocation failed! Aborting add atom to plane", "Error", MIDIALOG_ICON_WARNING);
+        QMessageBox::warning(this, "Error", "Memory allocation failed! Aborting add atom to plane");
         return;
     }
 
@@ -2436,7 +2433,7 @@ void DictEditCanvas::OnIncludeAtomsInPlane()
         AtomStack->Pop(a, res);
         if (a == NULL)
         {
-            MIMessageBox("An atom must be on the stack.", "No atoms on stack", MIDIALOG_ICON_WARNING);
+            QMessageBox::warning(this, "No atoms on stack", "An atom must be on the stack.");
             return;
         }
         if (AtomInPlane(a))
@@ -2598,7 +2595,7 @@ void DictEditCanvas::OnRenameAtom()
     //Check size < chemlib::MAXATOMNAME
     if (newname.size() > chemlib::MAXATOMNAME)
     {
-        MIMessageBox("Atom name too long!", "Error", MIDIALOG_ICON_WARNING);
+        QMessageBox::warning(this, "Error", "Atom name too long!");
         return;
     }
 
@@ -2621,7 +2618,7 @@ void DictEditCanvas::OnRenameAtom()
         }
         else
         {
-            MIMessageBox("Error: you tried to change the atom type!");
+            QMessageBox::warning(this, "Error", "Error: you tried to change the atom type!");
             return;
             break;
         }
@@ -2813,7 +2810,7 @@ void DictEditCanvas::generateConformers(bool replace)
     on_conformerSpinbox_valueChanged(1);
 
     std::string message = ::format("Generated %d conformers", nConf);
-    MIMessageBox(message.c_str(), message.c_str(), MIDIALOG_ICON_WARNING);
+    QMessageBox::warning(this, message.c_str(), message.c_str());
 }
 
 
