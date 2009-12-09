@@ -1,6 +1,7 @@
 #include <vector>
 #include <set>
 #include <algorithm>
+#include <cfloat>
 
 #include "core/corelib.h"
 #include "uilib.h"
