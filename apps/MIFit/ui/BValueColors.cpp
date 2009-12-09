@@ -1,6 +1,6 @@
 #include "BValueColors.h"
-#include "MIDialog.h"
 #include "ui/uilib.h"
+#include "ui/MIColorPickerDlg.h"
 
 BValueColors::BValueColors(QWidget *parent)
     : QDialog(parent)
@@ -35,7 +35,7 @@ void BValueColors::setColor(QToolButton *valueControl, int c)
 
 void BValueColors::colorButtonPressed(QToolButton *control)
 {
-    int ci = MIColorChooser(colors[control], "Choose color");
+    int ci = MIColorPickerDlg::getColor(this, colors[control], "Choose color");
     setColor(control, ci);
 }
 

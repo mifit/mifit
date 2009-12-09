@@ -51,6 +51,8 @@
 #include <map/maplib.h>
 #include "core/corelib.h"
 #include <util/utillib.h>
+#include "ui/MIColorPickerDlg.h"
+#include "ui/MIDialog.h"
 
 #include <figurelib/figurelib.h>
 #include "jobs/jobslib.h"
@@ -69,7 +71,6 @@
 #include "EMap.h"
 #include "GLOverviewCanvas.h"
 #include "GLRenderer.h"
-#include "ui/MIDialog.h"
 #include "MIMenu.h"
 #include "MIMainWindow.h"
 #include "MapSettings.h"
@@ -5120,14 +5121,17 @@ void MIGLWidget::solidSurfaceCommand(int id, std::vector<Molecule*> &mols, std::
     }
     case ID_SOLIDSURFACE_COLOR:
     {
-        short c = MIColorChooser(0);
-        if (selected.size()==0)
+        short c = MIColorPickerDlg::getColor(this, 0);
+        if (c >= 0)
         {
-            MISurfaceVectorsFromStack(mols, selected, MIGetSurfaceSelectionMode(), AtomStack);
-        }
-        if (selected.size())
-        {
-            MIColorSurface(solidsurf_current_surface, c, mols, selected.size(), &selected[0]);
+            if (selected.size()==0)
+            {
+                MISurfaceVectorsFromStack(mols, selected, MIGetSurfaceSelectionMode(), AtomStack);
+            }
+            if (selected.size())
+            {
+                MIColorSurface(solidsurf_current_surface, c, mols, selected.size(), &selected[0]);
+            }
         }
         break;
     }
@@ -5183,7 +5187,7 @@ void MIGLWidget::solidSurfaceCommand(int id, std::vector<Molecule*> &mols, std::
 
     case ID_SOLIDSURFACE_MINCOLOR:
     {
-        int c = MIColorChooser(MIGetSurfaceMinColor(), "Minimum gradient color");
+        int c = MIColorPickerDlg::getColor(this, MIGetSurfaceMinColor(), "Minimum gradient color");
         if (c != -1)
         {
             MISetSurfaceMinColor(c);
@@ -5193,7 +5197,7 @@ void MIGLWidget::solidSurfaceCommand(int id, std::vector<Molecule*> &mols, std::
 
     case ID_SOLIDSURFACE_MAXCOLOR:
     {
-        int c = MIColorChooser(MIGetSurfaceMaxColor(), "Maximum gradient color");
+        int c = MIColorPickerDlg::getColor(this, MIGetSurfaceMaxColor(), "Maximum gradient color");
         if (c != -1)
         {
             MISetSurfaceMaxColor(c);
@@ -7498,14 +7502,16 @@ void MIGLWidget::OnSequencePosition()
         return;
     }
 
-    std::vector<std::string> listItems;
+    QStringList listItems;
     for (size_t i = 0; i < seq.length(); i++)
     {
-        std::string s = ::format("%5ld %c", i+1, seq[i]);
-        listItems.push_back(s.c_str());
+        QString s;
+        s.sprintf("%5ld %c", static_cast<long>(i+1), seq[i]);
+        listItems += s;
     }
 
-    int n = MIGetSingleChoiceIndex("Set Sequence Position", "MIFit", listItems, this);
+    QString selected = QInputDialog::getItem(this, "MIFit", "Set Sequence Position", listItems);
+    int n = listItems.indexOf(selected);
     if (n > 0)
     {
         for (res = start; res != NULL; res = res->next())
@@ -7667,13 +7673,13 @@ void MIGLWidget::OnRevertModel()
 
 void MIGLWidget::revertToSavedModelWithPrompt()
 {
-    vector<std::string> choices;
+    QStringList choices;
     for (unsigned int i = 0; i < SaveModels.size(); i++)
     {
-        std::string s = ::format("%s: %s %s", /*i+1,*/ SaveModels[i].time.c_str(), SaveModels[i].description.c_str(), SaveModels[i].path.c_str());
-        choices.push_back(s.c_str());
+        choices += QString("%1: %2 %3").arg(SaveModels[i].time.c_str(), SaveModels[i].description.c_str(), SaveModels[i].path.c_str());
     }
-    int choice = MIGetSingleChoiceIndex("Choose file to revert with", "Revert Model", choices, this);
+    QString selected = QInputDialog::getItem(this, "Revert Model", "Choose file to revert with", choices);
+    int choice = choices.indexOf(selected);
     revertToSavedModel(choice);
 }
 

@@ -23,7 +23,6 @@
 #include "ModelsView.h"
 #include "MIMolIO.h"
 #include "molw.h"
-#include "MIDialog.h"
 //#include "preferences/MapPreferencesPanel.h"
 //#include "preferences/EnvironmentPreferencesPanel.h"
 //#include "preferences/GeneralPreferencesPanel.h"
@@ -957,13 +956,11 @@ void MIMainWindow::OnDefineBValueColors()
 
 void MIMainWindow::OnLoadDictReplace()
 {
-    const std::string &s = MIFileSelector("Choose a dictionary file", "", "",
-                                          "",
-                                          "Dictionary files (*.pdb,*.cif,*.ent)|*.pdb;*.cif;*.ent|All files (*.*)|*.*",
-                                          MI_OPEN_MODE);
-    if (s.size())
+    QString s = QFileDialog::getOpenFileName(this, "Choose a dictionary file", "",
+                                          "Dictionary files (*.pdb,*.cif,*.ent);;All files (*.*)");
+    if (!s.isEmpty())
     {
-        MIFitDictionary()->LoadDictionary(s.c_str(), false, true);
+        MIFitDictionary()->LoadDictionary(s.toAscii().constData(), false, true);
     }
 }
 
@@ -982,13 +979,11 @@ void MIMainWindow::ShowDictEditor(const char *type)
 
 void MIMainWindow::OnLoadDictAppend()
 {
-    const std::string &s = MIFileSelector("Choose a dictionary file", "", "",
-                                          "",
-                                          "Dictionary files (*.pdb,*.cif,*.ent)|*.pdb;*.cif;*.ent|All files (*.*)|*.*",
-                                          MI_OPEN_MODE);
-    if (s.size())
+    QString s = QFileDialog::getOpenFileName(this, "Choose a dictionary file", "",
+                                          "Dictionary files (*.pdb,*.cif,*.ent);;All files (*.*)");
+    if (!s.isEmpty())
     {
-        MIFitDictionary()->LoadDictionary(s.c_str(), true);
+        MIFitDictionary()->LoadDictionary(s.toAscii().constData(), true);
     }
 }
 
@@ -1036,8 +1031,8 @@ void MIMainWindow::OnEditDictResidue()
 
 void MIMainWindow::OnLoadLigMol()
 {
-    std::string filename = MIFileSelector("Pick a MOL file", "", "", "", "MDL file formats (*.mol, *.sdf, *.sd)|*.mol;*.sdf;*.sd|MOL files (*.mol)|*.mol|SD files (*.sdf, *.sd)|*.sdf;*.sd|All files (*.*)|*.*", 0);
-    if (filename.size() == 0)
+    QString filename = QFileDialog::getOpenFileName(this, "Pick a MOL file", "", "MDL file formats (*.mol, *.sdf, *.sd);;MOL files (*.mol);;SD files (*.sdf, *.sd);;All files (*.*)");
+    if (filename.isEmpty())
     {
         return;
     }
@@ -1062,18 +1057,18 @@ void MIMainWindow::OnLoadLigMol()
             break;
         }
     }
-    OnLoadLigand("*.mol", filename.c_str(), "", code.c_str());
+    OnLoadLigand("*.mol", filename.toAscii().constData(), "", code.c_str());
     ShowDictEditor(code.c_str());
 }
 
 void MIMainWindow::OnLoadLigPdb()
 {
-    std::string filename = MIFileSelector("Pick a PDB file", "", "", "", "PDB files (*.pdb)|*.pdb|All files (*.*)|*.*", 0);
-    if (filename.size() == 0)
+    QString filename = QFileDialog::getOpenFileName(this, "Pick a PDB file", "", "PDB files (*.pdb);;All files (*.*)");
+    if (filename.isEmpty())
     {
         return;
     }
-    std::string code = OnLoadLigand("*.pdb", filename.c_str(), "", "");
+    std::string code = OnLoadLigand("*.pdb", filename.toAscii().constData(), "", "");
     if (code.size())
     {
         ShowDictEditor(code.c_str());
@@ -1148,12 +1143,12 @@ void MIMainWindow::OnLoadLigSmi()
 
 void MIMainWindow::OnLoadLigCif()
 {
-    std::string filename = MIFileSelector("Pick a CIF file", "", "", "", "CIF files (*.cif)|*.cif|All files (*.*)|*.*", 0);
-    if (filename.size() == 0)
+    QString filename = QFileDialog::getOpenFileName(this, "Pick a CIF file", "", "CIF files (*.cif);;All files (*.*)");
+    if (filename.isEmpty())
     {
         return;
     }
-    std::string code = OnLoadLigand("*.cif", filename.c_str(), "", "");
+    std::string code = OnLoadLigand("*.cif", filename.toAscii().constData(), "", "");
     if (code.size())
     {
         ShowDictEditor(code.c_str());

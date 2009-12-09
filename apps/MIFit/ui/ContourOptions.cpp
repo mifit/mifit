@@ -1,6 +1,6 @@
 #include "ContourOptions.h"
-#include "MIDialog.h"
 #include "ui/uilib.h"
+#include "ui/MIColorPickerDlg.h"
 
 ContourOptions::ContourOptions(QWidget *parent, bool prefsMode)
     : QWidget(parent)
@@ -293,7 +293,7 @@ void ContourOptions::colorButtonPressed()
     //find relevant control
     QToolButton *control = (QToolButton*)sender();
 
-    int ci = MIColorChooser(colors[control], "Choose color");
+    int ci = MIColorPickerDlg::getColor(this, colors[control], "Choose color");
     setColor(control, ci);
 }
 

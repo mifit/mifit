@@ -27,34 +27,6 @@ private:
 };
 
 
-int MIGetSingleChoiceIndex(const std::string &message,
-                           const std::string &caption,
-                           const std::vector<std::string> &choices,
-                           QWidget *parent = 0);
-
-
-class MIColorPromptDialog : public MIDialog
-{
-public:
-    MIColorPromptDialog(QWidget *parent, const std::string &name);
-private:
-    bool PromptForResults(MIData &data);
-    //variables red.u green.u blue.u
-};
-
-class MIColorPaletteDialog : public MIDialog
-{
-public:
-    MIColorPaletteDialog(QWidget *parent, const std::string &name);
-private:
-    bool PromptForResults(MIData &data);
-    //variables: color.radio
-};
-
-//NOTE: wraps MIColorPaletteDialog
-int MIColorChooser(int start_color, const std::string name = "Choose color");
-
-
 const unsigned int MI_OPEN_MODE = 0;
 const unsigned int MI_SAVE_MODE = 2;
 

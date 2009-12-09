@@ -13,7 +13,6 @@
 #include <util/utillib.h>
 #include "BatchJob.h"
 #include "OpenJobResults.h"
-#include "ui/MIDialog.h"
 #include "ui/uilib.h"
 
 #ifdef _WIN32

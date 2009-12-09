@@ -56,7 +56,23 @@ class MIColorPickerDlg : public QDialog
     Q_OBJECT
 
 public:
-    MIColorPickerDlg(QWidget *parent = 0, int selected = 0);
+
+    static int getColor(QWidget *parent = 0, int selected = 0, const QString& title = QString("Choose color"))
+    {
+        MIColorPickerDlg dlg(parent, selected, title);
+        if (dlg.exec() == QDialog::Accepted)
+        {
+            return dlg.color();
+        }
+        return -1;
+    }
+
+    MIColorPickerDlg(QWidget *parent = 0, int selected = 0, const QString& title = QString("Choose color"));
+
+    int color() const
+    {
+        return result;
+    }
 
     unsigned int GetResult() const
     {
@@ -67,7 +83,7 @@ public slots:
     virtual void colorPicked(int i);
 
 private:
-    unsigned int result;
+    int result;
 };
 
 #endif // ifndef MICOLORPICKER_H

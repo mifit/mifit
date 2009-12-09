@@ -17,7 +17,6 @@
 #include "MIMenu.h"
 #include "MIQTreeWidget.h"
 
-#include "ui/MIDialog.h"
 #include "id.h"
 
 #include <images/jobsList.xpm>
@@ -194,10 +193,9 @@ void JobsTree::DeleteJob()
         {
             return;
         }
-        std::string message;
-        message = ::format("Are you sure you want to delete job %d?", job->jobId());
+        QString message = QString("Are you sure you want to delete job %1?").arg(job->jobId());
         if (QMessageBox::question(0, "Confirm Delete Job",
-                                  message.c_str(),
+                                  message,
                                   QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::No)
         {
             return;
@@ -356,16 +354,16 @@ void JobsView::stylizeItem(QTreeWidgetItem *id, BatchJob *job)
         image = 4;
     }
     id->setIcon(0, jobsTree->GetIcon(image));
-    std::string jobText;
+    QString jobText;
     if (!job->jobName().isEmpty())
     {
-        jobText = ::format("%s (%d)", job->jobName().toAscii().constData(), job->jobId());
+        jobText = QString("%1 (%2)").arg(job->jobName()).arg(job->jobId());
     }
     else
     {
-        jobText = ::format("%d", job->jobId());
+        jobText = QString::number(job->jobId());
     }
-    id->setText(0, jobText.c_str());
+    id->setText(0, jobText);
 }
 
 

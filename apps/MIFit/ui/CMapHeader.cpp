@@ -2,7 +2,6 @@
 
 #include "CMapHeader.h"
 #include "Application.h"
-#include "ui/MIDialog.h"
 
 #include <QFileInfo>
 

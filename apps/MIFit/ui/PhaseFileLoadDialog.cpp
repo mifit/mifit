@@ -1,6 +1,5 @@
 #include "PhaseFileLoadDialog.h"
 #include <map/maplib.h>
-#include "MIDialog.h"
 #include <QMessageBox>
 
 static const char *F_TEXT = "F = ";

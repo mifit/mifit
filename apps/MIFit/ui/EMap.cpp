@@ -2,7 +2,6 @@
 #include <chemlib/chemlib.h>
 #include <map/maplib.h>
 #include <QMessageBox>
-#include "ui/MIDialog.h"
 #include "GenericDataDialog.h"
 #include "core/corelib.h"
 #include "EMap.h"
@@ -15,6 +14,7 @@
 #include "ui/SelectCrystal.h"
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QFileDialog>
 
 struct mmtz_column_;
 
@@ -270,39 +270,22 @@ void EMap::Export()
 {
     if (HasPhases())
     {
-        MIFileDialog fileDialog(NULL, "Choose a name for the phase file", "", "",
-                                "CCP4 phase file (*.mtz)|*.mtz|"
-                                "mmCIF phase file (*.cif)|*.cif|"
-                                "Xtalview phase file (*.phs)|*.phs", MI_SAVE_MODE);
-        MIData data;
-        data["path"].str = "";
-        data["filterIndex"].radio = 0;
-        data["filterIndex"].radio_count = 3;
-        if (!fileDialog.GetResults(data))
-        {
+        QString selectedFilter;
+        QString path = QFileDialog::getSaveFileName(0, "Choose a name for the phase file", "",
+                                                    "CCP4 phase file (*.mtz);;"
+                                                    "mmCIF phase file (*.cif);;"
+                                                    "Xtalview phase file (*.phs)", &selectedFilter);
+        if (path.isEmpty())
             return;
-        }
 
-        int choice =  data["filterIndex"].radio;
-        std::string path = data["path"].str;
-        if (path.size())
-        {
-            int format = CCP4_phase;
-            switch (choice)
-            {
-            default:
-            case 0:
-                format = CCP4_phase;
-                break;
-            case 1:
-                format = mmCIF_phase;
-                break;
-            case 2:
-                format = XtalView_phase;
-                break;
-            }
-            SavePhases(path.c_str(), format);
-        }
+        int format = CCP4_phase;
+        if (selectedFilter == "CCP4 phase file (*.mtz)")
+            format = CCP4_phase;
+        else if (selectedFilter == "mmCIF phase file (*.cif)")
+            format = mmCIF_phase;
+        else if (selectedFilter == "Xtalview phase file (*.phs)")
+            format = XtalView_phase;
+        SavePhases(path.toAscii().constData(), format);
     }
 }
 

@@ -2,7 +2,6 @@
 
 #include "ui/uilib.h"
 #include <map/maplib.h>
-#include "MIDialog.h"
 
 #include <QDir>
 #include <QFileInfo>

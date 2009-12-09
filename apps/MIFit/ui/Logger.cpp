@@ -4,7 +4,6 @@
 #include <nongui/nonguilib.h>
 #include <util/utillib.h>
 
-#include "ui/MIDialog.h"
 #include "MIMainWindow.h"
 #include <QMessageBox>
 

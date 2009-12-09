@@ -16,12 +16,12 @@
 #include "DictEditCanvas.h"
 #include "GLFormatEdit.h"
 
-#include "ui/MIDialog.h"
 #include <util/FileIo.h>
 #include "MIMainWindow.h"
 #include "molw.h" // for cursors
 
 #include <QApplication>
+#include <QColorDialog>
 #include <QDir>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -623,19 +623,16 @@ void Application::MixBackgroundColor()
 
 void Application::backgroundColor()
 {
-    MIData data;
-    data["red"].u = (unsigned int)BackgroundColor.red;
-    data["green"].u = (unsigned int)BackgroundColor.green;
-    data["blue"].u = (unsigned int)BackgroundColor.blue;
-    MIColorPromptDialog dlg(0, "Color dialog");
-    if (!dlg.GetResults(data))
+    QColor initColor = QColor(BackgroundColor.red, BackgroundColor.green, BackgroundColor.blue);
+    QColor c = QColorDialog::getColor(initColor, 0);
+    if (!c.isValid())
     {
         return;
     }
     PaletteColor color;
-    color.red = (unsigned char)data["red"].u;
-    color.green = (unsigned char)data["green"].u;
-    color.blue = (unsigned char)data["blue"].u;
+    color.red = (unsigned char)c.red();
+    color.green = (unsigned char)c.green();
+    color.blue = (unsigned char)c.blue();
 
     SetBackgroundColor(color);
 }
@@ -902,19 +899,17 @@ void Application::LoadDictionary()
 void Application::saveDict()
 {
     QFileInfo fi(Application::instance()->XFitDictSetting.c_str());
-    const std::string &s = MIFileSelector("Choose a dictionary file",
-                                          fi.path().toStdString(), "mydict.pdb", "pdb",
-                                          "Dictionary files (*.pdb)|*.pdb|All files (*.*)|*.*",
-                                          MI_SAVE_MODE);
-    if (s.size())
+    QString s = QFileDialog::getSaveFileName(0, "Choose a dictionary file",
+                                          fi.filePath(), "Dictionary files (*.pdb);;All files (*.*)");
+    if (!s.isEmpty())
     {
-        if (MIFitDictionary()->SaveDictionary(s.c_str()) )
+        if (MIFitDictionary()->SaveDictionary(s.toAscii().constData()) )
         {
-            if (s != std::string(Application::instance()->XFitDictSetting).c_str())
+            if (s.toStdString() != Application::instance()->XFitDictSetting)
             {
                 if (QMessageBox::question(0, "Change dictionary", "Do you want to make this the default dictionary?", QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
                 {
-                    Application::instance()->XFitDictSetting = s.c_str();
+                    Application::instance()->XFitDictSetting = s.toStdString();
                 }
             }
         }

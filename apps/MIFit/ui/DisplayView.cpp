@@ -1,13 +1,11 @@
 #include <QApplication>
 #include <QVBoxLayout>
-
+#include <QFileDialog>
 #include <set>
 
 #include "core/corelib.h"
 #include <chemlib/chemlib.h>
 #include <chemlib/RESIDUE_.h>
-
-#include "ui/MIDialog.h"
 
 #include "Displaylist.h"
 #include "DisplayView.h"
@@ -19,6 +17,7 @@
 #include "MIGLWidget.h"
 #include "MIMenu.h"
 #include "id.h"
+#include "ui/MIColorPickerDlg.h"
 
 #include <images/model.xpm>
 #include <images/modelSelected.xpm>
@@ -517,7 +516,7 @@ void DisplayTree::EditItem()
     if (surfaces.size() > 0)
     {
         Molecule *model = *surfaces.begin();
-        int color = MIColorChooser(model->getDots()[0].color);
+        int color = MIColorPickerDlg::getColor(this, model->getDots()[0].color);
         std::set<Molecule*>::iterator iter;
         for (iter = surfaces.begin(); iter != surfaces.end(); ++iter)
         {
@@ -572,12 +571,12 @@ void DisplayTree::AutoShowErrors()
 
 void DisplayTree::ImportErrors()
 {
-    std::string file = MIFileSelector("Select error list file", "", "", "", "*.txt", 0, 0);
-    if (file.size() == 0)
+    QString file = QFileDialog::getOpenFileName(this, "Select error list file", "", "*.txt");
+    if (file.isEmpty())
     {
         return;
     }
-    FILE *errorFile = fopen(file.c_str(), "r");
+    FILE *errorFile = fopen(file.toAscii().constData(), "r");
     Displaylist *models = displaylist();
     if (models == NULL)
     {

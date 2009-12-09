@@ -1,8 +1,8 @@
 #include "AtomColors.h"
-#include "MIDialog.h"
-#include "ui/uilib.h"
 
 #include <QInputDialog>
+#include "ui/uilib.h"
+#include "ui/MIColorPickerDlg.h"
 
 AtomColors::AtomColors(QWidget *parent)
     : QDialog(parent)
@@ -83,7 +83,7 @@ void AtomColors::on_addTypePushButton_clicked()
     QString foo = QInputDialog::getText(this, "Atom Type Name", "Enter atom type name", QLineEdit::Normal, "", &ok);
     if (!ok)
         return;
-    int ci = MIColorChooser(1, "Choose atom color");
+    int ci = MIColorPickerDlg::getColor(0, 1, "Choose atom color");
     foo += "* ";
     foo += Colors::colornames[ci];
     listWidget->addItem(foo);
@@ -120,7 +120,7 @@ void AtomColors::on_colorToolButton_clicked()
     if (!listWidget->currentItem())
         return;
 
-    int ci = MIColorChooser(Colors::findColorNumber(data["currentAtomColors"].strList[listWidget->currentRow()]), "Choose atom color");
+    int ci = MIColorPickerDlg::getColor(0, Colors::findColorNumber(data["currentAtomColors"].strList[listWidget->currentRow()]), "Choose atom color");
     std::string foo = data["currentAtomNames"].strList[listWidget->currentRow()];
     foo += "* ";
     foo += Colors::colornames[ci];

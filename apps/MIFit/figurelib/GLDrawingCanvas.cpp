@@ -2,7 +2,6 @@
 
 #include "GLDrawingCanvas.h"
 #include "ui/id.h"
-#include "ui/MIDialog.h"
 #include "ui/MIEventHandlerMacros.h"
 #include "ui/MIMenu.h"
 #include "ui/MIMenuBar.h"

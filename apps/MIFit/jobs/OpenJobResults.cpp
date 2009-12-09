@@ -3,7 +3,6 @@
 #include <util/utillib.h>
 #include "ui/uilib.h"
 #include "ui/MIMainWindow.h"
-#include "ui/MIDialog.h"
 #include "ui/GenericDataDialog.h"
 #include <QFileInfo>
 #include <QDateTime>

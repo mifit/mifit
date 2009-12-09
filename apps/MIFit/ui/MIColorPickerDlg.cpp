@@ -8,12 +8,11 @@
 #include <QLayout>
 #include <QGridLayout>
 
-MIColorPickerDlg::MIColorPickerDlg(QWidget *parent,
-                                   int selected)
+MIColorPickerDlg::MIColorPickerDlg(QWidget *parent, int selected, const QString& title)
     : QDialog(parent),
       result(selected)
 {
-    setWindowTitle("Choose color");
+    setWindowTitle(title);
     QColor colorTable[Colors_NUMBERCOLORS];
     for (int i = 1; i<Colors_NUMBERCOLORS; ++i)
     {

@@ -1,10 +1,9 @@
 #include <nongui/nonguilib.h>
 #include "LSQFitDialog.h"
-
+#include <QFileDialog>
 #include "core/corelib.h"
 #include <math/mathlib.h>
 #include "ui/uilib.h"
-#include "MIDialog.h"
 #include <chemlib/RESIDUE_.h>
 
 // for getting current displaylist
@@ -460,24 +459,24 @@ bool LSQFitDialog::MatchOK(MATCH *m)
 
 void LSQFitDialog::on_exportButton_clicked()
 {
-    const std::string &pathname = MIFileSelector("Save LSQMatrix (.mtx) File", "", "", "mtx",
-                                                 "Matrix files (*.mtx)|*.mtx|All files (*.*)|*.*", MI_SAVE_MODE);
-    if (pathname.size())
+    QString pathname = QFileDialog::getSaveFileName(this, "Save LSQMatrix (.mtx) File", "",
+                                                 "Matrix files (*.mtx);;All files (*.*)");
+    if (!pathname.isEmpty())
     {
         LSQMatrix lsq_matrix;
         lsq_matrix.SetMatrix(r, v);
-        lsq_matrix.Save(pathname.c_str());
+        lsq_matrix.Save(pathname.toAscii().constData());
     }
 }
 
 void LSQFitDialog::on_importButton_clicked()
 {
-    const std::string &pathname = MIFileSelector("Load LSQMatrix (.mtx) File", "", "", "mtx",
-                                                 "Matrix files (*.mtx)|*.mtx|All files (*.*)|*.*", MI_OPEN_MODE);
-    if (pathname.size())
+    QString pathname = QFileDialog::getOpenFileName(this, "Load LSQMatrix (.mtx) File", "",
+                                                 "Matrix files (*.mtx);;All files (*.*)");
+    if (!pathname.isEmpty())
     {
         LSQMatrix lsq_matrix;
-        lsq_matrix.Load(pathname.c_str());
+        lsq_matrix.Load(pathname.toAscii().constData());
         lsq_matrix.GetMatrix(r, v);
         setSuccess(true);
     }

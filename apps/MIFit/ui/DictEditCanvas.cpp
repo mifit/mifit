@@ -42,7 +42,6 @@
 #include "Application.h"
 
 #include "molw.h"
-#include "ui/MIDialog.h"
 #include "ui/DictEditDialog.h"
 #include "MIMenuBar.h"
 #include "MIMenu.h"

@@ -33,7 +33,6 @@
 #include "MIGLWidget.h"
 #include "MIMainWindow.h"
 #include "molw.h"
-#include "ui/MIDialog.h"
 #include <script/LocalSocketScript.h>
 
 using namespace chemlib;

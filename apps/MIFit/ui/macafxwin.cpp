@@ -15,7 +15,6 @@
 
 #include "macafxwin.h"
 #include "Application.h"
-#include "ui/MIDialog.h"
 
 WaitCursor::WaitCursor(const char *op)
 {

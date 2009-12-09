@@ -16,7 +16,7 @@
 #include <util/utillib.h>
 #include "core/corelib.h"
 #include "ui/uilib.h"
-#include "MIDialog.h"
+#include "ui/MIColorPickerDlg.h"
 
 namespace
 {
@@ -224,7 +224,7 @@ void GenericDataDialog::colorIndexButtonPressed()
         ColorIndexButton *widget = qobject_cast<ColorIndexButton*>(sender());
         if (widget)
         {
-            widget->colorIndex = static_cast<unsigned char>(MIColorChooser(widget->colorIndex));
+            widget->colorIndex = static_cast<unsigned char>(MIColorPickerDlg::getColor(this, widget->colorIndex));
 
             MIPalette *palette = Application::instance()->GetLPpal();
             int ci = PaletteIndex(widget->colorIndex);

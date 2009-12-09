@@ -2,13 +2,12 @@
 #include <algorithm>
 #include <cmath>
 #include <cstring>
-
+#include <QInputDialog>
 #include <nongui/nonguilib.h>
 #include <chemlib/chemlib.h>
 #include <chemlib/RESIDUE_.h>
 #include <map/maplib.h>
 #include "core/corelib.h"
-#include "ui/MIDialog.h"
 
 #include "EMap.h"
 #include "id.h"
@@ -519,7 +518,7 @@ void Displaylist::DeleteMap(EMap *emap)
 
 void Displaylist::ChooseActiveMap()
 {
-    std::vector<std::string> choices;
+    QStringList choices;
     for (int i = 0; i < MapCount(); i++)
     {
         if (i >= 100)
@@ -527,16 +526,12 @@ void Displaylist::ChooseActiveMap()
             break;
         }
         EMap *emap = Maps[i];
-        std::string choice = ftoa(i);
-        choice += ": ";
-        choice += emap->MapID().c_str();
-        choices.push_back(choice);
+        choices += QString("%1: %2").arg(i).arg(emap->MapID().c_str());
     }
-    int selection = MIGetSingleChoiceIndex("Choose Map to make active", "MIFit", choices);
-    if (selection == -1)
-    {
+    QString str = QInputDialog::getItem(0, "MIFit", "Choose Map to make active", choices, 0);
+    if (str.isEmpty())
         return;
-    }
+    int selection = choices.indexOf(str);
     if (selection < MapCount())
     {
         SetCurrentMap(Maps[selection]);

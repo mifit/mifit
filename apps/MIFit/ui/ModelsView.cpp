@@ -12,6 +12,7 @@
 #include <QStackedLayout>
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QFileDialog>
 
 #include <set>
 
@@ -33,8 +34,8 @@
 #include "MIMainWindow.h"
 #include "MIQTreeWidget.h"
 #include "GenericDataDialog.h"
-#include "ui/MIDialog.h"
 #include "ui/SelectCrystal.h"
+#include "ui/MIColorPickerDlg.h"
 
 #include "surf.h"
 
@@ -506,7 +507,7 @@ void AtomsTree::ColorItem()
     {
         return;
     }
-    int color = MIColorChooser(atoms[0]->color());
+    int color = MIColorPickerDlg::getColor(this, atoms[0]->color());
     model->setAtomsColor(atoms, color);
 }
 
@@ -3015,11 +3016,11 @@ void ModelsTree::ModelExport()
         if (data->model != NULL)
         {
             Molecule *model = data->model;
-            const std::string &s = MIFileSelector("Choose a name for the model file", "", "", "pdb",
-                                                  "PDB file (*.pdb)|*.pdb|All files (*.*)|*.*", MI_SAVE_MODE);
-            if (s.size())
+            QString s = QFileDialog::getSaveFileName(this, "Choose a name for the model file", "",
+                                                  "PDB file (*.pdb);;All files (*.*)");
+            if (!s.isEmpty())
             {
-                model->SavePDBFile(s.c_str());
+                model->SavePDBFile(s.toAscii().constData());
             }
         }
     }
