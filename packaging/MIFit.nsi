@@ -56,6 +56,7 @@ Section "MIFit" Section1
   SetOverwrite on
   File "MIFit.exe"
   File "mingwm10.dll"
+  File "libgcc_s_dw2-1.dll"
   File "QtCore4.dll"
   File "QtGui4.dll"
   File "QtOpenGL4.dll"
@@ -63,6 +64,7 @@ Section "MIFit" Section1
   File "license.txt"
   File "qt.conf"
   File "README.txt"
+  File "jobs.js"
   CreateDirectory "$SMPROGRAMS\MIFit"
   CreateShortCut "$SMPROGRAMS\MIFit\MIFit.lnk" "$INSTDIR\MIFit.exe"
   CreateShortCut "$DESKTOP\MIFit.lnk" "$INSTDIR\MIFit.exe"
