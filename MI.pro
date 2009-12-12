@@ -10,7 +10,7 @@ data.files = data/*
 examples.path = $$PREFIX/examples
 examples.files = examples/*
 
-OTHER_FILES += README.txt license.txt
+OTHER_FILES += README.txt license.txt jobs.js
 other.path = $$PREFIX
 other.files = $$OTHER_FILES
 
