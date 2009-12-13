@@ -1,9 +1,12 @@
 #ifndef mifit_ui_MIGLWidget_h
 #define mifit_ui_MIGLWidget_h
 
-#include <math/Quaternion.h>
 #include <cmath>
+#include <QGLWidget>
+#include <QMdiSubWindow>
+#include <QVBoxLayout>
 
+#include <math/Quaternion.h>
 #include "core/corelib.h"
 #include <chemlib/chemlib.h>
 #include "macafxwin.h"
@@ -21,9 +24,6 @@
 class EMap;
 class Displaylist;
 class MIGLWidget;
-class BatchJob;
-class MIMenu;
-class MIMenuBar;
 
 class CMolwViewAnnotationPickingRenderable;
 class CMolwViewAtomPickingRenderable;
@@ -54,9 +54,6 @@ namespace mi
 
 class MAP_POINT;
 
-#include <QGLWidget>
-#include <QMdiSubWindow>
-#include <QVBoxLayout>
 
 #define sign(a) (a < 0 ? -1 : 1)
 

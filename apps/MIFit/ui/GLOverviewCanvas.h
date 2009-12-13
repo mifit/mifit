@@ -93,13 +93,16 @@ public:
 
     virtual QSize sizeHint() const;
 
-    /**
-     * Processes mouse events by forwarding them on to the view.
-     */
-    void handleMouseEvent(QMouseEvent *e);
+    //! Processes mouse events by forwarding them on to the view.
     void mousePressEvent(QMouseEvent *e);
+
+    //! Processes mouse events by forwarding them on to the view.
     void mouseReleaseEvent(QMouseEvent *e);
+
+    //! Processes mouse events by forwarding them on to the view.
     void mouseMoveEvent(QMouseEvent *e);
+
+    //! Processes mouse events by forwarding them on to the view.
     void mouseDoubleClickEvent(QMouseEvent *e);
 
     /**

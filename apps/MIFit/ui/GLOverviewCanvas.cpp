@@ -314,95 +314,41 @@ void GLOverviewCanvas::drawSelectedResidueMarker(float x, float y, float z)
     glPopMatrix();
 }
 
-void GLOverviewCanvas::handleMouseEvent(QMouseEvent *e)
+void GLOverviewCanvas::mousePressEvent(QMouseEvent *e)
 {
     e->accept();
     if (!GetView())
-    {
         return;
-    }
-
-    QPoint pt = e->pos();
-
-    unsigned short flags = 0;
-    if (e->modifiers() & Qt::ControlModifier)
-    {
-        flags |= MK_CONTROL;
-    }
-    if (e->modifiers() & Qt::ShiftModifier)
-    {
-        flags |= MK_SHIFT;
-    }
-    if (e->modifiers() & Qt::AltModifier)
-    {
-        flags |= MK_ALT;
-    }
-    if (e->modifiers() & Qt::MetaModifier)
-    {
-        flags |= MK_META;
-    }
-    if (e->buttons() & Qt::LeftButton)
-    {
-        flags |= MK_LBUTTON;
-    }
-    if (e->buttons() & Qt::RightButton)
-    {
-        flags |= MK_RBUTTON;
-    }
-    if (e->buttons() & Qt::MidButton)
-    {
-        flags |= MK_MBUTTON;
-    }
-
-
-    //handle the type of event
-    if (e->type() == QEvent::MouseMove)
-    {
-        GetView()->OnMouseMove(flags, CPoint((int)pt.x(), (int)pt.y()));
-    }
-    if (e->button() == Qt::LeftButton && e->type() == QEvent::MouseButtonRelease)
-    {
-        GetView()->OnLButtonUp(flags, CPoint((int)pt.x(), (int)pt.y()));
-    }
-    if (e->button() == Qt::LeftButton && e->type() == QEvent::MouseButtonPress)
-    {
-        GetView()->OnLButtonDown(flags, CPoint((int)pt.x(), (int)pt.y()));
-    }
-    if (e->button() == Qt::LeftButton && e->type() == QEvent::MouseButtonDblClick)
-    {
-        GetView()->OnLButtonDblClk(flags, CPoint((int)pt.x(), (int)pt.y()));
-    }
-    if (e->button() == Qt::RightButton && e->type() == QEvent::MouseButtonRelease)
-    {
-        GetView()->OnRButtonUp(flags, CPoint((int)pt.x(), (int)pt.y()));
-    }
-    if (e->button() == Qt::RightButton && e->type() == QEvent::MouseButtonPress)
-    {
-        GetView()->OnRButtonDown(flags, CPoint((int)pt.x(), (int)pt.y()));
-    }
-
-    // refresh the window if the mouse event caused a viewpoint change
+    GetView()->mousePressEvent(e);
     if (GetView()->ViewChanged())
-    {
         updateGL();
-    }
-}
-
-void GLOverviewCanvas::mousePressEvent(QMouseEvent *e)
-{
-    handleMouseEvent(e);
 }
 void GLOverviewCanvas::mouseReleaseEvent(QMouseEvent *e)
 {
-    handleMouseEvent(e);
+    e->accept();
+    if (!GetView())
+        return;
+    GetView()->mouseReleaseEvent(e);
+    if (GetView()->ViewChanged())
+        updateGL();
 }
 void GLOverviewCanvas::mouseMoveEvent(QMouseEvent *e)
 {
-    handleMouseEvent(e);
+    e->accept();
+    if (!GetView())
+        return;
+    GetView()->mouseMoveEvent(e);
+    if (GetView()->ViewChanged())
+        updateGL();
 }
 void GLOverviewCanvas::mouseDoubleClickEvent(QMouseEvent *e)
 {
-    handleMouseEvent(e);
+    e->accept();
+    if (!GetView())
+        return;
+    GetView()->mouseDoubleClickEvent(e);
+    if (GetView()->ViewChanged())
+        updateGL();
 }
 
 void GLOverviewCanvas::keyPressEvent(QKeyEvent *e)
