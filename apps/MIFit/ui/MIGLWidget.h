@@ -110,7 +110,6 @@ private:
     chemlib::RESIDUE *focusres;
     bool focusresDeleted;
     bool DragStart;
-    bool FromMouse;
 
     chemlib::GeomSaver savefits;
     std::vector<chemlib::MIAtom*> CurrentAtoms;
@@ -630,10 +629,6 @@ public:
      */
     void OnLButtonUp(unsigned short nFlags, CPoint point);
     /**
-     * Mouse handler for a mouse left-button down event.
-     */
-    void OnLButtonDown(unsigned short nFlags, CPoint point);
-    /**
      * Mouse handler for a mouse left-button double-click event.
      */
     void OnLButtonDblClk(unsigned short nFlags, CPoint point);
@@ -652,7 +647,6 @@ public:
     }
 
     void OnRButtonUp(unsigned short nFlags, CPoint point);
-    void OnRButtonDown(unsigned short nFlags, CPoint point);
 
     /**
      * Prompts for phase file and then calls mapLoadfromphsfile(string).

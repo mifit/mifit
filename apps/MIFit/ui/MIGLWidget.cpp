@@ -260,7 +260,6 @@ MIGLWidget::MIGLWidget()
     BoundingBox = NULL;
     AutoSave = true;
     DragStart = false;
-    FromMouse = false;
     MouseStillTime = 0;
     MouseInWindow = false;
     ToolTipInterval = MIConfig::Instance()->GetProfileInt("View Parameters", "ToolTipInterval", 190);
@@ -556,7 +555,7 @@ void MIGLWidget::moleculeToBeDeleted(MIMoleculeBase *model)
 
 void MIGLWidget::doRefresh()
 {
-    update();
+    updateGL();
     MIMainWindow::instance()->UpdateToolBar();
     MIMainWindow::instance()->updateNavigator();
 
@@ -662,33 +661,9 @@ void MIGLWidget::OnActivated()
 // MIGLWidget drawing
 void MIGLWidget::ReDraw()
 {
-    static int iRedraw = 0;
-    static Molecule *lastCurrentItem = NULL;
-
-    Displaylist *displaylist = GetDisplaylist();
     CheckCenter();
-    update();
-    if ((!FromMouse) || (iRedraw >= 5))
-    {
-        iRedraw = 0;
-    }
-    else
-    {
-        iRedraw++;
-    }
-    if (iRedraw == 0)
-    {
-        MIMainWindow::instance()->updateNavigator();
-    }
-    if (displaylist->CurrentItem() != lastCurrentItem)
-    {
-        lastCurrentItem = displaylist->CurrentItem();
-    }
-    if (PaletteChanged)
-    {
-        MIMainWindow::instance()->updateNavigator();
-        PaletteChanged = false;
-    }
+    updateGL();
+    MIMainWindow::instance()->updateNavigator();
 }
 
 void MIGLWidget::CheckCenter()
@@ -960,7 +935,6 @@ void MIGLWidget::OnMouseMove(unsigned short nFlags, CPoint point)
             DragStart = true;
         }
     }
-    FromMouse = true;
     if (nFlags & MK_LBUTTON
         && !(nFlags&MK_RBUTTON)
         && (d.x != 0 || d.y != 0))
@@ -1028,7 +1002,6 @@ void MIGLWidget::OnMouseMove(unsigned short nFlags, CPoint point)
             SetCursor(imhZCursor);
         }
     }
-    FromMouse = false;
     mouse.x = point.x;
     mouse.y = point.y;
 }
@@ -1366,26 +1339,6 @@ void MIGLWidget::OnLButtonUp(unsigned short /* nFlags */, CPoint point)
     }
 }
 
-void MIGLWidget::OnLButtonDown(unsigned short, CPoint point)
-{
-    mouse = point;
-    mousestart = point;
-
-    if (!MouseCaptured)
-    {
-        MouseCaptured = true;
-    }
-
-    if (point.y > 30)
-    {
-        SetCursor(imhCross);
-    }
-    else
-    {
-        SetCursor(imhZCursor);
-    }
-}
-
 void MIGLWidget::OnRButtonUp(unsigned short /* nFlags */, CPoint point)
 {
     // we've been showing drags as ball-and-stick and now we need
@@ -1421,26 +1374,6 @@ void MIGLWidget::OnRButtonUp(unsigned short /* nFlags */, CPoint point)
     DragStart = false;
 
     MIMainWindow::instance()->updateNavigator();
-}
-
-void MIGLWidget::OnRButtonDown(unsigned short /* nFlags */, CPoint point)
-{
-    mouse = point;
-    mousestart = point;
-
-    if (!MouseCaptured)
-    {
-        MouseCaptured = true;
-    }
-
-    if (point.y > 30)
-    {
-        SetCursor(imhCross);
-    }
-    else
-    {
-        SetCursor(imhZCursor);
-    }
 }
 
 void MIGLWidget::OnLButtonDblClk(unsigned short /* nFlags */, CPoint)
@@ -10755,17 +10688,21 @@ static void getFlags(QMouseEvent *e, unsigned short &flags)
 
 void MIGLWidget::mousePressEvent(QMouseEvent *e)
 {
-    unsigned short flags = 0;
-    getFlags(e, flags);
+    mouse = CPoint(e->x(), e->y());
+    mousestart = mouse;
 
-    if (e->button() & Qt::LeftButton)
+    if (!MouseCaptured)
     {
-        OnLButtonDown(flags, CPoint(e->x(), e->y()));
+        MouseCaptured = true;
     }
 
-    if (e->button() & (Qt::RightButton | Qt::MidButton))
+    if (e->y() > 30)
     {
-        OnRButtonDown(flags, CPoint(e->x(), e->y()));
+        SetCursor(imhCross);
+    }
+    else
+    {
+        SetCursor(imhZCursor);
     }
 }
 
@@ -10777,12 +10714,165 @@ void MIGLWidget::mouseReleaseEvent(QMouseEvent *e)
 
     if (e->button() & Qt::LeftButton)
     {
-        OnLButtonUp(flags, CPoint(e->x(), e->y()));
+        Displaylist *models = GetDisplaylist();
+        Bond bestbond;
+        // if the mouse is released without moving then pick the closest atom
+        DraggingSlab = false;
+        DraggingRotate = false;
+
+        if (e->x() == mousestart.x && e->y() == mousestart.y && !doubleclicked)
+        {
+            mouse = CPoint(e->x(), e->y());
+            if (!TopView)
+            {
+                if (ShowStack && !AtomStack->empty() && AtomStack->PickClearBox(e->x(), stereoView->getViewport()->getHeight() - e->y()))
+                {
+                    AtomStack->Clear();
+                    ReDraw();
+                }
+                else if (ShowStack && !AtomStack->empty() && AtomStack->PickHideBox(e->x(), stereoView->getViewport()->getHeight() - e->y()))
+                {
+                    AtomStack->ToggleMinMax();
+                    ReDraw();
+                }
+                else if (ShowStack && !AtomStack->empty() && AtomStack->PickPopBox(e->x(), stereoView->getViewport()->getHeight() - e->y()))
+                {
+                    AtomStack->Pop();
+                    ReDraw();
+                }
+                else
+                {
+                    annotationPickingRenderable->setModels(models);
+
+                    vector<GLuint> ids = mousePicker->pick(e->x(), e->y(), frustum, annotationPickingRenderable);
+
+                    Annotation *annot = NULL;
+                    if (ids.size() > 0)
+                    {
+                        annot = annotationPickingRenderable->getAnnotation(ids[0]);
+                    }
+                    if (annot)
+                    {
+                        CurrentAnnotation = annot;
+                        Logger::log("Picked Annotation:");
+                        Logger::log(annot->GetText());
+                    }
+                    else
+                    {
+                        prepareAtomPicking();
+                        ids = mousePicker->pick(e->x(), e->y(), frustum, atomPickingRenderable);
+                        MIAtom *atom = NULL;
+                        if (ids.size() > 0)
+                        {
+                            atom = atomPickingRenderable->getAtom(ids[0]);
+                        }
+                        if (IsFitting())
+                        {
+                            prepareBondPicking();
+                            ids = mousePicker->pick(e->x(), e->y(), frustum, bondPickingRenderable);
+                            Bond *bond = NULL;
+                            if (ids.size() > 0)
+                            {
+                                bond = bondPickingRenderable->getBond(ids[0]);
+                            }
+                            if (bond != NULL)
+                            {
+                                MIAtom *atom1 = bond->getAtom1();
+                                MIAtom *atom2 = bond->getAtom2();
+                                if (ids.size() > 1 && ids[1] == 2)
+                                {
+                                    MIAtom *a = atom1;
+                                    atom1 = atom2;
+                                    atom2 = a;
+                                }
+                                {
+                                    RESIDUE *res1 = residue_from_atom(fitmol->getResidues(), atom1);
+                                    RESIDUE *res2 = residue_from_atom(fitmol->getResidues(), atom2);
+                                    AtomStack->Push(atom2, res2, fitmol);
+                                    AtomStack->Push(atom1, res1, fitmol);
+                                }
+                                OnFitSetuptorsion();
+                            }
+                        }
+                        if (atom != NULL)
+                        {
+
+                            RESIDUE *res = NULL;
+                            Molecule *mol = NULL;
+                            findResidueAndMoleculeForAtom(atom, res, mol);
+                            select(mol, res, atom);
+                            if (res != NULL && mol != NULL)
+                            {
+                                AtomStack->Push(atom, res, mol);
+                            }
+                        }
+
+                        PaletteChanged = true;
+                        doRefresh();
+                    }
+                }
+            }
+        }
+        else if (viewpoint->getrotated() > 10.0 && viewpoint->GetBallandStick() != ViewPoint::CPK
+                 && viewpoint->GetBallandStick() != ViewPoint::BALLANDCYLINDER)
+        {
+            ReDraw();
+        }
+        else if (viewpoint->GetBallandStick() > ViewPoint::BALLANDSTICK)
+        {
+            ReDraw();
+        }
+        MIMainWindow::instance()->updateNavigator();
+        doubleclicked = false;
+        if (MouseCaptured)
+        {
+            MouseCaptured = false;
+        }
+        DragStart = false;
+
+        if (e->y() > 30)
+        {
+            SetCursor(imhCross);
+        }
+        else
+        {
+            SetCursor(imhZCursor);
+        }
     }
 
     if (e->button() & (Qt::RightButton | Qt::MidButton))
     {
-        OnRButtonUp(flags, CPoint(e->x(), e->y()));
+        // we've been showing drags as ball-and-stick and now we need
+        // to redraw
+
+        if (e->x() != mousestart.x || e->y() != mousestart.y)
+        {
+            if (viewpoint->GetBallandStick() > ViewPoint::BALLANDSTICK)
+            {
+                ReDraw();
+            }
+        }
+        else
+        {
+            popup_menu->popup(mapToGlobal(e->pos()));
+        }
+
+        if (e->y() > 30)
+        {
+            SetCursor(imhCross);
+        }
+        else
+        {
+            SetCursor(imhZCursor);
+        }
+
+        if (MouseCaptured)
+        {
+            MouseCaptured = false;
+        }
+        DragStart = false;
+
+        MIMainWindow::instance()->updateNavigator();
     }
 
 }
