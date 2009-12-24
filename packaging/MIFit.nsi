@@ -61,6 +61,8 @@ Section "MIFit" Section1
   File "QtGui4.dll"
   File "QtOpenGL4.dll"
   File "QtXml4.dll"
+  File "QtNetwork4.dll"
+  File "QtScript4.dll"
   File "license.txt"
   File "qt.conf"
   File "README.txt"
