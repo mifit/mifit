@@ -110,17 +110,7 @@ void MIMainWindow::initMenuHandlers()
     EVT_MENU(ID_LOAD_DICT_PDB, MIMainWindow::OnLoadLigPdb)
     EVT_MENU(ID_LOAD_DICT_SMI, MIMainWindow::OnLoadLigSmi)
     EVT_MENU(ID_SAVE_DICT, MIMainWindow::OnSaveDict)
-    EVT_MENU(ID_PREFERENCES, MIMainWindow::OnPreferences)
-    EVT_MENU(ID_MANAGECRYSTALS, MIMainWindow::OnManageCrystals)
-    EVT_MENU(ID_OBJECT_DEFINECOLORS, MIMainWindow::OnDefineAtomColors)
-    EVT_MENU(ID_BVALUECOLORS, MIMainWindow::OnDefineBValueColors)
 
-    EVT_MENU(ID_FILE_CLOSE, MIMainWindow::OnClose)
-    EVT_UPDATE_UI(ID_FILE_CLOSE, MIMainWindow::HasCurrentMIGLWidget)
-    EVT_MENU(ID_FILE_EXIT, MIMainWindow::OnExit)
-    EVT_MENU(ID_FILE_NEW, MIMainWindow::OnNew)
-    EVT_MENU(ID_FILE_OPEN, MIMainWindow::OnFileOpen)
-    EVT_MENU(ID_FILE_OPEN_NEW, MIMainWindow::OnFileOpenNew)
     EVT_MENU(ID_BACKGROUNDCOLOR, MIMainWindow::OnBackgroundColor)
     EVT_MENU(ID_COLORTOOL, MIMainWindow::OnColorTool)
     EVT_MENU(ID_SHOWTOOL, MIMainWindow::OnShowTool)
@@ -133,10 +123,6 @@ void MIMainWindow::initMenuHandlers()
     EVT_UPDATE_UI(ID_STEREO_TOGGLE, MIMainWindow::OnUpdateStereoToggle)
     EVT_MENU(ID_STEREO_TOGGLE, MIMainWindow::OnStereoToggle)
 //
-    EVT_MENU(ID_FILE_SAVE, MIGLWidget::OnFileSave)
-    EVT_UPDATE_UI(ID_FILE_SAVE, MIMainWindow::HasCurrentMIGLWidget)
-    EVT_MENU(ID_FILE_SAVEAS, MIGLWidget::OnFileSaveAs)
-    EVT_UPDATE_UI(ID_FILE_SAVEAS, MIMainWindow::HasCurrentMIGLWidget)
     EVT_MENU(FILE_ADD_MODEL,         MIGLWidget::OnFileAddModel)
     EVT_MENU(ID_EDIT_CLEARLABELS, MIGLWidget::OnEditClearlabels)
     EVT_MENU(ID_EDIT_LABELS, MIGLWidget::OnEditLabels)
@@ -149,12 +135,8 @@ void MIMainWindow::initMenuHandlers()
     EVT_MENU(ID_EDIT_ANNOTATION, MIGLWidget::OnEditAnnotation)
     EVT_UPDATE_UI(ID_EDIT_ANNOTATION, MIGLWidget::OnUpdateEditAnnotation)
     EVT_MENU(ID_OBJECT_NEWMODEL, MIGLWidget::OnNewModel)
-    EVT_MENU(ID_MODEL_EXPORT, MIGLWidget::OnExportModel)
-    EVT_UPDATE_UI(ID_MODEL_EXPORT, MIGLWidget::OnUpdateExportModel)
     EVT_MENU(ID_MAP_ADDFREE, MIGLWidget::OnMapAddFree)
     EVT_UPDATE_UI(ID_MAP_ADDFREE, MIGLWidget::OnUpdateMapAddFree)
-    EVT_MENU(ID_PRINT, MIGLWidget::OnPrint)
-    EVT_UPDATE_UI(ID_PRINT, MIMainWindow::HasCurrentMIGLWidget)
 //rendermenu
     EVT_MENU(ID_RENDER_STICKS, MIGLWidget::OnRenderSticks)
     EVT_MENU(ID_RENDERING_BALLANDSTICK, MIGLWidget::OnRenderingBallandstick)
@@ -442,9 +424,6 @@ void MIMainWindow::initMenuHandlers()
     EVT_MENU(ID_ANIMATE_ROCKANDROLLPARAMETERS, MIGLWidget::OnAnimateRockandrollparameters)
     EVT_MENU(ID_ANIMATE_BLINK, MIGLWidget::OnAnimateBlink)
     EVT_UPDATE_UI(ID_ANIMATE_BLINK, MIGLWidget::OnUpdateAnimateBlink)
-//objectmenu
-    EVT_MENU(ID_EDIT_COPY, MIGLWidget::OnEditCopy)
-    EVT_UPDATE_UI(ID_EDIT_COPY, MIMainWindow::HasCurrentMIGLWidget)
 //linemenu
     EVT_MENU(ID_LINETHICKNESS_ONE, MIGLWidget::OnLinethicknessOne)
     EVT_MENU(ID_LINETHICKNESS_TWO, MIGLWidget::OnLinethicknessTwo)
@@ -541,8 +520,6 @@ void MIMainWindow::initMenuHandlers()
 //
     EVT_MENU(ID_RAMAPLOT_ALLOWED, MIGLWidget::OnRamachandranPlotShowAllowed)
     EVT_UPDATE_UI(ID_RAMAPLOT_ALLOWED, MIGLWidget::OnUpdateRamachandranPlotShowAllowed)
-    EVT_MENU(ID_SITEPLOT, MIGLWidget::OnSitePlot)
-    EVT_UPDATE_UI(ID_SITEPLOT, MIGLWidget::OnUpdateSitePlot)
     EVT_MENU(ID_INVERTCHIRAL, MIGLWidget::OnInvertChiralCenter)
     EVT_UPDATE_UI(ID_INVERTCHIRAL, MIGLWidget::OnUpdateInvertChiralCenter)
     EVT_MENU(ID_VIEWCHIRAL, MIGLWidget::OnViewChiralCenters)
@@ -550,9 +527,6 @@ void MIMainWindow::initMenuHandlers()
 //
     EVT_MENU(ID_SHOW_SHOWWITHINSPHERE, MIGLWidget::OnShowShowwithinsphere)
     EVT_MENU(ID_GOTO_GOTOXYZ, MIGLWidget::OnGotoGotoxyz)
-//
-    EVT_MENU(ID_EXPORTIMAGE, MIGLWidget::OnExportImage)
-    EVT_UPDATE_UI(ID_EXPORTIMAGE, MIMainWindow::HasCurrentMIGLWidget)
 //todo
     EVT_MENU(ID_EDIT_SELECTMODEL, MIGLWidget::OnEditSelectmodel)
     END_EVENT_TABLE()
@@ -1689,6 +1663,8 @@ void MIMainWindow::newWindow()
 
 void MIMainWindow::updateMenus()
 {
+    updateFileMenu();
+
     bool hasMIGLWidget = (currentMIGLWidget() != 0);
     closeAllAct->setEnabled(hasMIGLWidget);
     tileAct->setEnabled(hasMIGLWidget);
@@ -1752,15 +1728,15 @@ QWidget*MIMainWindow::createMIGLWidget()
     w->setObjectName("MIGLWidget");
     mdiArea->addSubWindow(w);
     w->showMaximized();
+    foreach (QKeySequence k, closeAction->shortcuts())
+        grabShortcut(k, Qt::ApplicationShortcut);
     return w;
 }
 
 void MIMainWindow::createActions()
 {
 
-    //FIXME: these two aren't recorded by the history, are they?
-    closeAct = new QAction(tr("Cl&ose"), this);
-    closeAct->setShortcut(tr("Ctrl+F4"));
+    closeAct = new QAction(tr("Cl&ose\tCtrl+W"), this);
     closeAct->setStatusTip(tr("Close the active window"));
     connect(closeAct, SIGNAL(triggered()),
             mdiArea, SLOT(closeActiveSubWindow()));
@@ -1800,90 +1776,169 @@ void MIMainWindow::createActions()
 
 }
 
-
-static void fill_file_menu(MIMenu *file_menu, int type)
+void MIMainWindow::updateFileMenu()
 {
-    file_menu->Append(ID_FILE_NEW, "New\tCtrl+N", "Create a new document");
-    file_menu->Append(ID_FILE_OPEN, "Open models, data, maps, etc...\tCtrl+O", "Open file(s) into the current document");
-    if (type == ID_MOLWVIEW)
-    {
-        file_menu->Append(ID_FILE_OPEN_NEW, "Open into new document...\tCtrl+Shift+O", "Open file(s) into a new document");
-    }
-    file_menu->Append(ID_FILE_CLOSE, "Close\tCtrl+W");
-    if (type == ID_MOLWVIEW)
-    {
-        file_menu->Append(ID_FILE_SAVE, "Save Session\tCtrl+S", "Save the entire document to a file");
-        file_menu->Append(ID_FILE_SAVEAS, "Save Session As...\tCtrl+Shift+S", "Save the document under a new name");
-    }
-    if (type == ID_MOLWVIEW)
-    {
-        file_menu->Append(ID_MODEL_EXPORT, "Export PDB...\tCtrl+Alt+S", "Saves the current model as a PDB format file", false);
-    }
-    file_menu->Append(ID_PRINT, "Print...", "Print the canvas");
-    if (type == ID_MOLWVIEW)
-    {
-        file_menu->AppendSeparator();
-        file_menu->Append(ID_EDIT_COPY, "Copy Canvas\tCtrl+C", "Copy the canvas to the clipboard to paste into other programs", false);
-        file_menu->Append(ID_EXPORTIMAGE, "Export Image As...", "Export view to a graphics file");
-        file_menu->Append(ID_SITEPLOT, "E&xport Active Site Plot", "Export EPS of 2-Dimensional interaction diagram");
-    }
-    if (type == ID_MOLWVIEW || type == 0)
-    {
-        file_menu->AppendSeparator();
-        file_menu->Append(ID_MANAGECRYSTALS, "Manage Crystals...", "Edit the crystal database");
-        file_menu->AppendSeparator();
-        file_menu->Append(ID_PREFERENCES, "Preferences...", "Edit preferences");
-        file_menu->Append(ID_OBJECT_DEFINECOLORS, "Define Atom Colors...", "Define Atom Colors", false);
-        file_menu->Append(ID_BVALUECOLORS, "B-Value Colors Ranges...", "Define B-Value Coloring Ranges", false);
-    }
+    bool hasDocument = currentMIGLWidget() != 0;
+    fileSaveAction->setEnabled(hasDocument);
+    fileSaveAsAction->setEnabled(hasDocument);
+    bool canExport = hasDocument
+                     && currentMIGLWidget()->GetDisplaylist()->CurrentItem() != NULL
+                     && !MIBusyManager::instance()->Busy();
+    exportModelAction->setEnabled(canExport);
+    filePrintAction->setEnabled(hasDocument);
+    copyCanvasAction->setEnabled(hasDocument);
+    exportImageAction->setEnabled(hasDocument);
+    sitePlotAction->setEnabled(hasDocument && currentMIGLWidget()->AtomStack->empty());
+    closeAction->setEnabled(hasDocument);
+}
+
+void MIMainWindow::OnFileSave()
+{
+    if (currentMIGLWidget())
+        currentMIGLWidget()->OnFileSave();
+}
+
+void MIMainWindow::OnFileSaveAs()
+{
+    if (currentMIGLWidget())
+        currentMIGLWidget()->OnFileSaveAs();
+}
+
+void MIMainWindow::OnExportModel()
+{
+    if (currentMIGLWidget())
+        currentMIGLWidget()->OnExportModel();
+}
+
+void MIMainWindow::OnPrint()
+{
+    if (currentMIGLWidget())
+        currentMIGLWidget()->OnPrint();
+}
+
+void MIMainWindow::OnEditCopy()
+{
+    if (currentMIGLWidget())
+        currentMIGLWidget()->OnEditCopy();
+}
+
+void MIMainWindow::OnSitePlot()
+{
+    if (currentMIGLWidget())
+        currentMIGLWidget()->OnSitePlot();
+}
+
+void MIMainWindow::OnExportImage()
+{
+    if (currentMIGLWidget())
+        currentMIGLWidget()->OnExportImage();
+}
+
+void MIMainWindow::fill_file_menu(MIMenu *file_menu)
+{
+    QAction *action;
+
+    fileNewAction = file_menu->addAction(tr("New"), this, SLOT(OnNew()));
+    fileNewAction->setToolTip(tr("Create a new document"));
+    fileNewAction->setShortcut(tr("Ctrl+N"));
+
+    fileOpenAction = file_menu->addAction(tr("Open models, data, maps, etc..."), this, SLOT(OnFileOpen()));
+    fileOpenAction->setToolTip(tr("Open file(s) into the current document"));
+    fileOpenAction->setShortcut(tr("Ctrl+O"));
+
+    action = file_menu->addAction(tr("Open into new document..."), this, SLOT(OnFileOpenNew()));
+    action->setToolTip(tr("Open file(s) into a new document"));
+    action->setShortcut(tr("Ctrl+Shift+O"));
+
+    closeAction = file_menu->addAction(tr("Close\tCtrl+W"), this, SLOT(OnClose()));
+
+    fileSaveAction = file_menu->addAction(tr("Save Session"), this, SLOT(OnFileSave()));
+    fileSaveAction->setToolTip(tr("Save the entire document to a file"));
+    fileSaveAction->setShortcut(tr("Ctrl+S"));
+
+    fileSaveAsAction = file_menu->addAction(tr("Save Session As..."), this, SLOT(OnFileSaveAs()));
+    fileSaveAsAction->setToolTip(tr("Save the document under a new name"));
+    fileSaveAsAction->setShortcut(tr("Ctrl+Shift+S"));
+
+    exportModelAction = file_menu->addAction(tr("Export PDB..."), this, SLOT(OnExportModel()));
+    exportModelAction->setToolTip(tr("Saves the current model as a PDB format file"));
+    exportModelAction->setShortcut(tr("Ctrl+Alt+S"));
+
+    filePrintAction = file_menu->addAction(tr("Print..."), this, SLOT(OnPrint()));
+    filePrintAction->setToolTip(tr("Print the canvas"));
+
+    file_menu->addSeparator();
+
+    copyCanvasAction = file_menu->addAction(tr("Copy Canvas"), this, SLOT(OnEditCopy()));
+    copyCanvasAction->setToolTip(tr("Copy the canvas to the clipboard to paste into other programs"));
+    copyCanvasAction->setShortcut(tr("Ctrl+C"));
+
+    exportImageAction = file_menu->addAction(tr("Export Image As..."), this, SLOT(OnExportImage()));
+    exportImageAction->setToolTip(tr("Export view to a graphics file"));
+
+    sitePlotAction = file_menu->addAction(tr("E&xport Active Site Plot"), this, SLOT(OnSitePlot()));
+    sitePlotAction->setToolTip(tr("Export EPS of 2-Dimensional interaction diagram"));
+
+    file_menu->addSeparator();
+
+    action = file_menu->addAction(tr("Manage Crystals..."), this, SLOT(OnManageCrystals()));
+    action->setToolTip(tr("Edit the crystal database"));
+
+    file_menu->addSeparator();
+
+    action = file_menu->addAction(tr("Preferences..."), this, SLOT(OnPreferences()));
+    action->setToolTip(tr("Edit preferences"));
+
+    action = file_menu->addAction(tr("Define Atom Colors..."), this, SLOT(OnDefineAtomColors()));
+    action->setToolTip(tr("Define Atom Colors"));
+
+    action = file_menu->addAction(tr("B-Value Colors Ranges..."), this, SLOT(OnDefineBValueColors()));
+    action->setToolTip(tr("Define B-Value Coloring Ranges"));
 
     MIMainWindow::instance()->addRecentFileActions(file_menu);
 
-    file_menu->Append(ID_FILE_EXIT, "E&xit\tAlt-X");
+    action = file_menu->addAction(tr("E&xit"), this, SLOT(OnExit()));
+    action->setShortcut(tr("Alt+X"));
+
+    connect(file_menu, SIGNAL(aboutToShow()), SLOT(updateFileMenu()));
 }
 
 
 
-static void fill_view_menu(MIMenu *view_menu, int type)
+void MIMainWindow::fill_view_menu(MIMenu *view_menu)
 {
-    if (type == ID_MOLWVIEW)
-    {
-        view_menu->Append(ID_VIEW_UNDO, "&Undo Viewpoint", "Use this command to center objects", false);
-        view_menu->Append(ID_VIEW_SAVE, "&Save Viewpoint...", "Use this command to save the viewpoint to a file", false);
-        view_menu->Append(ID_VIEW_LOAD, "&Load Viewpoint...", "Use this command to load the viewpoint from a file", false);
-        view_menu->AppendSeparator();
-        view_menu->Append(ID_VIEW_TOPVIEW, "&Top view", "View from top and drag clipping planes", true);
-        view_menu->Append(ID_VIEW_FULLSCREEN, "&Fullscreen\tESC", "Canvas fills the entire screen", true);
-    }
+    view_menu->Append(ID_VIEW_UNDO, "&Undo Viewpoint", "Use this command to center objects", false);
+    view_menu->Append(ID_VIEW_SAVE, "&Save Viewpoint...", "Use this command to save the viewpoint to a file", false);
+    view_menu->Append(ID_VIEW_LOAD, "&Load Viewpoint...", "Use this command to load the viewpoint from a file", false);
+    view_menu->AppendSeparator();
+    view_menu->Append(ID_VIEW_TOPVIEW, "&Top view", "View from top and drag clipping planes", true);
+    view_menu->Append(ID_VIEW_FULLSCREEN, "&Fullscreen\tESC", "Canvas fills the entire screen", true);
     view_menu->Append(ID_HARDWARE_STEREO, "Use &Hardware Stereo", "Stereo using specialty hardware", true);
     view_menu->Append(ID_STEREO_TOGGLE, "S&tereo\t|", "Toggle between stereo and mono drawing modes", true);
-    if (type == ID_MOLWVIEW)
-    {
-        view_menu->AppendSeparator();
-        view_menu->Append(ID_VIEW_SLABIN, "Slab In\tShift+I", "Decrease the distance beteween the front and back clipping planes", false);
-        view_menu->Append(ID_VIEW_SLABOUT, "Slab Out\tShift+O", "Increase the distance beteween the front and back clipping planes", false);
-        view_menu->Append(ID_VIEW_CLIPPLANES, "Set s&lab...", "Set the values of the front and back clipping planes", false);
-        view_menu->Append(ID_GOTO_ZOOMIIN, "Zoom In\tI", "Zoom viewpoint in by 20%", false);
-        view_menu->Append(ID_GOTO_ZOOMOUT, "Zoom Out\tO", "Zoom viewpoint in by 20%", false);
-        view_menu->Append(ID_VIEW_ROTATEY90, "Rotate View &+90", "Use this command (and -90) to center objects", false);
-        view_menu->Append(ID_VIEW_ROTATEYMINUS, "Rotate View &-90", "Use this command to center objects", false);
-        view_menu->Append(ID_VIEW_ORTHONORMAL, "Orthonor&mal", "Set perspective to 0 (infinite viewpoint)", true);
-        view_menu->Append(ID_INCREASE_PERSP, "I&ncrease Perspective", "Increase perspective +20%", false);
-        view_menu->Append(ID_DECREASE_PERSP, "&Decrease Perspective", "Decrease perspective -20%", false);
-        view_menu->AppendSeparator();
-        view_menu->Append(ID_GOTO_FITTOSCREEN, "&Center model on screen", "Center molecule on screen", false);
-        view_menu->Append(ID_GOTO_FITALLTOSCREEN, "&Center All Models On Screen", "Center all the molecules on the screen", false);
-        view_menu->Append(ID_MAP_CENTERDENSITY, "Center Visible Density", "Center the density visible on the screen", false);
-        view_menu->Append(ID_GOTO_GOTOXYZ, "&Go to x,y,z...", "Center view at a coordinate in Angstroms", false);
-        view_menu->AppendSeparator();
+    view_menu->AppendSeparator();
+    view_menu->Append(ID_VIEW_SLABIN, "Slab In\tShift+I", "Decrease the distance beteween the front and back clipping planes", false);
+    view_menu->Append(ID_VIEW_SLABOUT, "Slab Out\tShift+O", "Increase the distance beteween the front and back clipping planes", false);
+    view_menu->Append(ID_VIEW_CLIPPLANES, "Set s&lab...", "Set the values of the front and back clipping planes", false);
+    view_menu->Append(ID_GOTO_ZOOMIIN, "Zoom In\tI", "Zoom viewpoint in by 20%", false);
+    view_menu->Append(ID_GOTO_ZOOMOUT, "Zoom Out\tO", "Zoom viewpoint in by 20%", false);
+    view_menu->Append(ID_VIEW_ROTATEY90, "Rotate View &+90", "Use this command (and -90) to center objects", false);
+    view_menu->Append(ID_VIEW_ROTATEYMINUS, "Rotate View &-90", "Use this command to center objects", false);
+    view_menu->Append(ID_VIEW_ORTHONORMAL, "Orthonor&mal", "Set perspective to 0 (infinite viewpoint)", true);
+    view_menu->Append(ID_INCREASE_PERSP, "I&ncrease Perspective", "Increase perspective +20%", false);
+    view_menu->Append(ID_DECREASE_PERSP, "&Decrease Perspective", "Decrease perspective -20%", false);
+    view_menu->AppendSeparator();
+    view_menu->Append(ID_GOTO_FITTOSCREEN, "&Center model on screen", "Center molecule on screen", false);
+    view_menu->Append(ID_GOTO_FITALLTOSCREEN, "&Center All Models On Screen", "Center all the molecules on the screen", false);
+    view_menu->Append(ID_MAP_CENTERDENSITY, "Center Visible Density", "Center the density visible on the screen", false);
+    view_menu->Append(ID_GOTO_GOTOXYZ, "&Go to x,y,z...", "Center view at a coordinate in Angstroms", false);
+    view_menu->AppendSeparator();
 
-        MIMenu *anime_menu = new MIMenu(view_menu->GetReceiver());
-        anime_menu->Append(ID_ANIMATE_ROCK, "&Rock", "Rock the model back and forth", true);
-        anime_menu->Append(ID_ANIMATE_ROLL, "Ro&ll", "Roll the model around the vertical", true);
-        anime_menu->Append(ID_ANIMATE_BLINK, "&Blink", "Blink between two or more models", true);
-        anime_menu->Append(ID_ANIMATE_ROCKANDROLLPARAMETERS, "Rock/Roll Rates...", "Set the rates for rock and roll", false);
-        view_menu->Append(ID_ANIMEMENU, "&Animate", anime_menu);
-    }
+    MIMenu *anime_menu = new MIMenu(view_menu->GetReceiver());
+    anime_menu->Append(ID_ANIMATE_ROCK, "&Rock", "Rock the model back and forth", true);
+    anime_menu->Append(ID_ANIMATE_ROLL, "Ro&ll", "Roll the model around the vertical", true);
+    anime_menu->Append(ID_ANIMATE_BLINK, "&Blink", "Blink between two or more models", true);
+    anime_menu->Append(ID_ANIMATE_ROCKANDROLLPARAMETERS, "Rock/Roll Rates...", "Set the rates for rock and roll", false);
+    view_menu->Append(ID_ANIMEMENU, "&Animate", anime_menu);
 }
 
 void MIMainWindow::fill_surf_menu(MIMenu *surf_menu)
@@ -1906,7 +1961,7 @@ void MIMainWindow::createMenus()
 
     //// Make a menubar
     MIMenu *file_menu = new MIMenu(*this);
-    fill_file_menu(file_menu, ID_MOLWVIEW);
+    fill_file_menu(file_menu);
     updateRecentFileActions();
 
 
@@ -2063,7 +2118,7 @@ void MIMainWindow::createMenus()
     show_menu->Append(ID_CANVASMENU, "Canvas", canvas_menu);
 
     view_menu = new MIMenu(*this);
-    fill_view_menu(view_menu, ID_MOLWVIEW);
+    fill_view_menu(view_menu);
 
     analyze_menu = new MIMenu(*this);
     analyze_menu->Append(ID_GEOMETRY_DISTANCE, "Measure &Distance", "Measure the distance between last two picked atoms", false);
@@ -2300,12 +2355,16 @@ void MIMainWindow::createToolBars()
     tool_bar = new MIToolBar(menu_bar, this);
 
     //TODO: use disabled icon specialization for QIcons?
-
-    tool_bar->AddTool(ID_FILE_NEW, new_xpm);
-    tool_bar->AddTool(ID_FILE_OPEN, open_xpm);
-    tool_bar->AddTool(ID_FILE_SAVE, save_xpm);
-    tool_bar->AddTool(ID_PRINT, print_xpm);
-    tool_bar->AddTool(ID_EDIT_COPY, copy_xpm);
+    fileNewAction->setIcon(QIcon(QPixmap(new_xpm)));
+    tool_bar->toolBar()->addAction(fileNewAction);
+    fileOpenAction->setIcon(QIcon(QPixmap(open_xpm)));
+    tool_bar->toolBar()->addAction(fileOpenAction);
+    fileSaveAction->setIcon(QIcon(QPixmap(save_xpm)));
+    tool_bar->toolBar()->addAction(fileSaveAction);
+    filePrintAction->setIcon(QIcon(QPixmap(print_xpm)));
+    tool_bar->toolBar()->addAction(filePrintAction);
+    copyCanvasAction->setIcon(QIcon(QPixmap(copy_xpm)));
+    tool_bar->toolBar()->addAction(copyCanvasAction);
 
     tool_bar->AddSeparator();
     tool_bar->AddTool(ID_OBJECT_ANNOTATION, annotate_xpm);

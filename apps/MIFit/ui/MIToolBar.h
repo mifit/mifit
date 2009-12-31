@@ -22,6 +22,8 @@ public:
 
     void doUpdates();
 
+    QToolBar *toolBar();
+
 private:
     QAction *findAction(unsigned int id);
 

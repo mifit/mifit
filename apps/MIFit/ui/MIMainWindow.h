@@ -122,6 +122,14 @@ private slots:
     void OnFileOpen();
     void OnFileOpenNew();
 
+    void OnFileSave();
+    void OnFileSaveAs();
+    void OnExportModel();
+    void OnPrint();
+    void OnEditCopy();
+    void OnSitePlot();
+    void OnExportImage();
+
     void OnScript();
 
     //dictionary menu handlers
@@ -170,6 +178,8 @@ private slots:
     void updateShowMenu();
     void updateIsRefining(bool isRefining);
 
+    void updateFileMenu();
+
 private:
     enum { MaxRecentFiles = 6 };
     QAction *recentFileActs[MaxRecentFiles];
@@ -189,6 +199,9 @@ private:
     void createDockWindows();
     void initMenuHandlers();
 
+    void fill_file_menu(MIMenu *file_menu);
+    void fill_view_menu(MIMenu *view_menu);
+
     QMdiSubWindow *findMIGLWidget(const QString &fileName);
 
     MIMenuBar *menu_bar;
@@ -204,6 +217,18 @@ private:
     QAction *solidSurfMenuAction;
     QMenu *windowMenu;
     QMenu *viewMenu;
+
+    // file menu actions;
+    QAction *fileNewAction;
+    QAction *fileOpenAction;
+    QAction *fileSaveAction;
+    QAction *fileSaveAsAction;
+    QAction *exportModelAction;
+    QAction *filePrintAction;
+    QAction *copyCanvasAction;
+    QAction *exportImageAction;
+    QAction *sitePlotAction;
+    QAction *closeAction;
 
     // window menu actions
     QAction *closeAct;

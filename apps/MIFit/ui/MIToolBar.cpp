@@ -59,3 +59,8 @@ void MIToolBar::doUpdates()
         _mb->doUpdate(_ids[i]);
     }
 }
+
+QToolBar *MIToolBar::toolBar()
+{
+    return _tb;
+}

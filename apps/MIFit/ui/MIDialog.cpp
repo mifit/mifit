@@ -22,7 +22,6 @@
 #include "RefinementOptionsDialog.h"
 #include "PhaseFileLoadDialog.h"
 #include "BValueColors.h"
-#include "AtomColors.h"
 #include "LSQFitDialog.h"
 #include "CustomJobDialog.h"
 #include "GenericDataDialog.h"
