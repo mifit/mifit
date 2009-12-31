@@ -93,7 +93,7 @@ class AtomsTree
     typedef std::map<MIAtom*, TreeData*> AtomToDataMap;
     AtomToDataMap atomToData;
 
-    MIMenu *_menu;
+    QMenu *_menu;
     QMenu *solidSurfMenu;
     QActionGroup *solidSurfActionGroup;
     bool _working;
@@ -157,11 +157,19 @@ AtomsTree::AtomsTree(QWidget *parent)
     std::string rootText = std::string("Atoms List");
     setHeaderLabel(rootText.c_str());
     rootId = invisibleRootItem();
-    _menu = new MIMenu(*this);
-    _menu->Append(ID_MODELSVIEW_ATOMSTREE_SHOW, "Show/Hide", "Show or hide this atom", false);
-    _menu->Append(ID_MODELSVIEW_ATOMSTREE_DELETE, "Delete", "Delete this atom", false);
-    _menu->Append(ID_MODELSVIEW_ATOMSTREE_COLOR, "Color", "Color this atom", false);
-    _menu->Append(ID_MODELSVIEW_ATOMSTREE_EDIT, "Edit", "Edit the properties of this atom", false);
+    _menu = new QMenu(this);
+    QAction *action = _menu->addAction("Show/Hide");
+    action->setToolTip("Show or hide this atom");
+    connect(action, SIGNAL(triggered()), this, SLOT(ShowItem()));
+    action = _menu->addAction("Delete");
+    action->setToolTip("Delete this atom");
+    connect(action, SIGNAL(triggered()), this, SLOT(DeleteItem()));
+    action = _menu->addAction("Color");
+    action->setToolTip("Color this atom");
+    connect(action, SIGNAL(triggered()), this, SLOT(ColorItem()));
+    action = _menu->addAction("Edit");
+    action->setToolTip("Edit the properties of this atom");
+    connect(action, SIGNAL(triggered()), this, SLOT(EditItem()));
 
     // Solid surface menu created here, but filled when view set
     solidSurfMenu = new QMenu(this);
@@ -178,13 +186,6 @@ AtomsTree::AtomsTree(QWidget *parent)
     connect(this, SIGNAL(itemActivated(QTreeWidgetItem *, int)),
             this, SLOT(OnItemActivated(QTreeWidgetItem *, int)));
 
-    BEGIN_EVENT_TABLE(this, NONE)
-    EVT_MENU(ID_MODELSVIEW_ATOMSTREE_DELETE, AtomsTree::DeleteItem)
-    EVT_MENU(ID_MODELSVIEW_ATOMSTREE_SHOW, AtomsTree::ShowItem)
-    EVT_MENU(ID_MODELSVIEW_ATOMSTREE_EDIT, AtomsTree::EditItem)
-    EVT_MENU(ID_MODELSVIEW_ATOMSTREE_COLOR, AtomsTree::ColorItem)
-
-    END_EVENT_TABLE()
 }
 
 AtomsTree::~AtomsTree()
@@ -442,7 +443,7 @@ void AtomsTree::contextMenuEvent(QContextMenuEvent *event)
     }
     if (selectedItems().size())
     {
-        _menu->doExec(QCursor::pos());
+        _menu->exec(QCursor::pos());
     }
 }
 
