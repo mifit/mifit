@@ -789,14 +789,31 @@ ResiduesTree::ResiduesTree(QWidget *parent)
     rootId = invisibleRootItem();
 
     _menu = new MIMenu(*this);
-    _menu->Append(ID_MODELSVIEW_RESIDUESTREE_SHOW, "Show/Hide", "Show or hide this residue", false);
-    _menu->Append(ID_MODELSVIEW_RESIDUESTREE_DELETE, "Delete", "Delete this residue", false);
-    _menu->Append(ID_MODELSVIEW_RESIDUESTREE_COLOR, "Color", "Color this residue", false);
-    _menu->Append(ID_MODELSVIEW_RESIDUESTREE_EDIT, "Edit", "Edit the properties of this residue", false);
-    _menu->Append(ID_MODELSVIEW_RESIDUESTREE_EDITATOMS, "Edit atoms", "Edit the properties of the atoms in this residue", false);
-    _menu->Append(ID_MODELSVIEW_RESIDUESTREE_COPY, "Copy", "Copy residues", false);
-    _menu->Append(ID_MODELSVIEW_RESIDUESTREE_INSERT, "Insert", "Insert residues", false);
-    _menu->Append(ID_MODELSVIEW_RESIDUESTREE_PASTE, "Paste", "Paste residues", false);
+    QAction *action;
+    action = _menu->addAction("Show/Hide");
+    action->setToolTip("Show or hide this residue");
+    connect(action, SIGNAL(triggered()), this, SLOT(ShowItem()));
+    action = _menu->addAction("Delete");
+    action->setToolTip("Delete this residue");
+    connect(action, SIGNAL(triggered()), this, SLOT(DeleteItem()));
+    action = _menu->addAction("Color");
+    action->setToolTip("Color this residue");
+    connect(action, SIGNAL(triggered()), this, SLOT(ColorItem()));
+    action = _menu->addAction("Edit");
+    action->setToolTip("Edit the properties of this residue");
+    connect(action, SIGNAL(triggered()), this, SLOT(EditItem()));
+    action = _menu->addAction("Edit atoms");
+    action->setToolTip("Edit the properties of the atoms in this residue");
+    connect(action, SIGNAL(triggered()), this, SLOT(EditItemAtoms()));
+    action = _menu->addAction("Copy");
+    action->setToolTip("Copy residues");
+    connect(action, SIGNAL(triggered()), this, SLOT(CopyItem()));
+    action = _menu->addAction("Insert");
+    action->setToolTip("Insert residues");
+    connect(action, SIGNAL(triggered()), this, SLOT(InsertItem()));
+    action = _menu->addAction("Paste");
+    action->setToolTip("Paste residues");
+    connect(action, SIGNAL(triggered()), this, SLOT(PasteItem()));
 
     // Solid surface menu created here, but filled when view set
     solidSurfMenu = new QMenu(this);
@@ -813,17 +830,6 @@ ResiduesTree::ResiduesTree(QWidget *parent)
     connect(this, SIGNAL(itemActivated(QTreeWidgetItem *, int)),
             this, SLOT(OnItemActivated(QTreeWidgetItem *, int)));
 
-    BEGIN_EVENT_TABLE(this, NONE)
-    EVT_MENU(ID_MODELSVIEW_RESIDUESTREE_DELETE, ResiduesTree::DeleteItem)
-    EVT_MENU(ID_MODELSVIEW_RESIDUESTREE_SHOW, ResiduesTree::ShowItem)
-    EVT_MENU(ID_MODELSVIEW_RESIDUESTREE_EDIT, ResiduesTree::EditItem)
-    EVT_MENU(ID_MODELSVIEW_RESIDUESTREE_COLOR, ResiduesTree::ColorItem)
-    EVT_MENU(ID_MODELSVIEW_RESIDUESTREE_COPY, ResiduesTree::CopyItem)
-    EVT_MENU(ID_MODELSVIEW_RESIDUESTREE_INSERT, ResiduesTree::InsertItem)
-    EVT_MENU(ID_MODELSVIEW_RESIDUESTREE_PASTE, ResiduesTree::PasteItem)
-    EVT_MENU(ID_MODELSVIEW_RESIDUESTREE_EDITATOMS, ResiduesTree::EditItemAtoms)
-
-    END_EVENT_TABLE()
 }
 
 ResiduesTree::~ResiduesTree()
