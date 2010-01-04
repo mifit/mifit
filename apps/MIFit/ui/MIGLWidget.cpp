@@ -54,7 +54,6 @@
 #include "ui/MIColorPickerDlg.h"
 #include "ui/MIDialog.h"
 
-#include <figurelib/figurelib.h>
 #include "jobs/jobslib.h"
 #include "GenericDataDialog.h"
 
@@ -4385,64 +4384,6 @@ void MIGLWidget::Purge(RESIDUE *res)
     }
 }
 
-static void GenerateSitePlot(Molecule *mol, RESIDUE *lig)
-{
-    bool result = false;
-
-    QDialog *dlg = new QDialog();
-    QVBoxLayout *layout = new QVBoxLayout(dlg);
-    moldraw::GLDrawingCanvas *dc = new moldraw::GLDrawingCanvas(dlg);
-    layout->addWidget(dc);
-
-    QDialogButtonBox *buttonBox =
-        new QDialogButtonBox(QDialogButtonBox::Ok,
-                             Qt::Horizontal,
-                             dlg);
-    layout->addWidget(buttonBox);
-
-    QObject::connect(buttonBox, SIGNAL(accepted()), dlg, SLOT(accept()));
-
-    dlg->resize(800, 720);
-    result = moldraw::GenerateFigureASP(dc, mol, lig->name().c_str(), lig->chain_id());
-    if (result)
-    {
-        dlg->setAttribute(Qt::WA_DeleteOnClose, true);
-        dlg->setModal(true);
-        dlg->exec();
-    }
-    else
-    {
-        delete dlg;
-    }
-}
-
-void MIGLWidget::OnSitePlot()
-{
-    if (MIBusyManager::instance()->Busy())
-    {
-        return;
-    }
-    Displaylist *Models = GetDisplaylist();
-
-    MIAtom *a;
-    RESIDUE *res;
-    Molecule *node;
-
-    AtomStack->Pop(a, res, node);
-    ReDrawAll();
-    if (!a || !res || !node)
-    {
-        return;
-    }
-
-    Models->SetCurrent(node);
-    GenerateSitePlot(node, res);
-}
-
-void MIGLWidget::OnUpdateSitePlot(const MIUpdateEvent &pCmdUI)
-{
-    pCmdUI.Enable(!AtomStack->empty());
-}
 
 void MIGLWidget::RemoveFileFromHistory(const std::string& /* pathname */)
 {

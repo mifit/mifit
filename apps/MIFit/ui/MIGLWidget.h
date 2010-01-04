@@ -1476,8 +1476,6 @@ public slots:
     void OnUpdateSequenceInsertlowergap(const MIUpdateEvent &pCmdUI);
     void OnSequenceDeletelowergap();
     void OnUpdateSequenceDeletelowergap(const MIUpdateEvent &pCmdUI);
-    void OnSitePlot();
-    void OnUpdateSitePlot(const MIUpdateEvent &pCmdUI);
 
     void OnInvertChiralCenter();
     void OnUpdateInvertChiralCenter(const MIUpdateEvent &pCmdUI);

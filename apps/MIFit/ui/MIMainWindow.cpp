@@ -965,7 +965,7 @@ void MIMainWindow::OnLoadDictAppend()
 void MIMainWindow::OnEditDictResidue()
 {
     std::vector<std::string> resList = MIFitDictionary()->GetDictResList();
-    if (!resList.empty())
+    if (resList.empty())
     {
         Logger::message("No residues in dictionary to edit");
         return;
@@ -1788,7 +1788,7 @@ void MIMainWindow::updateFileMenu()
     filePrintAction->setEnabled(hasDocument);
     copyCanvasAction->setEnabled(hasDocument);
     exportImageAction->setEnabled(hasDocument);
-    sitePlotAction->setEnabled(hasDocument && currentMIGLWidget()->AtomStack->empty());
+
     closeAction->setEnabled(hasDocument);
 }
 
@@ -1820,12 +1820,6 @@ void MIMainWindow::OnEditCopy()
 {
     if (currentMIGLWidget())
         currentMIGLWidget()->OnEditCopy();
-}
-
-void MIMainWindow::OnSitePlot()
-{
-    if (currentMIGLWidget())
-        currentMIGLWidget()->OnSitePlot();
 }
 
 void MIMainWindow::OnExportImage()
@@ -1875,9 +1869,6 @@ void MIMainWindow::fill_file_menu(MIMenu *file_menu)
 
     exportImageAction = file_menu->addAction(tr("Export Image As..."), this, SLOT(OnExportImage()));
     exportImageAction->setToolTip(tr("Export view to a graphics file"));
-
-    sitePlotAction = file_menu->addAction(tr("E&xport Active Site Plot"), this, SLOT(OnSitePlot()));
-    sitePlotAction->setToolTip(tr("Export EPS of 2-Dimensional interaction diagram"));
 
     file_menu->addSeparator();
 

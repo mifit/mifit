@@ -127,7 +127,6 @@ private slots:
     void OnExportModel();
     void OnPrint();
     void OnEditCopy();
-    void OnSitePlot();
     void OnExportImage();
 
     void OnScript();
@@ -227,7 +226,6 @@ private:
     QAction *filePrintAction;
     QAction *copyCanvasAction;
     QAction *exportImageAction;
-    QAction *sitePlotAction;
     QAction *closeAction;
 
     // window menu actions
