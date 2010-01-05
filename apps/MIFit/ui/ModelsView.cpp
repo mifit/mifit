@@ -145,18 +145,10 @@ AtomsTree::AtomsTree(QWidget *parent)
     setHeaderLabel(rootText.c_str());
     rootId = invisibleRootItem();
     _menu = new QMenu(this);
-    QAction *action = _menu->addAction("Show/Hide");
-    action->setToolTip("Show or hide this atom");
-    connect(action, SIGNAL(triggered()), this, SLOT(ShowItem()));
-    action = _menu->addAction("Delete");
-    action->setToolTip("Delete this atom");
-    connect(action, SIGNAL(triggered()), this, SLOT(DeleteItem()));
-    action = _menu->addAction("Color");
-    action->setToolTip("Color this atom");
-    connect(action, SIGNAL(triggered()), this, SLOT(ColorItem()));
-    action = _menu->addAction("Edit");
-    action->setToolTip("Edit the properties of this atom");
-    connect(action, SIGNAL(triggered()), this, SLOT(EditItem()));
+    _menu->addAction("Show/Hide", this, SLOT(ShowItem()));
+    _menu->addAction("Delete", this, SLOT(DeleteItem()));
+    _menu->addAction("Color", this, SLOT(ColorItem()));
+    _menu->addAction("Edit", this, SLOT(EditItem()));
 
     // Solid surface menu created here, but filled when view set
     solidSurfMenu = new QMenu(this);
@@ -776,31 +768,14 @@ ResiduesTree::ResiduesTree(QWidget *parent)
     rootId = invisibleRootItem();
 
     _menu = new QMenu(this);
-    QAction *action;
-    action = _menu->addAction("Show/Hide");
-    action->setToolTip("Show or hide this residue");
-    connect(action, SIGNAL(triggered()), this, SLOT(ShowItem()));
-    action = _menu->addAction("Delete");
-    action->setToolTip("Delete this residue");
-    connect(action, SIGNAL(triggered()), this, SLOT(DeleteItem()));
-    action = _menu->addAction("Color");
-    action->setToolTip("Color this residue");
-    connect(action, SIGNAL(triggered()), this, SLOT(ColorItem()));
-    action = _menu->addAction("Edit");
-    action->setToolTip("Edit the properties of this residue");
-    connect(action, SIGNAL(triggered()), this, SLOT(EditItem()));
-    action = _menu->addAction("Edit atoms");
-    action->setToolTip("Edit the properties of the atoms in this residue");
-    connect(action, SIGNAL(triggered()), this, SLOT(EditItemAtoms()));
-    action = _menu->addAction("Copy");
-    action->setToolTip("Copy residues");
-    connect(action, SIGNAL(triggered()), this, SLOT(CopyItem()));
-    _insertAction = _menu->addAction("Insert");
-    _insertAction->setToolTip("Insert residues");
-    connect(_insertAction, SIGNAL(triggered()), this, SLOT(InsertItem()));
-    _pasteAction = _menu->addAction("Paste");
-    _pasteAction->setToolTip("Paste residues");
-    connect(_pasteAction, SIGNAL(triggered()), this, SLOT(PasteItem()));
+    _menu->addAction("Show/Hide", this, SLOT(ShowItem()));
+    _menu->addAction("Delete", this, SLOT(DeleteItem()));
+    _menu->addAction("Color", this, SLOT(ColorItem()));
+    _menu->addAction("Edit", this, SLOT(EditItem()));
+    _menu->addAction("Edit atoms", this, SLOT(EditItemAtoms()));
+    _menu->addAction("Copy", this, SLOT(CopyItem()));
+    _insertAction = _menu->addAction("Insert", this, SLOT(InsertItem()));
+    _pasteAction = _menu->addAction("Paste", this, SLOT(PasteItem()));
 
     // Solid surface menu created here, but filled when view set
     solidSurfMenu = new QMenu(this);
