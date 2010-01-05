@@ -1213,22 +1213,6 @@ public slots:
 
     void setViewpointLineThickness(int thickness);
 
-    /**
-     * Callback for Render/Line Thickness/1 pixel.
-     */
-    void OnLinethicknessOne();
-    /**
-     * Callback for Render/Line Thickness/2 pixel.
-     */
-    void OnLinethicknessTwo();
-    /**
-     * Callback for Render/Line Thickness/3 pixel.
-     */
-    void OnLinethicknessThree();
-    /**
-     * Callback for Render/Line Thickness/4 pixel.
-     */
-    void OnLinethicknessFour();
     void OnRenderingDepthcuedcolors();
     void OnRenderingDepthcuedlinewidth();
 

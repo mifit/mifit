@@ -1632,8 +1632,7 @@ void ResiduesTree::PasteItem()
 
 
 class ModelsTree
-    : public MIQTreeWidget,
-      public MIEventHandler
+    : public MIQTreeWidget
 {
     Q_OBJECT
 
@@ -1650,14 +1649,11 @@ class ModelsTree
 
     int truncateWidth;
 
-    MIMenu *_menu;
+    QMenu *_menu;
     QMenu *solidSurfMenu;
     QActionGroup *solidSurfActionGroup;
 
-    std::map<int, QAction*> _menu_map;
-    std::vector<int> _menu_item_ids;
     void ResetMenu(bool show_all = true);
-
 
     bool _working;
 
@@ -1730,6 +1726,25 @@ private:
     typedef std::map<CMapHeaderBase*, TreeData*> MapHeaderToDataMap;
     MapHeaderToDataMap mapHeaderToCrystalData;
 
+    QAction *showAction_;
+    QAction *deleteAction_;
+    QAction *colorAction_;
+    QAction *editAction_;
+    QAction *sortChainsAction_;
+    QAction *copyAction_;
+    QAction *insertAction_;
+    QAction *propertiesAction_;
+    QAction *contourAction_;
+    QAction *contourOptionsAction_;
+    QAction *fftPhasesAction_;
+    QAction *sfcalcAction_;
+    QAction *reindexAction_;
+    QAction *addFreeRAction_;
+    QAction *findLigandDensityAction_;
+    QAction *mapExportAction_;
+    QAction *modelExportAction_;
+    QAction *saveCrystalAction_;
+
 
 private slots:
     void OnItemClicked(QTreeWidgetItem *item, int column); // single click
@@ -1749,13 +1764,13 @@ private slots:
     void solidSurfaceActionTriggered(QAction *action);
     void updateSolidSurfMenu();
 
-    void ForeignDispatcher(const MIActionEvent &evt);
+    void contextActionTriggered(QAction *action);
+
 };
 
 
 ModelsTree::ModelsTree(QWidget *parent)
     : MIQTreeWidget(parent),
-      MIEventHandler(this),
       view(NULL),
       currentModel(NULL),
       currentChain(NULL)
@@ -1796,25 +1811,39 @@ ModelsTree::ModelsTree(QWidget *parent)
 
     setTruncateWidth(width());
 
-    _menu = new MIMenu(*this);
-    _menu->Append(ID_MODELSVIEW_MODELSTREE_SHOW, "Show/Hide", "Show or hide this item", false);
-    _menu->Append(ID_MODELSVIEW_MODELSTREE_DELETE, "Delete", "Delete this item", false);
-    _menu->Append(ID_MODELSVIEW_MODELSTREE_COLOR, "Color", "Color for this item", false);
-    _menu->Append(ID_MODELSVIEW_MODELSTREE_EDIT, "Edit", "Edit this item", false);
-    _menu->Append(ID_MODELSVIEW_MODELSTREE_SORTCHAINS, "Sort Chains", "Sort the chains", false);
-    _menu->Append(ID_MODELSVIEW_MODELSTREE_COPY, "Copy", "Copy", false);
-    _menu->Append(ID_MODELSVIEW_MODELSTREE_INSERT, "Insert", "Insert", false);
-    _menu->Append(ID_MODELSVIEW_MODELSTREE_MAPPROPERTIES, "Properties", "Properties", false);
-    _menu->Append(ID_MAP_CONTOUR, "Contour", "Contour this map", false);
-    _menu->Append(ID_MAP_CONTOURLEVELS, "Contour options...", "Contour options for this map", false);
-    _menu->Append(ID_MAP_FFT, "FFT Phases...", "re-FFT the map from the phases to change resolution, coefficients, etc.", false);
-    _menu->Append(ID_MAP_SFCALC, "Calculate Structure Factors...", "Calculate structure factors from the model", false);
-    _menu->Append(ID_MAP_REINDEX, "Reindex Reflections", "Change to an alternate indexing of the data", false);
-    _menu->Append(ID_MAP_ADDFREE, "Add Free R-flag", "Add A Free R-flag field to the data - do this only once for a given dataset", false);
-    _menu->Append(ID_FIND_DENSITY, "Find Ligand Density", "Find unaccounted for density large enough to be a ligand", false);
-    _menu->Append(ID_MODELSVIEW_MODELSTREE_MAPEXPORT, "Export", "Export", false);
-    _menu->Append(ID_MODELSVIEW_MODELSTREE_MODELEXPORT, "Export PDB...");
-    _menu->Append(ID_MODELSVIEW_MODELSTREE_SAVETOCRYSTALS, "Save to crystals", "Save to crystals", false);
+    _menu = new QMenu(this);
+    showAction_ = _menu->addAction("Show/Hide");
+    connect(showAction_, SIGNAL(triggered()), SLOT(ShowItem()));
+    deleteAction_ = _menu->addAction("Delete");
+    connect(deleteAction_, SIGNAL(triggered()), SLOT(DeleteItem()));
+    colorAction_ = _menu->addAction("Color");
+    connect(colorAction_, SIGNAL(triggered()), SLOT(ColorItem()));
+    editAction_ = _menu->addAction("Edit");
+    connect(editAction_, SIGNAL(triggered()), SLOT(EditItem()));
+    sortChainsAction_ = _menu->addAction("Sort Chains");
+    connect(sortChainsAction_, SIGNAL(triggered()), SLOT(SortChains()));
+    copyAction_ = _menu->addAction("Copy");
+    connect(copyAction_, SIGNAL(triggered()), SLOT(CopyItem()));
+    insertAction_ = _menu->addAction("Insert");
+    connect(insertAction_, SIGNAL(triggered()), SLOT(InsertItem()));
+    propertiesAction_ = _menu->addAction("Properties");
+    connect(propertiesAction_, SIGNAL(triggered()), SLOT(MapProperties()));
+    contourAction_ = _menu->addAction("Contour");
+    contourOptionsAction_ = _menu->addAction("Contour options...");
+    fftPhasesAction_ = _menu->addAction("FFT Phases...");
+    sfcalcAction_ = _menu->addAction("Calculate Structure Factors...");
+    reindexAction_ = _menu->addAction("Reindex Reflections");
+    addFreeRAction_ = _menu->addAction("Add Free R-flag");
+    findLigandDensityAction_ = _menu->addAction("Find Ligand Density");
+
+    mapExportAction_ = _menu->addAction("Export");
+    connect(mapExportAction_, SIGNAL(triggered()), SLOT(MapExport()));
+    modelExportAction_ = _menu->addAction("Export PDB...");
+    connect(modelExportAction_, SIGNAL(triggered()), SLOT(ModelExport()));
+    saveCrystalAction_ = _menu->addAction("Save to crystals");
+    connect(saveCrystalAction_, SIGNAL(triggered()), SLOT(OnSaveToCrystals()));
+
+    connect(_menu, SIGNAL(triggered(QAction*)), SLOT(contextActionTriggered(QAction*)));
 
     // Solid surface menu created here, but filled when view set
     solidSurfMenu = new QMenu(this);
@@ -1822,47 +1851,7 @@ ModelsTree::ModelsTree(QWidget *parent)
     _menu->addMenu(solidSurfMenu);
     connect(solidSurfMenu, SIGNAL(aboutToShow()), this, SLOT(updateSolidSurfMenu()));
 
-    _menu_map[ID_MODELSVIEW_MODELSTREE_SHOW] = _menu->findAction(ID_MODELSVIEW_MODELSTREE_SHOW);
-    _menu_map[ID_MODELSVIEW_MODELSTREE_DELETE] = _menu->findAction(ID_MODELSVIEW_MODELSTREE_DELETE);
-    _menu_map[ID_MODELSVIEW_MODELSTREE_COLOR] = _menu->findAction(ID_MODELSVIEW_MODELSTREE_COLOR);
-    _menu_map[ID_MODELSVIEW_MODELSTREE_EDIT] = _menu->findAction(ID_MODELSVIEW_MODELSTREE_EDIT);
-    _menu_map[ID_MODELSVIEW_MODELSTREE_SORTCHAINS] = _menu->findAction(ID_MODELSVIEW_MODELSTREE_SORTCHAINS);
-    _menu_map[ID_MODELSVIEW_MODELSTREE_COPY] = _menu->findAction(ID_MODELSVIEW_MODELSTREE_COPY);
-    _menu_map[ID_MODELSVIEW_MODELSTREE_INSERT] = _menu->findAction(ID_MODELSVIEW_MODELSTREE_INSERT);
-    _menu_map[ID_MODELSVIEW_MODELSTREE_MAPPROPERTIES] = _menu->findAction(ID_MODELSVIEW_MODELSTREE_MAPPROPERTIES);
-    _menu_map[ID_MAP_CONTOUR] = _menu->findAction(ID_MAP_CONTOUR);
-    _menu_map[ID_MAP_CONTOURLEVELS] = _menu->findAction(ID_MAP_CONTOURLEVELS);
-    _menu_map[ID_MAP_FFT] = _menu->findAction(ID_MAP_FFT);
-    _menu_map[ID_MAP_SFCALC] = _menu->findAction(ID_MAP_SFCALC);
-    _menu_map[ID_MAP_REINDEX] = _menu->findAction(ID_MAP_REINDEX);
-    _menu_map[ID_MAP_ADDFREE] = _menu->findAction(ID_MAP_ADDFREE);
-    _menu_map[ID_FIND_DENSITY] = _menu->findAction(ID_FIND_DENSITY);
-    _menu_map[ID_MODELSVIEW_MODELSTREE_MAPEXPORT] = _menu->findAction(ID_MODELSVIEW_MODELSTREE_MAPEXPORT);
-    _menu_map[ID_MODELSVIEW_MODELSTREE_MODELEXPORT] = _menu->findAction(ID_MODELSVIEW_MODELSTREE_MODELEXPORT);
-    _menu_map[ID_MODELSVIEW_MODELSTREE_SAVETOCRYSTALS] = _menu->findAction(ID_MODELSVIEW_MODELSTREE_SAVETOCRYSTALS);
-    //_menu_map[ID_SOLIDSURFACE_MENU] = _menu->findAction(ID_SOLIDSURFACE_MENU);
-
-    _menu_item_ids.push_back(ID_MODELSVIEW_MODELSTREE_SHOW);
-    _menu_item_ids.push_back(ID_MODELSVIEW_MODELSTREE_DELETE);
-    _menu_item_ids.push_back(ID_MODELSVIEW_MODELSTREE_COLOR);
-    _menu_item_ids.push_back(ID_MODELSVIEW_MODELSTREE_EDIT);
-    _menu_item_ids.push_back(ID_MODELSVIEW_MODELSTREE_SORTCHAINS);
-    _menu_item_ids.push_back(ID_MODELSVIEW_MODELSTREE_COPY);
-    _menu_item_ids.push_back(ID_MODELSVIEW_MODELSTREE_INSERT);
-    _menu_item_ids.push_back(ID_MODELSVIEW_MODELSTREE_MAPPROPERTIES);
-    _menu_item_ids.push_back(ID_MAP_CONTOUR);
-    _menu_item_ids.push_back(ID_MAP_CONTOURLEVELS);
-    _menu_item_ids.push_back(ID_MAP_FFT);
-    _menu_item_ids.push_back(ID_MAP_SFCALC);
-    _menu_item_ids.push_back(ID_MAP_REINDEX);
-    _menu_item_ids.push_back(ID_MAP_ADDFREE);
-    _menu_item_ids.push_back(ID_FIND_DENSITY);
-    _menu_item_ids.push_back(ID_MODELSVIEW_MODELSTREE_MAPEXPORT);
-    _menu_item_ids.push_back(ID_MODELSVIEW_MODELSTREE_MODELEXPORT);
-    _menu_item_ids.push_back(ID_MODELSVIEW_MODELSTREE_SAVETOCRYSTALS);
-    //_menu_item_ids.push_back(ID_SOLIDSURFACE_MENU);
     _working = false;
-
 
     connect(this, SIGNAL(itemClicked(QTreeWidgetItem *, int)),
             this, SLOT(OnItemClicked(QTreeWidgetItem *, int)));
@@ -1870,28 +1859,6 @@ ModelsTree::ModelsTree(QWidget *parent)
     connect(this, SIGNAL(itemActivated(QTreeWidgetItem *, int)),
             this, SLOT(OnItemActivated(QTreeWidgetItem *, int)));
 
-    BEGIN_EVENT_TABLE(this, NONE)
-    EVT_MENU(ID_MODELSVIEW_MODELSTREE_DELETE, ModelsTree::DeleteItem)
-    EVT_MENU(ID_MODELSVIEW_MODELSTREE_SHOW, ModelsTree::ShowItem)
-    EVT_MENU(ID_MODELSVIEW_MODELSTREE_COLOR, ModelsTree::ColorItem)
-    EVT_MENU(ID_MODELSVIEW_MODELSTREE_EDIT, ModelsTree::EditItem)
-    EVT_MENU(ID_MODELSVIEW_MODELSTREE_SORTCHAINS, ModelsTree::SortChains)
-    EVT_MENU(ID_MODELSVIEW_MODELSTREE_MAPPROPERTIES, ModelsTree::MapProperties)
-    EVT_MENU(ID_MODELSVIEW_MODELSTREE_MAPEXPORT, ModelsTree::MapExport)
-    EVT_MENU(ID_MODELSVIEW_MODELSTREE_MODELEXPORT, ModelsTree::ModelExport)
-    EVT_MENU(ID_MODELSVIEW_MODELSTREE_SAVETOCRYSTALS, ModelsTree::OnSaveToCrystals)
-    EVT_MENU(ID_MODELSVIEW_MODELSTREE_COPY, ModelsTree::CopyItem)
-    EVT_MENU(ID_MODELSVIEW_MODELSTREE_INSERT, ModelsTree::InsertItem)
-
-    EVT_MENU(ID_MAP_CONTOUR, ModelsTree::ForeignDispatcher)
-    EVT_MENU(ID_MAP_CONTOURLEVELS, ModelsTree::ForeignDispatcher)
-    EVT_MENU(ID_MAP_FFT, ModelsTree::ForeignDispatcher)
-    EVT_MENU(ID_MAP_SFCALC, ModelsTree::ForeignDispatcher)
-    EVT_MENU(ID_MAP_REINDEX, ModelsTree::ForeignDispatcher)
-    EVT_MENU(ID_MAP_ADDFREE, ModelsTree::ForeignDispatcher)
-    EVT_MENU(ID_FIND_DENSITY, ModelsTree::ForeignDispatcher)
-
-    END_EVENT_TABLE()
 }
 
 ModelsTree::~ModelsTree()
@@ -1939,7 +1906,7 @@ void ModelsTree::contextMenuEvent(QContextMenuEvent *event)
     }
     if (selectedItems().size())
     {
-        _menu->doExec(QCursor::pos());
+        _menu->exec(QCursor::pos());
     }
 
     ResetMenu(true); // must re-enable all items to make history happy
@@ -1977,33 +1944,22 @@ void ModelsTree::OnItemClicked(QTreeWidgetItem *item, int)
     }
 }
 
-void ModelsTree::ForeignDispatcher(const MIActionEvent &evt)
+void ModelsTree::contextActionTriggered(QAction *action)
 {
-
-    switch (evt.GetId())
-    {
-    case ID_MAP_CONTOUR:
+    if (action == contourAction_)
         view->OnMapContour();
-        break;
-    case ID_MAP_CONTOURLEVELS:
+    else if (action == contourOptionsAction_)
         view->OnMapContourLevels();
-        break;
-    case ID_MAP_FFT:
+    else if (action == fftPhasesAction_)
         view->OnMapFFT();
-        break;
-    case ID_MAP_SFCALC:
+    else if (action == sfcalcAction_)
         view->OnMapSFCalc();
-        break;
-    case ID_MAP_REINDEX:
+    else if (action == reindexAction_)
         view->OnMapReindex();
-        break;
-    case ID_MAP_ADDFREE:
+    else if (action == addFreeRAction_)
         view->OnMapAddFree();
-        break;
-    case ID_FIND_DENSITY:
+    else if (action == findLigandDensityAction_)
         view->OnFindLigandDensity();
-        break;
-    }
 }
 
 void ModelsTree::updateSolidSurfMenu()
@@ -2326,26 +2282,13 @@ void ModelsTree::OnItemActivated(QTreeWidgetItem *item, int)
 
 void ModelsTree::ResetMenu(bool show_all)
 {
-    //remove all items
-    for (size_t i = 0; i < _menu_item_ids.size(); ++i)
+    foreach (QAction *a, _menu->actions())
     {
-        QAction *act = _menu->findAction(_menu_item_ids[i]);
-        if (act)
-        {
-            act->setVisible(false);
-        }
+        a->setVisible(show_all);
+        a->setEnabled(true);
     }
 
-    if (show_all)
-    {
-        // add all items back in, in order
-        for (size_t i = 0; i < _menu_item_ids.size(); ++i)
-        {
-            _menu_map[_menu_item_ids[i]]->setVisible(true);
-            _menu->Enable(_menu_item_ids[i], true);
-        }
-        return;
-    }
+    if (show_all) return;
 
     QList<QTreeWidgetItem*> selected;
     GetSelections(selected);
@@ -2358,23 +2301,16 @@ void ModelsTree::ResetMenu(bool show_all)
     {
         QTreeWidgetItem *item = selected[i];
         if (!item)
-        {
             continue;
-        }
+
         TreeData *data = (TreeData*) GetItemData(item);
         if (data == NULL || !validTreeData(data))
-        {
             continue;
-        }
 
         if (data->model != NULL)
-        {
             modelSelected = true;
-        }
         else if (data->chain != NULL)
-        {
             chainSelected = true;
-        }
         else if (data->map != NULL)
         {
             EMap *map = data->map;
@@ -2382,61 +2318,51 @@ void ModelsTree::ResetMenu(bool show_all)
             mapSelected = true;
         }
         else if (data->mapHeader != NULL)
-        {
             crystalSelected = true;
-        }
     }
 
     if (modelSelected || chainSelected || mapSelected)
     {
-        _menu_map[ID_MODELSVIEW_MODELSTREE_SHOW]->setVisible(true);
-        _menu_map[ID_MODELSVIEW_MODELSTREE_DELETE]->setVisible(true);
+        showAction_->setVisible(true);
+        deleteAction_->setVisible(true);
         if (!mapSelected)
-        {
-            _menu_map[ID_MODELSVIEW_MODELSTREE_COLOR]->setVisible(true);
-        }
+            colorAction_->setVisible(true);
     }
-    _menu_map[ID_MODELSVIEW_MODELSTREE_EDIT]->setVisible(true);
+    editAction_->setVisible(true);
     if (modelSelected || mapSelected)
-    {
-        _menu->Enable(ID_MODELSVIEW_MODELSTREE_EDIT, false);
-    }
+        editAction_->setEnabled(false);
+
     if (chainSelected)
-    {
-        _menu_map[ID_MODELSVIEW_MODELSTREE_SORTCHAINS]->setVisible(true);
-    }
+        sortChainsAction_->setVisible(true);
+
     if (modelSelected || chainSelected)
     {
-        _menu_map[ID_MODELSVIEW_MODELSTREE_COPY]->setVisible(true);
-        _menu_map[ID_MODELSVIEW_MODELSTREE_INSERT]->setVisible(true);
+        copyAction_->setVisible(true);
+        insertAction_->setVisible(true);
         if (Application::instance()->GetResidueBuffer() == NULL)
-        {
-            _menu->Enable(ID_MODELSVIEW_MODELSTREE_INSERT, false);
-        }
+            insertAction_->setEnabled(false);
         //_menu_map[ID_SOLIDSURFACE_MENU]->setVisible(true);
     }
     if (mapSelected)
     {
-        _menu_map[ID_MODELSVIEW_MODELSTREE_MAPPROPERTIES]->setVisible(true);
-        _menu_map[ID_MAP_CONTOUR]->setVisible(true);
-        _menu_map[ID_MAP_CONTOURLEVELS]->setVisible(true);
-        _menu_map[ID_MAP_FFT]->setVisible(true);
-        _menu_map[ID_MAP_SFCALC]->setVisible(true);
-        _menu_map[ID_MAP_REINDEX]->setVisible(true);
-        _menu_map[ID_MAP_ADDFREE]->setVisible(true);
-        _menu_map[ID_FIND_DENSITY]->setVisible(true);
-        _menu_map[ID_MODELSVIEW_MODELSTREE_MAPEXPORT]->setVisible(true);
-        _menu->Enable(ID_MAP_FFT, mapHasPhases);
-        _menu->Enable(ID_MODELSVIEW_MODELSTREE_MAPEXPORT, mapHasPhases);
+        propertiesAction_->setVisible(true);
+        contourAction_->setVisible(true);
+        contourOptionsAction_->setVisible(true);
+        fftPhasesAction_->setVisible(true);
+        sfcalcAction_->setVisible(true);
+        reindexAction_->setVisible(true);
+        addFreeRAction_->setVisible(true);
+        findLigandDensityAction_->setVisible(true);
+        mapExportAction_->setVisible(true);
+        fftPhasesAction_->setEnabled(mapHasPhases);
+        mapExportAction_->setEnabled(mapHasPhases);
     }
+
     if (modelSelected)
-    {
-        _menu_map[ID_MODELSVIEW_MODELSTREE_MODELEXPORT]->setVisible(true);
-    }
+        modelExportAction_->setVisible(true);
+
     if (crystalSelected)
-    {
-        _menu_map[ID_MODELSVIEW_MODELSTREE_SAVETOCRYSTALS]->setVisible(true);
-    }
+        saveCrystalAction_->setVisible(true);
 }
 
 

@@ -180,6 +180,7 @@ private slots:
     void updateFileMenu();
 
     void setRenderLineThickness(int thickness);
+    void updateRenderMenu();
 
 private:
     enum { MaxRecentFiles = 6 };
@@ -257,6 +258,8 @@ private:
     BatchJobManager *JobManager;
     ViewSyncedPanel *modelsView;
     RamaPlotMgr *ramaPlotMgr;
+
+    QMenu *renderLineThicknessMenu_;
 };
 
 //some shortcuts for MIMainWindow::instance()->Log, etc

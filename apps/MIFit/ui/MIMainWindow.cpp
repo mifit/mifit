@@ -424,15 +424,7 @@ void MIMainWindow::initMenuHandlers()
     EVT_MENU(ID_ANIMATE_ROCKANDROLLPARAMETERS, MIGLWidget::OnAnimateRockandrollparameters)
     EVT_MENU(ID_ANIMATE_BLINK, MIGLWidget::OnAnimateBlink)
     EVT_UPDATE_UI(ID_ANIMATE_BLINK, MIGLWidget::OnUpdateAnimateBlink)
-//linemenu
-    EVT_MENU(ID_LINETHICKNESS_ONE, MIGLWidget::OnLinethicknessOne)
-    EVT_MENU(ID_LINETHICKNESS_TWO, MIGLWidget::OnLinethicknessTwo)
-    EVT_MENU(ID_LINETHICKNESS_THREE, MIGLWidget::OnLinethicknessThree)
-    EVT_MENU(ID_LINETHICKNESS_FOUR, MIGLWidget::OnLinethicknessFour)
-    EVT_UPDATE_UI(ID_LINETHICKNESS_FOUR, MIGLWidget::OnUpdateLinethicknessFour)
-    EVT_UPDATE_UI(ID_LINETHICKNESS_ONE, MIGLWidget::OnUpdateLinethicknessOne)
-    EVT_UPDATE_UI(ID_LINETHICKNESS_THREE, MIGLWidget::OnUpdateLinethicknessThree)
-    EVT_UPDATE_UI(ID_LINETHICKNESS_TWO, MIGLWidget::OnUpdateLinethicknessTwo)
+
     EVT_MENU(ID_SEQU_SETCHAIN, MIGLWidget::OnSequencePositionChain)
     EVT_UPDATE_UI(ID_SEQU_SETCHAIN, MIGLWidget::OnUpdateSequencePositionChain)
     EVT_MENU(ID_SEQU_SETPOSITION, MIGLWidget::OnSequencePosition)
@@ -1995,6 +1987,7 @@ void MIMainWindow::createMenus()
     color_menu->Append(ID_SHOW_UNDOCOLORRADIUS, "&Undo color", "Undo the last color or radius command", false);
 
     render_menu = new MIMenu(*this);
+    connect(render_menu, SIGNAL(aboutToShow()), SLOT(updateRenderMenu()));
     render_menu->Append(ID_RENDER_STICKS, "&Sticks", "Draw bonds as sticks", true);
     render_menu->Append(ID_RENDERING_BALLANDSTICK, "&Knob and Stick", "Draw atoms as knobs and bonds as stick", true);
     render_menu->Append(ID_RENDER_BALLANDCYLINDER, "&Ball and Cylinder", "Draw bonds as ball and cylinders for bonds", true);
@@ -2011,19 +2004,19 @@ void MIMainWindow::createMenus()
     render_menu->Append(ID_RENDER_SMOOTHLINES, "S&mooth Lines", "Smooths the lines", true);
 
     QAction *action;
-    QMenu *line_menu = render_menu->addMenu("Line &Thickness");
-    QSignalMapper *lineMenuSignalMapper = new QSignalMapper(line_menu);
+    renderLineThicknessMenu_ = render_menu->addMenu("Line &Thickness");
+    QSignalMapper *lineMenuSignalMapper = new QSignalMapper(renderLineThicknessMenu_);
     connect(lineMenuSignalMapper, SIGNAL(mapped(int)), SLOT(setRenderLineThickness(int)));
-    QAction *lineThickness1 = line_menu->addAction("&1 pixel", lineMenuSignalMapper, SLOT(map()));
+    QAction *lineThickness1 = renderLineThicknessMenu_->addAction("&1 pixel", lineMenuSignalMapper, SLOT(map()));
     lineMenuSignalMapper->setMapping(lineThickness1, 1);
-    action = line_menu->addAction("&2 pixel", lineMenuSignalMapper, SLOT(map()));
+    action = renderLineThicknessMenu_->addAction("&2 pixel", lineMenuSignalMapper, SLOT(map()));
     lineMenuSignalMapper->setMapping(action, 2);
-    action = line_menu->addAction("&3 pixel", lineMenuSignalMapper, SLOT(map()));
+    action = renderLineThicknessMenu_->addAction("&3 pixel", lineMenuSignalMapper, SLOT(map()));
     lineMenuSignalMapper->setMapping(action, 3);
-    action = line_menu->addAction("&4 pixel", lineMenuSignalMapper, SLOT(map()));
+    action = renderLineThicknessMenu_->addAction("&4 pixel", lineMenuSignalMapper, SLOT(map()));
     lineMenuSignalMapper->setMapping(action, 4);
-    QActionGroup *lineThicknessGroup = new QActionGroup(line_menu);
-    foreach (QAction *a, line_menu->actions())
+    QActionGroup *lineThicknessGroup = new QActionGroup(renderLineThicknessMenu_);
+    foreach (QAction *a, renderLineThicknessMenu_->actions())
     {
         a->setCheckable(true);
         lineThicknessGroup->addAction(a);
@@ -2585,4 +2578,19 @@ void MIMainWindow::setRenderLineThickness(int thickness)
 {
     if (currentMIGLWidget())
         currentMIGLWidget()->setViewpointLineThickness(thickness);
+}
+
+void MIMainWindow::updateRenderMenu()
+{
+    bool lineThicknessEnabled = false;
+    if (currentMIGLWidget())
+    {
+        ViewPoint *viewpoint = currentMIGLWidget()->viewpoint;
+        int thickness = viewpoint->GetLineThickness();
+        if (thickness > 0 && renderLineThicknessMenu_->actions().size() <= thickness)
+        renderLineThicknessMenu_->actions().at(thickness-1)->setChecked(true);
+        lineThicknessEnabled = viewpoint->GetBallandStick() == ViewPoint::BALLANDSTICK
+                  || viewpoint->GetBallandStick() == ViewPoint::STICKS;
+    }
+    renderLineThicknessMenu_->setEnabled(lineThicknessEnabled);
 }

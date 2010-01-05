@@ -2238,26 +2238,6 @@ void MIGLWidget::setViewpointLineThickness(int thickness)
     doRefresh();
 }
 
-void MIGLWidget::OnLinethicknessOne()
-{
-    setViewpointLineThickness(1);
-}
-
-void MIGLWidget::OnLinethicknessTwo()
-{
-    setViewpointLineThickness(2);
-}
-
-void MIGLWidget::OnLinethicknessThree()
-{
-    setViewpointLineThickness(3);
-}
-
-void MIGLWidget::OnLinethicknessFour()
-{
-    setViewpointLineThickness(4);
-}
-
 void MIGLWidget::OnRenderingDepthcuedcolors()
 {
     viewpoint->setDepthCuedColors(!viewpoint->isDepthCuedColors());
