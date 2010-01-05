@@ -1210,6 +1210,9 @@ public slots:
      * Callback for View/Animate/Rock.
      */
     void OnAnimateRock();
+
+    void setViewpointLineThickness(int thickness);
+
     /**
      * Callback for Render/Line Thickness/1 pixel.
      */

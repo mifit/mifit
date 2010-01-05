@@ -179,6 +179,8 @@ private slots:
 
     void updateFileMenu();
 
+    void setRenderLineThickness(int thickness);
+
 private:
     enum { MaxRecentFiles = 6 };
     QAction *recentFileActs[MaxRecentFiles];

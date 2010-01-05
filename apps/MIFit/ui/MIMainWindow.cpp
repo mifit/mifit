@@ -1983,12 +1983,6 @@ void MIMainWindow::createMenus()
     stack_menu->Append(ID_OBJECT_STACK_EXPANDTOP2RESIDUES, "Expand &range to All Residue", "Expand stack to include all residues between top two", false);
     stack_menu->Append(ID_OBJECT_STACK_EXPANDTOP2ALLATOMSINRANGE, "Expand Range to All &Atoms", "Expand stack to include all atoms in all residues between top two", false);
 
-    MIMenu *line_menu = new MIMenu(*this);
-    line_menu->Append(ID_LINETHICKNESS_ONE, "&1 pixel", "Draw bonds 1 pixel wide", true);
-    line_menu->Append(ID_LINETHICKNESS_TWO, "&2 pixel", "Draw bonds 2 pixel wide", true);
-    line_menu->Append(ID_LINETHICKNESS_THREE, "&3 pixel", "Draw bonds 3 pixel wide", true);
-    line_menu->Append(ID_LINETHICKNESS_FOUR, "&4 pixel", "Draw bonds 4 pixel wide", true);
-
     color_menu = new MIMenu(*this);
     color_menu->Append(ID_SHOW_COLORALLATOMS, "Color all atoms", "Colors the whole model with current color", false);
     color_menu->Append(ID_OBJECT_ATOM_COLOR, "Color last picked atom", "Colors the last picked atom with current color", false);
@@ -2015,7 +2009,27 @@ void MIMainWindow::createMenus()
     render_menu->Append(ID_RENDERING_DEPTHCUEDCOLORS, "Depthcue Colo&rs", "Depthcue using darker colors", true);
     render_menu->Append(ID_RENDERING_DEPTHCUEDLINEWIDTH, "Depthcue &Lines", "Depthcue with line thickness", true);
     render_menu->Append(ID_RENDER_SMOOTHLINES, "S&mooth Lines", "Smooths the lines", true);
-    render_menu->Append(ID_OBJECT_LINEMENU, "Line &Thickness", line_menu);
+
+    QAction *action;
+    QMenu *line_menu = render_menu->addMenu("Line &Thickness");
+    QSignalMapper *lineMenuSignalMapper = new QSignalMapper(line_menu);
+    connect(lineMenuSignalMapper, SIGNAL(mapped(int)), SLOT(setRenderLineThickness(int)));
+    QAction *lineThickness1 = line_menu->addAction("&1 pixel", lineMenuSignalMapper, SLOT(map()));
+    lineMenuSignalMapper->setMapping(lineThickness1, 1);
+    action = line_menu->addAction("&2 pixel", lineMenuSignalMapper, SLOT(map()));
+    lineMenuSignalMapper->setMapping(action, 2);
+    action = line_menu->addAction("&3 pixel", lineMenuSignalMapper, SLOT(map()));
+    lineMenuSignalMapper->setMapping(action, 3);
+    action = line_menu->addAction("&4 pixel", lineMenuSignalMapper, SLOT(map()));
+    lineMenuSignalMapper->setMapping(action, 4);
+    QActionGroup *lineThicknessGroup = new QActionGroup(line_menu);
+    foreach (QAction *a, line_menu->actions())
+    {
+        a->setCheckable(true);
+        lineThicknessGroup->addAction(a);
+    }
+    lineThickness1->setChecked(true);
+
     render_menu->Append(ID_RENDERING_DIMNONACTIVEMODELS, "Dim Non-active Models", "Dim non-active models", true);
     render_menu->Append(ID_RENDERING_AMOUNTTODIMNONACTIVEMODELS, "Set Amount to Dim Non-active Models", "Dim non-active models", false);
 
@@ -2565,4 +2579,10 @@ void MIMainWindow::updateIsRefining(bool isRefining)
 {
     refineResidueAction->setEnabled(!isRefining);
     acceptRefineAction->setEnabled(isRefining);
+}
+
+void MIMainWindow::setRenderLineThickness(int thickness)
+{
+    if (currentMIGLWidget())
+        currentMIGLWidget()->setViewpointLineThickness(thickness);
 }

@@ -2232,28 +2232,30 @@ void MIGLWidget::OnAnimateRock()
     }
 }
 
+void MIGLWidget::setViewpointLineThickness(int thickness)
+{
+    viewpoint->LineThickness(thickness);
+    doRefresh();
+}
+
 void MIGLWidget::OnLinethicknessOne()
 {
-    viewpoint->LineThickness(1);
-    doRefresh();
+    setViewpointLineThickness(1);
 }
 
 void MIGLWidget::OnLinethicknessTwo()
 {
-    viewpoint->LineThickness(2);
-    doRefresh();
+    setViewpointLineThickness(2);
 }
 
 void MIGLWidget::OnLinethicknessThree()
 {
-    viewpoint->LineThickness(3);
-    doRefresh();
+    setViewpointLineThickness(3);
 }
 
 void MIGLWidget::OnLinethicknessFour()
 {
-    viewpoint->LineThickness(4);
-    doRefresh();
+    setViewpointLineThickness(4);
 }
 
 void MIGLWidget::OnRenderingDepthcuedcolors()

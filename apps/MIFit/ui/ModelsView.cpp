@@ -710,7 +710,9 @@ class ResiduesTree
     typedef std::map<RESIDUE*, TreeData*> ResidueToDataMap;
     ResidueToDataMap residueToData;
 
-    MIMenu *_menu;
+    QMenu *_menu;
+    QAction *_insertAction;
+    QAction *_pasteAction;
     QMenu *solidSurfMenu;
     QActionGroup *solidSurfActionGroup;
     bool _working;
@@ -788,7 +790,7 @@ ResiduesTree::ResiduesTree(QWidget *parent)
     setHeaderLabel(rootText.c_str());
     rootId = invisibleRootItem();
 
-    _menu = new MIMenu(*this);
+    _menu = new QMenu(this);
     QAction *action;
     action = _menu->addAction("Show/Hide");
     action->setToolTip("Show or hide this residue");
@@ -808,12 +810,12 @@ ResiduesTree::ResiduesTree(QWidget *parent)
     action = _menu->addAction("Copy");
     action->setToolTip("Copy residues");
     connect(action, SIGNAL(triggered()), this, SLOT(CopyItem()));
-    action = _menu->addAction("Insert");
-    action->setToolTip("Insert residues");
-    connect(action, SIGNAL(triggered()), this, SLOT(InsertItem()));
-    action = _menu->addAction("Paste");
-    action->setToolTip("Paste residues");
-    connect(action, SIGNAL(triggered()), this, SLOT(PasteItem()));
+    _insertAction = _menu->addAction("Insert");
+    _insertAction->setToolTip("Insert residues");
+    connect(_insertAction, SIGNAL(triggered()), this, SLOT(InsertItem()));
+    _pasteAction = _menu->addAction("Paste");
+    _pasteAction->setToolTip("Paste residues");
+    connect(_pasteAction, SIGNAL(triggered()), this, SLOT(PasteItem()));
 
     // Solid surface menu created here, but filled when view set
     solidSurfMenu = new QMenu(this);
@@ -1132,13 +1134,13 @@ void ResiduesTree::contextMenuEvent(QContextMenuEvent *event)
 {
     if (Application::instance()->GetResidueBuffer() == NULL)
     {
-        _menu->Enable(ID_MODELSVIEW_RESIDUESTREE_INSERT, false);
-        _menu->Enable(ID_MODELSVIEW_RESIDUESTREE_PASTE, false);
+        _insertAction->setEnabled(false);
+        _pasteAction->setEnabled(false);
     }
     else
     {
-        _menu->Enable(ID_MODELSVIEW_RESIDUESTREE_INSERT, true);
-        _menu->Enable(ID_MODELSVIEW_RESIDUESTREE_PASTE, true);
+        _insertAction->setEnabled(true);
+        _pasteAction->setEnabled(true);
     }
 
     QPoint pos = event->pos();
@@ -1150,7 +1152,7 @@ void ResiduesTree::contextMenuEvent(QContextMenuEvent *event)
     }
     if (selectedItems().size())
     {
-        _menu->doExec(QCursor::pos());
+        _menu->exec(QCursor::pos());
     }
 }
 
