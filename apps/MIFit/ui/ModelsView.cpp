@@ -30,7 +30,6 @@
 
 #include "MIMenu.h"
 #include "MIGLWidget.h"
-#include "MIEventHandler.h"
 #include "MIMainWindow.h"
 #include "MIQTreeWidget.h"
 #include "GenericDataDialog.h"
@@ -62,24 +61,13 @@
 #include <images/atomHiddenSelected.xpm>
 #include <images/synced.xpm>
 
-#include "MIEventHandlerMacros.h"
-
-const int ID_MODELSVIEW_OFFSET = 10000;
-const int ID_MODELSVIEW_MODELSTREE_SAVETOCRYSTALS = ID_MODELSVIEW_OFFSET+1;
-const int ID_MODELSVIEW_SYNCEDTOOL = ID_MODELSVIEW_OFFSET+2;
-const int ID_MODELSVIEW_RESIDUESTREE_INSERT = ID_MODELSVIEW_OFFSET+3;
-const int ID_MODELSVIEW_MODELSTREE_COPY = ID_MODELSVIEW_OFFSET+4;
-const int ID_MODELSVIEW_MODELSTREE_INSERT = ID_MODELSVIEW_OFFSET+5;
-const int ID_MODELSVIEW_RESIDUESTREE_PASTE = ID_MODELSVIEW_OFFSET+6;
-
 using namespace chemlib;
 
 bool syncView;
 typedef std::map<const char*, int> ImageIndexMap;
 
 class AtomsTree
-    : public MIQTreeWidget,
-      public MIEventHandler
+    : public MIQTreeWidget
 {
     Q_OBJECT
 
@@ -130,7 +118,6 @@ private slots:
 
 AtomsTree::AtomsTree(QWidget *parent)
     : MIQTreeWidget(parent),
-      MIEventHandler(this),
       view(NULL),
       model(NULL),
       residue(NULL)
@@ -695,8 +682,7 @@ void AtomsTree::EditItem()
 }
 
 class ResiduesTree
-    : public MIQTreeWidget,
-      public MIEventHandler
+    : public MIQTreeWidget
 {
     Q_OBJECT
 
@@ -755,7 +741,6 @@ private slots:
 
 ResiduesTree::ResiduesTree(QWidget *parent)
     : MIQTreeWidget(parent),
-      MIEventHandler(this),
       atomsTree(NULL),
       view(NULL),
       model(NULL),
