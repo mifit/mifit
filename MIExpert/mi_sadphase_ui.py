@@ -151,7 +151,7 @@ class SadPhasingDialog(QtGui.QDialog):
         settings = QtCore.QSettings("MIFit", "MIExpert")
         settings.setValue("sadphase", pickle.dumps(data))
 
-        mifit.setJobWorkDir(str(QtCore.QFileInfo(config['workdir']).absoluteFilePath()))
+        mifit.setJobWorkDir(str(QtCore.QFileInfo(data['workdir']).absoluteFilePath()))
         miexpert = os.path.join(os.path.dirname(sys.argv[0]), "MIExpert.py")
         args = [ sys.executable, miexpert, "sadphase" ]
 

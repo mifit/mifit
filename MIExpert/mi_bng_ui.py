@@ -248,7 +248,7 @@ class BindNGrindDialog(QtGui.QDialog):
         }
 
         config['hklin'] = []
-        for i in range(0, self.intensityDataListWidget.size()):
+        for i in range(0, self.intensityDataListWidget.count()):
             config['hklin'] += [ str(self.intensityDataListWidget.text(i)) ]
 
         config['pdbin'] = str(self.modelPDBLineEdit.text())
