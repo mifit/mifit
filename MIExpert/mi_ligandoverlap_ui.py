@@ -97,12 +97,14 @@ class LigandOverlapDialog(QtGui.QDialog):
         miexpert = os.path.join(os.path.dirname(sys.argv[0]), "MIExpert.py")
         args = [ sys.executable, miexpert, "ligandoverlap" ]
 
+        targetsite_parameters = str(QtCore.QString.number(data["x"], 'f', 3)) + ' ' + \
+                                str(QtCore.QString.number(data["y"], 'f', 3)) + ' ' + \
+                                str(QtCore.QString.number(data["z"], 'f', 3))
+
         args += [ "--workdir", buildAbsPath(data["workdir"]),
                   "--pdbdir", buildAbsPath(data["pdbdir"]),
                   "--targetpdb", buildAbsPath(data["targetpdb"]),
-                  "--targetsite", str(QtCore.QString.number(data["x"], 'f', 3)),
-                                  str(QtCore.QString.number(data["y"], 'f', 3)),
-                                  str(QtCore.QString.number(data["z"], 'f', 3)) ]
+                  "--targetsite", targetsite_parameters]
 
         result = subprocess.call(args)
         exit(result)

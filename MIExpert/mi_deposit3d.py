@@ -359,6 +359,30 @@ def Run(argv=None):
                 mifit_root = param_value
         count=count + 1
 
+    # Trap and reset null paths to auxillary files
+
+    if os.path.basename(seqfile) == 'none':
+        seqfile = 'none'
+
+    if os.path.basename(libfile) == 'none':
+        libfile = 'none'
+        
+    if os.path.basename(templatefile) == 'none':
+        templatefile = 'none'
+
+    if os.path.basename(datalogfile) == 'none':
+        datalogfile = 'none'       
+
+    if os.path.basename(write_image1) == 'none':
+        write_image1 = 'none'
+
+    if os.path.basename(write_image2) == 'none':
+        write_image2 = 'none'
+
+    if os.path.basename(write_image3) == 'none':
+        write_image3 = 'none'       
+        
+    #
 
     ccp4,error = ccp4check.ccp4check()
     if not ccp4:

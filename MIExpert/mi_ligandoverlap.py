@@ -120,7 +120,7 @@ def Run(argv=None):
         num_markers = len(aString)
 
         if num_markers != 3:
-            print 'The TARGETSITE keyword much contain 3 numbers'
+            print 'The target site parameter must contain 3 numbers',targetsite
             time.sleep(4)
             return 1
         else:
