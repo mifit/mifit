@@ -23,7 +23,6 @@
 
 #include "ModelsView.h"
 #include "EMap.h"
-#include "id.h"
 #include "Displaylist.h"
 #include "TreeData.h"
 #include "Application.h"
@@ -82,8 +81,6 @@ class AtomsTree
     AtomToDataMap atomToData;
 
     QMenu *_menu;
-    QMenu *solidSurfMenu;
-    QActionGroup *solidSurfActionGroup;
     bool _working;
 
     virtual void contextMenuEvent(QContextMenuEvent *event);
@@ -111,8 +108,6 @@ private slots:
     void ColorItem();
     void DeleteItem();
     void EditItem();
-    void solidSurfaceActionTriggered(QAction *action);
-    void updateSolidSurfMenu();
 
 };
 
@@ -150,12 +145,6 @@ AtomsTree::AtomsTree(QWidget *parent)
     _menu->addAction("Color", this, SLOT(ColorItem()));
     _menu->addAction("Edit", this, SLOT(EditItem()));
 
-    // Solid surface menu created here, but filled when view set
-    solidSurfMenu = new QMenu(this);
-    solidSurfMenu->setTitle(tr("Solid Surface"));
-    _menu->addMenu(solidSurfMenu);
-    connect(solidSurfMenu, SIGNAL(aboutToShow()), this, SLOT(updateSolidSurfMenu()));
-
     _working = false;
 
 
@@ -173,39 +162,9 @@ AtomsTree::~AtomsTree()
     delete _menu;
 }
 
-static QAction *solidsurf_menu_action(QMenu *menu, QActionGroup *group, int actionId, const char *text)
-{
-    QAction *a = menu->addAction(QObject::tr(text));
-    a->setData(actionId);
-    group->addAction(a);
-    return a;
-}
-
-static void fillSolidSurfMenu(QWidget* /* parent */, MIGLWidget *view, QMenu *menu)
-{
-    if (view)
-    {
-        foreach (QAction *a, view->solidSurfCommonActionGroup()->actions())
-        {
-            menu->addAction(a);
-        }
-    }
-}
-
 void AtomsTree::setView(MIGLWidget *view)
 {
     this->view = view;
-    solidSurfMenu->clear();
-    if (view)
-    {
-        solidSurfActionGroup = new QActionGroup(this);
-        connect(solidSurfActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(solidSurfaceActionTriggered(QAction*)));
-
-        solidsurf_menu_action(solidSurfMenu, solidSurfActionGroup, ID_SOLIDSURFACE_BUILD, "Build surface");
-        solidsurf_menu_action(solidSurfMenu, solidSurfActionGroup, ID_SOLIDSURFACE_COLOR, "Color surface");
-        solidsurf_menu_action(solidSurfMenu, solidSurfActionGroup, ID_SOLIDSURFACE_COLOR_BY_ATOM, "Color surface by atom type");
-    }
-    fillSolidSurfMenu(this, view, solidSurfMenu);
 }
 
 void AtomsTree::atomChanged(MIMoleculeBase*, MIAtomList &atoms)
@@ -534,98 +493,6 @@ unsigned int CountAtoms(Molecule *model)
     return count;
 }
 
-void AtomsTree::updateSolidSurfMenu()
-{
-    QList<QTreeWidgetItem*> selected;
-    GetSelections(selected);
-    if (selected.size() == 0)
-    {
-        return;
-    }
-    if (view)
-    {
-        view->updateSolidsurfMenu();
-
-        foreach (QAction *action, solidSurfActionGroup->actions())
-        {
-            switch (action->data().toInt())
-            {
-
-            case ID_SOLIDSURFACE_COLOR:
-            case ID_SOLIDSURFACE_COLOR_BY_ATOM:
-                action->setEnabled(MISurfaceCount());
-                break;
-
-            case ID_SOLIDSURFACE_BUILD:
-                action->setEnabled(true);
-                break;
-
-            default:
-                break;
-            }
-        }
-    }
-
-}
-
-void AtomsTree::solidSurfaceActionTriggered(QAction *action)
-{
-    QList<QTreeWidgetItem*> selected;
-    GetSelections(selected);
-    if (selected.size() == 0)
-    {
-        return;
-    }
-
-    std::set<MIAtom*> atoms;
-    for (int i = 0; i < selected.size(); ++i)
-    {
-        QTreeWidgetItem *item = selected[i];
-        if (!item)
-        {
-            continue;
-        }
-        TreeData *data = (TreeData*) GetItemData(item);
-        if (data == NULL || !validTreeData(data))
-        {
-            continue;
-        }
-        if (MIAtom::isValid(data->atom))
-        {
-            atoms.insert(data->atom);
-        }
-    }
-    if (atoms.size() == 0)
-    {
-        return;
-    }
-
-    std::vector<Molecule*> mols;
-    std::vector<unsigned int> sel;
-
-    mols.push_back(model);
-
-
-    // get total atom count
-    unsigned int count = CountAtoms(model);
-    sel.resize(count);
-
-    unsigned int atom_index = 0;
-    for (MIIter<RESIDUE> currRes = model->GetResidues(); currRes; ++currRes)
-    {
-        for (int i = 0; i < currRes->atomCount(); ++i)
-        {
-            MIAtom *atom = currRes->atom(i);
-            sel[atom_index] = (atoms.find(atom) != atoms.end());
-            atom_index++;
-        }
-    }
-
-
-    view->solidSurfaceCommand(action->data().toInt(), mols, sel);
-}
-
-
 void AtomsTree::EditItem()
 {
     QList<QTreeWidgetItem*> selected;
@@ -691,8 +558,6 @@ class ResiduesTree
     QMenu *_menu;
     QAction *_insertAction;
     QAction *_pasteAction;
-    QMenu *solidSurfMenu;
-    QActionGroup *solidSurfActionGroup;
     bool _working;
 
     virtual void contextMenuEvent(QContextMenuEvent *event);
@@ -726,8 +591,6 @@ private slots:
     void InsertItem();
     void PasteItem();
     void EditItemAtoms();
-    void solidSurfaceActionTriggered(QAction *action);
-    void updateSolidSurfMenu();
 };
 
 
@@ -777,12 +640,6 @@ ResiduesTree::ResiduesTree(QWidget *parent)
     _insertAction = _menu->addAction("Insert", this, SLOT(InsertItem()));
     _pasteAction = _menu->addAction("Paste", this, SLOT(PasteItem()));
 
-    // Solid surface menu created here, but filled when view set
-    solidSurfMenu = new QMenu(this);
-    solidSurfMenu->setTitle(tr("Solid Surface"));
-    _menu->addMenu(solidSurfMenu);
-    connect(solidSurfMenu, SIGNAL(aboutToShow()), this, SLOT(updateSolidSurfMenu()));
-
     _working = false;
 
 
@@ -803,17 +660,6 @@ ResiduesTree::~ResiduesTree()
 void ResiduesTree::setView(MIGLWidget *view)
 {
     this->view = view;
-    solidSurfMenu->clear();
-    if (view)
-    {
-        solidSurfActionGroup = new QActionGroup(this);
-        connect(solidSurfActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(solidSurfaceActionTriggered(QAction*)));
-
-        solidsurf_menu_action(solidSurfMenu, solidSurfActionGroup, ID_SOLIDSURFACE_BUILD, "Build surface");
-        solidsurf_menu_action(solidSurfMenu, solidSurfActionGroup, ID_SOLIDSURFACE_COLOR, "Color surface");
-        solidsurf_menu_action(solidSurfMenu, solidSurfActionGroup, ID_SOLIDSURFACE_COLOR_BY_ATOM, "Color surface by atom type");
-    }
-    fillSolidSurfMenu(this, view, solidSurfMenu);
 }
 
 void ResiduesTree::setAtomsTree(AtomsTree *tree)
@@ -1251,99 +1097,6 @@ void ResiduesTree::DeleteItem()
     }
 }
 
-void ResiduesTree::updateSolidSurfMenu()
-{
-    QList<QTreeWidgetItem*> selected;
-    GetSelections(selected);
-    if (selected.size() == 0)
-    {
-        return;
-    }
-    if (view)
-    {
-        view->updateSolidsurfMenu();
-
-        foreach (QAction *action, solidSurfActionGroup->actions())
-        {
-            switch (action->data().toInt())
-            {
-
-            case ID_SOLIDSURFACE_COLOR:
-            case ID_SOLIDSURFACE_COLOR_BY_ATOM:
-                action->setEnabled(MISurfaceCount() != 0);
-                break;
-
-            case ID_SOLIDSURFACE_BUILD:
-                action->setEnabled(true);
-                break;
-
-            default:
-                break;
-            }
-        }
-    }
-}
-
-void ResiduesTree::solidSurfaceActionTriggered(QAction *action)
-{
-    QList<QTreeWidgetItem*> selected;
-    GetSelections(selected);
-    if (selected.size() == 0)
-    {
-        return;
-    }
-
-    std::set<RESIDUE*> residues;
-    for (int i = 0; i < selected.size(); ++i)
-    {
-        QTreeWidgetItem *item = selected[i];
-        if (!item)
-        {
-            continue;
-        }
-        TreeData *data = (TreeData*) GetItemData(item);
-        if (data == NULL || !validTreeData(data))
-        {
-            continue;
-        }
-        if (data->residue != NULL)
-        {
-            residues.insert(data->residue);
-        }
-    }
-    if (residues.size() == 0)
-    {
-        return;
-    }
-
-    std::vector<Molecule*> mols;
-    std::vector<unsigned int> sel;
-
-    mols.push_back(model);
-
-    // get total atom count
-    unsigned int count = CountAtoms(model);
-    sel.resize(count);
-
-    unsigned int atom_index = 0;
-    for (MIIter<RESIDUE> currRes = model->GetResidues(); currRes; ++currRes)
-    {
-        if (residues.find(currRes) != residues.end())
-        {
-            for (int i = 0; i < currRes->atomCount(); ++i)
-            {
-                //MIAtom* atom = currRes->atom(i);
-                sel[atom_index] = true;
-                atom_index++;
-            }
-        }
-    }
-
-
-    view->solidSurfaceCommand(action->data().toInt(), mols, sel);
-}
-
-
 void ResiduesTree::EditItem()
 {
     QList<QTreeWidgetItem*> selected;
@@ -1610,8 +1363,6 @@ class ModelsTree
     int truncateWidth;
 
     QMenu *_menu;
-    QMenu *solidSurfMenu;
-    QActionGroup *solidSurfActionGroup;
 
     void ResetMenu(bool show_all = true);
 
@@ -1721,8 +1472,6 @@ private slots:
     void MapExport();
     void ModelExport();
     void OnSaveToCrystals();
-    void solidSurfaceActionTriggered(QAction *action);
-    void updateSolidSurfMenu();
 
     void contextActionTriggered(QAction *action);
 
@@ -1804,12 +1553,6 @@ ModelsTree::ModelsTree(QWidget *parent)
     connect(saveCrystalAction_, SIGNAL(triggered()), SLOT(OnSaveToCrystals()));
 
     connect(_menu, SIGNAL(triggered(QAction*)), SLOT(contextActionTriggered(QAction*)));
-
-    // Solid surface menu created here, but filled when view set
-    solidSurfMenu = new QMenu(this);
-    solidSurfMenu->setTitle(tr("Solid Surface"));
-    _menu->addMenu(solidSurfMenu);
-    connect(solidSurfMenu, SIGNAL(aboutToShow()), this, SLOT(updateSolidSurfMenu()));
 
     _working = false;
 
@@ -1920,211 +1663,6 @@ void ModelsTree::contextActionTriggered(QAction *action)
         view->OnMapAddFree();
     else if (action == findLigandDensityAction_)
         view->OnFindLigandDensity();
-}
-
-void ModelsTree::updateSolidSurfMenu()
-{
-    QList<QTreeWidgetItem*> selected;
-    GetSelections(selected);
-    if (selected.size() == 0)
-    {
-        return;
-    }
-    if (view)
-    {
-        view->updateSolidsurfMenu();
-
-        foreach (QAction *action, solidSurfActionGroup->actions())
-        {
-            switch (action->data().toInt())
-            {
-
-            case ID_SOLIDSURFACE_COLOR:
-            case ID_SOLIDSURFACE_COLOR_BY_ATOM:
-                action->setEnabled(MISurfaceCount() != 0);
-                break;
-
-            case ID_SOLIDSURFACE_BUILD:
-                action->setEnabled(true);
-                break;
-
-            default:
-                break;
-            }
-        }
-    }
-}
-
-void ModelsTree::solidSurfaceActionTriggered(QAction *action)
-{
-    QList<QTreeWidgetItem*> selected;
-    GetSelections(selected);
-    if (selected.size() == 0)
-    {
-        return;
-    }
-
-    std::set<Molecule*> mols;
-    std::set<RESIDUE*> chains;
-
-    for (int i = 0; i < selected.size(); ++i)
-    {
-        QTreeWidgetItem *item = selected[i];
-        if (!item)
-        {
-            continue;
-        }
-        TreeData *data = (TreeData*) GetItemData(item);
-        if (data == NULL || !validTreeData(data))
-        {
-            continue;
-        }
-
-        if (data->model != NULL)
-        {
-            mols.insert(data->model);
-        }
-        else if (data->chain != NULL)
-        {
-            chains.insert(data->chain);
-        }
-    }
-
-    if (mols.size() == 0 && chains.size()==0)
-    {
-        return;
-    }
-
-    //if all chains in model selected, select model
-    bool invalid_iterator = false;
-    do
-    {
-        invalid_iterator = false;
-
-        for (std::set<RESIDUE*>::iterator i = chains.begin(); i != chains.end(); ++i)
-        {
-            RESIDUE *chain = *i;
-            Molecule *mol = chainToModel[chain];
-
-            std::vector<RESIDUE*> chains_for_mol;
-            for (std::map<RESIDUE*, Molecule*>::iterator j = chainToModel.begin(); j!=chainToModel.end(); ++j)
-            {
-                if (j->second == mol)
-                {
-                    chains_for_mol.push_back(j->first);
-                }
-            }
-
-            bool found_unselected_chain = false;
-            for (unsigned int j = 0; j < chains_for_mol.size(); ++j)
-            {
-                if (chains.find(chains_for_mol[j]) == chains.end())
-                {
-                    found_unselected_chain = true;
-                    break;
-                }
-            }
-
-            if (!found_unselected_chain)
-            {
-                // if we're here, we have all chains in the model, so...
-                // add to models; remove chains from set
-                mols.insert(mol);
-                for (unsigned int j = 0; j < chains_for_mol.size(); ++j)
-                {
-                    chains.erase(chains_for_mol[j]);
-                }
-                invalid_iterator = true;
-                break; // break out of now-invalid iteration loop for "i"
-            }
-        }
-    } while (invalid_iterator);
-
-    // at this point we have mols==>complete molecules and chains==>partial molecules
-    std::set<Molecule*> partial_mols;
-    for (std::set<RESIDUE*>::iterator i = chains.begin(); i != chains.end(); ++i)
-    {
-        RESIDUE *chain = *i;
-        Molecule *mol = chainToModel[chain];
-        partial_mols.insert(mol);
-    }
-
-
-    // count total atoms
-    unsigned int count = 0;
-    std::map<Molecule*, unsigned int> mol_atom_count;
-    std::vector<Molecule*> surface_mols;
-    for (std::set<Molecule*>::iterator i = mols.begin(); i != mols.end(); ++i)
-    {
-        mol_atom_count[*i] = CountAtoms(*i);
-        count += mol_atom_count[*i];
-        surface_mols.push_back(*i);
-    }
-    for (std::set<Molecule*>::iterator i = partial_mols.begin(); i != partial_mols.end(); ++i)
-    {
-        mol_atom_count[*i] = CountAtoms(*i);
-        count += mol_atom_count[*i];
-        surface_mols.push_back(*i);
-
-    }
-
-    if (count == 0)
-    {
-        return;
-    }
-    std::vector<unsigned int> sel;
-    sel.resize(count);
-    unsigned int offset = 0;
-    for (std::set<Molecule*>::iterator i = mols.begin(); i != mols.end(); ++i)
-    {
-        unsigned int start = offset;
-        unsigned int end = mol_atom_count[*i] + offset;
-
-        unsigned int *sp = &sel[start]; // avoid deref in loop
-        for (unsigned int j = start; j < end; ++j)
-        {
-            *sp++ = 1;
-        }
-        offset += mol_atom_count[*i];
-    }
-
-    for (std::set<Molecule*>::iterator i = partial_mols.begin(); i != partial_mols.end(); ++i)
-    {
-        Molecule *mol = *i;
-
-        unsigned short last_chain_id;
-        bool in_sel_chain = false;
-
-        for (MIIter<RESIDUE> currRes = mol->GetResidues(); currRes; ++currRes)
-        {
-
-            if (chains.find(currRes) != chains.end())
-            {
-                // begin of chain
-                in_sel_chain = true;
-                last_chain_id = currRes->chain_id();
-            }
-            else if (in_sel_chain && currRes->chain_id() != last_chain_id)
-            {
-                // end of chain
-                in_sel_chain = false;
-            }
-
-            if (in_sel_chain)
-            {
-                for (int j = 0; j < currRes->atomCount(); ++j)
-                {
-                    sel[offset++] = 1;
-                }
-            }
-            else
-            {
-                offset += currRes->atomCount();
-            }
-        }
-    }
-
-    view->solidSurfaceCommand(action->data().toInt(), surface_mols, sel);
 }
 
 void ModelsTree::setCurrentChain(RESIDUE *residue)
@@ -2301,7 +1839,6 @@ void ModelsTree::ResetMenu(bool show_all)
         insertAction_->setVisible(true);
         if (Application::instance()->GetResidueBuffer() == NULL)
             insertAction_->setEnabled(false);
-        //_menu_map[ID_SOLIDSURFACE_MENU]->setVisible(true);
     }
     if (mapSelected)
     {
@@ -2932,17 +2469,6 @@ void ModelsTree::setView(MIGLWidget *view)
             this, SLOT(focusResidueChanged(chemlib::RESIDUE*)));
     addModels(displaylist());
     addMaps(displaylist());
-    solidSurfMenu->clear();
-    if (view)
-    {
-        solidSurfActionGroup = new QActionGroup(this);
-        connect(solidSurfActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(solidSurfaceActionTriggered(QAction*)));
-
-        solidsurf_menu_action(solidSurfMenu, solidSurfActionGroup, ID_SOLIDSURFACE_BUILD, "Build surface");
-        solidsurf_menu_action(solidSurfMenu, solidSurfActionGroup, ID_SOLIDSURFACE_COLOR, "Color surface");
-        solidsurf_menu_action(solidSurfMenu, solidSurfActionGroup, ID_SOLIDSURFACE_COLOR_BY_ATOM, "Color surface by atom type");
-    }
-    fillSolidSurfMenu(this, view, solidSurfMenu);
 }
 
 void ModelsTree::setResiduesTree(ResiduesTree *tree)

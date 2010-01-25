@@ -77,7 +77,6 @@
 #include "MIGLWidget.h"
 #include "Xguicryst.h"
 #include "asplib.h"
-#include "id.h"
 #include "molw.h"
 #include "surf.h"
 #include "tools.h"
@@ -105,6 +104,55 @@ using namespace std;
 #define TRANSLATE 2
 #define BONDTWIST 3
 
+namespace {
+    enum SolidSurfaceMenuId
+    {
+        ID_SOLIDSURFACE_BUILD,
+        ID_SOLIDSURFACE_COLOR,
+        ID_SOLIDSURFACE_COLOR_BY_ATOM,
+        ID_SOLIDSURFACE_CLEAR,
+        ID_SOLIDSURFACE_MOLECULAR,
+        ID_SOLIDSURFACE_ACCESSIBLE,
+        ID_SOLIDSURFACE_ATOMS_MODE,
+        ID_SOLIDSURFACE_RESIDUE_MODE,
+        ID_SOLIDSURFACE_RESIDUES_MODE,
+        ID_SOLIDSURFACE_PEPTIDE_MODE,
+        ID_SOLIDSURFACE_MOLECULE_MODE,
+        ID_SOLIDSURFACE_QUALITY_0,
+        ID_SOLIDSURFACE_QUALITY_1,
+        ID_SOLIDSURFACE_QUALITY_2,
+        ID_SOLIDSURFACE_RESMOOTH,
+
+        ID_SOLIDSURFACE_USESURF_0,
+        ID_SOLIDSURFACE_USESURF_1,
+        ID_SOLIDSURFACE_USESURF_2,
+        ID_SOLIDSURFACE_USESURF_3,
+        ID_SOLIDSURFACE_USESURF_4,
+        ID_SOLIDSURFACE_USESURF_5,
+        ID_SOLIDSURFACE_USESURF_6,
+        ID_SOLIDSURFACE_USESURF_7,
+        ID_SOLIDSURFACE_USESURF_8,
+        ID_SOLIDSURFACE_USESURF_9,
+
+        ID_SOLIDSURFACE_ALPHA,
+        ID_SOLIDSURFACE_MINCOLOR,
+        ID_SOLIDSURFACE_MEDCOLOR,
+        ID_SOLIDSURFACE_MAXCOLOR,
+        ID_SOLIDSURFACE_MINVAL,
+        ID_SOLIDSURFACE_MEDVAL,
+        ID_SOLIDSURFACE_MAXVAL,
+        ID_SOLIDSURFACE_CALCDIST,
+        ID_SOLIDSURFACE_GRADCOLOR,
+    };
+
+    QAction* solidsurf_menu_action(QMenu *menu, QActionGroup *group, int actionId, const char *text)
+    {
+        QAction *a = menu->addAction(QObject::tr(text));
+        a->setData(actionId);
+        group->addAction(a);
+        return a;
+    }
+}
 
 class MyMIMolOptCheckPoint
     : public MIMolOptCheckPoint
@@ -2270,9 +2318,9 @@ void MIGLWidget::OnAmountToDimNonactiveModels()
     }
 }
 
-void MIGLWidget::OnUpdateDimNonactiveModels(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateDimNonactiveModels(QAction *action)
 {
-    pCmdUI.Check(viewpoint->isDimNonactiveModels());
+    action->setChecked(viewpoint->isDimNonactiveModels());
 }
 
 void MIGLWidget::OnViewRotatey90()
@@ -2328,15 +2376,15 @@ void MIGLWidget::OnUpdateLinethicknessTwo(const MIUpdateEvent &pCmdUI)
                    || viewpoint->GetBallandStick() == ViewPoint::STICKS));
 }
 
-void MIGLWidget::OnUpdateRenderingDepthcuedcolors(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateRenderingDepthcuedcolors(QAction *action)
 {
-    pCmdUI.Check(viewpoint->isDepthCuedColors());
+    action->setChecked(viewpoint->isDepthCuedColors());
 }
 
-void MIGLWidget::OnUpdateRenderingDepthcuedlinewidth(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateRenderingDepthcuedlinewidth(QAction *action)
 {
-    pCmdUI.Check(viewpoint->isDepthCuedLineWidth());
-    pCmdUI.Enable((viewpoint->GetBallandStick() == ViewPoint::BALLANDSTICK
+    action->setChecked(viewpoint->isDepthCuedLineWidth());
+    action->setEnabled((viewpoint->GetBallandStick() == ViewPoint::BALLANDSTICK
                    || viewpoint->GetBallandStick() == ViewPoint::STICKS));
 }
 
@@ -2379,9 +2427,9 @@ void MIGLWidget::OnRenderingBallandstick()
     doRefresh();
 }
 
-void MIGLWidget::OnUpdateRenderingBallandstick(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateRenderingBallandstick(QAction *action)
 {
-    pCmdUI.Check(viewpoint->GetBallandStick() == ViewPoint::BALLANDSTICK);
+    action->setChecked(viewpoint->GetBallandStick() == ViewPoint::BALLANDSTICK);
 }
 
 void MIGLWidget::OnGotoGotoxyz()
@@ -3570,9 +3618,9 @@ void MIGLWidget::OnRenderSpacefilling()
     doRefresh();
 }
 
-void MIGLWidget::OnUpdateRenderSpacefilling(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateRenderSpacefilling(QAction *action)
 {
-    pCmdUI.Check(viewpoint->GetBallandStick() == ViewPoint::CPK);
+    action->setChecked(viewpoint->GetBallandStick() == ViewPoint::CPK);
 }
 
 void MIGLWidget::OnRenderSticks()
@@ -3581,9 +3629,9 @@ void MIGLWidget::OnRenderSticks()
     doRefresh();
 }
 
-void MIGLWidget::OnUpdateRenderSticks(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateRenderSticks(QAction *action)
 {
-    pCmdUI.Check(viewpoint->GetBallandStick() == ViewPoint::STICKS);
+    action->setChecked(viewpoint->GetBallandStick() == ViewPoint::STICKS);
 }
 
 void MIGLWidget::OnGeomBond()
@@ -3681,9 +3729,9 @@ void MIGLWidget::OnRenderBallsize()
     }
 }
 
-void MIGLWidget::OnUpdateRenderBallsize(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateRenderBallsize(QAction *action)
 {
-    pCmdUI.Enable(true);
+    action->setEnabled(true);
     //pCmdUI.Enable(viewpoint->GetBallandStick()==ViewPoint::BALLANDCYLINDER);
 }
 
@@ -3693,9 +3741,9 @@ void MIGLWidget::OnRenderBallandcylinder()
     doRefresh();
 }
 
-void MIGLWidget::OnUpdateRenderBallandcylinder(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateRenderBallandcylinder(QAction *action)
 {
-    pCmdUI.Check(viewpoint->GetBallandStick() == ViewPoint::BALLANDCYLINDER);
+    action->setChecked(viewpoint->GetBallandStick() == ViewPoint::BALLANDCYLINDER);
 }
 
 void MIGLWidget::OnGotoZoomiin()
@@ -5135,9 +5183,9 @@ void MIGLWidget::OnObjectSurfaceresidue()
     }
 }
 
-void MIGLWidget::OnUpdateObjectSurfaceresidue(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectSurfaceresidue(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty());
+    action->setEnabled(!AtomStack->empty());
 
 }
 
@@ -5194,14 +5242,14 @@ void MIGLWidget::OnObjectSurfaceresidues()
     }
 }
 
-void MIGLWidget::OnUpdateObjectSurfaceresidues(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectSurfaceresidues(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty());
+    action->setEnabled(!AtomStack->empty());
 }
 
-void MIGLWidget::OnUpdateObjectSurfaceatoms(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectSurfaceatoms(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty());
+    action->setEnabled(!AtomStack->empty());
 }
 
 void MIGLWidget::OnObjectSurfaceatom()
@@ -5237,9 +5285,9 @@ void MIGLWidget::OnObjectSurfaceatom()
     }
 }
 
-void MIGLWidget::OnUpdateObjectSurfaceAtom(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectSurfaceAtom(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty());
+    action->setEnabled(!AtomStack->empty());
 }
 
 void MIGLWidget::OnObjectSurfaceAtoms()
@@ -8792,9 +8840,9 @@ void MIGLWidget::OnRenderLinesmooth()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateRenderLinesmooth(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateRenderLinesmooth(QAction *action)
 {
-    pCmdUI.Check(scene->renderer->isAntialiasLines());
+    action->setChecked(scene->renderer->isAntialiasLines());
 }
 
 void MIGLWidget::OnViewSave()
@@ -8900,7 +8948,7 @@ void MIGLWidget::OnFindGeomErrors()
     float errorlevel = 6.0F;
     if (model)
     {
-        bool ok;
+        bool ok = false;
         errorlevel = QInputDialog::getDouble(this, "Enter Error Level",
                              "Enter the error threshold (default 6.0).\n"
                              "Differences from ideality > error_threshold*tolerance\n"
@@ -8941,7 +8989,7 @@ void MIGLWidget::OnLabelEveryNth()
         return;
     }
 
-    bool ok;
+    bool ok = false;
     unsigned int nth = static_cast<unsigned int>(QInputDialog::getInt(this, "Label every nth", "Every nth residue will be labeled", 10, 0, INT_MAX, 1 &ok));
     if (!ok)
     {
@@ -10206,9 +10254,9 @@ void MIGLWidget::OnUpdateShowAllpickedatomsTurnon(const MIUpdateEvent &pCmdUI)
     pCmdUI.Enable(!AtomStack->empty() );
 }
 
-void MIGLWidget::OnUpdateSurfaceSolvent(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateSurfaceSolvent(QAction *action)
 {
-    pCmdUI.Enable(GetDisplaylist()->CurrentItem() != NULL);
+    action->setEnabled(GetDisplaylist()->CurrentItem() != NULL);
 }
 
 void MIGLWidget::OnShowHidehydrogens()
@@ -10257,10 +10305,9 @@ void MIGLWidget::OnObjectSurfaceSpherearoundatom()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateObjectSurfaceSpherearoundatom(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectSurfaceSpherearoundatom(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty() );
-
+    action->setEnabled(!AtomStack->empty());
 }
 
 void MIGLWidget::OnShowShowwithinsphere()
@@ -11699,19 +11746,6 @@ void MIGLWidget::OnFileSaveAs()
     SaveAs();
 }
 
-void MIGLWidget::OnFileAddModel()
-{
-    // get a PDB file name
-    const std::string &s = MIFileSelector("Choose a coordinate file to open", "", "", "pdb",
-                                          "PDB files (*.pdb,*.ent)|*.pdb;*.ent|All files (*.*)|*.*", MI_OPEN_MODE);
-    if (s.size())
-    {
-        LoadPDBFile(s.c_str());
-        Modify(true);
-        ReDraw();
-    }
-}
-
 void MIGLWidget::OnAnnotation()
 {
     Molecule *node = Models->CurrentItem();
@@ -12348,14 +12382,6 @@ void MIGLWidget::solidSurfaceActionTriggered(QAction *action)
     std::vector<Molecule*> mols;
     std::vector<unsigned int> selected;
     solidSurfaceCommand(action->data().toInt(), mols, selected);
-}
-
-QAction*MIGLWidget::solidsurf_menu_action(QMenu *menu, QActionGroup *group, int actionId, const char *text)
-{
-    QAction *a = menu->addAction(QObject::tr(text));
-    a->setData(actionId);
-    group->addAction(a);
-    return a;
 }
 
 QMenu*MIGLWidget::newSolidsurfMenu(bool include_selection_items)

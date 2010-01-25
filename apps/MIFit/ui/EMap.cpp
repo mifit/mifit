@@ -5,7 +5,6 @@
 #include "GenericDataDialog.h"
 #include "core/corelib.h"
 #include "EMap.h"
-#include "id.h"
 #include "macafxwin.h"
 #include "Application.h"
 
@@ -20,7 +19,9 @@ struct mmtz_column_;
 
 #ifdef _WIN32
 #define _MVS
+#ifndef i386
 #define i386
+#endif
 #include <umtz/mmtzlib.h>
 #undef _MVS
 #else

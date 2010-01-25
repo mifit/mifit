@@ -16,7 +16,6 @@
 #include "MIEventHandlerMacros.h"
 #include "MIGLWidget.h"
 #include "MIMenu.h"
-#include "id.h"
 #include "ui/MIColorPickerDlg.h"
 
 #include <images/model.xpm>
@@ -32,9 +31,6 @@
 #include <images/surf.xpm>
 #include <images/surfHidden.xpm>
 #include <images/surfGreyed.xpm>
-
-const int ID_DISPLAYVIEW_IMPORTERRORS = 10000;
-const int ID_DISPLAYVIEW_AUTOSHOW_IMPORTED_ERRORS = 10001;
 
 using namespace chemlib;
 
@@ -162,13 +158,6 @@ DisplayTree::DisplayTree(QWidget *parent)
     connect(this, SIGNAL(itemActivated(QTreeWidgetItem *, int)),
             this, SLOT(OnItemActivated(QTreeWidgetItem *, int)));
 
-    BEGIN_EVENT_TABLE(this, none)
-    EVT_MENU(ID_DISPLAYVIEW_DELETE, DisplayTree::DeleteItem)
-    EVT_MENU(ID_DISPLAYVIEW_SHOW, DisplayTree::ShowItem)
-    EVT_MENU(ID_DISPLAYVIEW_EDIT, DisplayTree::EditItem)
-    EVT_MENU(ID_DISPLAYVIEW_IMPORTERRORS, DisplayTree::ImportErrors)
-    EVT_MENU(ID_DISPLAYVIEW_AUTOSHOW_IMPORTED_ERRORS, DisplayTree::AutoShowErrors)
-    END_EVENT_TABLE()
 }
 
 DisplayTree::~DisplayTree()
@@ -250,36 +239,38 @@ void DisplayTree::OnItemPressed(QTreeWidgetItem *id, int)
         }
     }
 
-    MIMenu *menu = new MIMenu(*this);
-    menu->Append(ID_DISPLAYVIEW_SHOW, "Show/Hide", "Show or hide this display item", false);
-    menu->Append(ID_DISPLAYVIEW_EDIT, "Edit", "Edit this display item", false);
-    menu->Append(ID_DISPLAYVIEW_DELETE, "Delete", "Delete this display item", false);
-    menu->Append(ID_DISPLAYVIEW_IMPORTERRORS, "Import from error list", "Import from error list", false);
+    QMenu *menu = new QMenu;
+    QAction *showAction = menu->addAction("Show/Hide", this, SLOT(ShowItem()));
+    QAction *editAction = menu->addAction("Edit", this, SLOT(EditItem()));
+    QAction *deleteAction = menu->addAction("Delete", this, SLOT(DeleteItem()));
+    menu->addAction("Import from error list", this, SLOT(ImportErrors()));
+    QAction *autoShowImportErrorsAction = menu->addAction("Auto-show imported errors", this,
+                                                          SLOT(AutoShowErrors()));
+    autoShowImportErrorsAction->setCheckable(true);
+    autoShowImportErrorsAction->setChecked(
+                MIConfig::Instance()->GetProfileInt("DisplayView", "autoShowError", 1) != 0);
+
     if (!(hasAnnotationList || hasAtomLabelList || hasAnnotation || hasAtomLabel))
     {
-        menu->Enable(ID_DISPLAYVIEW_DELETE,  false);
+        deleteAction->setEnabled(false);
     }
     if (selected.size() > 1)
     {
-        menu->Enable(ID_DISPLAYVIEW_EDIT, false);
+        editAction->setEnabled(false);
     }
     else if (hasAnnotationList || hasAtomLabelList || hasSurface)
     {
-        menu->Enable(ID_DISPLAYVIEW_EDIT, false);
+        editAction->setEnabled(false);
     }
     if (hasSurface && Molecule::isValid(surfaceModel) && surfaceModel->getDots().size() == 0)
     {
-        menu->Enable(ID_DISPLAYVIEW_SHOW, false);
-        menu->Enable(ID_DISPLAYVIEW_EDIT, false);
-        menu->Enable(ID_DISPLAYVIEW_DELETE,  false);
+        showAction->setEnabled(false);
+        editAction->setEnabled(false);
+        deleteAction->setEnabled(false);
     }
 
-    menu->AppendCheckItem(ID_DISPLAYVIEW_AUTOSHOW_IMPORTED_ERRORS, "Auto-show imported errors", "Automatically show errors imported from PDB file");
-    menu->Check(ID_DISPLAYVIEW_AUTOSHOW_IMPORTED_ERRORS,
-                MIConfig::Instance()->GetProfileInt("DisplayView", "autoShowError", 1) != 0);
-
     QPoint pos = QCursor::pos();
-    menu->doExec(pos);
+    menu->exec(pos);
     delete menu;
 }
 

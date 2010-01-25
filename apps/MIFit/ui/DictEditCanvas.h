@@ -36,7 +36,7 @@ class DictEditScene;
 class GeomRefiner;
 
 class QKeyEvent;
-class MIMenuBar;
+class QMenuBar;
 
 #include <QGLWidget>
 #include "MIMenu.h"
@@ -69,13 +69,34 @@ class DictEditCanvas : public QGLWidget, public MIEventHandler
     DictEditAnglePickingRenderable *anglePickingRenderable;
     DictEditAnnotationPickingRenderable *annotationPickingRenderable;
 
-    MIMenuBar *menuBar;
-    MIMenu *popupMenu;
+    QMenuBar *menuBar;
 
-    static const int ID_POPUP_LINES;
-    static const int ID_POPUP_BALL_LINES;
-    static const int ID_POPUP_STICKS;
-    static const int ID_POPUP_BALL_STICKS;
+    QAction *setAngleAction;
+    QAction *changeAtomTypeAction;
+    QAction *renameAtomAction;
+    QAction *removeAtomAction;
+    QAction *removeAtomsAction;
+    QAction *removeHydrogensAction;
+
+    QAction *setBondLengthAction;
+    QAction *changeBondOrderAction;
+    QAction *removeBondAction;
+
+    QAction *invertChiralAction;
+    QAction *addChiralAction;
+    QAction *removeChiralAction;
+
+    QAction *nextConformerAction;
+    QAction *prevConformerAction;
+
+    QAction *addPlaneAction;
+    QAction *addPlaneAtomAction;
+    QAction *addPlaneAtomsAction;
+    QAction *removePlaneAtomAction;
+    QAction *removePlaneAtomsAction;
+    QAction *removePlaneAction;
+
+    QMenu *popupMenu;
 
     /**
      * Number of milliseconds between down and up mouse events to be considered a click.
@@ -171,8 +192,6 @@ public:
     void SetNeedsRefine(bool n = true);
     bool handlePick(const QPoint &point);
 
-    void OnPopupMenu(const MIActionEvent &event);
-
     void beginDragAction();
     void endDragAction();
 
@@ -224,6 +243,8 @@ private:
     void OnRefine(int);
 
 private slots:
+    void OnPopupMenu(QAction *action);
+
     // button events
     void OnGenerateConformers();
     void OnRemoveAtomFromPlane();

@@ -16,6 +16,7 @@ public:
     MIMenuBar(QMenuBar *mb) : _mb(mb)
     {
     }
+    void Append(QMenu *menu) { _mb->addMenu(menu); }
     void Append(MIMenu *menu, const std::string &title);
 
     void Enable(unsigned int id, bool state);

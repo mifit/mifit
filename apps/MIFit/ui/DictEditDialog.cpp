@@ -14,6 +14,7 @@ DictEditDialog::DictEditDialog(QWidget *parent)
     int row = 0;
 
     QGridLayout *_layout = new QGridLayout(this);
+    _layout->setContentsMargins(0, 0, 10, 10);
 
     _menuBar = new QMenuBar(this);
 #ifndef __APPLE__

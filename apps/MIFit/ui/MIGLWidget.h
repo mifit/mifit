@@ -166,7 +166,6 @@ private:
     QActionGroup *solidsurfCommonActionGroup;
 
     QMenu *newSolidsurfMenu(bool include_selection_items = true);
-    QAction *solidsurf_menu_action(QMenu *menu, QActionGroup *group, int actionId, const char *text);
 
     unsigned int solidsurf_current_surface;
     int SelectType;
@@ -806,7 +805,6 @@ public slots:
     //@{
     // Callback for File/Add Model to Current Document.
     //@}
-    void OnFileAddModel();
     void OnFileSave();
     void OnFileSaveAs();
 
@@ -1100,7 +1098,7 @@ public slots:
      * Callback for Refi/Accept.
      */
     void OnRefiAccept();
-    void OnUpdateRenderLinesmooth(const MIUpdateEvent &p);
+    void OnUpdateRenderLinesmooth(QAction *action);
     /**
      * Callback for Render/Smooth Lines.
      */
@@ -1218,7 +1216,7 @@ public slots:
 
     void OnDimNonactiveModels();
     void OnAmountToDimNonactiveModels();
-    void OnUpdateDimNonactiveModels(const MIUpdateEvent &pCmdUI);
+    void OnUpdateDimNonactiveModels(QAction *action);
 
     /**
      * Callback for View/Rotate View +90.
@@ -1240,8 +1238,8 @@ public slots:
     void OnUpdateLinethicknessOne(const MIUpdateEvent &pCmdUI);
     void OnUpdateLinethicknessThree(const MIUpdateEvent &pCmdUI);
     void OnUpdateLinethicknessTwo(const MIUpdateEvent &pCmdUI);
-    void OnUpdateRenderingDepthcuedcolors(const MIUpdateEvent &pCmdUI);
-    void OnUpdateRenderingDepthcuedlinewidth(const MIUpdateEvent &pCmdUI);
+    void OnUpdateRenderingDepthcuedcolors(QAction *action);
+    void OnUpdateRenderingDepthcuedlinewidth(QAction *action);
     void OnUpdateHardwareStereo(const MIUpdateEvent &pCmdUI);
     void OnUpdateStereoToggle(const MIUpdateEvent &pCmdUI);
     void OnUpdateViewAtomstack(const MIUpdateEvent &pCmdUI);
@@ -1252,7 +1250,7 @@ public slots:
      * Callback for Render/Ball-and-cylinder.
      */
     void OnRenderingBallandstick();
-    void OnUpdateRenderingBallandstick(const MIUpdateEvent &pCmdUI);
+    void OnUpdateRenderingBallandstick(QAction *action);
     /**
      * Go to a specific x ,y z coordinate.  Not implemented in this version.
      */
@@ -1302,9 +1300,9 @@ public slots:
     void OnViewTopview();
     void OnUpdateViewTopview(const MIUpdateEvent &pCmdUI);
     void OnRenderSpacefilling();
-    void OnUpdateRenderSpacefilling(const MIUpdateEvent &pCmdUI);
+    void OnUpdateRenderSpacefilling(QAction *action);
     void OnRenderSticks();
-    void OnUpdateRenderSticks(const MIUpdateEvent &pCmdUI);
+    void OnUpdateRenderSticks(QAction *action);
     void OnGeomBond();
     void OnUpdateGeomBond(const MIUpdateEvent &pCmdUI);
     void OnGeomUnbond();
@@ -1313,9 +1311,9 @@ public slots:
     void OnUpdateGeometryDistance(const MIUpdateEvent &pCmdUI);
     void OnUpdateGeometryTorsion(const MIUpdateEvent &pCmdUI);
     void OnRenderBallsize();
-    void OnUpdateRenderBallsize(const MIUpdateEvent &pCmdUI);
+    void OnUpdateRenderBallsize(QAction *action);
     void OnRenderBallandcylinder();
-    void OnUpdateRenderBallandcylinder(const MIUpdateEvent &pCmdUI);
+    void OnUpdateRenderBallandcylinder(QAction *action);
     void OnGotoZoomiin();
     void OnGotoZoomout();
     void OnGotoFittoscreen();
@@ -1362,13 +1360,13 @@ public slots:
     void OnAnimateBlink();
     void OnUpdateAnimateBlink(const MIUpdateEvent &pCmdUI);
     void OnObjectSurfaceresidue();
-    void OnUpdateObjectSurfaceresidue(const MIUpdateEvent &pCmdUI);
+    void OnUpdateObjectSurfaceresidue(QAction *action);
     void OnObjectSurfaceClearsurface();
     void OnObjectSurfaceresidues();
-    void OnUpdateObjectSurfaceresidues(const MIUpdateEvent &pCmdUI);
-    void OnUpdateObjectSurfaceatoms(const MIUpdateEvent &pCmdUI);
+    void OnUpdateObjectSurfaceresidues(QAction *action);
+    void OnUpdateObjectSurfaceatoms(QAction *action);
     void OnObjectSurfaceatom();
-    void OnUpdateObjectSurfaceAtom(const MIUpdateEvent &pCmdUI);
+    void OnUpdateObjectSurfaceAtom(QAction *action);
     void OnObjectSurfaceAtoms();
     void OnObjectStackExpandtopallatomsinresidue();
     void OnUpdateObjectStackExpandtopallatomsinresidue(const MIUpdateEvent &pCmdUI);
@@ -1440,13 +1438,13 @@ public slots:
     void OnShowRadiusmodel();
     void OnUpdateShowRadiusmodel(const MIUpdateEvent &pCmdUI);
     void OnUpdateShowColorallatoms(const MIUpdateEvent &pCmdUI);
-    void OnUpdateSurfaceSolvent(const MIUpdateEvent &pCmdUI);
+    void OnUpdateSurfaceSolvent(QAction *action);
     void OnShowHideBackbone();
     void OnShowSidechainAtoms();
     void OnHideSidechainAtoms();
     void OnShowHidehydrogens();
     void OnUpdateShowHidehydrogens(const MIUpdateEvent &pCmdUI);
-    void OnUpdateObjectSurfaceSpherearoundatom(const MIUpdateEvent &pCmdUI);
+    void OnUpdateObjectSurfaceSpherearoundatom(QAction *action);
     void OnSurfaceSolvent();
     void OnObjectSurfaceSpherearoundatom();
     void OnSequenceEnter();

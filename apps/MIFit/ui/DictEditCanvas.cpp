@@ -61,10 +61,12 @@ using namespace std;
 
 const int DictEditCanvas::mouseClickThreshold = 300;
 
-const int DictEditCanvas::ID_POPUP_LINES = 0;
-const int DictEditCanvas::ID_POPUP_BALL_LINES = 1;
-const int DictEditCanvas::ID_POPUP_STICKS = 2;
-const int DictEditCanvas::ID_POPUP_BALL_STICKS = 3;
+enum RenderMode {
+    Lines,
+    BallLines,
+    Sticks,
+    BallSticks,
+};
 
 
 bool ordering(const Bond &e1, const Bond &e2)
@@ -204,164 +206,67 @@ DictEditCanvas::~DictEditCanvas()
     delete AtomStack;
     AtomStack = NULL;
     modifiedAngles.clear();
-    if (popupMenu == NULL)
-    {
-        delete popupMenu;
-        popupMenu = NULL;
-    }
     delete form;
 }
 
-
-#define ID_EXPORTBUTTON 10339
-#define ID_RENAMEBUTTON 10340
-#define ID_REFINE_BUTTON 10341
-#define ID_REFINE_SPN 10342
-#define ID_RESET_BUTTON 10343
-#define ID_VATOMLABELS_CHK 10344
-#define ID_VHYDROGENS_CHK 10345
-#define ID_VANGLES_CHK 10346
-#define ID_VBONDS_CHK 10347
-#define ID_VCHIRALS_CHK 10348
-#define ID_VPLANES_CHK 10349
-#define ID_CONFORMER_SPIN 10350
-#define ID_CONFORMER_TEXT 10351
-#define ID_DICTEDITPANEL 10352
-
-// Declare menubar functions
-
-#define ID_MENU 10503
-#define ID_SETANGLE_MENU 10504
-#define ID_CHANGEATOM_MENU 10505
-#define ID_RENAMEATOM_MENU 10506
-#define ID_REMATOM_MENU 10507
-#define ID_REMATOMS_MENU 10508
-#define ID_REMHYDROGENS_MENU 10509
-#define ID_BONDSETLEN_MENU 10510
-#define ID_BONDCHGORDER_MENU 10511
-#define ID_BONDREM_MENU 10512
-#define ID_INVERTCHI_MENU 10513
-#define ID_ADDCHI_MENU 10514
-#define ID_REMCHI_MENU 10515
-#define ID_NEXTCONFORMER_MENU 10516
-#define ID_PREVCONFORMER_MENU 10517
-#define ID_GENERATECONFS_MENU 10518
-#define ID_PLANEADD_MENU 10519
-#define ID_PLANEINCATOM_MENU 10520
-#define ID_PLANEINCATOMS_MENU 10521
-#define ID_PLANEREMATOM_MENU 10522
-#define ID_PLANEREMATOMS_MENU 10523
-#define ID_PLANEREM_MENU 10524
-
-
 void DictEditCanvas::createMenus()
 {
-    menuBar = new MIMenuBar(parent->getMenuBar());
+    menuBar = parent->getMenuBar();
 
-    BEGIN_EVENT_TABLE(this, ignored);
+    QMenu *item1 = menuBar->addMenu("&Angles");
+    setAngleAction = item1->addAction("&Set Angle", this, SLOT(OnSetAngle()));
 
-    MIMenu *item1 = new MIMenu(*this);
-    item1->Append( ID_SETANGLE_MENU, "&Set Angle", "" );
-    EVT_MENU(ID_SETANGLE_MENU, DictEditCanvas::OnSetAngle);
-    menuBar->Append( item1, "&Angles" );
+    QMenu *item2 = menuBar->addMenu("A&toms");
+    changeAtomTypeAction = item2->addAction("&Change type", this, SLOT(OnChangeAtomType()));
+    renameAtomAction = item2->addAction("&Rename", this, SLOT(OnRenameAtom()));
+    item2->addSeparator();
+    removeAtomAction = item2->addAction("Remove &One", this, SLOT(OnRemoveAtom()));
+    removeAtomsAction = item2->addAction("Remove &Several", this, SLOT(OnRemoveAtoms()));
+    removeHydrogensAction = item2->addAction("Remove &Hydrogens", this, SLOT(OnRemoveHydrogens()));
 
-    MIMenu *item2 = new MIMenu(*this);
-    item2->Append( ID_CHANGEATOM_MENU, "&Change type", "" );
-    EVT_MENU(ID_CHANGEATOM_MENU, DictEditCanvas::OnChangeAtomType);
+    QMenu *item3 = menuBar->addMenu("&Bonds");
+    setBondLengthAction = item3->addAction("&Set length", this, SLOT(OnSetBondLength()));
+    changeBondOrderAction = item3->addAction("&Change order", this, SLOT(OnChangeBondOrder()));
+    item3->addSeparator();
+    removeBondAction = item3->addAction("&Remove", this, SLOT(OnDeleteBond()));
 
-    item2->Append( ID_RENAMEATOM_MENU, "&Rename", "" );
-    EVT_MENU(ID_RENAMEATOM_MENU, DictEditCanvas::OnRenameAtom);
+    QMenu *item4 = menuBar->addMenu("&Chirals");
+    invertChiralAction = item4->addAction("&Invert Chiral", this, SLOT(OnInvertCenter()));
+    addChiralAction = item4->addAction("&Add Chiral", this, SLOT(OnAddChiral()));
+    item4->addSeparator();
+    removeChiralAction = item4->addAction("&Remove Chiral", this, SLOT(OnRemoveChiral()));
 
-    item2->AppendSeparator();
-    item2->Append( ID_REMATOM_MENU, "Remove &One", "" );
-    EVT_MENU(ID_REMATOM_MENU, DictEditCanvas::OnRemoveAtom);
+    QMenu *item5 = menuBar->addMenu("C&onformers");
+    nextConformerAction = item5->addAction("&Next Conformer", this, SLOT(OnNextConformer()));
+    prevConformerAction = item5->addAction("&Previous Conformer", this, SLOT(OnPrevConformer()));
+    item5->addAction("&Generate Conformers", this, SLOT(OnGenerateConformers()));
 
-    item2->Append( ID_REMATOMS_MENU, "Remove &Several", "" );
-    EVT_MENU(ID_REMATOMS_MENU, DictEditCanvas::OnRemoveAtoms);
+    QMenu *item6 = menuBar->addMenu("&Planes");
+    addPlaneAction = item6->addAction("&Add", this, SLOT(OnAddPlane()));
+    addPlaneAtomAction = item6->addAction("&Include atom", this, SLOT(OnIncludeAtomInPlane()));
+    addPlaneAtomsAction = item6->addAction("I&nclude atoms", this, SLOT(OnIncludeAtomsInPlane()));
+    item6->addSeparator();
+    removePlaneAtomAction = item6->addAction("&Remove atom", this, SLOT(OnRemovePlane()));
+    removePlaneAtomsAction = item6->addAction("R&emove atoms", this, SLOT(OnRemoveAtomsFromPlane()));
+    removePlaneAction = item6->addAction("R&emove Plane", this, SLOT(OnRemoveAtomFromPlane()));
 
-    item2->Append( ID_REMHYDROGENS_MENU, "Remove &Hydrogens", "" );
-    EVT_MENU(ID_REMHYDROGENS_MENU, DictEditCanvas::OnRemoveHydrogens);
-    menuBar->Append( item2, "A&toms" );
+    popupMenu = new QMenu(this);
+    connect(popupMenu, SIGNAL(triggered(QAction*)), SLOT(OnPopupMenu(QAction*)));
 
-    MIMenu *item3 = new MIMenu(*this);
-    item3->Append( ID_BONDSETLEN_MENU, "&Set length", "" );
-    EVT_MENU(ID_BONDSETLEN_MENU, DictEditCanvas::OnSetBondLength);
+    QAction *action;
+    action = popupMenu->addAction("Line");
+    action->setData(Lines);
 
-    item3->Append( ID_BONDCHGORDER_MENU, "&Change order", "" );
-    EVT_MENU(ID_BONDCHGORDER_MENU, DictEditCanvas::OnChangeBondOrder);
+    action = popupMenu->addAction("Ball and Line");
+    action->setData(BallLines);
 
-    item3->AppendSeparator();
-    item3->Append( ID_BONDREM_MENU, "&Remove", "" );
-    EVT_MENU(ID_BONDREM_MENU, DictEditCanvas::OnDeleteBond);
-    menuBar->Append( item3, "&Bonds" );
+    action = popupMenu->addAction("Stick");
+    action->setData(Sticks);
 
-    MIMenu *item4 = new MIMenu(*this);
-    item4->Append( ID_INVERTCHI_MENU, "&Invert Chiral", "" );
-    EVT_MENU(ID_INVERTCHI_MENU, DictEditCanvas::OnInvertCenter);
+    action = popupMenu->addAction("Ball and Stick");
+    action->setData(BallSticks);
 
-    item4->Append( ID_ADDCHI_MENU, "&Add Chiral", "" );
-    EVT_MENU(ID_ADDCHI_MENU, DictEditCanvas::OnAddChiral);
-
-    item4->AppendSeparator();
-    item4->Append( ID_REMCHI_MENU, "&Remove Chiral", "" );
-    EVT_MENU(ID_REMCHI_MENU, DictEditCanvas::OnRemoveChiral);
-
-    menuBar->Append( item4, "&Chirals" );
-
-    MIMenu *item5 = new MIMenu(*this);
-    item5->Append( ID_NEXTCONFORMER_MENU, "&Next Conformer", "" );
-    EVT_MENU(ID_NEXTCONFORMER_MENU, DictEditCanvas::OnNextConformer);
-
-    item5->Append( ID_PREVCONFORMER_MENU, "&Previous Conformer", "" );
-    EVT_MENU(ID_PREVCONFORMER_MENU, DictEditCanvas::OnPrevConformer);
-
-    item5->Append( ID_GENERATECONFS_MENU, "&Generate Conformers", "" );
-    EVT_MENU(ID_GENERATECONFS_MENU, DictEditCanvas::OnGenerateConformers)
-
-    menuBar->Append( item5, "C&onformers" );
-
-    MIMenu *item6 = new MIMenu(*this);
-    item6->Append( ID_PLANEADD_MENU, "&Add", "" );
-    EVT_MENU(ID_PLANEADD_MENU, DictEditCanvas::OnAddPlane);
-
-    item6->Append( ID_PLANEINCATOM_MENU, "&Include atom", "" );
-    EVT_MENU(ID_PLANEINCATOM_MENU, DictEditCanvas::OnIncludeAtomInPlane);
-
-
-    item6->Append( ID_PLANEINCATOMS_MENU, "I&nclude atoms", "" );
-    EVT_MENU(ID_PLANEINCATOMS_MENU, DictEditCanvas::OnIncludeAtomsInPlane);
-
-    item6->AppendSeparator();
-    item6->Append( ID_PLANEREMATOM_MENU, "&Remove atom", "" );
-    EVT_MENU(ID_PLANEREM_MENU, DictEditCanvas::OnRemovePlane);
-
-    item6->Append( ID_PLANEREMATOMS_MENU, "R&emove atoms", "" );
-    EVT_MENU(ID_PLANEREMATOMS_MENU, DictEditCanvas::OnRemoveAtomsFromPlane);
-
-    item6->Append( ID_PLANEREM_MENU, "R&emove Plane", "" );
-    EVT_MENU(ID_PLANEREMATOM_MENU, DictEditCanvas::OnRemoveAtomFromPlane)
-
-    menuBar->Append( item6, "&Planes" );
-
-
-    popupMenu = new MIMenu(*this, this);
-
-    popupMenu->Append(ID_POPUP_LINES, "Line");
-    EVT_MENU(ID_POPUP_LINES, DictEditCanvas::OnPopupMenu)
-
-    popupMenu->Append(ID_POPUP_BALL_LINES, "Ball and Line");
-    EVT_MENU(ID_POPUP_BALL_LINES, DictEditCanvas::OnPopupMenu)
-
-    popupMenu->Append(ID_POPUP_STICKS, "Stick");
-    EVT_MENU(ID_POPUP_STICKS, DictEditCanvas::OnPopupMenu)
-
-    popupMenu->Append(ID_POPUP_BALL_STICKS, "Ball and Stick");
-    EVT_MENU(ID_POPUP_BALL_STICKS, DictEditCanvas::OnPopupMenu)
-
-    END_EVENT_TABLE();
 }
-
-
 
 void DictEditCanvas::initializeForRender()
 {
@@ -846,7 +751,7 @@ void DictEditCanvas::mouseReleaseEvent(QMouseEvent *evt)
             {
                 QPoint pos(point.x(), point.y());
                 pos = mapToGlobal(pos);
-                popupMenu->doExec(pos);
+                popupMenu->exec(pos);
             }
         }
 
@@ -1053,29 +958,33 @@ void DictEditCanvas::updateViewDependentSettings()
     scene->renderer->updateTextScale(glUnitsPerPixel);
     annotationPickingRenderable->updateTextScale(glUnitsPerPixel);
 }
+
 void DictEditCanvas::UpdateButtons()
 {
+    setAngleAction->setEnabled(pickedAngle != NULL);
+    changeAtomTypeAction->setEnabled(!AtomStack->empty());
+    renameAtomAction->setEnabled(!AtomStack->empty());
+    removeAtomAction->setEnabled(!AtomStack->empty());
+    removeAtomsAction->setEnabled(!AtomStack->empty());
+    removeHydrogensAction->setEnabled(true);
 
-    // enable buttons based on size of stack
-    menuBar->Enable(ID_REMATOM_MENU, !AtomStack->empty());
-    menuBar->Enable(ID_PLANEREMATOM_MENU, !AtomStack->empty() && pickedPlane != NULL);
-    menuBar->Enable(ID_PLANEREMATOMS_MENU, AtomStack->size() > 1 && pickedPlane != NULL);
-    menuBar->Enable(ID_PLANEREM_MENU, pickedPlane != NULL);
-    menuBar->Enable(ID_PLANEADD_MENU, AtomStack->size() > 2);
-    menuBar->Enable(ID_PLANEINCATOM_MENU, !AtomStack->empty() && pickedPlane != NULL);
-    menuBar->Enable(ID_PLANEINCATOMS_MENU, AtomStack->size() > 1 && pickedPlane != NULL);
-    menuBar->Enable(ID_BONDSETLEN_MENU, pickedBond != NULL);
-    menuBar->Enable(ID_BONDCHGORDER_MENU, pickedBond != NULL);
-    menuBar->Enable(ID_BONDREM_MENU, pickedBond != NULL);
-    menuBar->Enable(ID_REMHYDROGENS_MENU, true);
-    menuBar->Enable(ID_REMATOMS_MENU, !AtomStack->empty());
-    menuBar->Enable(ID_CHANGEATOM_MENU, !AtomStack->empty());
-    menuBar->Enable(ID_SETANGLE_MENU, pickedAngle != NULL);
-    menuBar->Enable(ID_INVERTCHI_MENU, !AtomStack->empty());
-    menuBar->Enable(ID_ADDCHI_MENU, !AtomStack->empty());
-    menuBar->Enable(ID_REMCHI_MENU, pickedChiral != NULL && pickedChiral->flags != CHIRAL_DELETED);
-    menuBar->Enable(ID_NEXTCONFORMER_MENU, conf < confs.NumberSets()-1);
-    menuBar->Enable(ID_PREVCONFORMER_MENU, conf > 1);
+    setBondLengthAction->setEnabled(pickedBond != NULL);
+    changeBondOrderAction->setEnabled(pickedBond != NULL);
+    removeBondAction->setEnabled(pickedBond != NULL);
+
+    invertChiralAction->setEnabled(!AtomStack->empty());
+    addChiralAction->setEnabled(!AtomStack->empty());
+    removeChiralAction->setEnabled(pickedChiral != NULL && pickedChiral->flags != CHIRAL_DELETED);
+
+    nextConformerAction->setEnabled(conf < confs.NumberSets()-1);
+    prevConformerAction->setEnabled(conf > 1);
+
+    addPlaneAction->setEnabled(AtomStack->size() > 2);
+    addPlaneAtomAction->setEnabled(!AtomStack->empty() && pickedPlane != NULL);
+    addPlaneAtomsAction->setEnabled(AtomStack->size() > 1 && pickedPlane != NULL);
+    removePlaneAtomAction->setEnabled(!AtomStack->empty() && pickedPlane != NULL);
+    removePlaneAtomsAction->setEnabled(AtomStack->size() > 1 && pickedPlane != NULL);
+    removePlaneAction->setEnabled(pickedPlane != NULL);
 
     form->changeNameButton->setEnabled(model != NULL && model->getResidues() != NULL);
     form->exportButton->setEnabled(model != NULL && model->getResidues() != NULL);
@@ -2811,22 +2720,22 @@ void DictEditCanvas::generateConformers(bool replace)
 }
 
 
-void DictEditCanvas::OnPopupMenu(const MIActionEvent &event)
+void DictEditCanvas::OnPopupMenu(QAction *action)
 {
-    int id = event.GetId();
-    if (id == ID_POPUP_LINES)
+    int id = action->data().toInt();
+    if (id == Lines)
     {
         scene->renderer->setRenderStyle(RenderStyle::getDefaultLine());
     }
-    else if (id == ID_POPUP_BALL_LINES)
+    else if (id == BallLines)
     {
         scene->renderer->setRenderStyle(RenderStyle::getDefaultBallAndLine());
     }
-    else if (id == ID_POPUP_STICKS)
+    else if (id == Sticks)
     {
         scene->renderer->setRenderStyle(RenderStyle::getDefaultStick());
     }
-    else if (id == ID_POPUP_BALL_STICKS)
+    else if (id == BallSticks)
     {
         scene->renderer->setRenderStyle(RenderStyle::getDefaultBallAndStick());
     }

@@ -27,7 +27,6 @@
 #include "Displaylist.h"
 #include "EMap.h"
 #include "jobs/jobslib.h"
-#include "id.h"
 #include "macafxwin.h"
 #include "MIEventHandlerMacros.h"
 #include "MIGLWidget.h"

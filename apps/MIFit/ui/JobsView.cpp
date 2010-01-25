@@ -17,8 +17,6 @@
 #include "MIMenu.h"
 #include "MIQTreeWidget.h"
 
-#include "id.h"
-
 #include <images/jobsList.xpm>
 #include <images/job.xpm>
 #include <images/jobRunning.xpm>
@@ -90,14 +88,6 @@ JobsTree::JobsTree(QWidget *parent)
     connect(this, SIGNAL(itemActivated(QTreeWidgetItem *, int)),
             this, SLOT(OnItemActivated(QTreeWidgetItem *, int)));
 
-    BEGIN_EVENT_TABLE(this, none)
-    EVT_MENU(ID_JOBSVIEW_DELETE, JobsTree::DeleteJob)
-    EVT_MENU(ID_JOBSVIEW_PROPERTIES, JobsTree::ShowProperties)
-    EVT_MENU(ID_JOBSVIEW_SHOWLOG, JobsTree::ShowLog)
-    EVT_MENU(ID_JOBSVIEW_OPENRESULTS, JobsTree::OpenResults)
-    EVT_MENU(ID_JOBSVIEW_CLEANSUCCESSFUL, JobsTree::CleanSuccessful)
-    EVT_MENU(ID_JOBSVIEW_CLEANALL, JobsTree::CleanAll)
-    END_EVENT_TABLE()
 }
 
 JobsTree::~JobsTree()
@@ -137,35 +127,36 @@ void JobsTree::OnItemPressed(QTreeWidgetItem *id, int)
         clearSelection();
         id->setSelected(true);
     }
-    MIMenu *menu = new MIMenu(*this);
-    menu->Append(ID_JOBSVIEW_OPENRESULTS, "Open Results...");
-    menu->Append(ID_JOBSVIEW_SHOWLOG, "Show Log File", "Open the log file in a window", false);
-    menu->Append(ID_JOBSVIEW_PROPERTIES, "Job Properties", "Properties for this job", false);
-    menu->Append(ID_JOBSVIEW_DELETE, "Delete Job", "Delete this job", false);
-    menu->Append(ID_JOBSVIEW_CLEANSUCCESSFUL, "Clean Successful", "Remove jobs that have completed successfully", false);
-    menu->Append(ID_JOBSVIEW_CLEANALL, "Clean All", "Remove jobs that have completed", false);
+    QMenu *menu = new QMenu;
+    QAction *openResultsAction = menu->addAction("Open Results...", this, SLOT(OpenResults()));
+    QAction *showLogAction = menu->addAction("Show Log File", this, SLOT(ShowLog()));
+    QAction *propertiesAction = menu->addAction("Job Properties", this, SLOT(ShowProperties()));
+    QAction *deleteAction = menu->addAction("Delete Job", this, SLOT(DeleteJob()));
+    menu->addAction("Clean Successful", this, SLOT(CleanSuccessful()));
+    menu->addAction("Clean All", this, SLOT(CleanAll()));
+
     BatchJob *job = NULL;
     if (itemToJob.find(id) != itemToJob.end())
-    {
         job = itemToJob[id];
-    }
+
     if (id == rootId)
     {
-        menu->Enable(ID_JOBSVIEW_DELETE, false);
-        menu->Enable(ID_JOBSVIEW_PROPERTIES, false);
-        menu->Enable(ID_JOBSVIEW_SHOWLOG, false);
+        deleteAction->setEnabled(false);
+        propertiesAction->setEnabled(false);
+        showLogAction->setEnabled(false);
     }
     else
     {
         if (job != NULL && job->isRunning())
         {
-            menu->Enable(ID_JOBSVIEW_OPENRESULTS, false);
-            menu->Enable(ID_JOBSVIEW_SHOWLOG, false);
+            openResultsAction->setEnabled(false);
+            showLogAction->setEnabled(false);
         }
     }
 
     QPoint pos = QCursor::pos();
-    menu->doExec(pos);
+    menu->exec(pos);
+    delete menu;
 }
 
 void JobsTree::DeleteJob()

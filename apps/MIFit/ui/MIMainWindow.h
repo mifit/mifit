@@ -97,7 +97,7 @@ public:
     // if id < 0, restore default cursor
     void SetCursor(int id, QWidget *widget = 0);
 
-    void fill_surf_menu(MIMenu*);
+    void fill_surf_menu(QMenu*);
 
     void OpenFiles(const std::vector<std::string> &files, bool newWindow = false);
 
@@ -112,7 +112,7 @@ public:
         return modelsView;
     }
 
-    void addRecentFileActions(MIMenu*);
+    void addRecentFileActions(QMenu*);
     void setCurrentFile(const std::string &fname);
 
 private slots:
@@ -201,7 +201,7 @@ private:
     void createDockWindows();
     void initMenuHandlers();
 
-    void fill_file_menu(MIMenu *file_menu);
+    void fill_file_menu(QMenu *file_menu);
     void fill_view_menu(MIMenu *view_menu);
 
     QMdiSubWindow *findMIGLWidget(const QString &fileName);
@@ -214,8 +214,16 @@ private:
 
     QTextEdit *logWindow;
 
-    MIMenu *side_menu, *hide_menu, *color_menu;
-    MIMenu *view_menu, *show_menu, *render_menu, *model_menu, *fit_menu, *refi_menu, *analyze_menu;
+    MIMenu *side_menu;
+    MIMenu *hide_menu;
+    MIMenu *color_menu;
+    MIMenu *view_menu;
+    MIMenu *show_menu;
+    QMenu *render_menu;
+    MIMenu *model_menu;
+    MIMenu *fit_menu;
+    MIMenu *refi_menu;
+    MIMenu *analyze_menu;
     QAction *solidSurfMenuAction;
     QMenu *windowMenu;
     QMenu *viewMenu;

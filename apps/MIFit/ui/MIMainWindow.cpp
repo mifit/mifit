@@ -48,6 +48,7 @@
 #include "ui/SmilesDialog.h"
 #include "ui/AtomColors.h"
 #include "ui/BValueColors.h"
+#include "CurrentMIGLWidgetAction.h"
 
 #ifdef _WIN32
 #include <images/mifit_icon_32x32.xpm>
@@ -88,17 +89,10 @@ public:
     }
 };
 
-// replace standard BEGIN_EVENT_TABLE with one which uses our custom child ftor
-#undef BEGIN_EVENT_TABLE
-#undef END_EVENT_TABLE
-#define BEGIN_EVENT_TABLE(klas, parent) { \
-        MIEventHandler *_dispatcher = klas; \
-        ActiveMIGLWidgetFtor *ftor = new ActiveMIGLWidgetFtor();
-#define END_EVENT_TABLE() delete ftor; }
-
 void MIMainWindow::initMenuHandlers()
 {
-    BEGIN_EVENT_TABLE(this, none)
+    MIEventHandler *_dispatcher = this;
+    ActiveMIGLWidgetFtor *ftor = new ActiveMIGLWidgetFtor();
 
     EVT_MENU(ID_ABOUT, MIMainWindow::OnAbout)
     EVT_MENU(ID_HELP, MIMainWindow::OnHelp)
@@ -118,72 +112,69 @@ void MIMainWindow::initMenuHandlers()
     EVT_MENU(ID_HIDETOOL, MIMainWindow::OnHideTool)
 
 
-    EVT_UPDATE_UI(ID_HARDWARE_STEREO, MIMainWindow::OnUpdateHardwareStereo)
     EVT_MENU(ID_HARDWARE_STEREO, MIMainWindow::OnHardwareStereo)
-    EVT_UPDATE_UI(ID_STEREO_TOGGLE, MIMainWindow::OnUpdateStereoToggle)
+    EVT_UPDATE_UI(ID_HARDWARE_STEREO, MIMainWindow::OnUpdateHardwareStereo)
+
     EVT_MENU(ID_STEREO_TOGGLE, MIMainWindow::OnStereoToggle)
+    EVT_UPDATE_UI(ID_STEREO_TOGGLE, MIMainWindow::OnUpdateStereoToggle)
+
 //
-    EVT_MENU(FILE_ADD_MODEL,         MIGLWidget::OnFileAddModel)
     EVT_MENU(ID_EDIT_CLEARLABELS, MIGLWidget::OnEditClearlabels)
     EVT_MENU(ID_EDIT_LABELS, MIGLWidget::OnEditLabels)
+
     EVT_MENU(ID_OBJECT_ANNOTATION, MIGLWidget::OnAnnotation)
     EVT_UPDATE_UI(ID_OBJECT_ANNOTATION, MIGLWidget::OnUpdateAnnotation)
+
     EVT_MENU(ID_ANNOT_MOVETOATOM, MIGLWidget::OnMoveAnnotationAtom)
     EVT_UPDATE_UI(ID_ANNOT_MOVETOATOM, MIGLWidget::OnUpdateMoveAnnotationAtom)
+
     EVT_MENU(ID_ANNOT_MOVETOCENTER, MIGLWidget::OnMoveAnnotationCenter)
     EVT_UPDATE_UI(ID_ANNOT_MOVETOCENTER, MIGLWidget::OnUpdateMoveAnnotationCenter)
+
     EVT_MENU(ID_EDIT_ANNOTATION, MIGLWidget::OnEditAnnotation)
     EVT_UPDATE_UI(ID_EDIT_ANNOTATION, MIGLWidget::OnUpdateEditAnnotation)
+
     EVT_MENU(ID_OBJECT_NEWMODEL, MIGLWidget::OnNewModel)
+
     EVT_MENU(ID_MAP_ADDFREE, MIGLWidget::OnMapAddFree)
     EVT_UPDATE_UI(ID_MAP_ADDFREE, MIGLWidget::OnUpdateMapAddFree)
-//rendermenu
-    EVT_MENU(ID_RENDER_STICKS, MIGLWidget::OnRenderSticks)
-    EVT_MENU(ID_RENDERING_BALLANDSTICK, MIGLWidget::OnRenderingBallandstick)
-    EVT_MENU(ID_RENDER_SPACEFILLING, MIGLWidget::OnRenderSpacefilling)
-    EVT_MENU(ID_RENDERING_DEPTHCUEDCOLORS, MIGLWidget::OnRenderingDepthcuedcolors)
-    EVT_MENU(ID_RENDERING_DEPTHCUEDLINEWIDTH, MIGLWidget::OnRenderingDepthcuedlinewidth)
-    EVT_MENU(ID_RENDER_BALLANDCYLINDER, MIGLWidget::OnRenderBallandcylinder)
-    EVT_UPDATE_UI(ID_RENDERING_BALLANDSTICK, MIGLWidget::OnUpdateRenderingBallandstick)
-    EVT_UPDATE_UI(ID_RENDER_STICKS, MIGLWidget::OnUpdateRenderSticks)
-    EVT_UPDATE_UI(ID_RENDER_SPACEFILLING, MIGLWidget::OnUpdateRenderSpacefilling)
-    EVT_UPDATE_UI(ID_RENDERING_DEPTHCUEDCOLORS, MIGLWidget::OnUpdateRenderingDepthcuedcolors)
-    EVT_UPDATE_UI(ID_RENDERING_DEPTHCUEDLINEWIDTH, MIGLWidget::OnUpdateRenderingDepthcuedlinewidth)
-    EVT_UPDATE_UI(ID_RENDER_BALLANDCYLINDER, MIGLWidget::OnUpdateRenderBallandcylinder)
-    EVT_MENU(ID_RENDERING_DIMNONACTIVEMODELS, MIGLWidget::OnDimNonactiveModels)
-    EVT_MENU(ID_RENDERING_AMOUNTTODIMNONACTIVEMODELS, MIGLWidget::OnAmountToDimNonactiveModels)
-    EVT_UPDATE_UI(ID_RENDERING_DIMNONACTIVEMODELS, MIGLWidget::OnUpdateDimNonactiveModels)
-    EVT_MENU(ID_RENDER_BALLSIZE, MIGLWidget::OnRenderBallsize)
-    EVT_UPDATE_UI(ID_RENDER_BALLSIZE, MIGLWidget::OnUpdateRenderBallsize)
-    EVT_MENU(ID_RENDER_SMOOTHLINES, MIGLWidget::OnRenderLinesmooth)
-    EVT_UPDATE_UI(ID_RENDER_SMOOTHLINES, MIGLWidget::OnUpdateRenderLinesmooth)
-    EVT_MENU(ID_RENDER_TARGETSIZE, MIGLWidget::OnRenderTargetSize)
 //geommenu
     EVT_MENU(ID_GEOMETRY_DISTANCE, MIGLWidget::OnGeometryDistance)
+    EVT_UPDATE_UI(ID_GEOMETRY_DISTANCE, MIGLWidget::OnUpdateGeometryDistance)
+
     EVT_MENU(ID_GEOMETRY_ANGLE, MIGLWidget::OnGeometryAngle)
+    EVT_UPDATE_UI(ID_GEOMETRY_ANGLE, MIGLWidget::OnUpdateGeometryAngle)
+
     EVT_MENU(ID_GEOMETRY_TORSION, MIGLWidget::OnGeometryTorsion)
+    EVT_UPDATE_UI(ID_GEOMETRY_TORSION, MIGLWidget::OnUpdateGeometryTorsion)
+
     EVT_MENU(ID_GEOM_BOND, MIGLWidget::OnGeomBond)
+    EVT_UPDATE_UI(ID_GEOM_BOND, MIGLWidget::OnUpdateGeomBond)
+
     EVT_MENU(ID_GEOM_UNBOND, MIGLWidget::OnGeomUnbond)
+    EVT_UPDATE_UI(ID_GEOM_UNBOND, MIGLWidget::OnUpdateGeomUnbond)
+
     EVT_MENU(ID_GEOM_NEIGHBOURS, MIGLWidget::OnGeomNeighbours)
+    EVT_UPDATE_UI(ID_GEOM_NEIGHBOURS, MIGLWidget::OnUpdateGeomNeighbours)
+
     EVT_MENU(ID_GEOM_CLEARNEIGHBOURS, MIGLWidget::OnGeomClearneighbours)
     EVT_MENU(ID_GEOM_HBONDS, MIGLWidget::OnGeomHbonds)
     EVT_MENU(ID_GEOM_CLEARHBONDS, MIGLWidget::OnGeomClearhbonds)
+
     EVT_MENU(ID_GEOM_ADDSINGLEHBOND, MIGLWidget::OnGeomAddsinglehbond)
-    EVT_MENU(ID_GEOM_FINDGEOMERRORS, MIGLWidget::OnFindGeomErrors)
-    EVT_MENU(ID_GEOM_CLEARGEOMERRORS, MIGLWidget::OnClearGeomAnnotations)
-    EVT_UPDATE_UI(ID_GEOMETRY_ANGLE, MIGLWidget::OnUpdateGeometryAngle)
-    EVT_UPDATE_UI(ID_GEOMETRY_TORSION, MIGLWidget::OnUpdateGeometryTorsion)
-    EVT_UPDATE_UI(ID_GEOM_BOND, MIGLWidget::OnUpdateGeomBond)
-    EVT_UPDATE_UI(ID_GEOM_UNBOND, MIGLWidget::OnUpdateGeomUnbond)
-    EVT_UPDATE_UI(ID_GEOM_NEIGHBOURS, MIGLWidget::OnUpdateGeomNeighbours)
-    EVT_UPDATE_UI(ID_GEOMETRY_DISTANCE, MIGLWidget::OnUpdateGeometryDistance)
     EVT_UPDATE_UI(ID_GEOM_ADDSINGLEHBOND, MIGLWidget::OnUpdateGeomAddsinglehbond)
+
+    EVT_MENU(ID_GEOM_FINDGEOMERRORS, MIGLWidget::OnFindGeomErrors)
     EVT_UPDATE_UI(ID_GEOM_FINDGEOMERRORS, MIGLWidget::OnUpdateFindGeomErrors)
-//showmenu
+
+    EVT_MENU(ID_GEOM_CLEARGEOMERRORS, MIGLWidget::OnClearGeomAnnotations)
+
+    //showmenu
     EVT_MENU(ID_OBJECTS_ALLATOMS, MIGLWidget::OnObjectsAllatoms)
     EVT_MENU(ID_OBJECT_BACKBONERIBBON, MIGLWidget::OnObjectBackboneribbon)
     EVT_MENU(ID_OBJECT_CLEARRIBBON, MIGLWidget::OnObjectClearribbon)
-//
+
+    //
     EVT_MENU(ID_RIBBONSECONDARYSTRUCTURE, MIGLWidget::OnRibbonSecondaryStructure)
     EVT_MENU(ID_SCHEMATICSECONDARYSTRUCTURE, MIGLWidget::OnSchematicSecondaryStructure)
     EVT_MENU(ID_DELETESECONDARYSTRUCTURE, MIGLWidget::OnDeleteSecondaryStructure)
@@ -200,180 +191,256 @@ void MIMainWindow::initMenuHandlers()
     EVT_MENU(ID_SHOW_HIDEBACKBONE, MIGLWidget::OnShowHideBackbone)
     EVT_MENU(ID_SHOW_SYMMATOMSASATOMS, MIGLWidget::OnShowSymmAtomsAsAtoms)
     EVT_MENU(ID_SHOW_SYMMATOMSASCA, MIGLWidget::OnShowSymmAtomsAsCATrace)
+
     EVT_MENU(ID_SHOW_SAVESYMMATOMS, MIGLWidget::OnShowSaveSymmAtoms)
     EVT_UPDATE_UI(ID_SHOW_SAVESYMMATOMS, MIGLWidget::OnUpdateShowSaveSymmAtoms)
+
     EVT_MENU(ID_SHOW_HIDESYMMATOMS, MIGLWidget::OnShowHideSymmAtoms)
     EVT_MENU(ID_SHOW_SIDECHAINATOMS, MIGLWidget::OnShowSidechainAtoms)
     EVT_MENU(ID_SHOW_HIDESIDECHAINATOMS, MIGLWidget::OnHideSidechainAtoms)
+
     EVT_MENU(ID_SHOW_HIDEHYDROGENS, MIGLWidget::OnShowHidehydrogens)
     EVT_UPDATE_UI(ID_SHOW_HIDEHYDROGENS, MIGLWidget::OnUpdateShowHidehydrogens)
+
     EVT_MENU(ID_SHOW_UNDOCOLORRADIUS, MIGLWidget::OnShowUndocolorradius)
     EVT_UPDATE_UI(ID_SHOW_UNDOCOLORRADIUS, MIGLWidget::OnUpdateShowUndocolorradius)
+
     EVT_MENU(ID_SHOW_LABELEVERYNTH, MIGLWidget::OnLabelEveryNth)
     EVT_UPDATE_UI(ID_SHOW_LABELEVERYNTH, MIGLWidget::OnUpdateLabelEveryNth)
-//refinemenu
+
+    //refinemenu
     EVT_MENU(ID_REFI_RIGIDBODY, MIGLWidget::OnRefiRigidBody)
     EVT_UPDATE_UI(ID_REFI_RIGIDBODY, MIGLWidget::OnUpdateRefiRigidBody)
+
     EVT_MENU(ID_REFINE_LIGANDFIT, MIGLWidget::OnRefiLigandFit)
     EVT_UPDATE_UI(ID_REFINE_LIGANDFIT, MIGLWidget::OnUpdateRefiLigandFit)
+
     EVT_MENU(ID_REFI_REGION, MIGLWidget::OnRefiRegion)
     EVT_UPDATE_UI(ID_REFI_REGION, MIGLWidget::OnUpdateRefiRegion)
+
     EVT_MENU(ID_REFI_RANGE, MIGLWidget::OnRefiRange)
     EVT_UPDATE_UI(ID_REFI_RANGE, MIGLWidget::OnUpdateRefiRange)
+
     EVT_MENU(ID_REFI_RESIDUE, MIGLWidget::OnRefiResidue)
     EVT_UPDATE_UI(ID_REFI_RESIDUE, MIGLWidget::OnUpdateRefiResidue)
+
     EVT_MENU(ID_REFI_MOLECULE, MIGLWidget::OnRefiMolecule)
     EVT_UPDATE_UI(ID_REFI_MOLECULE, MIGLWidget::OnUpdateRefiMolecule)
+
     EVT_MENU(ID_REFI_UNDO, MIGLWidget::OnRefiUndo)
     EVT_UPDATE_UI(ID_REFI_UNDO, MIGLWidget::OnUpdateRefiUndo)
+
     EVT_MENU(ID_REFI_REDO, MIGLWidget::OnRefiReDo)
     EVT_UPDATE_UI(ID_REFI_REDO, MIGLWidget::OnUpdateRefiRedo)
+
     EVT_MENU(ID_REFI_ACCEPT, MIGLWidget::OnRefiAccept)
     EVT_UPDATE_UI(ID_REFI_ACCEPT, MIGLWidget::OnUpdateRefiAccept)
+
     EVT_MENU(ID_REFI_CANCEL, MIGLWidget::OnRefiCancel)
     EVT_UPDATE_UI(ID_REFI_CANCEL, MIGLWidget::OnUpdateRefiCancel)
+
     EVT_MENU(ID_REFI_RESET, MIGLWidget::OnRefiReset)
     EVT_UPDATE_UI(ID_REFI_RESET, MIGLWidget::OnUpdateRefiReset)
+
     EVT_MENU(ID_REFI_OPTIONS, MIGLWidget::OnRefiOptions)
-//viewmenu
+
+    //viewmenu
     EVT_MENU(ID_VIEW_SLABIN, MIGLWidget::OnViewSlabin)
     EVT_MENU(ID_VIEW_SLABOUT, MIGLWidget::OnViewSlabout)
+
     EVT_MENU(ID_VIEW_ATOMSTACK, MIGLWidget::OnViewAtomstack)
+    EVT_UPDATE_UI(ID_VIEW_ATOMSTACK, MIGLWidget::OnUpdateViewAtomstack)
+
     EVT_MENU(ID_VIEW_GNOMON, MIGLWidget::OnViewGnomon)
+    EVT_UPDATE_UI(ID_VIEW_GNOMON, MIGLWidget::OnUpdateViewGnomon)
+
     EVT_MENU(ID_VIEW_UNITCELL, MIGLWidget::OnViewUnitCell)
+    EVT_UPDATE_UI(ID_VIEW_UNITCELL, MIGLWidget::OnUpdateViewUnitCell)
+
     EVT_MENU(ID_VIEW_ROTATEY90, MIGLWidget::OnViewRotatey90)
     EVT_MENU(ID_VIEW_ROTATEYMINUS, MIGLWidget::OnViewRotateyminus)
+
     EVT_MENU(ID_VIEW_LABELS, MIGLWidget::OnViewLabels)
+    EVT_UPDATE_UI(ID_VIEW_LABELS, MIGLWidget::OnUpdateViewLabels)
+
     EVT_MENU(ID_VIEW_CLEARMESSAGE, MIGLWidget::OnViewClearmessage)
     EVT_MENU(ID_GOTO_ZOOMIIN, MIGLWidget::OnGotoZoomiin)
     EVT_MENU(ID_GOTO_ZOOMOUT, MIGLWidget::OnGotoZoomout)
+
     EVT_MENU(ID_VIEW_TOPVIEW, MIGLWidget::OnViewTopview)
+    EVT_UPDATE_UI(ID_VIEW_TOPVIEW, MIGLWidget::OnUpdateViewTopview)
+
     EVT_MENU(ID_GOTO_FITTOSCREEN, MIGLWidget::OnGotoFittoscreen)
+
     EVT_MENU(ID_VIEW_CONTACTS, MIGLWidget::OnViewContacts)
+    EVT_UPDATE_UI(ID_VIEW_CONTACTS, MIGLWidget::OnUpdateViewContacts)
+
     EVT_MENU(ID_GOTO_FITALLTOSCREEN, MIGLWidget::OnGotoFitalltoscreen)
     EVT_MENU(ID_VIEW_UNDO, MIGLWidget::OnViewUndo)
+    EVT_UPDATE_UI(ID_VIEW_UNDO, MIGLWidget::OnUpdateViewUndo)
+
     EVT_MENU(ID_INCREASE_PERSP, MIGLWidget::OnIncreasePersp)
+
     EVT_MENU(ID_DECREASE_PERSP, MIGLWidget::OnDecreasePersp)
+    EVT_UPDATE_UI(ID_DECREASE_PERSP, MIGLWidget::OnUpdateDecreasePersp)
+
     EVT_MENU(ID_VIEW_ORTHONORMAL, MIGLWidget::OnViewOrthonormal)
     EVT_UPDATE_UI(ID_VIEW_ORTHONORMAL, MIGLWidget::OnUpdateViewOrthonormal)
-    EVT_UPDATE_UI(ID_DECREASE_PERSP, MIGLWidget::OnUpdateDecreasePersp)
-    EVT_UPDATE_UI(ID_VIEW_LABELS, MIGLWidget::OnUpdateViewLabels)
-    EVT_UPDATE_UI(ID_VIEW_TOPVIEW, MIGLWidget::OnUpdateViewTopview)
-    EVT_UPDATE_UI(ID_VIEW_CONTACTS, MIGLWidget::OnUpdateViewContacts)
-    EVT_UPDATE_UI(ID_VIEW_ATOMSTACK, MIGLWidget::OnUpdateViewAtomstack)
-    EVT_UPDATE_UI(ID_VIEW_GNOMON, MIGLWidget::OnUpdateViewGnomon)
-    EVT_UPDATE_UI(ID_VIEW_UNITCELL, MIGLWidget::OnUpdateViewUnitCell)
-    EVT_UPDATE_UI(ID_VIEW_UNDO, MIGLWidget::OnUpdateViewUndo)
+
     EVT_MENU(ID_VIEW_CLIPPLANES, MIGLWidget::OnViewClipplanes)
     EVT_MENU(ID_VIEW_SAVE, MIGLWidget::OnViewSave)
     EVT_MENU(ID_VIEW_LOAD, MIGLWidget::OnViewLoad)
+
     EVT_MENU(ID_VIEW_FULLSCREEN, MIGLWidget::OnFullScreen)
     EVT_UPDATE_UI(ID_VIEW_FULLSCREEN, MIGLWidget::OnUpdateFullScreen)
-//surfmenu
-    EVT_MENU(ID_DOTSURFACE_RESIDUE, MIGLWidget::OnObjectSurfaceresidue)
-    EVT_MENU(ID_DOTSURFACE_CLEAR, MIGLWidget::OnObjectSurfaceClearsurface)
-    EVT_MENU(ID_DOTSURFACE_RESIDUES, MIGLWidget::OnObjectSurfaceresidues)
-    EVT_MENU(ID_DOTSURFACE_ATOM, MIGLWidget::OnObjectSurfaceatom)
-    EVT_MENU(ID_DOTSURFACE_ATOMS, MIGLWidget::OnObjectSurfaceAtoms)
-    EVT_MENU(ID_DOTSURFACE_CREATEVDW, MIGLWidget::OnVdwDotSurface)
-    EVT_MENU(ID_DOTSURFACE_CREATESOLVENTEXPOSED, MIGLWidget::OnSurfaceSolvent)
-    EVT_MENU(ID_DOTSURFACE_ATOMSPHERE, MIGLWidget::OnObjectSurfaceSpherearoundatom)
-    EVT_UPDATE_UI(ID_DOTSURFACE_RESIDUE, MIGLWidget::OnUpdateObjectSurfaceresidue)
-    EVT_UPDATE_UI(ID_DOTSURFACE_RESIDUES, MIGLWidget::OnUpdateObjectSurfaceresidues)
-    EVT_UPDATE_UI(ID_DOTSURFACE_ATOMS, MIGLWidget::OnUpdateObjectSurfaceatoms)
-    EVT_UPDATE_UI(ID_DOTSURFACE_ATOM, MIGLWidget::OnUpdateObjectSurfaceAtom)
-    EVT_UPDATE_UI(ID_DOTSURFACE_CREATESOLVENTEXPOSED, MIGLWidget::OnUpdateSurfaceSolvent)
-    EVT_UPDATE_UI(ID_DOTSURFACE_ATOMSPHERE, MIGLWidget::OnUpdateObjectSurfaceSpherearoundatom)
-//stackmenu
+
+    //stackmenu
     EVT_MENU(ID_OBJECT_STACK_DELETETOPITEM, MIGLWidget::OnObjectStackDeletetopitem)
+
     EVT_MENU(ID_OBJECT_STACK_EXPANDTOPALLATOMSINRESIDUE, MIGLWidget::OnObjectStackExpandtopallatomsinresidue)
-    EVT_MENU(ID_OBJECT_CLEARSTACK, MIGLWidget::OnObjectClearstack)
-    EVT_MENU(ID_OBJECT_STACK_EXPANDTOP2RESIDUES, MIGLWidget::OnObjectStackExpandtop2residues)
-    EVT_MENU(ID_OBJECT_STACK_EXPANDTOP2ALLATOMSINRANGE, MIGLWidget::OnObjectStackExpandtop2allatomsinrange)
     EVT_UPDATE_UI(ID_OBJECT_STACK_EXPANDTOPALLATOMSINRESIDUE, MIGLWidget::OnUpdateObjectStackExpandtopallatomsinresidue)
+
+    EVT_MENU(ID_OBJECT_CLEARSTACK, MIGLWidget::OnObjectClearstack)
+
+    EVT_MENU(ID_OBJECT_STACK_EXPANDTOP2RESIDUES, MIGLWidget::OnObjectStackExpandtop2residues)
     EVT_UPDATE_UI(ID_OBJECT_STACK_EXPANDTOP2RESIDUES, MIGLWidget::OnUpdateObjectStackExpandtop2residues)
+
+    EVT_MENU(ID_OBJECT_STACK_EXPANDTOP2ALLATOMSINRANGE, MIGLWidget::OnObjectStackExpandtop2allatomsinrange)
     EVT_UPDATE_UI(ID_OBJECT_STACK_EXPANDTOP2ALLATOMSINRANGE, MIGLWidget::OnUpdateObjectStackExpandtop2allatomsinrange)
+
 //mapmenu
     EVT_MENU(ID_MAP_LOADMAP, MIGLWidget::OnMapLoadfromphsfile)
     EVT_MENU(ID_MAP_LOADMAPFILE, MIGLWidget::OnMapLoadfromfile)
+
     EVT_MENU(ID_MAP_CONTOUR, MIGLWidget::OnMapContour)
-    EVT_MENU(ID_CONTOUR_LIST_FILE, MIGLWidget::OnContourListFile)
-    EVT_MENU(ID_MAP_FFT, MIGLWidget::OnMapFFT)
-    EVT_MENU(ID_MAP_SFCALC, MIGLWidget::OnMapSFCalc)
-    EVT_MENU(ID_MAP_SWITCH, MIGLWidget::OnMapSwitch)
-    EVT_MENU(ID_MAP_CONTOURLEVELS, MIGLWidget::OnMapContourLevels)
-    EVT_MENU(ID_MAP_CENTERDENSITY, MIGLWidget::OnMapCenterVisibleDensity)
-    EVT_MENU(ID_FIND_DENSITY, MIGLWidget::OnFindLigandDensity)
     EVT_UPDATE_UI(ID_MAP_CONTOUR, MIGLWidget::OnUpdateMapContour)
-    EVT_UPDATE_UI(ID_MAP_CONTOURLEVELS, MIGLWidget::OnUpdateMapContourLevels)
+
+    EVT_MENU(ID_CONTOUR_LIST_FILE, MIGLWidget::OnContourListFile)
+
+    EVT_MENU(ID_MAP_FFT, MIGLWidget::OnMapFFT)
     EVT_UPDATE_UI(ID_MAP_FFT, MIGLWidget::OnUpdateMapFFT)
+
+    EVT_MENU(ID_MAP_SFCALC, MIGLWidget::OnMapSFCalc)
     EVT_UPDATE_UI(ID_MAP_SFCALC, MIGLWidget::OnUpdateMapSFCalc)
+
+    EVT_MENU(ID_MAP_SWITCH, MIGLWidget::OnMapSwitch)
     EVT_UPDATE_UI(ID_MAP_SWITCH, MIGLWidget::OnUpdateMapSwitch)
+
+    EVT_MENU(ID_MAP_CONTOURLEVELS, MIGLWidget::OnMapContourLevels)
+    EVT_UPDATE_UI(ID_MAP_CONTOURLEVELS, MIGLWidget::OnUpdateMapContourLevels)
+
+    EVT_MENU(ID_MAP_CENTERDENSITY, MIGLWidget::OnMapCenterVisibleDensity)
     EVT_UPDATE_UI(ID_MAP_CENTERDENSITY, MIGLWidget::OnUpdateMapCenterVisibleDensity)
+
+    EVT_MENU(ID_FIND_DENSITY, MIGLWidget::OnFindLigandDensity)
     EVT_UPDATE_UI(ID_FIND_DENSITY, MIGLWidget::OnUpdateFindLigandDensity)
+
     EVT_MENU(ID_MAP_REINDEX, MIGLWidget::OnMapReindex)
     EVT_UPDATE_UI(ID_MAP_REINDEX, MIGLWidget::OnUpdateMapReindex)
-//fitmenuandmodelmenu
+
+    //fitmenuandmodelmenu
     EVT_MENU(ID_FIT_RESIDUE, MIGLWidget::OnFitResidue)
+    EVT_UPDATE_UI(ID_FIT_RESIDUE, MIGLWidget::OnUpdateFitResidue)
     EVT_MENU(ID_FIT_RESIDUES, MIGLWidget::OnFitResidues)
+    EVT_UPDATE_UI(ID_FIT_RESIDUES, MIGLWidget::OnUpdateFitResidues)
     EVT_MENU(ID_FIT_RANGE, MIGLWidget::OnFitRange)
+    EVT_UPDATE_UI(ID_FIT_RANGE, MIGLWidget::OnUpdateFitRange)
     EVT_MENU(ID_FIT_SINGLEATOM, MIGLWidget::OnFitSingleatom)
+    EVT_UPDATE_UI(ID_FIT_SINGLEATOM, MIGLWidget::OnUpdateFitSingleatom)
     EVT_MENU(ID_FIT_ATOMS, MIGLWidget::OnFitAtoms)
+    EVT_UPDATE_UI(ID_FIT_ATOMS, MIGLWidget::OnUpdateFitAtoms)
     EVT_MENU(ID_FIT_FITMOLECULE, MIGLWidget::OnFitFitmolecule)
+    EVT_UPDATE_UI(ID_FIT_FITMOLECULE, MIGLWidget::OnUpdateFitFitmolecule)
     EVT_MENU(ID_FIT_ROTATE, MIGLWidget::OnFitRotate)
+    EVT_UPDATE_UI(ID_FIT_ROTATE, MIGLWidget::OnUpdateFitRotate)
     EVT_MENU(ID_FIT_TORSION, MIGLWidget::OnFitTorsion)
+    EVT_UPDATE_UI(ID_FIT_TORSION, MIGLWidget::OnUpdateFitTorsion)
     EVT_MENU(ID_FIT_TRANSLATE, MIGLWidget::OnFitTranslate)
+    EVT_UPDATE_UI(ID_FIT_TRANSLATE, MIGLWidget::OnUpdateFitTranslate)
     EVT_MENU(ID_FIT_CENTERMODE, MIGLWidget::OnFitCentermode)
+    EVT_UPDATE_UI(ID_FIT_CENTERMODE, MIGLWidget::OnUpdateFitCentermode)
     EVT_MENU(ID_FIT_CANCEL, MIGLWidget::OnFitCancel)
+    EVT_UPDATE_UI(ID_FIT_CANCEL, MIGLWidget::OnUpdateFitCancel)
     EVT_MENU(ID_FIT_RESET, MIGLWidget::OnFitReset)
+    EVT_UPDATE_UI(ID_FIT_RESET, MIGLWidget::OnUpdateFitReset)
     EVT_MENU(ID_FIT_APPLY, MIGLWidget::OnFitApply)
+    EVT_UPDATE_UI(ID_FIT_APPLY, MIGLWidget::OnUpdateFitApply)
     EVT_MENU(ID_FIT_UNDO, MIGLWidget::OnFitUndo)
+    EVT_UPDATE_UI(ID_FIT_UNDO, MIGLWidget::OnUpdateFitUndo)
     EVT_MENU(ID_FIT_REDO, MIGLWidget::OnFitRedo)
+    EVT_UPDATE_UI(ID_FIT_REDO, MIGLWidget::OnUpdateFitRedo)
     EVT_MENU(ID_FIT_SETUPTORSION, MIGLWidget::OnFitSetuptorsion)
+    EVT_UPDATE_UI(ID_FIT_SETUPTORSION, MIGLWidget::OnUpdateFitSetuptorsion)
     EVT_MENU(ID_FIT_CLEARTORSION, MIGLWidget::OnFitCleartorsion)
+    EVT_UPDATE_UI(ID_FIT_CLEARTORSION, MIGLWidget::OnUpdateFitCleartorsion)
     EVT_MENU(ID_FIT_REPLACEWITH, MIGLWidget::OnFitReplacewith)
+    EVT_UPDATE_UI(ID_FIT_REPLACEWITH, MIGLWidget::OnUpdateFitReplacewith)
     EVT_MENU(ID_REPLACEANDFIT, MIGLWidget::OnFitReplaceAndFit)
+    EVT_UPDATE_UI(ID_REPLACEANDFIT, MIGLWidget::OnUpdateFitReplaceAndFit)
     EVT_MENU(ID_FIT_DELETERESIDUE, MIGLWidget::OnFitDeleteresidue)
+    EVT_UPDATE_UI(ID_FIT_DELETERESIDUE, MIGLWidget::OnUpdateFitDeleteresidue)
     EVT_MENU(ID_DELETEATOM, MIGLWidget::OnDeleteAtom)
+    EVT_UPDATE_UI(ID_DELETEATOM, MIGLWidget::OnUpdateDeleteAtom)
     EVT_MENU(ID_FIT_RENAMERESIDUE, MIGLWidget::OnFitRenameresidue)
+    EVT_UPDATE_UI(ID_FIT_RENAMERESIDUE, MIGLWidget::OnUpdateFitRenameresidue)
     EVT_MENU(ID_FIT_INSERTRESIDUE, MIGLWidget::OnFitInsertresidue)
+    EVT_UPDATE_UI(ID_FIT_INSERTRESIDUE, MIGLWidget::OnUpdateFitInsertresidue)
     EVT_MENU(ID_FIT_LSQSUPERPOSE, MIGLWidget::OnFitLsqsuperpose)
     EVT_MENU(ID_FIT_NEXTCONFOMER, MIGLWidget::OnFitNextConfomer)
+    EVT_UPDATE_UI(ID_FIT_NEXTCONFOMER, MIGLWidget::OnUpdateFitNextConfomer)
+
     EVT_MENU(ID_FIT_SURFVDW, MIGLWidget::OnFitSurfaceVdw)
+    EVT_UPDATE_UI(ID_FIT_SURFVDW, MIGLWidget::OnUpdateFitSurfaceVdw)
+
     EVT_MENU(ID_FIT_SURFEXT, MIGLWidget::OnFitSurfaceExtended)
+    EVT_UPDATE_UI(ID_FIT_SURFEXT, MIGLWidget::OnUpdateFitSurfaceExtended)
+
     EVT_MENU(ID_FIT_SURFPROBE, MIGLWidget::OnFitSurfaceProbe)
+    EVT_UPDATE_UI(ID_FIT_SURFPROBE, MIGLWidget::OnUpdateFitSurfaceProbe)
+
     EVT_MENU(ID_FIT_SURFNONE, MIGLWidget::OnFitSurfaceNone)
     EVT_UPDATE_UI(ID_FIT_SURFNONE, MIGLWidget::OnUpdateFitSurfaceNone)
-    EVT_UPDATE_UI(ID_FIT_SURFVDW, MIGLWidget::OnUpdateFitSurfaceVdw)
-    EVT_UPDATE_UI(ID_FIT_SURFEXT, MIGLWidget::OnUpdateFitSurfaceExtended)
-    EVT_UPDATE_UI(ID_FIT_SURFPROBE, MIGLWidget::OnUpdateFitSurfaceProbe)
+
     EVT_MENU(ID_FIT_SPLITTORSION, MIGLWidget::OnFitSplitTorsion)
     EVT_UPDATE_UI(ID_FIT_SPLITTORSION, MIGLWidget::OnUpdateFitSplitTorsion)
+
     EVT_MENU(ID_FIT_SPLITFIT, MIGLWidget::OnFitSplitFit)
     EVT_UPDATE_UI(ID_FIT_SPLITFIT, MIGLWidget::OnUpdateFitSplitFit)
-//
+
+    //
     EVT_MENU(ID_FIT_POLYALA, MIGLWidget::OnPolyAla)
     EVT_UPDATE_UI(ID_FIT_POLYALA, MIGLWidget::OnUpdatePolyAla)
+
     EVT_MENU(ID_FIT_POLYALACHAIN, MIGLWidget::OnPolyAlaChain)
     EVT_UPDATE_UI(ID_FIT_POLYALACHAIN, MIGLWidget::OnUpdatePolyAlaChain)
+
     EVT_MENU(ID_FIT_MARKAFTER, MIGLWidget::OnAddMarkAfter)
     EVT_UPDATE_UI(ID_FIT_MARKAFTER, MIGLWidget::OnUpdateAddMarkAfter)
+
     EVT_MENU(ID_FIT_MARKBEFORE, MIGLWidget::OnAddMarkBefore)
     EVT_UPDATE_UI(ID_FIT_MARKBEFORE, MIGLWidget::OnUpdateAddMarkBefore)
+
     EVT_MENU(ID_FIT_MATCHPENTAMER, MIGLWidget::OnFindPentamer)
     EVT_UPDATE_UI(ID_FIT_MATCHPENTAMER, MIGLWidget::OnUpdateFindPentamer)
+
     EVT_MENU(ID_FIT_REPLACEFIRST4, MIGLWidget::OnReplaceFirst4)
     EVT_UPDATE_UI(ID_FIT_REPLACEFIRST4, MIGLWidget::OnUpdateReplaceFirst4)
+
     EVT_MENU(ID_FIT_REPLACEMIDDLE3, MIGLWidget::OnReplaceMiddle3)
     EVT_UPDATE_UI(ID_FIT_REPLACEMIDDLE3, MIGLWidget::OnUpdateReplaceMiddle3)
+
     EVT_MENU(ID_FIT_REPLACELAST4, MIGLWidget::OnReplaceLast4)
     EVT_UPDATE_UI(ID_FIT_REPLACELAST4, MIGLWidget::OnUpdateReplaceLast4)
+
     EVT_MENU(ID_FIT_REPLACEALL, MIGLWidget::OnReplaceAll)
     EVT_UPDATE_UI(ID_FIT_REPLACEALL, MIGLWidget::OnUpdateReplaceAll)
+
     EVT_MENU(ID_FIT_CLEARPENTAMER, MIGLWidget::OnClearPentamer)
     EVT_UPDATE_UI(ID_FIT_CLEARPENTAMER, MIGLWidget::OnUpdateClearPentamer)
+
     EVT_MENU(ID_FIT_MARK_ALPHA, MIGLWidget::OnMarkAlpha)
     EVT_UPDATE_UI(ID_FIT_MARK_ALPHA, MIGLWidget::OnUpdateMarkAlpha)
+
     EVT_MENU(ID_FIT_MARK_BETA, MIGLWidget::OnMarkBeta)
     EVT_UPDATE_UI(ID_FIT_MARK_BETA, MIGLWidget::OnUpdateMarkBeta)
     EVT_MENU(ID_FIT_FLIPPEPTIDE, MIGLWidget::OnFlipPeptide)
@@ -392,30 +459,7 @@ void MIMainWindow::initMenuHandlers()
     EVT_UPDATE_UI(ID_GOTO_CTER, MIGLWidget::OnUpdateGotoCter)
     EVT_MENU(ID_FIT_ADDWATER, MIGLWidget::OnAddWater)
     EVT_UPDATE_UI(ID_FIT_ADDWATER, MIGLWidget::OnUpdateAddWater)
-    EVT_UPDATE_UI(ID_FIT_NEXTCONFOMER, MIGLWidget::OnUpdateFitNextConfomer)
-    EVT_UPDATE_UI(ID_FIT_TORSION, MIGLWidget::OnUpdateFitTorsion)
-    EVT_UPDATE_UI(ID_FIT_TRANSLATE, MIGLWidget::OnUpdateFitTranslate)
-    EVT_UPDATE_UI(ID_FIT_CENTERMODE, MIGLWidget::OnUpdateFitCentermode)
-    EVT_UPDATE_UI(ID_FIT_SETUPTORSION, MIGLWidget::OnUpdateFitSetuptorsion)
-    EVT_UPDATE_UI(ID_FIT_CLEARTORSION, MIGLWidget::OnUpdateFitCleartorsion)
-    EVT_UPDATE_UI(ID_FIT_APPLY, MIGLWidget::OnUpdateFitApply)
-    EVT_UPDATE_UI(ID_FIT_CANCEL, MIGLWidget::OnUpdateFitCancel)
-    EVT_UPDATE_UI(ID_FIT_RESET, MIGLWidget::OnUpdateFitReset)
-    EVT_UPDATE_UI(ID_FIT_ROTATE, MIGLWidget::OnUpdateFitRotate)
-    EVT_UPDATE_UI(ID_FIT_REPLACEWITH, MIGLWidget::OnUpdateFitReplacewith)
-    EVT_UPDATE_UI(ID_REPLACEANDFIT, MIGLWidget::OnUpdateFitReplaceAndFit)
-    EVT_UPDATE_UI(ID_FIT_RESIDUE, MIGLWidget::OnUpdateFitResidue)
-    EVT_UPDATE_UI(ID_FIT_RESIDUES, MIGLWidget::OnUpdateFitResidues)
-    EVT_UPDATE_UI(ID_FIT_RANGE, MIGLWidget::OnUpdateFitRange)
-    EVT_UPDATE_UI(ID_FIT_SINGLEATOM, MIGLWidget::OnUpdateFitSingleatom)
-    EVT_UPDATE_UI(ID_FIT_ATOMS, MIGLWidget::OnUpdateFitAtoms)
-    EVT_UPDATE_UI(ID_FIT_UNDO, MIGLWidget::OnUpdateFitUndo)
-    EVT_UPDATE_UI(ID_FIT_REDO, MIGLWidget::OnUpdateFitRedo)
-    EVT_UPDATE_UI(ID_FIT_FITMOLECULE, MIGLWidget::OnUpdateFitFitmolecule)
-    EVT_UPDATE_UI(ID_FIT_DELETERESIDUE, MIGLWidget::OnUpdateFitDeleteresidue)
-    EVT_UPDATE_UI(ID_DELETEATOM, MIGLWidget::OnUpdateDeleteAtom)
-    EVT_UPDATE_UI(ID_FIT_INSERTRESIDUE, MIGLWidget::OnUpdateFitInsertresidue)
-    EVT_UPDATE_UI(ID_FIT_RENAMERESIDUE, MIGLWidget::OnUpdateFitRenameresidue)
+
 //animemenu
     EVT_MENU(ID_ANIMATE_ROLL, MIGLWidget::OnAnimateRoll)
     EVT_UPDATE_UI(ID_ANIMATE_ROLL, MIGLWidget::OnUpdateAnimateRoll)
@@ -521,7 +565,8 @@ void MIMainWindow::initMenuHandlers()
     EVT_MENU(ID_GOTO_GOTOXYZ, MIGLWidget::OnGotoGotoxyz)
 //todo
     EVT_MENU(ID_EDIT_SELECTMODEL, MIGLWidget::OnEditSelectmodel)
-    END_EVENT_TABLE()
+
+    delete ftor;
 }
 
 MIMainWindow*MIMainWindow::_instance = NULL;
@@ -1820,7 +1865,7 @@ void MIMainWindow::OnExportImage()
         currentMIGLWidget()->OnExportImage();
 }
 
-void MIMainWindow::fill_file_menu(MIMenu *file_menu)
+void MIMainWindow::fill_file_menu(QMenu *file_menu)
 {
     QAction *action;
 
@@ -1924,17 +1969,25 @@ void MIMainWindow::fill_view_menu(MIMenu *view_menu)
     view_menu->Append(ID_ANIMEMENU, "&Animate", anime_menu);
 }
 
-void MIMainWindow::fill_surf_menu(MIMenu *surf_menu)
+void MIMainWindow::fill_surf_menu(QMenu *surf_menu)
 {
-    surf_menu->Append(ID_DOTSURFACE_CREATEVDW, "van der Waal Surface", "Calculate van der Waal dot surface", false);
-    surf_menu->Append(ID_DOTSURFACE_CREATESOLVENTEXPOSED, "Solvent Exposed Surface", "Surface through the center of the solvent atoms touching the molecule", false);
-    surf_menu->Append(ID_DOTSURFACE_ATOMSPHERE, "Sphere around atom", "Calculate sphere around last picked atom", false);
-    surf_menu->Append(ID_DOTSURFACE_RESIDUE, "Surface Residue", "Calculate van der Waal dot surface around picked atoms", false);
-    surf_menu->Append(ID_DOTSURFACE_RESIDUES, "Surface Residues", "Surface all the residues on the stack", false);
-    surf_menu->Append(ID_DOTSURFACE_ATOM, "Surface Atom", "Surface the last atom picked", false);
-    surf_menu->Append(ID_DOTSURFACE_ATOMS, "Surface Atoms", "Surface all the atoms on the stack", false);
-    surf_menu->AppendSeparator();
-    surf_menu->Append(ID_DOTSURFACE_CLEAR, "Clear Surface", "Clears the surface dots", false);
+    new CurrentMIGLWidgetAction("Surface Residue", "Calculate van der Waal dot surface around picked residue", surf_menu, SLOT(OnObjectSurfaceresidue()), SLOT(OnUpdateObjectSurfaceresidue(QAction*)));
+
+    new CurrentMIGLWidgetAction("Surface Residues", "Surface all the residues on the stack", surf_menu, SLOT(OnObjectSurfaceresidues()), SLOT(OnUpdateObjectSurfaceresidues(QAction*)));
+
+    new CurrentMIGLWidgetAction("Surface Atom", "Surface the last atom picked", surf_menu, SLOT(OnObjectSurfaceatom()), SLOT(OnUpdateObjectSurfaceAtom(QAction*)));
+
+    new CurrentMIGLWidgetAction("Surface Atoms", "Surface all the atoms on the stack", surf_menu, SLOT(OnObjectSurfaceAtoms()), SLOT(OnUpdateObjectSurfaceatoms(QAction*)));
+
+    new CurrentMIGLWidgetAction("van der Waal Surface", "Calculate van der Waal dot surface", surf_menu, SLOT(OnVdwDotSurface()));
+
+    new CurrentMIGLWidgetAction("Solvent Exposed Surface", "Surface through the center of the solvent atoms touching the molecule", surf_menu, SLOT(OnSurfaceSolvent()), SLOT(OnUpdateSurfaceSolvent(QAction*)));
+
+    new CurrentMIGLWidgetAction("Sphere around atom", "Calculate sphere around last picked atom", surf_menu, SLOT(OnObjectSurfaceSpherearoundatom()), SLOT(OnUpdateObjectSurfaceSpherearoundatom(QAction*)));
+
+    surf_menu->addSeparator();
+    new CurrentMIGLWidgetAction("Clear Surface", "Clears the surface dots", surf_menu, SLOT(OnObjectSurfaceClearsurface()));
+
 }
 
 
@@ -1962,9 +2015,6 @@ void MIMainWindow::createMenus()
     di_menu->Append(ID_SAVE_DICT, "&Save Dictionary...", "Save dictionary to a file", false);
     di_menu->Append(ID_EDIT_DICT_RESIDUE, "&Edit Residue...", "Edit the specficications of a monomer or ligand", false);
 
-    MIMenu *surf_menu = new MIMenu(*this);
-    fill_surf_menu(surf_menu);
-
     MIMenu *stack_menu = new MIMenu(*this);
     stack_menu->Append(ID_VIEW_ATOMSTACK, "Show/Hide Atom Stack", "Toggle the atom stack visibility", true);
     stack_menu->AppendSeparator();
@@ -1986,24 +2036,46 @@ void MIMainWindow::createMenus()
     color_menu->AppendSeparator();
     color_menu->Append(ID_SHOW_UNDOCOLORRADIUS, "&Undo color", "Undo the last color or radius command", false);
 
-    render_menu = new MIMenu(*this);
+    render_menu = new QMenu(this);
     connect(render_menu, SIGNAL(aboutToShow()), SLOT(updateRenderMenu()));
-    render_menu->Append(ID_RENDER_STICKS, "&Sticks", "Draw bonds as sticks", true);
-    render_menu->Append(ID_RENDERING_BALLANDSTICK, "&Knob and Stick", "Draw atoms as knobs and bonds as stick", true);
-    render_menu->Append(ID_RENDER_BALLANDCYLINDER, "&Ball and Cylinder", "Draw bonds as ball and cylinders for bonds", true);
-    render_menu->Append(ID_RENDER_SPACEFILLING, "&CPK", "Draw atoms as CPK/space filling", true);
-    render_menu->AppendSeparator();
-    render_menu->Append(ID_COLORMENU, "Color", color_menu);
-    render_menu->Append(ID_BACKGROUNDCOLOR, "Set Background C&olor...", "Dialog box to set background color", false);
-    render_menu->AppendSeparator();
-    render_menu->Append(ID_RENDER_BALLSIZE, "Set Ball/Cylinder S&ize...", "Set the relative diameters of ball and cylinder", false);
-    render_menu->Append(ID_RENDER_TARGETSIZE, "Set View Center Target S&ize...", "", false);
-    render_menu->AppendSeparator();
-    render_menu->Append(ID_RENDERING_DEPTHCUEDCOLORS, "Depthcue Colo&rs", "Depthcue using darker colors", true);
-    render_menu->Append(ID_RENDERING_DEPTHCUEDLINEWIDTH, "Depthcue &Lines", "Depthcue with line thickness", true);
-    render_menu->Append(ID_RENDER_SMOOTHLINES, "S&mooth Lines", "Smooths the lines", true);
 
+    QActionGroup *renderStyleActionGroup = new QActionGroup(render_menu);
     QAction *action;
+    action = new CurrentMIGLWidgetAction("&Sticks", "Draw bonds as sticks", render_menu, SLOT(OnRenderSticks()), SLOT(OnUpdateRenderSticks(QAction*)));
+    action->setActionGroup(renderStyleActionGroup);
+    action->setCheckable(true);
+
+    action = new CurrentMIGLWidgetAction("&Knob and Stick", "Draw atoms as knobs and bonds as stick", render_menu, SLOT(OnRenderingBallandstick()), SLOT(OnUpdateRenderingBallandstick(QAction*)));
+    action->setActionGroup(renderStyleActionGroup);
+    action->setCheckable(true);
+
+    action = new CurrentMIGLWidgetAction("&Ball and Cylinder", "Draw bonds as ball and cylinders for bonds", render_menu, SLOT(OnRenderBallandcylinder()), SLOT(OnUpdateRenderBallandcylinder(QAction*)));
+    action->setActionGroup(renderStyleActionGroup);
+    action->setCheckable(true);
+
+    action = new CurrentMIGLWidgetAction("&CPK", "Draw atoms as CPK/space filling", render_menu, SLOT(OnRenderSpacefilling()), SLOT(OnUpdateRenderSpacefilling(QAction*)));
+    action->setActionGroup(renderStyleActionGroup);
+    action->setCheckable(true);
+
+    render_menu->addSeparator();
+    color_menu->setTitle("Color");
+    render_menu->addMenu(color_menu);
+    render_menu->addAction("Set Background C&olor...", this, SLOT(OnBackgroundColor()));
+    render_menu->addSeparator();
+    new CurrentMIGLWidgetAction("Set Ball/Cylinder S&ize...", "Set the relative diameters of ball and cylinder", render_menu, SLOT(OnRenderBallsize()), SLOT(OnUpdateRenderBallsize(QAction*)));
+
+    new CurrentMIGLWidgetAction("Set View Center Target S&ize...", "Set size of the marker in the view center", render_menu, SLOT(OnRenderTargetSize()));
+
+    render_menu->addSeparator();
+    action = new CurrentMIGLWidgetAction("Depthcue Colo&rs", "Depthcue using darker colors", render_menu, SLOT(OnRenderingDepthcuedcolors()), SLOT(OnUpdateRenderingDepthcuedcolors(QAction*)));
+    action->setCheckable(true);
+
+    action = new CurrentMIGLWidgetAction("Depthcue &Lines", "Depthcue with line thickness", render_menu, SLOT(OnRenderingDepthcuedlinewidth()), SLOT(OnUpdateRenderingDepthcuedlinewidth(QAction*)));
+    action->setCheckable(true);
+
+    action = new CurrentMIGLWidgetAction("S&mooth Lines", "Smooths the lines", render_menu, SLOT(OnRenderLinesmooth()), SLOT(OnUpdateRenderLinesmooth(QAction*)));
+    action->setCheckable(true);
+
     renderLineThicknessMenu_ = render_menu->addMenu("Line &Thickness");
     QSignalMapper *lineMenuSignalMapper = new QSignalMapper(renderLineThicknessMenu_);
     connect(lineMenuSignalMapper, SIGNAL(mapped(int)), SLOT(setRenderLineThickness(int)));
@@ -2023,18 +2095,11 @@ void MIMainWindow::createMenus()
     }
     lineThickness1->setChecked(true);
 
-    render_menu->Append(ID_RENDERING_DIMNONACTIVEMODELS, "Dim Non-active Models", "Dim non-active models", true);
-    render_menu->Append(ID_RENDERING_AMOUNTTODIMNONACTIVEMODELS, "Set Amount to Dim Non-active Models", "Dim non-active models", false);
+    action = new CurrentMIGLWidgetAction("Dim Non-active Models", "Dim non-active models", render_menu, SLOT(OnDimNonactiveModels()), SLOT(OnUpdateDimNonactiveModels(QAction*)));
+    action->setCheckable(true);
 
-    MIMenu *showatoms_menu = new MIMenu(*this);
-    showatoms_menu->Append(ID_OBJECTS_ALLATOMS, "Show &all atoms", "Show all the atoms in the model", false);
-    showatoms_menu->Append(ID_SHOW_PICKEDATOM_TURNON, "Show last &picked atom", "Show the last picked atom", false);
-    showatoms_menu->Append(ID_SHOW_ALLPICKEDATOMS_TURNON, "Show all p&icked atoms", "Show all the atoms on the stack", false);
-    showatoms_menu->AppendSeparator();
-    showatoms_menu->Append(ID_HIDEMODEL, "&Hide all atoms", "Hide the whole model", false);
-    showatoms_menu->Append(ID_SHOW_PICKEDATOM_TURNOFF, "Hide last picked a&tom", "Hide the last picked atom", false);
-    showatoms_menu->Append(ID_SHOW_ALLPICKEDATOMS_TURNOFF, "Hide all picked at&oms", "Hide all the atoms on the stack", false);
-    showatoms_menu->Append(ID_SHOW_HIDEHYDROGENS, "Toggle h&ydrogens", "Toggle hydrogens on/off", true);
+    new CurrentMIGLWidgetAction("Set Amount to Dim Non-active Models", "Dim non-active models", render_menu, SLOT(OnAmountToDimNonactiveModels()));
+
 
     MIMenu *showres_menu = new MIMenu(*this);
     showres_menu->Append(ID_OBJECTS_ALLATOMS, "Show &all residues", "Show the whole model", false);
@@ -2103,7 +2168,19 @@ void MIMainWindow::createMenus()
 
     show_menu = new MIMenu(*this);
     connect(show_menu, SIGNAL(aboutToShow()), this, SLOT(updateShowMenu()));
+
+    MIMenu *showatoms_menu = new MIMenu(*this);
     show_menu->Append(ID_SHOWATOMSMENU, "Atoms", showatoms_menu);
+    showatoms_menu->Append(ID_OBJECTS_ALLATOMS, "Show &all atoms", "Show all the atoms in the model", false);
+    showatoms_menu->Append(ID_SHOW_PICKEDATOM_TURNON, "Show last &picked atom", "Show the last picked atom", false);
+    showatoms_menu->Append(ID_SHOW_ALLPICKEDATOMS_TURNON, "Show all p&icked atoms", "Show all the atoms on the stack", false);
+    showatoms_menu->AppendSeparator();
+    showatoms_menu->Append(ID_HIDEMODEL, "&Hide all atoms", "Hide the whole model", false);
+    showatoms_menu->Append(ID_SHOW_PICKEDATOM_TURNOFF, "Hide last picked a&tom", "Hide the last picked atom", false);
+    showatoms_menu->Append(ID_SHOW_ALLPICKEDATOMS_TURNOFF, "Hide all picked at&oms", "Hide all the atoms on the stack", false);
+    showatoms_menu->Append(ID_SHOW_HIDEHYDROGENS, "Toggle h&ydrogens", "Toggle hydrogens on/off", true);
+
+
     show_menu->Append(ID_SHOWRESMENU, "Residues", showres_menu);
     show_menu->Append(ID_BACKBONEMENU, "Backbone", backbone_menu);
     show_menu->Append(ID_SIDEMENU, "Sidechains", side_menu);
@@ -2111,7 +2188,9 @@ void MIMainWindow::createMenus()
     show_menu->Append(ID_LABELSMENU, "Labels", labels_menu);
     show_menu->Append(0, "Annotation", annotation_menu);
     show_menu->Append(ID_SYMMATOMSMENU, "Symmetry Atoms", symmatoms_menu);
-    show_menu->Append(ID_DOTSURFACE_MENU, "&Dot Surface", surf_menu);
+
+    QMenu *surf_menu = show_menu->addMenu("&Dot Surface");
+    fill_surf_menu(surf_menu);
 
     show_menu->Append(ID_CANVASMENU, "Canvas", canvas_menu);
 
@@ -2251,7 +2330,8 @@ void MIMainWindow::createMenus()
     menu_bar->Append(di_menu, "&Dictionary");
     menu_bar->Append(view_menu, "&Viewpoint");
     menu_bar->Append(show_menu, "&Show");
-    menu_bar->Append(render_menu, "Re&nder");
+    render_menu->setTitle("Re&nder");
+    menu_bar->Append(render_menu);
     menu_bar->Append(model_menu, "&Model");
     menu_bar->Append(fit_menu, "F&it");
     menu_bar->Append(refi_menu, "&Refine");
@@ -2472,7 +2552,7 @@ void MIMainWindow::openRecentFile()
     }
 }
 
-void MIMainWindow::addRecentFileActions(MIMenu *fileMenu)
+void MIMainWindow::addRecentFileActions(QMenu *fileMenu)
 {
     fileMenu->addSeparator();
     for (int i = 0; i < MaxRecentFiles; ++i)
