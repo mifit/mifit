@@ -856,7 +856,7 @@ public slots:
     void OnFitSplitTorsion();
     void OnUpdateFitRange(const MIUpdateEvent &pCmdUI);
     void OnFitRange();
-    void OnUpdateRefiResidue(const MIUpdateEvent &pCmdUI);
+    void OnUpdateRefiResidue(QAction *action);
     void OnRefiResidue();
     void OnUpdateFullScreen(const MIUpdateEvent &pCmdUI);
     void OnFullScreen();
@@ -882,7 +882,7 @@ public slots:
     void OnUpdateHideModel(const MIUpdateEvent &pCmdUI);
 
     void OnRefiLigandFit();
-    void OnUpdateRefiLigandFit(const MIUpdateEvent &pCmdUI);
+    void OnUpdateRefiLigandFit(QAction *action);
 
     /**
      * Update menu callback for Model/Add Waters.
@@ -1061,7 +1061,7 @@ public slots:
      * Callback for Model/Fit and Replace.
      */
     void OnFitReplaceAndFit();
-    void OnUpdateRefiRigidBody(const MIUpdateEvent &pCmdUI);
+    void OnUpdateRefiRigidBody(QAction *action);
 
     /**
      * Callback for Refi/Rigid Body Refine Current Atoms.
@@ -1078,14 +1078,14 @@ public slots:
      */
     void OnFitUndo();
 
-    void OnUpdateRefiRedo(const MIUpdateEvent &pCmdUI);
+    void OnUpdateRefiRedo(QAction *action);
     /**
      * Callback for Refi/Redo.
      */
     void OnRefiReDo();
-    void OnUpdateRefiReset(const MIUpdateEvent &pCmdUI);
-    void OnUpdateRefiCancel(const MIUpdateEvent &pCmdUI);
-    void OnUpdateRefiAccept(const MIUpdateEvent &pCmdUI);
+    void OnUpdateRefiReset(QAction *action);
+    void OnUpdateRefiCancel(QAction *action);
+    void OnUpdateRefiAccept(QAction *action);
     /**
      * Callback for Refi/Reset.
      */
@@ -1123,10 +1123,10 @@ public slots:
      * Callback for Refi/Refine Region.  A region is the residue plus the one before and after.
      */
     void OnRefiRegion();
-    void OnUpdateRefiMolecule(const MIUpdateEvent &pCmdUI);
-    void OnUpdateRefiUndo(const MIUpdateEvent &pCmdUI);
-    void OnUpdateRefiRange(const MIUpdateEvent &pCmdUI);
-    void OnUpdateRefiRegion(const MIUpdateEvent &pCmdUI);
+    void OnUpdateRefiMolecule(QAction *action);
+    void OnUpdateRefiUndo(QAction *action);
+    void OnUpdateRefiRange(QAction *action);
+    void OnUpdateRefiRegion(QAction *action);
     void OnUpdateMapSwitch(const MIUpdateEvent &pCmdUI);
     /**
      * Callback for Map/Switch Map.  Cahnges teh current map to the one picked from a list.

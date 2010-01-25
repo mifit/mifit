@@ -208,42 +208,6 @@ void MIMainWindow::initMenuHandlers()
     EVT_MENU(ID_SHOW_LABELEVERYNTH, MIGLWidget::OnLabelEveryNth)
     EVT_UPDATE_UI(ID_SHOW_LABELEVERYNTH, MIGLWidget::OnUpdateLabelEveryNth)
 
-    //refinemenu
-    EVT_MENU(ID_REFI_RIGIDBODY, MIGLWidget::OnRefiRigidBody)
-    EVT_UPDATE_UI(ID_REFI_RIGIDBODY, MIGLWidget::OnUpdateRefiRigidBody)
-
-    EVT_MENU(ID_REFINE_LIGANDFIT, MIGLWidget::OnRefiLigandFit)
-    EVT_UPDATE_UI(ID_REFINE_LIGANDFIT, MIGLWidget::OnUpdateRefiLigandFit)
-
-    EVT_MENU(ID_REFI_REGION, MIGLWidget::OnRefiRegion)
-    EVT_UPDATE_UI(ID_REFI_REGION, MIGLWidget::OnUpdateRefiRegion)
-
-    EVT_MENU(ID_REFI_RANGE, MIGLWidget::OnRefiRange)
-    EVT_UPDATE_UI(ID_REFI_RANGE, MIGLWidget::OnUpdateRefiRange)
-
-    EVT_MENU(ID_REFI_RESIDUE, MIGLWidget::OnRefiResidue)
-    EVT_UPDATE_UI(ID_REFI_RESIDUE, MIGLWidget::OnUpdateRefiResidue)
-
-    EVT_MENU(ID_REFI_MOLECULE, MIGLWidget::OnRefiMolecule)
-    EVT_UPDATE_UI(ID_REFI_MOLECULE, MIGLWidget::OnUpdateRefiMolecule)
-
-    EVT_MENU(ID_REFI_UNDO, MIGLWidget::OnRefiUndo)
-    EVT_UPDATE_UI(ID_REFI_UNDO, MIGLWidget::OnUpdateRefiUndo)
-
-    EVT_MENU(ID_REFI_REDO, MIGLWidget::OnRefiReDo)
-    EVT_UPDATE_UI(ID_REFI_REDO, MIGLWidget::OnUpdateRefiRedo)
-
-    EVT_MENU(ID_REFI_ACCEPT, MIGLWidget::OnRefiAccept)
-    EVT_UPDATE_UI(ID_REFI_ACCEPT, MIGLWidget::OnUpdateRefiAccept)
-
-    EVT_MENU(ID_REFI_CANCEL, MIGLWidget::OnRefiCancel)
-    EVT_UPDATE_UI(ID_REFI_CANCEL, MIGLWidget::OnUpdateRefiCancel)
-
-    EVT_MENU(ID_REFI_RESET, MIGLWidget::OnRefiReset)
-    EVT_UPDATE_UI(ID_REFI_RESET, MIGLWidget::OnUpdateRefiReset)
-
-    EVT_MENU(ID_REFI_OPTIONS, MIGLWidget::OnRefiOptions)
-
     //viewmenu
     EVT_MENU(ID_VIEW_SLABIN, MIGLWidget::OnViewSlabin)
     EVT_MENU(ID_VIEW_SLABOUT, MIGLWidget::OnViewSlabout)
@@ -2217,25 +2181,36 @@ void MIMainWindow::createMenus()
     // Refine menu actions which have shortcuts must be immediately updated
     // when refinement state changes. They can't wait for the update which occurs
     // when the menu displays.
-    refi_menu = new MIMenu(*this);
-    refineResidueAction = refi_menu->Append(ID_REFI_RESIDUE, "R&efine Residue\tCtrl+R", "Real-space refine the last picked residue", false);
+    refi_menu = new QMenu(this);
+    refineResidueAction = new CurrentMIGLWidgetAction("R&efine Residue\tCtrl+R", "Real-space refine the last picked residue", refi_menu, SLOT(OnRefiResidue()), SLOT(OnUpdateRefiResidue(QAction*)));
+
     connect(MIFitGeomRefiner(), SIGNAL(isRefiningChanged(bool)),
             this, SLOT(updateIsRefining(bool)));
-    refi_menu->Append(ID_REFI_REGION, "Re&fine Local Region", "Real-space refine the last picked residue and its 2 neighbours", false);
-    refi_menu->Append(ID_REFI_RANGE, "Ref&ine Range", "Real-space refine the last 2 picks and the intervening residues", false);
-    refi_menu->Append(ID_REFI_MOLECULE, "Refi&ne Molecule", "Real-space refine the entire molecule in all 6 dimensions", false);
-    refi_menu->AppendSeparator();
-    refi_menu->Append(ID_REFI_RIGIDBODY, "Ri&gid-Body Refine Current Atoms", "Rigid Body Refine the current atoms (cyan color)", false);
-    refi_menu->Append(ID_REFINE_LIGANDFIT, "Fin&d Ligand Fit and Conformer", "Search for the best conformer ligand fit and torsion angles", false);
-    refi_menu->AppendSeparator();
-    acceptRefineAction = refi_menu->Append(ID_REFI_ACCEPT, "&Accept Refine\tCtrl+Shift+R", "Accept the refinement and finalize the atoms positions", false);
-    refi_menu->Append(ID_REFI_RESET, "&Reset Refine", "Reset the current real-space refinement by putting atoms back where they were", false);
-    refi_menu->Append(ID_REFI_CANCEL, "&Cancel Refine", "Cancel the current real-space refinement by putting atoms back where they were", false);
-    refi_menu->AppendSeparator();
-    refi_menu->Append(ID_REFI_UNDO, "&Undo Refine");
-    refi_menu->Append(ID_REFI_REDO, "Re&do Refine");
-    refi_menu->AppendSeparator();
-    refi_menu->Append(ID_REFI_OPTIONS, "Refine &Options", "Real-space refine options", false);
+    new CurrentMIGLWidgetAction("Re&fine Local Region", "Real-space refine the last picked residue and its 2 neighbours", refi_menu, SLOT(OnRefiRegion()), SLOT(OnUpdateRefiRegion(QAction*)));
+
+    new CurrentMIGLWidgetAction("Ref&ine Range", "Real-space refine the last 2 picks and the intervening residues", refi_menu, SLOT(OnRefiRange()), SLOT(OnUpdateRefiRange(QAction*)));
+
+    new CurrentMIGLWidgetAction("Refi&ne Molecule", "Real-space refine the entire molecule in all 6 dimensions", refi_menu, SLOT(OnRefiMolecule()), SLOT(OnUpdateRefiMolecule(QAction*)));
+
+    refi_menu->addSeparator();
+    new CurrentMIGLWidgetAction("Ri&gid-Body Refine Current Atoms", "Rigid Body Refine the current atoms (cyan color)", refi_menu, SLOT(OnRefiRigidBody()), SLOT(OnUpdateRefiRigidBody(QAction*)));
+
+    new CurrentMIGLWidgetAction("Fin&d Ligand Fit and Conformer", "Search for the best conformer ligand fit and torsion angles", refi_menu, SLOT(OnRefiLigandFit()), SLOT(OnUpdateRefiLigandFit(QAction*)));
+
+    refi_menu->addSeparator();
+    acceptRefineAction = new CurrentMIGLWidgetAction("&Accept Refine\tCtrl+Shift+R", "Accept the refinement and finalize the atoms positions", refi_menu, SLOT(OnRefiAccept()), SLOT(OnUpdateRefiAccept(QAction*)));
+
+    new CurrentMIGLWidgetAction("&Reset Refine", "Reset the current real-space refinement by putting atoms back where they were", refi_menu, SLOT(OnRefiReset()), SLOT(OnUpdateRefiReset(QAction*)));
+
+    new CurrentMIGLWidgetAction("&Cancel Refine", "Cancel the current real-space refinement by putting atoms back where they were", refi_menu, SLOT(OnRefiCancel()), SLOT(OnUpdateRefiCancel(QAction*)));
+
+    refi_menu->addSeparator();
+    new CurrentMIGLWidgetAction("&Undo Refine", "", refi_menu, SLOT(OnRefiUndo()), SLOT(OnUpdateRefiUndo(QAction*)));
+
+    new CurrentMIGLWidgetAction("Re&do Refine", "", refi_menu, SLOT(OnRefiReDo()), SLOT(OnUpdateRefiRedo(QAction*)));
+
+    refi_menu->addSeparator();
+    new CurrentMIGLWidgetAction("Refine &Options", "Real-space refine options", refi_menu, SLOT(OnRefiOptions()));
 
     MIMenu *disorder_menu = new MIMenu(*this);
     disorder_menu->Append(ID_FIT_SPLITTORSION, "Split at &Torsion", "Adds disorder (A and B parts) at a torsion angle", false);
@@ -2334,7 +2309,8 @@ void MIMainWindow::createMenus()
     menu_bar->Append(render_menu);
     menu_bar->Append(model_menu, "&Model");
     menu_bar->Append(fit_menu, "F&it");
-    menu_bar->Append(refi_menu, "&Refine");
+    refi_menu->setTitle("&Refine");
+    menu_bar->Append(refi_menu);
     menu_bar->Append(analyze_menu, "&Analyze");
 
     JobManager = new BatchJobManager();

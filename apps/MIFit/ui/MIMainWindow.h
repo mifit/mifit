@@ -222,7 +222,7 @@ private:
     QMenu *render_menu;
     MIMenu *model_menu;
     MIMenu *fit_menu;
-    MIMenu *refi_menu;
+    QMenu *refi_menu;
     MIMenu *analyze_menu;
     QAction *solidSurfMenuAction;
     QMenu *windowMenu;

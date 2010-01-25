@@ -6134,24 +6134,24 @@ void MIGLWidget::OnRefiMolecule()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateRefiUndo(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateRefiUndo(QAction *action)
 {
-    pCmdUI.Enable(MIFitGeomRefiner()->IsRefining() != true && MIFitGeomRefiner()->CanUndo() && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(MIFitGeomRefiner()->IsRefining() != true && MIFitGeomRefiner()->CanUndo() && MIBusyManager::instance()->Busy() == false);
 }
 
-void MIGLWidget::OnUpdateRefiRegion(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateRefiRegion(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty() && MIFitGeomRefiner()->IsRefining() != true && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(!AtomStack->empty() && MIFitGeomRefiner()->IsRefining() != true && MIBusyManager::instance()->Busy() == false);
 }
 
-void MIGLWidget::OnUpdateRefiRange(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateRefiRange(QAction *action)
 {
-    pCmdUI.Enable(AtomStack->size() > 1 && MIFitGeomRefiner()->IsRefining() != true && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(AtomStack->size() > 1 && MIFitGeomRefiner()->IsRefining() != true && MIBusyManager::instance()->Busy() == false);
 }
 
-void MIGLWidget::OnUpdateRefiMolecule(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateRefiMolecule(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty() && MIFitGeomRefiner()->IsRefining() != true && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(!AtomStack->empty() && MIFitGeomRefiner()->IsRefining() != true && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnRefiAccept()
@@ -6206,20 +6206,20 @@ void MIGLWidget::OnRefiReset()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateRefiAccept(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateRefiAccept(QAction *action)
 {
-    pCmdUI.Enable(MIFitGeomRefiner()->IsRefining() == true && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(MIFitGeomRefiner()->IsRefining() == true && MIBusyManager::instance()->Busy() == false);
 }
 
-void MIGLWidget::OnUpdateRefiCancel(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateRefiCancel(QAction *action)
 {
-    pCmdUI.Enable(MIFitGeomRefiner()->IsRefining() == true && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(MIFitGeomRefiner()->IsRefining() == true && MIBusyManager::instance()->Busy() == false);
 
 }
 
-void MIGLWidget::OnUpdateRefiReset(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateRefiReset(QAction *action)
 {
-    pCmdUI.Enable(MIFitGeomRefiner()->IsRefining() == true && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(MIFitGeomRefiner()->IsRefining() == true && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnRefiReDo()
@@ -6234,9 +6234,9 @@ void MIGLWidget::OnRefiReDo()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateRefiRedo(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateRefiRedo(QAction *action)
 {
-    pCmdUI.Enable(MIFitGeomRefiner()->IsRefining() != true && MIFitGeomRefiner()->CanRedo()  && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(MIFitGeomRefiner()->IsRefining() != true && MIFitGeomRefiner()->CanRedo()  && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::Purge(Molecule *model)
@@ -6385,9 +6385,9 @@ void MIGLWidget::OnRefiRigidBody()
     }
 }
 
-void MIGLWidget::OnUpdateRefiRigidBody(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateRefiRigidBody(QAction *action)
 {
-    pCmdUI.Enable(CurrentAtoms.size() > 0 && GetDisplaylist()->GetCurrentMap() != NULL && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(CurrentAtoms.size() > 0 && GetDisplaylist()->GetCurrentMap() != NULL && MIBusyManager::instance()->Busy() == false);
 }
 
 float MIGLWidget::densityForCurrentAtoms()
@@ -9122,9 +9122,9 @@ void MIGLWidget::OnRefiResidue()
     OnRefiRange();
 }
 
-void MIGLWidget::OnUpdateRefiResidue(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateRefiResidue(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty() && MIFitGeomRefiner()->IsRefining() != true && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(!AtomStack->empty() && MIFitGeomRefiner()->IsRefining() != true && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::ColorModel(Molecule *node)
@@ -11229,9 +11229,9 @@ void MIGLWidget::OnRenderTargetSize()
 }
 
 
-void MIGLWidget::OnUpdateRefiLigandFit(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateRefiLigandFit(QAction *action)
 {
-    pCmdUI.Enable(IsFitting() && fitres != NULL);
+    action->setEnabled(IsFitting() && fitres != NULL);
 }
 
 void MIGLWidget::handleKey_space(bool spaceKeyDown)
