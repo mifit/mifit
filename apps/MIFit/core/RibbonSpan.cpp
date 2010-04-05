@@ -7,7 +7,7 @@
 
 // Cubic Hermite and Cubic B-spline matrices
 #define c45 0.70711
-#define pi  3.1459265
+#define pi  3.14159265
 /*
    static double   cmat[4][4] =   {{-0.5, 1.5, -1.5, 0.5},
           {1.0,  -2.5, 2.0, -0.5},
