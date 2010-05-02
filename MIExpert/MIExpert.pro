@@ -1,10 +1,10 @@
 include(../common.pri)
 
-OTHER_FILES += *.py *.ui
+OTHER_FILES += $$files(*.py) $$files(*.ui)
 
 # There's nothing to do for this build, we only need to copy files
 pyfiles.path = $$PREFIX/MIExpert
-pyfiles.files = *.py *.ui
+pyfiles.files = $$files(*.py) $$files(*.ui)
 INSTALLS += pyfiles
 
 # trick qmake in to not doing any "normal" processing

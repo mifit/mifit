@@ -2,7 +2,7 @@ include(../MIFit.pri)
 
 TEMPLATE = app
 TARGET = MIFit
-DESTDIR = ../../..
+DESTDIR = $$PWD/../../..
 
 target.path = $$PREFIX
 INSTALLS += target
@@ -12,24 +12,24 @@ win32 {
 }
 
 mac {
-  ICON=../images/mifit.icns
+  ICON=$$PWD/../images/mifit.icns
 }
 
-INCLUDEPATH *= ..
-LIBS *= -L..
+INCLUDEPATH *= $$PWD/..
+LIBS *= -L$$PWD/..
 appLibs = ui jobs script core
 for(l, appLibs) {
   LIBS *= -l$$qtLibraryTarget($${l})
-  PRE_TARGETDEPS += ../lib$$qtLibraryTarget($${l})$$LIB_EXTENSION
+  PRE_TARGETDEPS += $$PWD/../lib$$qtLibraryTarget($${l})$$LIB_EXTENSION
 }
 
-INCLUDEPATH *= ../../../libs
-LIBS *= -L../../../libs
+INCLUDEPATH *= $$PWD/../../../libs
+LIBS *= -L$$PWD/../../../libs
 
 otherLibs = nongui ligand map molopt conflib chemlib miopengl mimath miutil jacgrid umtz
 for(l, otherLibs) {
   LIBS *= -l$$qtLibraryTarget($${l})
-  PRE_TARGETDEPS += ../../../libs/lib$$qtLibraryTarget($${l})$$LIB_EXTENSION
+  PRE_TARGETDEPS += $$PWD/../../../libs/lib$$qtLibraryTarget($${l})$$LIB_EXTENSION
 }
 
 win32 {
@@ -39,4 +39,4 @@ win32 {
 
 include(../../../rpath.pri)
 
-SOURCES += *.cpp
+SOURCES += $$files(*.cpp)

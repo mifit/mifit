@@ -1,5 +1,5 @@
 include(../libs.pri)
 
 TEMPLATE = lib
-SOURCES = *.cpp
-HEADERS = *.h
+SOURCES = $$files(*.cpp)
+HEADERS = $$files(*.h)
