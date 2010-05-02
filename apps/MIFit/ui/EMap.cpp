@@ -248,8 +248,10 @@ bool EMap::FFTMap(int mt, int gl, float rMin, float rMax)
     gridTypes << "Coarse grid" << "Medium grid" << "Fine grid";
     int gridIndex = (gl == -1 || gl == -2) ? mapGrid : gl;
 
-    dlg.addDoubleField("Min resolution:", rMin == -1.0f ? mapheader->resmin : rMin);
-    dlg.addDoubleField("Max resolution:", rMax == -1.0f ? mapheader->resmax : rMax);
+    // Note map header uses the numerical min/max for resmin/resmax
+    // rather than the crystallography resolution min/max
+    dlg.addDoubleField("Min resolution:", rMax == -1.0f ? mapheader->resmax : rMax);
+    dlg.addDoubleField("Max resolution:", rMin == -1.0f ? mapheader->resmin : rMin);
     dlg.addComboField("Map type:", mapTypeOptions, mapTypeIndex);
     dlg.addComboField("Grid:", gridTypes, gridIndex);
 
