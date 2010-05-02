@@ -384,7 +384,7 @@ bool Helix::CreateCylinder()
        -------------------------------------------------------------------- */
     /* Begin ss_cylinder_create() */
 
-#define pi 3.1459265
+#define pi 3.14159265
 
     double axisNorm[3];
     double dist, mat[3][3], invmat[3][3];
