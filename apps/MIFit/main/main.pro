@@ -17,7 +17,7 @@ mac {
 
 INCLUDEPATH *= ..
 LIBS *= -L..
-appLibs = ui figurelib jobs script core
+appLibs = ui jobs script core
 for(l, appLibs) {
   LIBS *= -l$$qtLibraryTarget($${l})
   PRE_TARGETDEPS += ../lib$$qtLibraryTarget($${l})$$LIB_EXTENSION
