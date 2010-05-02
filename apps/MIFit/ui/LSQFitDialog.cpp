@@ -381,7 +381,7 @@ void LSQFitDialog::ListSourceChoices()
         {
             isel = i;
         }
-        sourceComboBox->addItem((*p)->compound.c_str());
+        sourceComboBox->addItem((*p)->pathname.c_str());
         p++;
         i++;
     }
@@ -399,7 +399,7 @@ void LSQFitDialog::ListTargetChoices()
         {
             isel = i;
         }
-        targetComboBox->addItem((*p)->compound.c_str());
+        targetComboBox->addItem((*p)->pathname.c_str());
         p++;
         i++;
     }
@@ -530,7 +530,7 @@ Molecule*LSQFitDialog::findMolecule(const std::string &str)
 {
     for (std::list<Molecule*>::iterator p = displaylist->begin(); p != displaylist->end(); ++p)
     {
-        if ((*p)->compound.c_str() == str)
+        if ((*p)->pathname.c_str() == str)
         {
             return *p;
         }
