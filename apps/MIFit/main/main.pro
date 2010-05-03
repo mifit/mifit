@@ -15,21 +15,21 @@ mac {
   ICON=$$PWD/../images/mifit.icns
 }
 
-INCLUDEPATH *= $$PWD/..
-LIBS *= -L$$PWD/..
+INCLUDEPATH *= $$OUT_PWD/..
+LIBS *= -L$$OUT_PWD/..
 appLibs = ui jobs script core
 for(l, appLibs) {
   LIBS *= -l$$qtLibraryTarget($${l})
-  PRE_TARGETDEPS += $$PWD/../lib$$qtLibraryTarget($${l})$$LIB_EXTENSION
+  PRE_TARGETDEPS += $$OUT_PWD/../lib$$qtLibraryTarget($${l})$$LIB_EXTENSION
 }
 
-INCLUDEPATH *= $$PWD/../../../libs
-LIBS *= -L$$PWD/../../../libs
+INCLUDEPATH *= $$OUT_PWD/../../../libs
+LIBS *= -L$$OUT_PWD/../../../libs
 
 otherLibs = nongui ligand map molopt conflib chemlib miopengl mimath miutil jacgrid umtz
 for(l, otherLibs) {
   LIBS *= -l$$qtLibraryTarget($${l})
-  PRE_TARGETDEPS += $$PWD/../../../libs/lib$$qtLibraryTarget($${l})$$LIB_EXTENSION
+  PRE_TARGETDEPS += $$OUT_PWD/../../../libs/lib$$qtLibraryTarget($${l})$$LIB_EXTENSION
 }
 
 win32 {

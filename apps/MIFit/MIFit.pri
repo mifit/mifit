@@ -1,3 +1,3 @@
 include(../../common.pri)
-INCLUDEPATH *= $$PWD
-DESTDIR = $$PWD
+INCLUDEPATH *= $$PWD $$OUT_PWD/..
+DESTDIR = $$OUT_PWD/..
