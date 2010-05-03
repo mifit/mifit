@@ -580,7 +580,7 @@ MIMainWindow::MIMainWindow()
     navigator = new GLOverviewCanvas(this);
     navigatorDock = AddAsDockWidget(navigator, "Navigator", Qt::BottomDockWidgetArea);
 
-    memset(cursors, 0, (imhWait6+1)*sizeof(QCursor*));
+    memset(cursors, 0, imhCount*sizeof(QCursor*));
 
     QSettings *settings = MIGetQSettings(); // could use MIConfig (it's the same file), but this api is easier here
     restoreState(settings->value("WindowLayout", saveState()).toByteArray());
@@ -606,22 +606,8 @@ MIMainWindow::MIMainWindow()
 
 MIMainWindow::~MIMainWindow()
 {
-    delete cursors[imhCross];
-    delete cursors[imhTranslate];
-    delete cursors[imhRotate];
-    delete cursors[imhZRotate];
-    delete cursors[imhZCursor];
-    delete cursors[imhTorsion];
-    delete cursors[imhCenter];
-    delete cursors[imhScale];
-    delete cursors[imhSlab];
-    delete cursors[imhWait1];
-    delete cursors[imhWait2];
-    delete cursors[imhWait3];
-    delete cursors[imhWait4];
-    delete cursors[imhWait5];
-    delete cursors[imhWait6];
-    delete cursors[imhSlabDrag];
+    for (int i = 0; i < imhCount; ++i)
+        delete cursors[i];
     MIMapFreeScatteringFactorTables();
     delete JobManager;
 }
