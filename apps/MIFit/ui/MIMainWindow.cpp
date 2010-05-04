@@ -94,30 +94,6 @@ void MIMainWindow::initMenuHandlers()
     MIEventHandler *_dispatcher = this;
     ActiveMIGLWidgetFtor *ftor = new ActiveMIGLWidgetFtor();
 
-    EVT_MENU(ID_ABOUT, MIMainWindow::OnAbout)
-    EVT_MENU(ID_HELP, MIMainWindow::OnHelp)
-    EVT_MENU(ID_LOAD_DICT_REPLACE, MIMainWindow::OnLoadDictReplace)
-    EVT_MENU(ID_LOAD_DICT_APPEND, MIMainWindow::OnLoadDictAppend)
-    EVT_MENU(ID_EDIT_DICT_RESIDUE, MIMainWindow::OnEditDictResidue)
-    EVT_MENU(ID_LOAD_DICT_CIF, MIMainWindow::OnLoadLigCif)
-    EVT_MENU(ID_LOAD_DICT_MOL, MIMainWindow::OnLoadLigMol)
-    EVT_MENU(ID_LOAD_DICT_PDB, MIMainWindow::OnLoadLigPdb)
-    EVT_MENU(ID_LOAD_DICT_SMI, MIMainWindow::OnLoadLigSmi)
-    EVT_MENU(ID_SAVE_DICT, MIMainWindow::OnSaveDict)
-
-    EVT_MENU(ID_BACKGROUNDCOLOR, MIMainWindow::OnBackgroundColor)
-    EVT_MENU(ID_COLORTOOL, MIMainWindow::OnColorTool)
-    EVT_MENU(ID_SHOWTOOL, MIMainWindow::OnShowTool)
-    EVT_MENU(ID_SIDETOOL, MIMainWindow::OnSideChainTool)
-    EVT_MENU(ID_HIDETOOL, MIMainWindow::OnHideTool)
-
-
-    EVT_MENU(ID_HARDWARE_STEREO, MIMainWindow::OnHardwareStereo)
-    EVT_UPDATE_UI(ID_HARDWARE_STEREO, MIMainWindow::OnUpdateHardwareStereo)
-
-    EVT_MENU(ID_STEREO_TOGGLE, MIMainWindow::OnStereoToggle)
-    EVT_UPDATE_UI(ID_STEREO_TOGGLE, MIMainWindow::OnUpdateStereoToggle)
-
 //
     EVT_MENU(ID_EDIT_CLEARLABELS, MIGLWidget::OnEditClearlabels)
     EVT_MENU(ID_EDIT_LABELS, MIGLWidget::OnEditLabels)
@@ -1346,17 +1322,17 @@ void MIMainWindow::UpdateToolBar()
         tool_bar->doUpdates();
 }
 
-void MIMainWindow::OnUpdateStereoToggle(const MIUpdateEvent &pCmdUI)
+void MIMainWindow::OnUpdateStereoToggle()
 {
     bool stereo = MIConfig::Instance()->GetProfileInt("View Parameters", "stereo", 0) != 0;
-    pCmdUI.Check(stereo);
+    _stereoToggleAction->setChecked(stereo);
 }
 
-void MIMainWindow::OnUpdateHardwareStereo(const MIUpdateEvent &pCmdUI)
+void MIMainWindow::OnUpdateHardwareStereo()
 {
     bool hardwareStereo = MIConfig::Instance()->GetProfileInt("View Parameters", "hardwareStereo", 0) != 0;
-    pCmdUI.Enable(Application::instance()->isHardwareStereoAvailable());
-    pCmdUI.Check(hardwareStereo);
+    _hardwareStereoAction->setEnabled(Application::instance()->isHardwareStereoAvailable());
+    _hardwareStereoAction->setChecked(hardwareStereo);
 }
 
 void MIMainWindow::OnStereoToggle()
@@ -1891,8 +1867,15 @@ void MIMainWindow::fill_view_menu(MIMenu *view_menu)
     view_menu->AppendSeparator();
     view_menu->Append(ID_VIEW_TOPVIEW, "&Top view", "View from top and drag clipping planes", true);
     view_menu->Append(ID_VIEW_FULLSCREEN, "&Fullscreen\tESC", "Canvas fills the entire screen", true);
-    view_menu->Append(ID_HARDWARE_STEREO, "Use &Hardware Stereo", "Stereo using specialty hardware", true);
-    view_menu->Append(ID_STEREO_TOGGLE, "S&tereo\t|", "Toggle between stereo and mono drawing modes", true);
+
+    _hardwareStereoAction = view_menu->addAction(tr("Use &Hardware Stereo"), this, SLOT(OnHardwareStereo()));
+    _hardwareStereoAction->setCheckable(true);
+    connect(view_menu, SIGNAL(aboutToShow()), this, SLOT(OnUpdateHardwareStereo()));
+
+    _stereoToggleAction = view_menu->addAction(tr("S&tereo\t|"), this, SLOT(OnStereoToggle()));
+    _stereoToggleAction->setCheckable(true);
+    connect(view_menu, SIGNAL(aboutToShow()), this, SLOT(OnUpdateStereoToggle()));
+
     view_menu->AppendSeparator();
     view_menu->Append(ID_VIEW_SLABIN, "Slab In\tShift+I", "Decrease the distance beteween the front and back clipping planes", false);
     view_menu->Append(ID_VIEW_SLABOUT, "Slab Out\tShift+O", "Increase the distance beteween the front and back clipping planes", false);
@@ -1951,19 +1934,6 @@ void MIMainWindow::createMenus()
     updateRecentFileActions();
 
 
-    MIMenu *di_menu = new MIMenu(*this);
-    di_menu->Append(ID_LOAD_DICT_REPLACE, "Load &New Dictionary...", "Load dictionary from file and replace old one", false);
-    di_menu->Append(ID_LOAD_DICT_APPEND, "Load & &Append Dictionary...", "Load dictionary from file and append to the old one", false);
-    //  di_menu->Append(ID_READ_LIGAND, "&Import Ligand To Dictionary...", "Read ligand structure from file and add to dictionary\n");
-    MIMenu *ligImportMenu = new MIMenu(*this);
-    di_menu->Append(0, "&Import Ligand", ligImportMenu);
-    ligImportMenu->Append(ID_LOAD_DICT_CIF, "&CIF", "Load ligand from a CIF file", false);
-    ligImportMenu->Append(ID_LOAD_DICT_MOL, "&Mol", "Load ligand from a Mol file", false);
-    ligImportMenu->Append(ID_LOAD_DICT_PDB, "&Pdb", "Load ligand from a PDB file", false);
-    ligImportMenu->Append(ID_LOAD_DICT_SMI, "&Smiles", "Load ligand from a Smiles string / file", false);
-
-    di_menu->Append(ID_SAVE_DICT, "&Save Dictionary...", "Save dictionary to a file", false);
-    di_menu->Append(ID_EDIT_DICT_RESIDUE, "&Edit Residue...", "Edit the specficications of a monomer or ligand", false);
 
     MIMenu *stack_menu = new MIMenu(*this);
     stack_menu->Append(ID_VIEW_ATOMSTACK, "Show/Hide Atom Stack", "Toggle the atom stack visibility", true);
@@ -2278,17 +2248,21 @@ void MIMainWindow::createMenus()
     model_menu->Append(ID_MODEL_AUTOCHECKPOINT, "Auto-checkpoint Model", "Automatically checkpoints the model every few minutes", true);
 
 
-    MIMenu *help_menu = new MIMenu(*this);
-    help_menu->Append(ID_ABOUT, "&About...");
-
-    QAction *glFormatAction = help_menu->Append(0, "&OpenGL format...");
-    connect(glFormatAction, SIGNAL(triggered()),
-            this, SLOT(OnGLFormat()));
-
-    help_menu->Append(ID_HELP, "&Help...");
-
     menu_bar->Append(file_menu, "&File");
-    menu_bar->Append(di_menu, "&Dictionary");
+
+    QMenu *di_menu = menuBar()->addMenu(tr("&Dictionary"));
+    di_menu->addAction(tr("Load &New Dictionary..."), this, SLOT(OnLoadDictReplace()));
+    di_menu->addAction(tr("Load & &Append Dictionary..."), this, SLOT(OnLoadDictAppend()));
+
+    QMenu *ligImportMenu = di_menu->addMenu("&Import Ligand");
+    ligImportMenu->addAction(tr("&CIF"), this, SLOT(OnLoadLigCif()));
+    ligImportMenu->addAction(tr("&Mol"), this, SLOT(OnLoadLigMol()));
+    ligImportMenu->addAction(tr("&Pdb"), this, SLOT(OnLoadLigPdb()));
+    ligImportMenu->addAction(tr("&Smiles"), this, SLOT(OnLoadLigSmi()));
+
+    di_menu->addAction(tr("&Save Dictionary..."), this, SLOT(OnSaveDict()));
+    di_menu->addAction(tr("&Edit Residue..."), this, SLOT(OnEditDictResidue()));
+
     menu_bar->Append(view_menu, "&Viewpoint");
     menu_bar->Append(show_menu, "&Show");
     render_menu->setTitle("Re&nder");
@@ -2321,7 +2295,10 @@ void MIMainWindow::createMenus()
 
     viewMenu = menuBar()->addMenu(tr("View"));
 
-    menu_bar->Append(help_menu, "Help");
+    QMenu *help_menu = menuBar()->addMenu(tr("&Help"));
+    help_menu->addAction(tr("&Help..."), this, SLOT(OnHelp()));
+    help_menu->addAction(tr("&About..."), this, SLOT(OnAbout()));
+    help_menu->addAction(tr("&OpenGL format..."), this, SLOT(OnGLFormat()));
 
     initMenuHandlers();
 }
@@ -2383,15 +2360,6 @@ void MIMainWindow::createMenus()
 //#include <images/zoomoutDisabled.xpm>
 void MIMainWindow::createToolBars()
 {
-    // for toolbar items w/o a corresponding menu action, we need to create a
-    // hidden menu for them
-    MIMenu *menu = new MIMenu(*this, this);
-    menu->Append(ID_COLORTOOL, "colortool_xpm", "colortool_xpm");
-    menu->Append(ID_SHOWTOOL, "showtool_xpm", "showtool_xpm");
-    menu->Append(ID_SIDETOOL, "sidetool_xpm", "sidetool_xpm");
-    menu->Append(ID_HIDETOOL, "hidetool_xpm", "hidetool_xpm");
-    menu_bar->AppendHidden(menu);
-
     tool_bar = new MIToolBar(menu_bar, this);
 
     //TODO: use disabled icon specialization for QIcons?
@@ -2428,12 +2396,12 @@ void MIMainWindow::createToolBars()
     tool_bar->AddTool(ID_FIT_TORSION, torsion_xpm);
     tool_bar->AddTool(ID_FIT_CENTERMODE, center_xpm);
 
-    tool_bar->AddSeparator();
-    tool_bar->AddTool(ID_COLORTOOL, colortool_xpm);
-    tool_bar->AddTool(ID_SHOWTOOL, showtool_xpm);
-    tool_bar->AddTool(ID_SIDETOOL, sidetool_xpm);
-    tool_bar->AddTool(ID_HIDETOOL, hidetool_xpm);
-
+    QToolBar *toolBar = addToolBar("Display Tools");
+    toolBar->setObjectName("Display Tools");
+    toolBar->addAction(QIcon(colortool_xpm), tr("Color"), this, SLOT(OnColorTool()));
+    toolBar->addAction(QIcon(showtool_xpm), tr("Show"), this, SLOT(OnShowTool()));
+    toolBar->addAction(QIcon(sidetool_xpm), tr("Side Chain"), this, SLOT(OnSideChainTool()));
+    toolBar->addAction(QIcon(hidetool_xpm), tr("Hide"), this, SLOT(OnHideTool()));
 
     tool_bar->show();
 }

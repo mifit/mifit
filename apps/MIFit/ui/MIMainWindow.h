@@ -147,8 +147,8 @@ private slots:
     void OnColorTool();
     void OnShowTool();
 
-    void OnUpdateStereoToggle(const MIUpdateEvent&);
-    void OnUpdateHardwareStereo(const MIUpdateEvent&);
+    void OnUpdateStereoToggle();
+    void OnUpdateHardwareStereo();
     void OnStereoToggle();
     void OnHardwareStereo();
     void OnAbout();
@@ -268,6 +268,9 @@ private:
     RamaPlotMgr *ramaPlotMgr;
 
     QMenu *renderLineThicknessMenu_;
+
+    QAction *_hardwareStereoAction;
+    QAction *_stereoToggleAction;
 };
 
 //some shortcuts for MIMainWindow::instance()->Log, etc
