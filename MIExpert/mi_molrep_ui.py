@@ -99,11 +99,11 @@ class MolRepDialog(QtGui.QDialog):
 
     @QtCore.pyqtSlot()
     def on_modelPushButton_clicked(self):
-        self.browseFile(self.modelLineEdit, "PDB file (*.pdb *.res *.ent *.*)")
+        self.browseFile(self.modelLineEdit, "PDB file (*.pdb *.res *.ent)")
 
     @QtCore.pyqtSlot()
     def on_fixedModelPushButton_clicked(self):
-        self.browseFile(self.fixedModelLineEdit, "PDB file (*.pdb *.res *.ent *.*)")
+        self.browseFile(self.fixedModelLineEdit, "PDB file (*.pdb *.res *.ent)")
 
     @QtCore.pyqtSlot()
     def on_dataPushButton_clicked(self):

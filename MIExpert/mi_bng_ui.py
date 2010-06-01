@@ -11,7 +11,6 @@ class BindNGrindDialog(QtGui.QDialog):
             'hklin': [],
             'pdbin': '',
             'process_engine': 'none',
-            'arpwarpmap': False,
             'detector_constants': '',
             'spacegroup_no': 0,
             'reference_mtz': 'none',
@@ -59,8 +58,7 @@ class BindNGrindDialog(QtGui.QDialog):
             self.dtrekRadioButton.setChecked(True)
         else:
             self.mosflmRadioButton.setChecked(True)
-
-        self.arpWarpCheckBox.setChecked(config['arpwarpmap'])
+        
         if len(config['detector_constants']) > 0:
             self.detectorConstantsCheckBox.setChecked(True)
             self.detectorConstantsLineEdit.setText(config['detector_constants'])
@@ -98,8 +96,8 @@ class BindNGrindDialog(QtGui.QDialog):
             if config['ligand_from_dictionary']:
                 self.dictionaryRadioButton.setChecked(True)
                 self.dictionaryComboBox.setCurrentText(config['ligand_name'])
-            elif config['ligand_name'] == 'all':
-                self.fromLigandsDirectoryRadioButton.setChecked(True)
+            #elif config['ligand_name'] == 'all':
+            #    self.fromLigandsDirectoryRadioButton.setChecked(True)
             else:
                 self.ligandFileCheckBox.setChecked(True)
                 self.ligandFileLineEdit.setText(config['ligand_name'])
@@ -231,7 +229,6 @@ class BindNGrindDialog(QtGui.QDialog):
             'hklin': [],
             'pdbin': '',
             'process_engine': 'none',
-            'arpwarpmap': False,
             'detector_constants': '',
             'spacegroup_no': 0,
             'reference_mtz': 'none',
@@ -261,9 +258,6 @@ class BindNGrindDialog(QtGui.QDialog):
             config['process_engine'] = 'mosflm'
         else:
             config['process_engine'] = 'none'
-
-        if self.arpWarpCheckBox.isChecked():
-            config['argwarpmap'] = True
 
         if self.detectorConstantsCheckBox.isChecked():
             config['detector_constants'] = str(self.detectorConstantsLineEdit.text())
@@ -302,8 +296,8 @@ class BindNGrindDialog(QtGui.QDialog):
             config['place_ligand'] = True
             if self.dictionaryRadioButton.isChecked():
                 config['ligand_from_dictionary'] = str(self.dictionaryComboBox.currentText())
-            elif self.fromLigandsDirectoryRadioButton.isChecked():
-                config['ligand_name'] = 'all'
+            #elif self.fromLigandsDirectoryRadioButton.isChecked():
+            #    config['ligand_name'] = 'all'
             elif self.ligandFileCheckBox.isChecked():
                 config['ligand_name'] = str(self.ligandFileLineEdit.text())
 
@@ -317,11 +311,6 @@ class BindNGrindDialog(QtGui.QDialog):
         args += [ "--hklin", str(QtCore.QFileInfo(config['hklin']).absoluteFilePath()) ]
         args += [ "--pdbin", str(QtCore.QFileInfo(config['pdbin']).absoluteFilePath()) ]
         args += [ "--process_engine", str(config['process_engine']) ]
-        args += [ "--arpwarpmap" ]
-        if config['arpwarpmap']:
-            args += [ 'yes' ]
-        else:
-            args += [ 'no' ]
 
         if len(config['detector_constants']) > 0:
             args += [ '--detector_constants', config['detector_constants'] ]

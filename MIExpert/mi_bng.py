@@ -49,8 +49,6 @@ def Run(argv=None):
 
     # Initialization and defaults
 
-    default_mifit_root = 'none'
-
     integrate = 'mi_runintegrate.txt'
     dataprep = 'mi_rundataprep.txt'
     molrep = 'mi_runmr.txt'
@@ -70,7 +68,7 @@ def Run(argv=None):
     spacegroup_no = 'none'
     referencemtz = 'none'
     pdbin = 'none'
-    multipdbin = 'no'
+    multi_search = 'no'    
     libfile = 'none'
     fragfile = 'none'
     fragcenter = 'none'
@@ -122,7 +120,7 @@ def Run(argv=None):
         ['hklin=','workdir=','spacegroup_no=','reference_mtz=',
          'pdbin=','multi_search=','libfile=','fragfit=',
          'frag_center=','mlwfile=','pdbviewfile=','mifit=','bngsummary=',
-         'sg_search=','molimagehome=','writemap=','arpwarpmap='
+         'sg_search=','molimagehome=','writemap=',
          'detector_constants=','process_engine=','help'])
     number_of_inputs = len(optlist)
     if number_of_inputs==0:
@@ -192,10 +190,10 @@ def Run(argv=None):
     # Check MIFit installation to access various files (default and direct path)
 
     if mifit_root == 'none':
-
-        if os.path.exists(default_mifit_root):
-            mifit_root = default_mifit_root
-
+        print '\nMIFit root directory was not given\n'
+        time.sleep(4)
+        return 1
+        
     if not os.path.exists(mifit_root):
         print '\nMIFit root directory was not found\n'
         time.sleep(4)
@@ -222,7 +220,7 @@ def Run(argv=None):
     number_datasets = len(aList_hklin)
     number_workingdirs = len(aList_workingdir)
 
-    if number_datasets != number_workingdirs:
+    if number_datasets != number_workingdirs and number_workingdirs != 0:
         print '\nThe number of working directories must equal the number of datasets - stopping !\n'
         time.sleep(4)
         return 1
@@ -230,7 +228,6 @@ def Run(argv=None):
     runcount = 0
     while runcount < number_datasets:
         hklin = aList_hklin[runcount]
-        workingdir = aList_workingdir[runcount]
 
         if not os.path.exists(hklin):
             time.sleep(4)
@@ -238,12 +235,17 @@ def Run(argv=None):
             time.sleep(4)
             return 1
 
-        if workingdir != 'none':
-            if not os.path.exists(workingdir):
-                time.sleep(4)
-                print '\nAn input working directory file was not found',workingdir,'\n'
-                time.sleep(4)
-                return 1        
+        runcount = runcount + 1
+
+    runcount = 0
+    while runcount < number_workingdirs:
+        workingdir = aList_workingdir[runcount]
+
+        if not os.path.exists(workingdir):
+            time.sleep(4)
+            print '\nAn input working directory file was not found',workingdir,'\n'
+            time.sleep(4)
+            return 1        
 
         runcount = runcount + 1
 
@@ -553,16 +555,16 @@ def Run(argv=None):
         image_data_processed = 'yes'
 
         hklin = aList_hklin[runcount]
-        workingdir = aList_workingdir[runcount]
 
         # Default working directory path is dataset location
 
-        if workingdir == 'none':
-
+        if number_workingdirs == 0:
             workingdir = os.path.dirname(hklin)
+        else:
+            workingdir = aList_workingdir[runcount]            
 
-            dir_list = os.listdir(workingdir)
-            number_files = len(dir_list)
+        dir_list = os.listdir(workingdir)
+        number_files = len(dir_list)
 
         os.chdir(workingdir)
 

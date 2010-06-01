@@ -10,8 +10,6 @@
 #                                                               #
 # This script is distributed under the same conditions as MIFit #
 #                                                               #
-# Compatible with CCP4 6.0.1                                    #
-#                                                               #
 #################################################################
 
 import sys
@@ -60,9 +58,7 @@ def Usage():
     print '   Robs are synonymous.\n'
     print '3. The FASTA sequence file may contain blank lines and a title line identified'
     print '   by a ">" symbol.\n'
-    print '4. The parsing of the SCALA log files requires that the file was produced by '
-    print '   CCP4 version 6.x\n'
-    print '5. The parsing of SCALEPACK log files has only been lightly tested with'
+    print '4. The parsing of SCALEPACK log files has only been lightly tested with'
     print '   HKL2000.\n'
 
 def Run(argv=None):
@@ -316,6 +312,7 @@ def Run(argv=None):
                 return
         if number_of_list_inputs >=2:
             param_value = aList[1]
+            
             if arg_value=='--mtzfile' or arg_value=='-m':
                 mtzfile = param_value
             elif arg_value=='--workdir' or arg_value=='-d':
@@ -450,21 +447,13 @@ def Run(argv=None):
         time.sleep(4)
         return 1
 
-    if write_cif == 'NO':
-        write_cif = 'no'
+    write_cif.lower()
+    write_hkl.lower()
+    write_text.lower()
+    write_html.lower()
+    write_map.lower()
 
-    if write_hkl == 'NO':
-        write_hkl = 'no'
-
-    if write_text == 'NO':
-        write_text = 'no'
-
-    if write_html == 'NO':
-        write_html = 'no'
-
-    if write_map == 'NO':
-        write_map = 'no'
-
+    rootname = os.path.basename(rootname)
     if rootname == 'none':
         rootname = 'pdbdeposit'
 
@@ -548,9 +537,7 @@ def Run(argv=None):
     # Banner
 
     print '\n___________________________________________________________________\n'
-    print ' ** MI_Deposit3D 1.6 **\n'
-    print 'Author : Molecular Images'
-    print 'Release: June 2007'
+    print ' ** MI_Deposit3D **\n'
     print 'Using CCP4 version:',ccp4.version
     print '___________________________________________________________________\n'
 
@@ -1287,8 +1274,6 @@ def Run(argv=None):
     # Parse SCALA log file (if available)  #
     ########################################
 
-    # This function requires that the SCALA log came from CCP4 5.0.2 since it parses from the new summary
-
     if mergeprog == 'scala' and datalogfile != 'none':
 
         print 'Parsing SCALA log file'
@@ -1299,44 +1284,47 @@ def Run(argv=None):
 
         for eachLine in allLines:
 
-            if eachLine.find('Overall  OuterShell'):
-                readdata = 'yes'
+            dataList = eachLine.split()
+            num_items = len(dataList)
 
+            if num_items == 3:
+                
+                if dataList[0] == 'Overall' and dataList[1] == 'InnerShell' and dataList[2] == 'OuterShell':
+                    readdata = 'yes'
+                
             if readdata == 'yes':
 
-                dataList = eachLine.split()
-
-                if eachLine.find('Low resolution limit') > -1:
+                if eachLine.find('Low resolution limit') > -1 and num_items == 6:
                     data_rlow = dataList[3]
-                    datas_rlow = dataList[4]                 
+                    datas_rlow = dataList[5]                 
 
-                if eachLine.find('High resolution limit') > -1:
+                if eachLine.find('High resolution limit') > -1 and num_items == 6:
                     data_rhigh = dataList[3]
-                    datas_rhigh = dataList[4]
+                    datas_rhigh = dataList[5]
 
-                if eachLine.find('Rmerge') > -1:
+                if eachLine.find('Rmerge') > -1 and num_items == 4:
                     data_rmerge = dataList[1]
-                    datas_rmerge = dataList[2]
+                    datas_rmerge = dataList[3]
 
-                if eachLine.find('Total number of observations') > -1:
+                if eachLine.find('Total number of observations') > -1 and num_items == 7:
                     data_num_unmerged = dataList[4]
-                    datas_num_unmerged = dataList[4]
+                    datas_num_unmerged = dataList[6]
 
-                if eachLine.find('Total number unique') > -1:
+                if eachLine.find('Total number unique') > -1 and num_items == 6:
                     data_num = dataList[3]
-                    datas_num = dataList[4]
+                    datas_num = dataList[5]
 
-                if eachLine.find('Mean(I)/sd(I)') > -1:
+                if eachLine.find('Mean((I)/sd(I))') > -1 and num_items == 4:
                     data_ioversig = dataList[1]
-                    datas_ioversig = dataList[2]
+                    datas_ioversig = dataList[3]
 
-                if eachLine.find('Completeness') > -1:
+                if eachLine.find('Completeness') > -1 and num_items == 4:
                     data_percentobs = dataList[1]
-                    datas_percentobs = dataList[2]
+                    datas_percentobs = dataList[3]
 
-                if eachLine.find('Multiplicity') > -1:
+                if eachLine.find('Multiplicity') > -1 and num_items == 4:
                     data_redund = dataList[1]
-                    datas_redund = dataList[2]
+                    datas_redund = dataList[3]
 
     ############################################
     # Parse SCALEPACK log file (if available)  #
@@ -3477,13 +3465,20 @@ def Run(argv=None):
             print 'MTZ2VARIOUS run to generate CIF reflection file appears to have failed\n'
             time.sleep(4)
             return 1
+        
+        fileexists = os.path.exists('mi_mtz2various.out')
+        if fileexists != 0:
+            os.remove('mi_mtz2various.out')
 
-        os.remove('mi_mtz2various.out')
-        os.remove('mi_runmtz2various.inp')
+        fileexists = os.path.exists('mi_runmtz2various.inp')
+        if fileexists != 0:            
+            os.remove('mi_runmtz2various.inp')
 
     # Clean-up
 
-    os.remove(local_mtzfile)
+    fileexists = os.path.exists(local_mtzfile)
+    if fileexists != 0:
+        os.remove(local_mtzfile)
 
     fileexists = os.path.exists(liganddir)
     if fileexists != 0:
@@ -3524,10 +3519,10 @@ def Run(argv=None):
         if write_hkl != 'no':
             print 'X-ray data deposition file: ',hklfile
 
-        print '\nThe mmCIF sequence/structure/entity mappings will only need adjustment'
+        print '\nThe mmCIF sequence/structure/entity mappings will need adjustment'
         print 'if there is more than one type of protein in the crystal.'
 
-        print '\nThe structure deposition file contains annotation data and coordinates.'
+        print '\nThe mmCIF structure deposition file contains annotation data and coordinates.'
         print 'This file may be deposited to the PDB through the RCSB/PDB ADIT interface'
         print '(http://rcsb-deposit.rutgers.edu/adit/). From the ADIT session ' 
         print 'select file type "mmCIF" and upload the file. After deposition, use the'

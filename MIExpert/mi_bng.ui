@@ -157,14 +157,8 @@
          <string/>
         </property>
         <layout class="QGridLayout" name="gridLayout_2" >
+
          <item row="0" column="0" colspan="2" >
-          <widget class="QCheckBox" name="arpWarpCheckBox" >
-           <property name="text" >
-            <string>ARP/wARP map</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2" colspan="2" >
           <widget class="QCheckBox" name="multipleModelsCheckBox" >
            <property name="text" >
             <string>Search Multiple Models</string>
@@ -201,7 +195,7 @@
          <item row="3" column="0" >
           <widget class="QCheckBox" name="detectorConstantsCheckBox" >
            <property name="text" >
-            <string>Detector constants:</string>
+            <string>Detector Constants:</string>
            </property>
           </widget>
          </item>
@@ -404,13 +398,6 @@
             <item row="1" column="1" >
              <widget class="QComboBox" name="dictionaryComboBox" />
             </item>
-            <item row="2" column="0" >
-             <widget class="QRadioButton" name="fromLigandsDirectoryRadioButton" >
-              <property name="text" >
-               <string>From Ligands Directory</string>
-              </property>
-             </widget>
-            </item>
            </layout>
           </widget>
          </item>
@@ -456,7 +443,6 @@
   <tabstop>preProcessedRadioButton</tabstop>
   <tabstop>dtrekRadioButton</tabstop>
   <tabstop>mosflmRadioButton</tabstop>
-  <tabstop>arpWarpCheckBox</tabstop>
   <tabstop>multipleModelsCheckBox</tabstop>
   <tabstop>detectorConstantsCheckBox</tabstop>
   <tabstop>detectorConstantsLineEdit</tabstop>
@@ -484,7 +470,6 @@
   <tabstop>ligandFilePushButton</tabstop>
   <tabstop>dictionaryRadioButton</tabstop>
   <tabstop>dictionaryComboBox</tabstop>
-  <tabstop>fromLigandsDirectoryRadioButton</tabstop>
  </tabstops>
  <resources/>
  <connections>

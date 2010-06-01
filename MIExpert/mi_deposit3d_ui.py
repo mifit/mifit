@@ -40,7 +40,6 @@ class JobReportDialog(QtGui.QDialog):
             'map_write' : False,
             'map_border' : 0,
             'text_report' : False,
-            'html_report' : False,
             'hkl_write' : False,
 
             'html_report' : False,
@@ -186,7 +185,6 @@ class JobReportDialog(QtGui.QDialog):
             'map_write' : False,
             'map_border' : 0,
             'text_report' : False,
-            'html_report' : False,
             'hkl_write' : False,
 
             'html_report' : False,
@@ -227,6 +225,7 @@ class JobReportDialog(QtGui.QDialog):
         data["map_border"] = self.borderSpinBox.value()
         data["text_report"] = self.textReportCheckBox.isChecked()
         data["hkl_write"] = self.mmCIFDataCheckBox.isChecked()
+        data["html_report"] = self.htmlReportGroupBox.isChecked()        
 
         data["report_title"] = ""
         if self.reportTitleCheckBox.isChecked():

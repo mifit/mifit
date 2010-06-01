@@ -29,17 +29,11 @@ class SadPhasingDialog(QtGui.QDialog):
         data = {
             "workdir" : '',
             "saddatafile" : '',
-
             "sitefile" : 'none',
             "scatterer" : '',
-
             "sitenumber" : -1,
-            "ssnumber" : -1,
-            "separation" : 0,
             "solventfraction" : 0,
-            "siterefinemethod" : '',
             "bothhands" : False,
-
             "spacegroup_no" : 1,
             "change_spacegroup" : False
         }
@@ -61,23 +55,13 @@ class SadPhasingDialog(QtGui.QDialog):
 
         self.workingDirectoryLineEdit.setText(data["workdir"])
         self.intensityDataLineEdit.setText(data["saddatafile"])
-
-        if data["sitefile"] != "none":
-            self.sitesFromFileRadioButton.setChecked(True)
-            self.sitesFromFileLineEdit.setText(data["sitefile"])
+        self.sitesFromFileLineEdit.setText(data["sitefile"])        
 
         data["scatterer"] = str(self.scattererTypeLineEdit.text())
 
         self.numSitesSpinBox.setValue(data["sitenumber"])
-        self.numDisulfidesSpinBox.setValue(data["ssnumber"])
-        self.minScattererSeparationSpinBox.setValue(data["separation"])
         self.solventFractionSpinBox.setValue(data["solventfraction"])
-        if data["siterefinemethod"] == "bp3":
-            self.bp3RadioButton.isChecked(True)
-        else:
-            self.mlphareRadioButton.setChecked(True)
         self.phaseBothSiteEnantiomorphsCheckBox.setChecked(data["bothhands"])
-
         self.changeSpaceGroupCheckBox.setChecked(data["change_spacegroup"])
         self.spaceGroupComboBox.setCurrentIndex(data["spacegroup_no"]-1)
 
@@ -100,11 +84,11 @@ class SadPhasingDialog(QtGui.QDialog):
 
     @QtCore.pyqtSlot()
     def on_intensityDataPushButton_clicked(self):
-        self.browseFile(self.intensityDataLineEdit, "All files (*)")
+        self.browseFile(self.intensityDataLineEdit, "Data files (*.ref *.sca *.mtz)")
 
     @QtCore.pyqtSlot()
     def on_sitesFromFilePushButton_clicked(self):
-        self.browseFile(self.sitesFromFileLineEdit, "All files (*)")
+        self.browseFile(self.sitesFromFileLineEdit, "PDB files, SHELXD files (*.pdb *.res)")
 
 
     def runJob(self):
@@ -112,39 +96,22 @@ class SadPhasingDialog(QtGui.QDialog):
         data = {
             "workdir" : '',
             "saddatafile" : '',
-
             "sitefile" : 'none',
             "scatterer" : '',
-
             "sitenumber" : -1,
-            "ssnumber" : -1,
-            "separation" : 0,
             "solventfraction" : 0,
-            "siterefinemethod" : '',
             "bothhands" : False,
-
             "spacegroup_no" : 1,
             "change_spacegroup" : False
         }
         data["workdir"] = str(self.workingDirectoryLineEdit.text())
         data["saddatafile"] = str(self.intensityDataLineEdit.text())
-
-        data["sitefile"] = "none"
-        if self.sitesFromFileRadioButton.isChecked():
-          data["sitefile"] = str(self.sitesFromFileLineEdit.text())
-
+        data["sitefile"] = str(self.sitesFromFileLineEdit.text())
+        
         data["scatterer"] = str(self.scattererTypeLineEdit.text())
-
         data["sitenumber"] = self.numSitesSpinBox.value()
-        data["ssnumber"] = self.numDisulfidesSpinBox.value()
-        data["separation"] = self.minScattererSeparationSpinBox.value()
         data["solventfraction"] = self.solventFractionSpinBox.value()
-        if self.bp3RadioButton.isChecked():
-          data["siterefinemethod"] = "bp3"
-        else:
-          data["siterefinemethod"] = "mlphare"
         data["bothhands"] = self.phaseBothSiteEnantiomorphsCheckBox.isChecked()
-
         data["change_spacegroup"] = self.changeSpaceGroupCheckBox.isChecked()
         data["spacegroup_no"] = self.spaceGroupComboBox.currentIndex() + 1
 
@@ -155,18 +122,12 @@ class SadPhasingDialog(QtGui.QDialog):
         miexpert = os.path.join(os.path.dirname(sys.argv[0]), "MIExpert.py")
         args = [ sys.executable, miexpert, "sadphase" ]
 
-        args += [ "--molimagehome", buildAbsPath(mifit.mifitDir) ]
         args += [ "--workdir", buildAbsPath(data["workdir"]) ]
         args += [ "--saddatafile", buildAbsPath(data["saddatafile"]) ]
         args += [ "--sitefile", buildAbsPath(data["sitefile"]) ]
         args += [ "--scatterer", data["scatterer"] ]
         args += [ "--sitenumber", str(data["sitenumber"]) ]
-        args += [ "--ssnumber", str(data["ssnumber"]) ]
-        args += [ "--separation", str(data["separation"]) ]
         args += [ "--solventfraction", str(data["solventfraction"]) ]
-        args += [ "--siterefinemethod", data["siterefinemethod"] ]
-        if mifit.shelxDir != None:
-            args += [ "--shelx_dir", buildAbsPath(mifit.shelxDir) ]
         args += [ "--bothhands", boolYesNo(data["bothhands"]) ]
         if data["change_spacegroup"]:
             args += [ "--spacegroup_no", str(data["spacegroup_no"]) ]
@@ -185,7 +146,7 @@ class SadPhasingDialog(QtGui.QDialog):
         thisEnabled = QtCore.QFileInfo(self.intensityDataLineEdit.text()).exists();
         globalEnabled = markEnabled(self.intensityDataLineEdit, thisEnabled, globalEnabled);
 
-        thisEnabled = (not self.sitesFromFileRadioButton.isChecked() or QtCore.QFileInfo(self.sitesFromFileLineEdit.text()).exists())
+        thisEnabled = QtCore.QFileInfo(self.sitesFromFileLineEdit.text()).exists();
         globalEnabled = markEnabled(self.sitesFromFileLineEdit, thisEnabled, globalEnabled);
 
         thisEnabled = not self.scattererTypeLineEdit.text().isEmpty()
