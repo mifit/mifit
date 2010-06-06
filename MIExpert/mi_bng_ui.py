@@ -246,7 +246,7 @@ class BindNGrindDialog(QtGui.QDialog):
 
         config['hklin'] = []
         for i in range(0, self.intensityDataListWidget.count()):
-            config['hklin'] += [ str(self.intensityDataListWidget.text(i)) ]
+            config['hklin'] += [ str(self.intensityDataListWidget.item(i).text()) ]
 
         config['pdbin'] = str(self.modelPDBLineEdit.text())
 
@@ -308,7 +308,8 @@ class BindNGrindDialog(QtGui.QDialog):
         miexpert = os.path.join(os.path.dirname(sys.argv[0]), "MIExpert.py")
         args = [ sys.executable, miexpert, "bng" ]
         args += [ "--molimagehome", str(QtCore.QFileInfo(mifit.mifitDir).absoluteFilePath()) ]
-        args += [ "--hklin", str(QtCore.QFileInfo(config['hklin']).absoluteFilePath()) ]
+        for hklin in config['hklin']:
+            args += [ "--hklin", str(QtCore.QFileInfo(hklin).absoluteFilePath()) ]
         args += [ "--pdbin", str(QtCore.QFileInfo(config['pdbin']).absoluteFilePath()) ]
         args += [ "--process_engine", str(config['process_engine']) ]
 
