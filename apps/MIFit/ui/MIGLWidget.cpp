@@ -4226,10 +4226,11 @@ static Molecule *findMolecule(Displaylist *displaylist, const std::string &str)
 {
     for (std::list<Molecule*>::iterator p = displaylist->begin(); p != displaylist->end(); ++p)
     {
-        if ((*p)->compound.c_str() == str)
-        {
+        if ((*p)->compound == str)
             return *p;
-        }
+
+        if ((*p)->pathname == str)
+            return *p;
     }
     return 0;
 }
@@ -4262,12 +4263,12 @@ void MIGLWidget::OnFitLsqsuperpose()
         return;
 
     MIIter<RESIDUE> res = source->GetResidues();
-    int m_chain = res->chain_id();
+    char m_chain = res->getChainId();
     float tx, ty, tz, x, y, z;
     bool chain_only = data["applyToChain"].b;
     if (chain_only)
     {
-        m_chain = data["chainID"].str[0];
+        m_chain = data["chainId"].str[0];
     }
     // save matrix for later
     LSQMatrix lsq_matrix;
@@ -4298,7 +4299,7 @@ void MIGLWidget::OnFitLsqsuperpose()
     }
     for (; res; ++res)
     {
-        if (chain_only && res->chain_id() != m_chain)
+        if (chain_only && res->getChainId() != m_chain)
         {
             continue;
         }
