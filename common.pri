@@ -1,4 +1,6 @@
-include(conf.pri)
+exists(conf.pri) {
+  include(conf.pri)
+}
 
 !isEmpty(PREFIX) {
   linux {
