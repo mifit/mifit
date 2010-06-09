@@ -1,6 +1,6 @@
 #include "LigDictEntry.h"
 
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Monomer.h>
 
 LigDictEntry::LigDictEntry(chemlib::Residue *r)
     : res(r)

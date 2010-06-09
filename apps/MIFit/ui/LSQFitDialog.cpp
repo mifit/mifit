@@ -4,7 +4,7 @@
 #include "core/corelib.h"
 #include <math/mathlib.h>
 #include "ui/uilib.h"
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Residue.h>
 
 // for getting current displaylist
 #include "ui/MIMainWindow.h"

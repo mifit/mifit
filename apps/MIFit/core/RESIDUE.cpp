@@ -1,7 +1,7 @@
 #define NOMINMAX
 #include <nongui/nonguilib.h>
 #include <chemlib/chemlib.h>
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Monomer.h>
 #include <util/utillib.h>
 #include <map/maplib.h>
 #include <math/mathlib.h>

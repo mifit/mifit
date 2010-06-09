@@ -2,7 +2,7 @@
 
 #include <cstdarg>
 #include <chemlib/chemlib.h>
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Monomer.h>
 #include <conflib/conflib.h>
 #include <map/maplib.h>
 #include <nongui/nonguilib.h>

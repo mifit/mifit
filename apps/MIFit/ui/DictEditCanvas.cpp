@@ -25,7 +25,7 @@
 
 #include <nongui/nonguilib.h>
 #include <chemlib/chemlib.h>
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Monomer.h>
 #include <conflib/conflib.h>
 #include <core/corelib.h>
 #include <util/utillib.h>

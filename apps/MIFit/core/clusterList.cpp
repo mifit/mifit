@@ -1,5 +1,5 @@
 #include <util/utillib.h>
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Monomer.h>
 
 #include "clusterList.h"
 

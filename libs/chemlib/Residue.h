@@ -1,200 +1,165 @@
-#ifndef MONOMER_H
-#define MONOMER_H
+#ifndef MI_RESIDUE_H
+#define MI_RESIDUE_H
 
-#include <algorithm>
-#include <map>
+#include <string>
+
+#include "Residue_fwd.h"
 #include "MIAtom_fwd.h"
 #include "Bond.h"
+#include "ANGLE.h"
+#include "Monomer.h"
+#include "iterator.h"
+#include <util/utillib.h>
 
 namespace chemlib
 {
 
-    class Monomer
+#define MAXNAME 6
+
+
+    class Residue : public Monomer
     {
-
-        typedef std::map<const Monomer*, size_t> MonomerRefCountMap;
-
-        /**
-         * Stores reference counts to objects of this class. Currently,
-         * only increments and decrements in constructor and destructor.
-         * Used to check if object has been deleted with isValid method.
-         */
-        static MonomerRefCountMap refCounts;
-
     public:
+        Residue();
+        ~Residue();
+
+        //copy ctor, only copies single residue (i.e. doesn't follow next())
+        Residue(const Residue &lhs);
+        Residue&operator=(Residue other);
+
+        Residue(const Monomer &lhs);
+
+        Residue *next() const
+        {
+            return next_res;
+        }
+        void setNext(Residue *r)
+        {
+            next_res = r;
+        }
+        Residue *prev() const
+        {
+            return prev_res;
+        }
+        void setPrev(Residue *r)
+        {
+            prev_res = r;
+        }
+
+
+        const std::vector<Bond>&prefBonds() const
+        {
+            return prefbonds;
+        }
+        void addPrefBond(const Bond &b)
+        {
+            prefbonds.push_back(b);
+        }
+        void setPrefBonds(const std::vector<Bond> &bonds)
+        {
+            prefbonds = bonds;
+        }
+        void clearPrefBonds()
+        {
+            prefbonds.clear();
+        }
+
+        const std::vector<ANGLE>&prefAngles() const
+        {
+            return prefangles;
+        }
+        void addPrefAngle(const ANGLE &a)
+        {
+            prefangles.push_back(a);
+        }
+        void setPrefAngles(const std::vector<ANGLE> &angles)
+        {
+            prefangles = angles;
+        }
+        void clearPrefAngles()
+        {
+            prefangles.clear();
+        }
+
+        static MIIterBase<Residue> *getIter(Residue *start)
+        {
+            return new MIDoublyLinkedListIter<Residue>(start);
+        }
 
         /**
-         * Returns whether the given residue is still valid (not been deleted).
+         * Inserts a residue after this residue.
+         * Inserting a NULL is ignored in order to prevent dangling lists.
+         * Inserting multiple residues is supported, if the residue passed
+         * is the head of the list. If the residue contains a link to a
+         * previous residue (namely is not the head of the list), an
+         * MI_ASSERT failure occurs.
+         *
+         * @return residue or the tail of residue if a list
          */
-        static bool isValid(const Monomer *res);
+        Residue *insertResidue(Residue *residue);
 
-        Monomer();
-        Monomer(const Monomer&);
-        Monomer&operator=(const Monomer&);
+        /**
+         * Removes this residue to the given residue from the list.
+         * If the toResidue is NULL, removes just this residue.
+         * In DEBUG, an MI_ASSERT failure occurs if the toResidue is not
+         * found in the list after this residue.
+         *
+         * @return the next residue in the list
+         */
+        Residue *removeFromList(Residue *toResidue = NULL);
 
-        virtual ~Monomer();
+        static void fixnames(Residue *res);
 
-        const MIAtomList&atoms() const
-        {
-            return atoms_;
-        }
-        int atomCount() const
-        {
-            return (int)atoms_.size();
-        }
+        static const std::string liststring(Residue *res);
 
-        MIAtom *atom(size_t index) const
-        {
-            return atoms_[index];
-        }
-        const MIAtom *atomByName(const std::string &name) const;
-        int indexOfAtom(const MIAtom*) const;
+    private:
+        Residue *next_res;
+        Residue *prev_res;
 
-        void setAtoms(const MIAtomList &a);
-        void reserveAtoms(int natoms)
-        {
-            atoms_.reserve(natoms);
-        }
-        void addAtom(MIAtom *atom)
-        {
-            atoms_.push_back(atom);
-        }
-
-        // FIXME: clearAtoms does not delete MIAtom objects. In some places it is used
-        // it probably should.
-        void clearAtoms()
-        {
-            atoms_.clear();
-        }
-        bool removeAtom(MIAtom *a)
-        {
-            bool result = false;
-            MIAtom_iter ai
-                = std::find(atoms_.begin(), atoms_.end(), a);
-            if (ai != atoms_.end())
-            {
-                atoms_.erase(ai);
-                result = true;
-            }
-            return result;
-        }
-
-        const std::string type() const
-        {
-            return type_;
-        }
-        void setType(const std::string &t)
-        {
-            type_ = t;
-        }
-        const std::string name() const
-        {
-            return name_;
-        }
-        void setName(const std::string &n)
-        {
-            name_ = n;
-        }
-        unsigned short linkage_type() const
-        {
-            return linkage_type_;
-        }
-        void set_linkage_type(unsigned short i)
-        {
-            linkage_type_ = i;
-        }
-        void add_linkage_type(unsigned short i)
-        {
-            linkage_type_ |= i;
-        }
-        unsigned short chain_id() const
-        {
-            return chain_id_;
-        }
-        char getChainId() const
-        {
-            return (char)(chain_id_ & 255);
-        }
-        unsigned short getSegmentNumber() const
-        {
-            return chain_id_ / 256;
-        }
-        void set_chain_id(unsigned short i)
-        {
-            chain_id_ = i;
-        }
-        char secstr() const
-        {
-            return secstr_;
-        }
-        void setSecstr(char c)
-        {
-            secstr_ = c;
-        }
-        char name1() const
-        {
-            return name1_;
-        }
-        void setName1(char c)
-        {
-            name1_ = c;
-        }
-        unsigned int seqpos() const
-        {
-            return seqpos_;
-        }
-        void setSeqpos(unsigned int i)
-        {
-            seqpos_ = i;
-        }
-        unsigned short flags() const
-        {
-            return flags_;
-        }
-        void setFlags(unsigned short i)
-        {
-            flags_ = i;
-        }
-        unsigned short confomer() const
-        {
-            return confomer_;
-        }
-        void setConfomer(unsigned short i)
-        {
-            confomer_ = i;
-        }
-
-        float x() const
-        {
-            return x_;
-        }
-        float y() const
-        {
-            return y_;
-        }
-        void setPosition(float x, float y)
-        {
-            x_ = x;
-            y_ = y;
-        }
-
-
-    protected:
-        MIAtomList atoms_;
-        std::string type_;
-        std::string name_;
-        unsigned short linkage_type_;
-        unsigned short chain_id_;
-        char secstr_;
-        char name1_;
-        unsigned int seqpos_;
-        unsigned short flags_;
-        unsigned short confomer_;
-
-        float x_;
-        float y_;
+        std::vector<Bond> prefbonds;
+        std::vector<ANGLE> prefangles;
 
     };
 
-}   //namespace chemlib
-#endif //MONOMER_H
+
+//@{
+// Copy a list of residues, returning a newly allocated list of residues
+//@}
+    Residue *CopyResList(const Residue *oldres);
+
+//@{
+// Finds atoms in a residue with the given name, returns the # of atoms
+// with that name (should always be zero or one, if the names are unique!)
+//@}
+    int CountAtomsByName(const char *atom_name, const Residue *res);
+
+//@{
+// Finds atoms in a residue with the given name, returns the # of atoms
+// with that name (should always be zero or one, if the names are unique!)
+//@}
+    int DupeAtomNames(const chemlib::Residue *res);
+
+
+//@{
+// Delete the memory associated with a residue list.
+//@}
+    void FreeResidueList(Residue *reslist);
+
+//@{
+// Checks that a vector of atom pointers matches up exactly with those
+// in the given residue
+//@}
+    bool AtomVectMatchesRes(const MIAtomList &ptrs, const Residue *res);
+
+/**
+ * Returns the default a pointer to an atom given a pointer to a residue.
+ * For amino acids this is the CA atom, otherwise it returns the first atom.
+ */
+    chemlib::MIAtom *atom_default(const chemlib::Residue *res);
+
+
+}
+
+
+
+#endif // ifndef MI_RESIDUE_H

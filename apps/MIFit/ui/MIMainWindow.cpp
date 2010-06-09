@@ -5,7 +5,7 @@
 #include <QtGui>
 #include <core/Version.h>
 #include <chemlib/chemlib.h>
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Residue.h>
 #include <conflib/conflib.h>
 #include <jobs/jobslib.h>
 #include <util/utillib.h>

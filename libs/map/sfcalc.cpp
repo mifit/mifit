@@ -6,7 +6,7 @@
 #include <nongui/nonguilib.h>
 #include <math/mathlib.h>
 #include <chemlib/chemlib.h>
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Monomer.h>
 
 //all these headers are verified as required
 #include "sfcalc.h"

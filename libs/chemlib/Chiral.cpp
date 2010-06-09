@@ -1,6 +1,6 @@
 #include <vector>
 #include <fstream>
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Monomer.h>
 #include "Chiral.h"
 #include "math_util.h"
 #include "sequence_util.h"

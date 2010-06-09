@@ -1,7 +1,7 @@
 #include "SMILES.h"
 #include "MIMolIOBase.h"
 
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Monomer.h>
 #include "FirstToken.h"
 #include "SmilesReader.h"
 

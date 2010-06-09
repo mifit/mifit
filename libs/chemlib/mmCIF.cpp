@@ -7,7 +7,7 @@
 #include "CifData.h"
 #include "RefmacAtomTyper.h"
 #include <util/system.h>
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Monomer.h>
 #include "mol_util.h"
 #include "atom_util.h"
 

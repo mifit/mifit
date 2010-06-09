@@ -6,7 +6,7 @@
 
 #include <util/system.h>
 #include "Residue.h"
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Residue.h>
 #include "MIMolDictionary.h"
 #include "mol_util.h"
 #include "mol_util_private.h"

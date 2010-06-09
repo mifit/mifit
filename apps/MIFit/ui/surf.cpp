@@ -5,7 +5,7 @@
 
 #include "core/corelib.h"
 #include "uilib.h"
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Residue.h>
 
 //#include <GL/gl.h>
 //#include <GL/glu.h>

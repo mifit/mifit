@@ -1,5 +1,5 @@
 #include "SmilesReader.h"
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Monomer.h>
 
 //#include <ctype.h>
 //#include <algorithm>

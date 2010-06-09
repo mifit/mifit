@@ -2,7 +2,7 @@
 
 #include <nongui/nonguilib.h>
 #include <chemlib/chemlib.h>
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Residue.h>
 #include <chemlib/MIMoleculeBase.h>
 #include <math/mathlib.h>
 

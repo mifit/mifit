@@ -4,7 +4,7 @@
 #include <math/mathlib.h>
 
 
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Monomer.h>
 #include "MIMolIOBase.h"
 #include "PDB.h"
 #include "mol_util.h"

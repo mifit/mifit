@@ -4,7 +4,7 @@
 #include <map/maplib.h>
 #include "core/corelib.h"
 #include <util/utillib.h>
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Residue.h>
 
 #include "EMap.h"
 

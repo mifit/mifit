@@ -46,7 +46,7 @@
 #include <nongui/nonguilib.h>
 #include <math/mathlib.h>
 #include <chemlib/chemlib.h>
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Residue.h>
 #include <conflib/conflib.h>
 #include <map/maplib.h>
 #include "core/corelib.h"

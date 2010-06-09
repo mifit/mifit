@@ -6,7 +6,7 @@
 #include <opengl/Viewport.h>
 
 #include "core/corelib.h"
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Residue.h>
 
 #include "GLOverviewCanvas.h"
 #include "Displaylist.h"

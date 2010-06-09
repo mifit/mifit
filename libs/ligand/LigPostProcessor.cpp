@@ -2,7 +2,7 @@
 
 #include <conflib/conflib.h>
 #include <chemlib/chemlib.h>
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Monomer.h>
 
 using namespace chemlib;
 using namespace std;

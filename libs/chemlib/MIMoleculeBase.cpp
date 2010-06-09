@@ -3,7 +3,7 @@
 #include <nongui/nonguilib.h>
 #include <math/mathlib.h>
 
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Residue.h>
 #include "MIMoleculeBase.h"
 
 #include "PDB.h"

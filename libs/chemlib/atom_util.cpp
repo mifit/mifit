@@ -4,7 +4,7 @@
 #include "atom_util.h"
 #include "math_util.h"
 #include "mol_util.h"
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Monomer.h>
 #include "Matrix.h"
 
 using namespace std;

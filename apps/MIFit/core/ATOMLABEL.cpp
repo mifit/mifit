@@ -1,6 +1,6 @@
 #include "ATOMLABEL.h"
 #include "RESIDUE.h"
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Residue.h>
 
 using namespace chemlib;
 

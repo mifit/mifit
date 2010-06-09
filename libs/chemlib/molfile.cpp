@@ -1,6 +1,6 @@
 #include "molfile.h"
 #include "MIMolIOBase.h"
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Monomer.h>
 #include <util/system.h>
 #include "atom_util.h"
 #include "mol_util.h"

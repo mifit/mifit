@@ -10,7 +10,7 @@
 #include <nongui/nonguilib.h>
 #include <map/maplib.h>
 #include "core/corelib.h"
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Monomer.h>
 #include "GLRenderer.h"
 #include "TargaImage.h"
 #include "EMap.h"

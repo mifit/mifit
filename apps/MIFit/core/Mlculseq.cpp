@@ -10,7 +10,7 @@
 #include "Molecule.h"
 #include "seqtypes.h"
 #include "RESIDUE.h"
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Monomer.h>
 
 using namespace chemlib;
 

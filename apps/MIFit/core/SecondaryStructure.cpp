@@ -4,7 +4,7 @@
 #include "RibbonSegment.h"
 #include "Helix.h"
 #include "RESIDUE.h"
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Monomer.h>
 
 using namespace chemlib;
 

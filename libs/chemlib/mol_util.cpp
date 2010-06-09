@@ -3,7 +3,7 @@
 #include <algorithm>
 
 #include <math/mathlib.h>
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Monomer.h>
 
 #include "mol_util.h"
 #include "atom_util.h"

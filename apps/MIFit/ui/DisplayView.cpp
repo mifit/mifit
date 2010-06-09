@@ -5,7 +5,7 @@
 
 #include "core/corelib.h"
 #include <chemlib/chemlib.h>
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Residue.h>
 
 #include "Displaylist.h"
 #include "DisplayView.h"

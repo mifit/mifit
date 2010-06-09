@@ -19,7 +19,7 @@
 #include <map/maplib.h>
 #include "core/corelib.h"
 #include <nongui/nonguilib.h>
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Monomer.h>
 
 #include "ModelsView.h"
 #include "EMap.h"

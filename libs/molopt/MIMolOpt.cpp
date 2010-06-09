@@ -5,7 +5,7 @@
 #include <nongui/nonguilib.h>
 #include <math/mathlib.h>
 #include <chemlib/chemlib.h>
-#include <chemlib/RESIDUE_.h>
+#include <chemlib/Monomer.h>
 #include <chemlib/MIMoleculeBase.h>
 #include <conflib/conflib.h>
 #include <map/maplib.h>
