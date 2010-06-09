@@ -10408,7 +10408,7 @@ void MIGLWidget::OnShowBackboneAsCATrace()
     std::string at("*");
     molecule->Do();
     molecule->Select(0, 1, 0, 0, resshow, at, NULL, NULL, true, 0, Colors::COLOROFF, 0, 0);
-    molecule->Select(0, 0, 0, 0, resshow, at, NULL, NULL, true, 0, Colors::COLORTYPE, 1, 0);
+    molecule->Select(0, 0, 0, 0, resshow, at, NULL, NULL, true, 0, Colors::COLORON, 1, 0);
     ReDraw();
 }
 
