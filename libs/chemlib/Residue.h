@@ -1,5 +1,5 @@
-#ifndef RESIDUE_H
-#define RESIDUE_H
+#ifndef MONOMER_H
+#define MONOMER_H
 
 #include <algorithm>
 #include <map>
@@ -9,30 +9,30 @@
 namespace chemlib
 {
 
-    class Residue
+    class Monomer
     {
 
-        typedef std::map<const Residue*, size_t> ResidueRefCountMap;
+        typedef std::map<const Monomer*, size_t> MonomerRefCountMap;
 
         /**
          * Stores reference counts to objects of this class. Currently,
          * only increments and decrements in constructor and destructor.
          * Used to check if object has been deleted with isValid method.
          */
-        static ResidueRefCountMap refCounts;
+        static MonomerRefCountMap refCounts;
 
     public:
 
         /**
          * Returns whether the given residue is still valid (not been deleted).
          */
-        static bool isValid(const Residue *res);
+        static bool isValid(const Monomer *res);
 
-        Residue();
-        Residue(const Residue&);
-        Residue&operator=(const Residue&);
+        Monomer();
+        Monomer(const Monomer&);
+        Monomer&operator=(const Monomer&);
 
-        virtual ~Residue();
+        virtual ~Monomer();
 
         const MIAtomList&atoms() const
         {
@@ -197,4 +197,4 @@ namespace chemlib
     };
 
 }   //namespace chemlib
-#endif //RESIDUE_H
+#endif //MONOMER_H

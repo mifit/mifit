@@ -89,10 +89,10 @@ std::vector<float> Box::Dimensions()
 // Output:      Constructs a box that surrounds all the atoms in the input residues
 // Requires:
 /////////////////////////////////////////////////////////////////////////////
-Box::Box(const std::vector<Residue*> &residues, float margin)
+Box::Box(const std::vector<Monomer*> &residues, float margin)
 {
 
-    std::vector<Residue*>::const_iterator res;
+    std::vector<Monomer*>::const_iterator res;
     bool first = true;                                          //Flags the first time through
     float x, y, z;
     unsigned int i;

@@ -371,7 +371,7 @@ int LigRefiner::resetderivatives()
     {
         return 0;
     }
-    Residue *res;
+    Monomer *res;
     unsigned int i;
     unsigned int n = 0;
     while (n < RefiRes.size())
@@ -393,7 +393,7 @@ int LigRefiner::applyderivatives()
     {
         return 0;
     }
-    Residue *res;
+    Monomer *res;
     unsigned int i;
     MIAtom *a;
     float dx, dy, dz;
@@ -450,13 +450,13 @@ int LigRefiner::applyderivatives()
     return 1;
 }
 
-void LigRefiner::AddRefiRes(Residue *res)
+void LigRefiner::AddRefiRes(Monomer *res)
 {
     RefiRes.push_back(res);
 }
 
-long LigRefiner::SetRefiRes(std::vector<Residue*>::iterator res1,
-                            std::vector<Residue*>::iterator res2)
+long LigRefiner::SetRefiRes(std::vector<Monomer*>::iterator res1,
+                            std::vector<Monomer*>::iterator res2)
 {
     RefiRes.assign(res1, res2);
     return RefiRes.size();
@@ -479,7 +479,7 @@ inline bool LigandRefiner_IsHydrogen(const MIAtom *atom)
 
 int LigRefiner::BuildBumps()
 {
-    Residue *res, *res2;
+    Monomer *res, *res2;
     MIAtom *a1, *a2;
     Bump bond;
     unsigned int n2;

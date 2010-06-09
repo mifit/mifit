@@ -47,8 +47,8 @@ bool PDB::Read(FILE *fp, MIMolInfo &mol)
     mol = foo;
     mol.res = 0;
 
-    RESIDUE *tmp_res = LoadPDB(fp, &connects);
-    if (!Residue::isValid(tmp_res))
+    Residue *tmp_res = LoadPDB(fp, &connects);
+    if (!Monomer::isValid(tmp_res))
     {
         return false;
     }
@@ -76,7 +76,7 @@ bool PDB::Read(FILE *fp, MIMolInfo &mol)
     }
 
     tmp_res->setPrefBonds(tmp_bonds);
-    mol.res = new RESIDUE(*tmp_res);
+    mol.res = new Residue(*tmp_res);
     mol.bonds = mol.res->prefBonds();
     mol.res->clearPrefBonds();
     mol.res->clearPrefAngles();
@@ -104,7 +104,7 @@ void MISetIgnoreDummyAtomsOnLoad(bool ignore)
     IGNORE_DUMMY = ignore;
 }
 
-RESIDUE *LoadPDB(FILE *f, std::vector<Bond> *connects)
+Residue *LoadPDB(FILE *f, std::vector<Bond> *connects)
 {
 #define column(n) (linebuf+(n)-1)
     char linebuf[200];
@@ -124,7 +124,7 @@ RESIDUE *LoadPDB(FILE *f, std::vector<Bond> *connects)
     int is_atom, is_hetatm;
     long na = 0, n = 0, i, ii;
     int U11, U22, U33, U12, U13, U23;
-    RESIDUE *res, *res1;
+    Residue *res, *res1;
     int j, ia[11], lb;
     static int modelno = -1;
     MIAtom *atom;
@@ -134,7 +134,7 @@ RESIDUE *LoadPDB(FILE *f, std::vector<Bond> *connects)
     atoms.clear();
     connects->clear();
 
-    if (NULL == (res = new RESIDUE()))
+    if (NULL == (res = new Residue()))
     {
         return (NULL);
     }
@@ -268,7 +268,7 @@ RESIDUE *LoadPDB(FILE *f, std::vector<Bond> *connects)
                 }
                 res->set_linkage_type(MIDDLE);
                 res->setSecstr('U');
-                res = res->insertResidue(new RESIDUE());
+                res = res->insertResidue(new Residue());
                 res->setName(rname);
                 res->setType(rtype);
                 res->set_chain_id(bonding_group);
@@ -391,14 +391,14 @@ RESIDUE *LoadPDB(FILE *f, std::vector<Bond> *connects)
     return (res1);
 }
 
-bool SavePDB(FILE *fp, RESIDUE *res, Bond *Connects, int nConnects, bool mark_end, std::vector<std::string> *head, std::vector<std::string> *tail)
+bool SavePDB(FILE *fp, Residue *res, Bond *Connects, int nConnects, bool mark_end, std::vector<std::string> *head, std::vector<std::string> *tail)
 {
     /* if nconnects negative then save only visible atoms
      */
     char buf[200];
     char chainid, recid[7];
     int n = 0, nchain = 0;
-    RESIDUE *residue;
+    Residue *residue;
     //float occupancy = 1.0;
     //float Bvalue = 15.0;
     if (head != NULL)

@@ -106,7 +106,7 @@ void InterpBox::Init()
     }
 }
 
-void InterpBox::ZeroModel(RESIDUE *res)
+void InterpBox::ZeroModel(Residue *res)
 {
     // zeroes out the density in a radius around each atom
     MIAtom *a;
@@ -119,7 +119,7 @@ void InterpBox::ZeroModel(RESIDUE *res)
     int iix, iiy, iiz;
     int index;
     float r;
-    while (Residue::isValid(res))
+    while (Monomer::isValid(res))
     {
         for (int i = 0; i < res->atomCount(); i++)
         {

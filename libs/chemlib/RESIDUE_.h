@@ -17,31 +17,31 @@ namespace chemlib
 #define MAXNAME 6
 
 
-    class RESIDUE : public Residue
+    class Residue : public Monomer
     {
     public:
-        RESIDUE();
-        ~RESIDUE();
+        Residue();
+        ~Residue();
 
         //copy ctor, only copies single residue (i.e. doesn't follow next())
-        RESIDUE(const RESIDUE &lhs);
-        RESIDUE&operator=(RESIDUE other);
+        Residue(const Residue &lhs);
+        Residue&operator=(Residue other);
 
-        RESIDUE(const Residue &lhs);
+        Residue(const Monomer &lhs);
 
-        RESIDUE *next() const
+        Residue *next() const
         {
             return next_res;
         }
-        void setNext(RESIDUE *r)
+        void setNext(Residue *r)
         {
             next_res = r;
         }
-        RESIDUE *prev() const
+        Residue *prev() const
         {
             return prev_res;
         }
-        void setPrev(RESIDUE *r)
+        void setPrev(Residue *r)
         {
             prev_res = r;
         }
@@ -81,9 +81,9 @@ namespace chemlib
             prefangles.clear();
         }
 
-        static MIIterBase<RESIDUE> *getIter(RESIDUE *start)
+        static MIIterBase<Residue> *getIter(Residue *start)
         {
-            return new MIDoublyLinkedListIter<RESIDUE>(start);
+            return new MIDoublyLinkedListIter<Residue>(start);
         }
 
         /**
@@ -96,7 +96,7 @@ namespace chemlib
          *
          * @return residue or the tail of residue if a list
          */
-        RESIDUE *insertResidue(RESIDUE *residue);
+        Residue *insertResidue(Residue *residue);
 
         /**
          * Removes this residue to the given residue from the list.
@@ -106,15 +106,15 @@ namespace chemlib
          *
          * @return the next residue in the list
          */
-        RESIDUE *removeFromList(RESIDUE *toResidue = NULL);
+        Residue *removeFromList(Residue *toResidue = NULL);
 
-        static void fixnames(RESIDUE *res);
+        static void fixnames(Residue *res);
 
-        static const std::string liststring(RESIDUE *res);
+        static const std::string liststring(Residue *res);
 
     private:
-        RESIDUE *next_res;
-        RESIDUE *prev_res;
+        Residue *next_res;
+        Residue *prev_res;
 
         std::vector<Bond> prefbonds;
         std::vector<ANGLE> prefangles;
@@ -125,37 +125,37 @@ namespace chemlib
 //@{
 // Copy a list of residues, returning a newly allocated list of residues
 //@}
-    RESIDUE *CopyResList(const RESIDUE *oldres);
+    Residue *CopyResList(const Residue *oldres);
 
 //@{
 // Finds atoms in a residue with the given name, returns the # of atoms
 // with that name (should always be zero or one, if the names are unique!)
 //@}
-    int CountAtomsByName(const char *atom_name, const RESIDUE *res);
+    int CountAtomsByName(const char *atom_name, const Residue *res);
 
 //@{
 // Finds atoms in a residue with the given name, returns the # of atoms
 // with that name (should always be zero or one, if the names are unique!)
 //@}
-    int DupeAtomNames(const chemlib::RESIDUE *res);
+    int DupeAtomNames(const chemlib::Residue *res);
 
 
 //@{
 // Delete the memory associated with a residue list.
 //@}
-    void FreeResidueList(RESIDUE *reslist);
+    void FreeResidueList(Residue *reslist);
 
 //@{
 // Checks that a vector of atom pointers matches up exactly with those
 // in the given residue
 //@}
-    bool AtomVectMatchesRes(const MIAtomList &ptrs, const RESIDUE *res);
+    bool AtomVectMatchesRes(const MIAtomList &ptrs, const Residue *res);
 
 /**
  * Returns the default a pointer to an atom given a pointer to a residue.
  * For amino acids this is the CA atom, otherwise it returns the first atom.
  */
-    chemlib::MIAtom *atom_default(const chemlib::RESIDUE *res);
+    chemlib::MIAtom *atom_default(const chemlib::Residue *res);
 
 
 }

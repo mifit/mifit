@@ -11,7 +11,7 @@ namespace chemlib
     class RefmacAtomTyper : public AtomTyper
     {
     public:
-        RefmacAtomTyper(const RESIDUE &res, const std::vector<Bond> &bonds);
+        RefmacAtomTyper(const Residue &res, const std::vector<Bond> &bonds);
 
         virtual char *AtomType(const MIAtom *atom) const;
 

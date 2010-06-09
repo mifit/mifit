@@ -62,7 +62,7 @@ namespace chemlib
         MIAtom *atom3;
         float ideal_angle;
         float tolerance;
-        const Residue *res;               //The residue the bond is from
+        const Monomer *res;               //The residue the bond is from
         int iscyclic;               //True if all three atoms are in the same ring system
         int isaromatic;             //True if all three atoms are in the same aromatic system
         int ring_system;                //Index of the ring system, -1 for acyclic angles
@@ -157,12 +157,12 @@ namespace chemlib
             _tol_set = true;
         }
 
-        const Residue *GetResidue()
+        const Monomer *GetResidue()
         {
             return _res;
         }
 
-        void SetResidue(const Residue *r)
+        void SetResidue(const Monomer *r)
         {
             _res = r;
         }
@@ -173,12 +173,12 @@ namespace chemlib
         MIAtomList atoms;
         float _tolerance;
         bool _tol_set;
-        const Residue *_res;
+        const Monomer *_res;
 
     private:
         friend class Ligand;
         PLANE ToPLANE(const MIAtomList&, const std::vector<const MIAtom*>&,
-                      const std::vector<RESIDUE*>&, const std::vector<const Residue*>&);
+                      const std::vector<Residue*>&, const std::vector<const Monomer*>&);
     };
 
 
@@ -191,12 +191,12 @@ namespace chemlib
         void SetIndex(int);
         void Card(std::string&);
 
-        const Residue *GetResidue()
+        const Monomer *GetResidue()
         {
             return _res;
         }
 
-        void SetResidue(const Residue *r)
+        void SetResidue(const Monomer *r)
         {
             _res = r;
         }
@@ -205,12 +205,12 @@ namespace chemlib
     protected:
         MIAtomList atoms;
         int _torsnumber;
-        const Residue *_res;
+        const Monomer *_res;
 
     private:
         friend class Ligand;
         TORSION ToTORSION(const MIAtomList&, const std::vector<const MIAtom*>&,
-                          const std::vector<RESIDUE*>&, const std::vector<const Residue*>&);
+                          const std::vector<Residue*>&, const std::vector<const Monomer*>&);
     };
 
     class Improper
@@ -256,12 +256,12 @@ namespace chemlib
         bool operator==(const Improper &imp2) const;
         double ConvertToDistance(const ConstraintList &geom) const;
 
-        const Residue *GetResidue()
+        const Monomer *GetResidue()
         {
             return _res;
         }
 
-        void SetResidue(const Residue *r)
+        void SetResidue(const Monomer *r)
         {
             _res = r;
         }
@@ -271,12 +271,12 @@ namespace chemlib
         std::vector<double> _angles;                //The allowable dihedral angle(s) (in degrees)
         int _impnumber;
         bool _dict_include;                     //False for imps used only in smiles2pdb, not in dict
-        const Residue *_res;
+        const Monomer *_res;
 
     private:
         friend class Ligand;
         TORSION ToTORSION(const MIAtomList&, const std::vector<const MIAtom*>&,
-                          const std::vector<RESIDUE*>&, const std::vector<const Residue*>&);
+                          const std::vector<Residue*>&, const std::vector<const Monomer*>&);
 
     };
 

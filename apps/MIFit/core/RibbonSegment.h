@@ -4,7 +4,7 @@
 #include <string>
 
 namespace chemlib
-{class RESIDUE;
+{class Residue;
 }
 class RibbonSpan;
 
@@ -20,7 +20,7 @@ public:
     //Methods
     bool DeleteAllSpans(void);
     bool RibbonProfile(double dWidth, double dThick, bool bSquare, int nPoints, int nSteps);
-    bool MakeRibbon(chemlib::RESIDUE *pFirstResidue, int nResidues);
+    bool MakeRibbon(chemlib::Residue *pFirstResidue, int nResidues);
     bool SetColor(unsigned char bRed, unsigned char bGreen, unsigned char bBlue);
 
 private:

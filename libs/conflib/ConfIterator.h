@@ -35,7 +35,7 @@ namespace conflib
     {
     public:
         //Constructor
-        ConfEnumerator(chemlib::RESIDUE *res, std::vector<chemlib::Bond> &bonds, std::vector<chemlib::TORSION> &torsions);
+        ConfEnumerator(chemlib::Residue *res, std::vector<chemlib::Bond> &bonds, std::vector<chemlib::TORSION> &torsions);
 
         //Destructor
         virtual ~ConfEnumerator();
@@ -57,7 +57,7 @@ namespace conflib
             return _nTheory;
         }
 
-        chemlib::RESIDUE *_res;
+        chemlib::Residue *_res;
 
     private:
         int _nTry;
@@ -84,7 +84,7 @@ namespace conflib
     {
     public:
         //Constructor
-        ConfSampler(chemlib::RESIDUE *res, std::vector<chemlib::Bond> &bonds, std::vector<chemlib::TORSION> &torsions);
+        ConfSampler(chemlib::Residue *res, std::vector<chemlib::Bond> &bonds, std::vector<chemlib::TORSION> &torsions);
 
         //Destructor
         virtual ~ConfSampler();
@@ -106,7 +106,7 @@ namespace conflib
             return -1;
         }
 
-        chemlib::RESIDUE *_res;
+        chemlib::Residue *_res;
 
     private:
         std::vector<FlexTorsion> _flexors;

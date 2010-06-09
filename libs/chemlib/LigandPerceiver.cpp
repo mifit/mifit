@@ -12,14 +12,14 @@ namespace chemlib
 
 void LigandPerceiver::AssignImpHydrogens(Ligand *lig)
 {
-    std::vector<Residue*>::iterator res;
+    std::vector<Monomer*>::iterator res;
     for (res = lig->residues.begin(); res != lig->residues.end(); ++res)
     {
         AssignImpHydrogens(**res, lig->bonds);
     }
 }
 
-void LigandPerceiver::AssignImpHydrogens(Residue &res, const std::vector<Bond> bonds)
+void LigandPerceiver::AssignImpHydrogens(Monomer &res, const std::vector<Bond> bonds)
 {
     unsigned int i;
     for (i = 0; i < res.atoms().size(); ++i)
@@ -87,14 +87,14 @@ void LigandPerceiver::AssignImpHydrogens(MIAtom &atom, const std::vector<Bond> b
 
 void LigandPerceiver::AssignChirality(Ligand *lig)
 {
-    std::vector<Residue*>::iterator res;
+    std::vector<Monomer*>::iterator res;
     for (res = lig->residues.begin(); res != lig->residues.end(); ++res)
     {
         AssignChirality(**res, lig);
     }
 }
 
-void LigandPerceiver::AssignChirality(Residue &res, Ligand*)
+void LigandPerceiver::AssignChirality(Monomer &res, Ligand*)
 {
     unsigned int i;
     for (i = 0; i < res.atoms().size(); ++i)
@@ -157,14 +157,14 @@ int LigandPerceiver::DefaultChiralClass(MIAtom &atom)
 void LigandPerceiver::AssignHybridization(Ligand *lig)
 {
 
-    std::vector<Residue*>::iterator res;
+    std::vector<Monomer*>::iterator res;
     for (res = lig->residues.begin(); res != lig->residues.end(); ++res)
     {
         AssignHybridization(**res, lig);
     }
 }
 
-void LigandPerceiver::AssignHybridization(Residue &res, Ligand *lig)
+void LigandPerceiver::AssignHybridization(Monomer &res, Ligand *lig)
 {
 
     MIAtom *atm;
@@ -344,14 +344,14 @@ void LigandPerceiver::AdjustHybridization(MIAtom *atm, Ligand *lig)
 
 void LigandPerceiver::AssignAtomGeom(Ligand *lig)
 {
-    std::vector<Residue*>::iterator res;
+    std::vector<Monomer*>::iterator res;
     for (res = lig->residues.begin(); res != lig->residues.end(); ++res)
     {
         AssignAtomGeom(**res);
     }
 }
 
-void LigandPerceiver::AssignAtomGeom(Residue &res)
+void LigandPerceiver::AssignAtomGeom(Monomer &res)
 {
 
     unsigned int i;

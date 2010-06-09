@@ -9,7 +9,7 @@
 namespace chemlib
 {
 
-RESIDUE*RESIDUE::insertResidue(RESIDUE *residue)
+Residue*Residue::insertResidue(Residue *residue)
 {
     MI_ASSERT(residue != NULL);
     if (residue == NULL)
@@ -17,10 +17,10 @@ RESIDUE*RESIDUE::insertResidue(RESIDUE *residue)
         return NULL;
     }
     MI_ASSERT(residue->prev_res == NULL);
-    RESIDUE *formerNext = next_res;
+    Residue *formerNext = next_res;
     next_res = residue;
     residue->prev_res = this;
-    RESIDUE *residueTail = residue;
+    Residue *residueTail = residue;
     while (residueTail->next_res != NULL)
     {
         residueTail = residueTail->next_res;
@@ -33,7 +33,7 @@ RESIDUE*RESIDUE::insertResidue(RESIDUE *residue)
     return residueTail;
 }
 
-RESIDUE*RESIDUE::removeFromList(RESIDUE *toResidue)
+Residue*Residue::removeFromList(Residue *toResidue)
 {
     if (toResidue == NULL)
     {
@@ -43,7 +43,7 @@ RESIDUE*RESIDUE::removeFromList(RESIDUE *toResidue)
     {
 #if DEBUG
         // Ensure that toResidue follows this residue in list
-        RESIDUE *res = this;
+        Residue *res = this;
         while (res != NULL && res != toResidue)
         {
             res = res->next_res;
@@ -59,16 +59,16 @@ RESIDUE*RESIDUE::removeFromList(RESIDUE *toResidue)
     {
         toResidue->next_res->prev_res = prev_res;
     }
-    RESIDUE *result = toResidue->next_res;
+    Residue *result = toResidue->next_res;
     prev_res = NULL;
     toResidue->next_res = NULL;
     return result;
 }
 
-void FreeResidueList(RESIDUE *reslist)
+void FreeResidueList(Residue *reslist)
 {
-    RESIDUE *res;
-    while (Residue::isValid(reslist))
+    Residue *res;
+    while (Monomer::isValid(reslist))
     {
         res = reslist->next();
         delete reslist;
@@ -76,9 +76,9 @@ void FreeResidueList(RESIDUE *reslist)
     }
 }
 
-int CountAtomsByName(const char *atom_name, const RESIDUE *res)
+int CountAtomsByName(const char *atom_name, const Residue *res)
 {
-    if (!Residue::isValid(res))
+    if (!Monomer::isValid(res))
     {
         return 0;
     }
@@ -93,9 +93,9 @@ int CountAtomsByName(const char *atom_name, const RESIDUE *res)
     return n;
 }
 
-int DupeAtomNames(const RESIDUE *res)
+int DupeAtomNames(const Residue *res)
 {
-    if (!Residue::isValid(res))
+    if (!Monomer::isValid(res))
     {
         return 0;
     }
@@ -110,15 +110,15 @@ int DupeAtomNames(const RESIDUE *res)
     return n;
 }
 
-RESIDUE *CopyResList(const RESIDUE *oldres)
+Residue *CopyResList(const Residue *oldres)
 {
-    RESIDUE *current = NULL;
-    RESIDUE *prev = NULL;
-    RESIDUE *start = NULL;
+    Residue *current = NULL;
+    Residue *prev = NULL;
+    Residue *start = NULL;
 
-    while (Residue::isValid(oldres))
+    while (Monomer::isValid(oldres))
     {
-        current = new RESIDUE(*oldres);
+        current = new Residue(*oldres);
         if (prev)
         {
             prev->setNext(current);
@@ -138,15 +138,15 @@ RESIDUE *CopyResList(const RESIDUE *oldres)
     return start;
 }
 
-RESIDUE::RESIDUE()
-    : Residue(),
+Residue::Residue()
+    : Monomer(),
       next_res(NULL),
       prev_res(NULL)
 {
 }
 
-RESIDUE::RESIDUE(const RESIDUE &lhs)
-    : Residue(lhs),
+Residue::Residue(const Residue &lhs)
+    : Monomer(lhs),
       next_res(NULL),
       prev_res(NULL)
 {
@@ -186,7 +186,7 @@ RESIDUE::RESIDUE(const RESIDUE &lhs)
     }
 }
 
-RESIDUE&RESIDUE::operator=(RESIDUE other)
+Residue&Residue::operator=(Residue other)
 {
     using std::swap;
 
@@ -194,12 +194,12 @@ RESIDUE&RESIDUE::operator=(RESIDUE other)
     return *this;
 }
 
-RESIDUE::~RESIDUE()
+Residue::~Residue()
 {
 }
 
-RESIDUE::RESIDUE(const Residue &r)
-    : Residue(r),
+Residue::Residue(const Monomer &r)
+    : Monomer(r),
       next_res(NULL),
       prev_res(NULL)
 {
@@ -216,9 +216,9 @@ RESIDUE::RESIDUE(const Residue &r)
 //        same atoms
 // Requires:
 /////////////////////////////////////////////////////////////////////////////
-bool AtomVectMatchesRes(const MIAtomList &ptrs, const RESIDUE *res)
+bool AtomVectMatchesRes(const MIAtomList &ptrs, const Residue *res)
 {
-    if (!Residue::isValid(res))
+    if (!Monomer::isValid(res))
     {
         return false;
     }
@@ -238,9 +238,9 @@ bool AtomVectMatchesRes(const MIAtomList &ptrs, const RESIDUE *res)
     return true;
 }
 
-void PrintResidueDebugInfo(RESIDUE *res1)
+void PrintResidueDebugInfo(Residue *res1)
 {
-    if (!Residue::isValid(res1))
+    if (!Monomer::isValid(res1))
     {
         return;
     }
@@ -257,9 +257,9 @@ void PrintResidueDebugInfo(RESIDUE *res1)
     }
 }
 
-chemlib::MIAtom *atom_default(const chemlib::RESIDUE *res)
+chemlib::MIAtom *atom_default(const chemlib::Residue *res)
 {
-    if (!Residue::isValid(res))
+    if (!Monomer::isValid(res))
     {
         return NULL;
     }
@@ -300,7 +300,7 @@ static void fixname(std::string &name)
     name = std::string(buf);
 }
 
-void RESIDUE::fixnames(RESIDUE *res)
+void Residue::fixnames(Residue *res)
 {
     fixname(res->name_);
     fixname(res->type_);
@@ -310,7 +310,7 @@ void RESIDUE::fixnames(RESIDUE *res)
     }
 }
 
-const std::string RESIDUE::liststring(RESIDUE *res)
+const std::string Residue::liststring(Residue *res)
 {
     char chainid;
     int chainno;

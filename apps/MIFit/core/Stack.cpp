@@ -27,24 +27,24 @@ void Stack::moleculeToBeDeleted(MIMoleculeBase *mol)
     // Purge may not delete everything, if there was an atom pushed on the
     // stack where mol and/or res was null, the stack might still have a ref
     // to it, so we have to try harder
-    std::vector<RESIDUE*> residues;
-    for (MIIter<RESIDUE> res = mol->GetResidues(); res; ++res)
+    std::vector<Residue*> residues;
+    for (MIIter<Residue> res = mol->GetResidues(); res; ++res)
     {
         residues.push_back(res);
     }
-    for (MIIter<RESIDUE> res = mol->GetSymmResidues(); res; ++res)
+    for (MIIter<Residue> res = mol->GetSymmResidues(); res; ++res)
     {
         residues.push_back(res);
     }
     residuesToBeDeleted(mol, residues);
 }
 
-void Stack::residuesToBeDeleted(MIMoleculeBase *mol, std::vector<RESIDUE*> &residues)
+void Stack::residuesToBeDeleted(MIMoleculeBase *mol, std::vector<Residue*> &residues)
 {
-    std::vector<RESIDUE*>::iterator iter;
+    std::vector<Residue*>::iterator iter;
     for (iter = residues.begin(); iter != residues.end(); ++iter)
     {
-        RESIDUE *residue = *iter;
+        Residue *residue = *iter;
         Purge(residue);
     }
 
@@ -69,9 +69,9 @@ void Stack::atomsToBeDeleted(MIMoleculeBase*, const MIAtomList &atoms)
 }
 
 
-void Stack::Push(MIAtom *atom, RESIDUE *res, Molecule *m)
+void Stack::Push(MIAtom *atom, Residue *res, Molecule *m)
 {
-    if (!MIAtom::isValid(atom) || !Residue::isValid(res) || !MIMoleculeBase::isValid(m))
+    if (!MIAtom::isValid(atom) || !Monomer::isValid(res) || !MIMoleculeBase::isValid(m))
     {
         return;
     }
@@ -88,7 +88,7 @@ void Stack::Push(MIAtom *atom, RESIDUE *res, Molecule *m)
     }
 }
 
-void Stack::Pop(MIAtom* &atom, RESIDUE* &res)
+void Stack::Pop(MIAtom* &atom, Residue* &res)
 {
     if (data.size() == 0)
     {
@@ -102,7 +102,7 @@ void Stack::Pop(MIAtom* &atom, RESIDUE* &res)
     res = item.residue;
 }
 
-void Stack::Pop(MIAtom* &atom, RESIDUE* &res, Molecule* &m)
+void Stack::Pop(MIAtom* &atom, Residue* &res, Molecule* &m)
 {
     if (data.size() == 0)
     {
@@ -140,7 +140,7 @@ void Stack::dataPop()
     }
 }
 
-void Stack::Peek(MIAtom* &atom, RESIDUE* &res, Molecule* &m)
+void Stack::Peek(MIAtom* &atom, Residue* &res, Molecule* &m)
 {
     if (data.size() == 0)
     {
@@ -169,7 +169,7 @@ void Stack::ExpandTopAllAtoms()
 {
     MIAtom *a;
     Molecule *m;
-    RESIDUE *r;
+    Residue *r;
     Pop(a, r, m);
 
     if (a && a->type() & AtomType::SYMMATOM)
@@ -190,7 +190,7 @@ void Stack::ExpandTop2AllAtoms()
     MIAtom *a1;
     MIAtom *a2;
     Molecule *m1, *m2;
-    RESIDUE *r1, *r2;
+    Residue *r1, *r2;
     Pop(a1, r1, m1);
     Pop(a2, r2, m2);
     if (m1 != m2)
@@ -221,8 +221,8 @@ void Stack::ExpandTop2AllAtoms()
         }
         return;
     }
-    MIIterBase<RESIDUE> *rip = 0;
-    MIIter<RESIDUE> res = rip, ri_beg = rip, ri_end = rip;
+    MIIterBase<Residue> *rip = 0;
+    MIIter<Residue> res = rip, ri_beg = rip, ri_end = rip;
     for (res = m1->GetResidues(); res; ++res)
     {
         if (res == r1)
@@ -256,7 +256,7 @@ void Stack::ExpandTop2AllAtoms()
         {
             Push(res->atom(i), res, m2);
         }
-        if ((RESIDUE*)res == (RESIDUE*)ri_end)
+        if ((Residue*)res == (Residue*)ri_end)
         {
             break;
         }
@@ -267,7 +267,7 @@ void Stack::ExpandTop2Range()
 {
     MIAtom *a1, *a2, *a;
     Molecule *m1, *m2;
-    RESIDUE *r1, *r2;
+    Residue *r1, *r2;
     Pop(a1, r1, m1);
     Pop(a2, r2, m2);
     if (m1 != m2)
@@ -301,8 +301,8 @@ void Stack::ExpandTop2Range()
         return;
     }
 
-    MIIterBase<RESIDUE> *rip = 0;
-    MIIter<RESIDUE> res = rip, ri_beg = rip, ri_end = rip;
+    MIIterBase<Residue> *rip = 0;
+    MIIter<Residue> res = rip, ri_beg = rip, ri_end = rip;
     for (res = m1->GetResidues(); res; ++res)
     {
         if (res == r1)
@@ -341,14 +341,14 @@ void Stack::ExpandTop2Range()
         {
             Push(res->atom(0), res, m2);
         }
-        if ((RESIDUE*)res == (RESIDUE*)ri_end)
+        if ((Residue*)res == (Residue*)ri_end)
         {
             break;
         }
     }
 }
 
-bool Stack::InStack(RESIDUE *res)
+bool Stack::InStack(Residue *res)
 {
     DataContainer::iterator iter = data.begin();
     while (iter != data.end())
@@ -380,7 +380,7 @@ void Stack::Purge(MIMoleculeBase *model)
     }
 }
 
-void Stack::Purge(RESIDUE *res)
+void Stack::Purge(Residue *res)
 {
     DataContainer::iterator iter = data.begin();
     while (iter != data.end())

@@ -28,7 +28,7 @@ SecondaryStructure::~SecondaryStructure()
 
 #define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
 
-bool SecondaryStructure::AddRibbonSegment(RESIDUE *pFirstResidue, int nResidues)
+bool SecondaryStructure::AddRibbonSegment(Residue *pFirstResidue, int nResidues)
 {
     RibbonSegment *pNewRSeg = new RibbonSegment();
     double width;
@@ -70,10 +70,10 @@ bool SecondaryStructure::AddRibbonSegment(RESIDUE *pFirstResidue, int nResidues)
 }
 
 bool SecondaryStructure::AddSchematic(chemlib::MIMoleculeBase *mol,
-                                      std::vector<std::pair<chemlib::RESIDUE*, chemlib::RESIDUE*> > &pHelix,
-                                      std::vector<std::pair<chemlib::RESIDUE*, chemlib::RESIDUE*> > &pSheet,
-                                      std::vector<std::pair<chemlib::RESIDUE*, chemlib::RESIDUE*> > &pTurn,
-                                      std::vector<std::pair<chemlib::RESIDUE*, chemlib::RESIDUE*> > &pRandom)
+                                      std::vector<std::pair<chemlib::Residue*, chemlib::Residue*> > &pHelix,
+                                      std::vector<std::pair<chemlib::Residue*, chemlib::Residue*> > &pSheet,
+                                      std::vector<std::pair<chemlib::Residue*, chemlib::Residue*> > &pTurn,
+                                      std::vector<std::pair<chemlib::Residue*, chemlib::Residue*> > &pRandom)
 {
 
     //First do the helices
@@ -113,7 +113,7 @@ bool SecondaryStructure::AddSchematic(chemlib::MIMoleculeBase *mol,
     {
         //Ribbon stuff expexts start and number
         int nResidues = 1;
-        MIIter<RESIDUE> res = RESIDUE::getIter(pSheet[i].first);
+        MIIter<Residue> res = Residue::getIter(pSheet[i].first);
         for (; (bool) res && res != pSheet[i].second; ++res)
         {
             nResidues++;
@@ -156,7 +156,7 @@ bool SecondaryStructure::AddSchematic(chemlib::MIMoleculeBase *mol,
     {
         //Ribbon stuff expexts start and number
         int nResidues = 1;
-        MIIter<RESIDUE> res = RESIDUE::getIter(pTurn[i].first);
+        MIIter<Residue> res = Residue::getIter(pTurn[i].first);
         for (; (bool) res && res != pTurn[i].second; ++res)
         {
             nResidues++;
@@ -200,7 +200,7 @@ bool SecondaryStructure::AddSchematic(chemlib::MIMoleculeBase *mol,
     {
         //Ribbon stuff expexts start and number
         int nResidues = 1;
-        MIIter<RESIDUE> res = RESIDUE::getIter(pRandom[i].first);
+        MIIter<Residue> res = Residue::getIter(pRandom[i].first);
         for (; (bool) res && res != pRandom[i].second; ++res)
         {
             nResidues++;

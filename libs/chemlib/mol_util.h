@@ -48,10 +48,10 @@ namespace chemlib
 // Copy the coordinates from one residue to another, using atom names
 // to match corresponding atoms.  OK if atoms are ordered differently
 //@}
-    bool MICopyCoords(RESIDUE *target, const RESIDUE *source);
+    bool MICopyCoords(Residue *target, const Residue *source);
 
     inline MIAtomList::size_type
-    NumAtomsSum(MIAtomList::size_type sumSoFar, const Residue *res)
+    NumAtomsSum(MIAtomList::size_type sumSoFar, const Monomer *res)
     {
         return sumSoFar + res->atoms().size();
     }
@@ -140,7 +140,7 @@ namespace chemlib
         AtomStep(atom, p_normal, dev);
     }
 
-    void GatherAtmPtrs(MIAtomList &target, const std::vector<Residue*> &source);
+    void GatherAtmPtrs(MIAtomList &target, const std::vector<Monomer*> &source);
 
     void EnumerateTorsions(const Bond *bond, std::vector< MIAtomList > &torsions);
 
@@ -174,26 +174,26 @@ namespace chemlib
                    const std::vector<Bond> &orig_bonds,
                    const MIAtomList &atoms);
 
-    int CountResBonds(const RESIDUE &res, const std::vector<Bond> &bonds);
+    int CountResBonds(const Residue &res, const std::vector<Bond> &bonds);
 
     int Build(Ligand &lig);
 
-    bool IsPeptide(const Residue &res);
+    bool IsPeptide(const Monomer &res);
+    bool IsNucleic(Monomer *res);
+    int IsDna(const Monomer &res);
     bool IsNucleic(Residue *res);
     int IsDna(const Residue &res);
-    bool IsNucleic(RESIDUE *res);
-    int IsDna(const RESIDUE &res);
-    bool IsWater(const RESIDUE *res);
-    bool IsPolarH(const MIAtom *atom, const RESIDUE *res);
+    bool IsWater(const Residue *res);
+    bool IsPolarH(const MIAtom *atom, const Residue *res);
 
 //@{
 //
 //@}
-    void AminoOrNucleic(RESIDUE *res1, int reset);
+    void AminoOrNucleic(Residue *res1, int reset);
 //@{
 // Return true if the residue is an amino acid.
 //@}
-    bool IsAminoAcid(RESIDUE *res);
+    bool IsAminoAcid(Residue *res);
 
 
 
@@ -201,7 +201,7 @@ namespace chemlib
 // Given a residue and an atom name, return a pointer to the atom that matches, if any.
 // Returns null if no match is found.
 //@}
-    MIAtom *atom_from_name(const char *name, const Residue &residue);
+    MIAtom *atom_from_name(const char *name, const Monomer &residue);
 
 //@{
 // Returns the residue that matches the name and chainid given a residue list.
@@ -211,20 +211,20 @@ namespace chemlib
 // @param name a string containing the name such as "104".
 // @param chain the chain id of the residue such as "A".  Use "*" to match a space.
 //@}
-    RESIDUE *residue_from_name(RESIDUE *res, const char *name, const char chain);
+    Residue *residue_from_name(Residue *res, const char *name, const char chain);
 
 //@{
 // Given a linked list of residues and an atom, returns the residue containing that atom.
 // If the atom is not found, the function returns NULL.
 //@}
-    RESIDUE *residue_from_atom(RESIDUE*, MIAtom*);
+    Residue *residue_from_atom(Residue*, MIAtom*);
 
     void BisectAtom(const MIAtom *source, double *v);
 
-    std::vector<Residue*>::iterator
+    std::vector<Monomer*>::iterator
     ResSearch(const MIAtom *query,
-              std::vector<Residue*>::iterator res_begin,
-              std::vector<Residue*>::iterator res_end);
+              std::vector<Monomer*>::iterator res_begin,
+              std::vector<Monomer*>::iterator res_end);
 
     int MaxNumBonds(const MIAtom *atom);
     int CurrentValence(const MIAtom &atom,
@@ -240,7 +240,7 @@ namespace chemlib
     bool AtFiveSixFusion(const MIAtom &atom, const std::vector<Bond> &bonds);
     bool AtFiveFiveFusion(const MIAtom &atom, const std::vector<Bond> &bonds);
 
-    void GuessBondOrders(RESIDUE *res, std::vector<Bond> &bonds);
+    void GuessBondOrders(Residue *res, std::vector<Bond> &bonds);
 
     void HybridizeTerminalAtom(MIAtom &atom, std::vector<Bond> &bonds);
     float AverageBondAngle(MIAtom &atom);
@@ -259,7 +259,7 @@ namespace chemlib
 //@{
 // From a list of residues builds a vector of links (bonds/edges).
 //@}
-    int BuildCALinks(std::vector<Bond> &bonds, const RESIDUE *res);
+    int BuildCALinks(std::vector<Bond> &bonds, const Residue *res);
 
     const char *Atomic_Name(int atomic_number);
 

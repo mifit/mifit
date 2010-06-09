@@ -74,7 +74,7 @@ public:
         for (unsigned int i = 0; i < mols.size(); ++i)
         {
             Molecule *mol = mols[i];
-            for (MIIter<RESIDUE> currRes = mol->GetResidues(); currRes; ++currRes)
+            for (MIIter<Residue> currRes = mol->GetResidues(); currRes; ++currRes)
             {
                 _atom_count += currRes->atomCount();
             }
@@ -93,7 +93,7 @@ public:
         for (unsigned int i = 0; i < mols.size(); ++i)
         {
             Molecule *mol = mols[i];
-            for (MIIter<RESIDUE> currRes = mol->GetResidues(); currRes; ++currRes)
+            for (MIIter<Residue> currRes = mol->GetResidues(); currRes; ++currRes)
             {
                 for (int i = 0; i < currRes->atomCount(); ++i)
                 {
@@ -173,7 +173,7 @@ public:
         for (unsigned int i = 0; i < mols.size(); ++i)
         {
             Molecule *mol = mols[i];
-            for (MIIter<RESIDUE> currRes = mol->GetResidues(); currRes; ++currRes)
+            for (MIIter<Residue> currRes = mol->GetResidues(); currRes; ++currRes)
             {
                 for (int i = 0; i < currRes->atomCount(); ++i, ++aidx)
                 {
@@ -212,7 +212,7 @@ public:
         for (unsigned int i = 0; i < mols.size(); ++i)
         {
             Molecule *mol = mols[i];
-            for (MIIter<RESIDUE> currRes = mol->GetResidues(); currRes; ++currRes)
+            for (MIIter<Residue> currRes = mol->GetResidues(); currRes; ++currRes)
             {
                 for (int i = 0; i < currRes->atomCount(); ++i, ++aidx)
                 {
@@ -430,7 +430,7 @@ public:
         for (unsigned int i = 0; i < mols.size(); ++i)
         {
             Molecule *mol = mols[i];
-            for (MIIter<RESIDUE> currRes = mol->GetResidues(); currRes; ++currRes)
+            for (MIIter<Residue> currRes = mol->GetResidues(); currRes; ++currRes)
             {
                 for (int i = 0; i < currRes->atomCount(); ++i, ++aidx)
                 {
@@ -474,7 +474,7 @@ protected:
         for (unsigned int i = 0; i < mols.size(); ++i)
         {
             Molecule *mol = mols[i];
-            for (MIIter<RESIDUE> currRes = mol->GetResidues(); currRes; ++currRes)
+            for (MIIter<Residue> currRes = mol->GetResidues(); currRes; ++currRes)
             {
                 for (int i = 0; i < currRes->atomCount(); ++i)
                 {
@@ -776,11 +776,11 @@ void MISurfaceVectorsFromStack(std::vector<Molecule*> &mols,
                                Stack *AtomStack)
 {
 
-    RESIDUE *res;
+    Residue *res;
     Molecule *mol;
     MIAtom *a;
     std::set<MIAtom*> atoms;
-    std::set<RESIDUE*> residues;
+    std::set<Residue*> residues;
     std::set<Molecule*> mol_set;
 
     std::vector<Molecule*>().swap(mols); //was mols.clear();
@@ -811,7 +811,7 @@ void MISurfaceVectorsFromStack(std::vector<Molecule*> &mols,
     for (unsigned int i = 0; i < mols.size(); ++i)
     {
         Molecule *mol = mols[i];
-        for (MIIter<RESIDUE> currRes = mol->GetResidues(); currRes; ++currRes)
+        for (MIIter<Residue> currRes = mol->GetResidues(); currRes; ++currRes)
         {
             count += currRes->atomCount();
         }
@@ -824,7 +824,7 @@ void MISurfaceVectorsFromStack(std::vector<Molecule*> &mols,
     {
         Molecule *mol = mols[i];
 
-        for (MIIter<RESIDUE> currRes = mol->GetResidues(); currRes; ++currRes)
+        for (MIIter<Residue> currRes = mol->GetResidues(); currRes; ++currRes)
         {
             for (int i = 0; i < currRes->atomCount(); ++i)
             {

@@ -8,11 +8,11 @@
 namespace chemlib
 {
     class MIAtom;
-    class RESIDUE;
-    bool hbondable(const MIAtom &a1, const MIAtom &a2, const Residue &r1, const Residue &r2);
+    class Residue;
+    bool hbondable(const MIAtom &a1, const MIAtom &a2, const Monomer &r1, const Monomer &r2);
 
 
-    void clear_residue_from_atom_cache(const Residue *res);
+    void clear_residue_from_atom_cache(const Monomer *res);
 
 }
 #endif // ifndef MI_MOL_UTIL_PRIVATE

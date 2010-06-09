@@ -7,7 +7,7 @@
 
 namespace chemlib
 {
-    class RESIDUE;
+    class Residue;
     class MIMoleculeBase;
 }
 
@@ -31,9 +31,9 @@ public:
 
     bool IsShown();
     void Update(chemlib::MIMoleculeBase *mol,
-                chemlib::RESIDUE *focusres,
+                chemlib::Residue *focusres,
                 std::string modelname);
-    void Update(chemlib::RESIDUE *fitres, unsigned int select_type);
+    void Update(chemlib::Residue *fitres, unsigned int select_type);
 
     void SetShowAllowed(bool state);
     bool GetShowAllowed() const
@@ -61,9 +61,9 @@ public slots:
 
 private:
     void CreateContours();
-    void GraphResidue(chemlib::RESIDUE *prev,
-                      chemlib::RESIDUE *res,
-                      chemlib::RESIDUE *next,
+    void GraphResidue(chemlib::Residue *prev,
+                      chemlib::Residue *res,
+                      chemlib::Residue *next,
                       int replace = -1);
     void CreateData();
 
@@ -77,7 +77,7 @@ private:
     bool show_allowed;
     GraphWindow *_gw;
     chemlib::MIMoleculeBase *_mol;
-    chemlib::RESIDUE *_focusres;
+    chemlib::Residue *_focusres;
     RamaDataBase *ramadat[8];
     GraphColor cols[4];
     std::string _modelname;

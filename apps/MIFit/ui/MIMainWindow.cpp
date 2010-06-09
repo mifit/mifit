@@ -1273,7 +1273,7 @@ bool MIMainWindow::LoadSmiles(std::string &smiles, std::string &tlcode, MIMolInf
         return false;
     }
     mi.res->setType(tlcode);
-    RESIDUE::fixnames(mi.res);
+    Residue::fixnames(mi.res);
     return true;
 }
 

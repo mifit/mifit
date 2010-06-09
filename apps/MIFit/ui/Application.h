@@ -59,7 +59,7 @@ class Application
     int GammaCorrection;
     int concurrentJobLimit;
 
-    chemlib::RESIDUE *ResidueBuffer;
+    chemlib::Residue *ResidueBuffer;
 
     Application();
 
@@ -174,11 +174,11 @@ public:
     bool LabelToggle; // If true then picking an atom for the second time toggles the label off.
 
     void ClearResidueBuffer(); // Frees and clears the residue buffer.
-    chemlib::RESIDUE *GetResidueBuffer()
+    chemlib::Residue *GetResidueBuffer()
     {
         return ResidueBuffer;
     }                                                            // Returns a pointer to the residue buffer.
-    bool CopyResidueBuffer(const chemlib::RESIDUE *buffer); // Copy one residue to the to the end of the ResidueBuffer list.
+    bool CopyResidueBuffer(const chemlib::Residue *buffer); // Copy one residue to the to the end of the ResidueBuffer list.
 
     GeomRefiner *GetGeomRefiner()
     {

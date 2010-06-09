@@ -15,7 +15,7 @@ namespace chemlib
 #ifdef USE_VECTOR_RESIDUE
         Box(const std::vector<Residue>&, float);
 #endif
-        Box(const std::vector<Residue*>&, float);
+        Box(const std::vector<Monomer*>&, float);
         bool Contains(const MIAtom&) const;
         void Expand(const MIAtom&, float margin);
         std::vector<float> Origin();

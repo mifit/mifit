@@ -31,7 +31,7 @@ namespace chemlib
         }
 
         virtual char *AtomType(const MIAtom *atom) const = 0;
-        AtomTyper(const RESIDUE &res, const std::vector<Bond> &bonds);
+        AtomTyper(const Residue &res, const std::vector<Bond> &bonds);
     protected:
         Ligand m_mol;
     };

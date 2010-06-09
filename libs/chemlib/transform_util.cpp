@@ -471,10 +471,10 @@ void FitToXYPlane(Ligand *mol)
     MIAtom **atoms = new MIAtom *[mol->GetNumAtoms()];
 
     int i, atm_count = 0;
-    std::vector<Residue*>::iterator ri;
+    std::vector<Monomer*>::iterator ri;
     for (ri = mol->residues.begin(); ri != mol->residues.end(); ++ri)
     {
-        Residue *res = *ri;
+        Monomer *res = *ri;
         for (unsigned int i = 0; i < res->atoms().size(); ++i)
         {
             atoms[atm_count] = res->atom(i);
@@ -496,10 +496,10 @@ void TranslateToOrigin(MIAtom *ref, Ligand *mol)
     double dy = ref->y();
     double dz = ref->z();
 
-    std::vector<Residue*>::iterator ri;
+    std::vector<Monomer*>::iterator ri;
     for (ri = mol->residues.begin(); ri != mol->residues.end(); ++ri)
     {
-        Residue *res = *ri;
+        Monomer *res = *ri;
         for (unsigned int i = 0; i < res->atoms().size(); i++)
         {
             res->atom(i)->translate(-(float)dx, -(float)dy, -(float)dz);
@@ -556,10 +556,10 @@ void RotateToXAxis(MIAtom *ref, Ligand *mol)
     mat[Z][Z] = cal + (1-cal)*vz*vz;
 
     double x, y, z;
-    std::vector<Residue*>::iterator ri;
+    std::vector<Monomer*>::iterator ri;
     for (ri = mol->residues.begin(); ri != mol->residues.end(); ++ri)
     {
-        Residue *res = *ri;
+        Monomer *res = *ri;
         for (unsigned int i = 0; i < res->atoms().size(); i++)
         {
 

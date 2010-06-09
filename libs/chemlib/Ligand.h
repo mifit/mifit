@@ -20,15 +20,15 @@ namespace chemlib
 
     public:
         Ligand(int type = Ligand::Other);
-        Ligand(const RESIDUE &res, const std::vector<Bond> &bonds);
-        Ligand(const RESIDUE *res, const std::vector<Bond> &bonds);
-        Ligand(const std::vector<Residue*> &orig_res,
+        Ligand(const Residue &res, const std::vector<Bond> &bonds);
+        Ligand(const Residue *res, const std::vector<Bond> &bonds);
+        Ligand(const std::vector<Monomer*> &orig_res,
                const std::vector<Bond> &orig_bonds);
         ~Ligand();
 
         std::vector<Bond> bonds; // array of bonds
         std::vector<Bond> connects;
-        std::vector<Residue*> residues; //Residue sequence
+        std::vector<Monomer*> residues; //Residue sequence
         std::vector<RingSystem> ringsystems;
         ConstraintList geometry;
         //		Residue * SymmResidues;
@@ -36,10 +36,10 @@ namespace chemlib
         char link_here[MAXNAME], link_next[MAXNAME]; //MAXNAME is in define.h
 
         // Export internal data to these vectors
-        void Export(std::vector<RESIDUE*> &rdues, std::vector<Bond> &bnds);
+        void Export(std::vector<Residue*> &rdues, std::vector<Bond> &bnds);
 
         void GetConstraints(const MIAtomList &mifit_atms,
-                            const std::vector<RESIDUE*> &mifit_residues,
+                            const std::vector<Residue*> &mifit_residues,
                             std::vector<Bond> &bond_lengths,
                             std::vector<ANGLE> &angles,
                             std::vector<TORSION> &torsions,
@@ -47,9 +47,9 @@ namespace chemlib
                             std::vector<PLANE> &planes,
                             std::vector<CHIRAL> &chirals);
 
-        Residue *AddRes(const std::string&, const std::string&, unsigned short linkage_type = 0,
+        Monomer *AddRes(const std::string&, const std::string&, unsigned short linkage_type = 0,
                         unsigned short chain_id = ' ', char = 'U');
-        Residue *AddRes(const RESIDUE&, const std::vector<Bond> &orig_bonds);
+        Monomer *AddRes(const Residue&, const std::vector<Bond> &orig_bonds);
         int GetNumAtoms() const;
 
         void AddBond(Bond &bond);
@@ -74,8 +74,8 @@ namespace chemlib
         const Bond *GetBond(int) const;
         Bond *GetBond(const MIAtom*, const MIAtom*);
         bool AlreadyBonded(const MIAtom*, const MIAtom*) const;
-        void GetResidueBonds(const Residue*, std::vector <Bond*>&);
-        void GetResidueIntBonds(const Residue*, std::vector <Bond>&);
+        void GetResidueBonds(const Monomer*, std::vector <Bond*>&);
+        void GetResidueIntBonds(const Monomer*, std::vector <Bond>&);
         enum
         {
             PDB,

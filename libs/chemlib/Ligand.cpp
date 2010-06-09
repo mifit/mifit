@@ -24,9 +24,9 @@ Ligand::Ligand(int type)
     ModelType = type;
 }
 
-Ligand::Ligand(const RESIDUE &res, const std::vector<Bond> &orig_bonds)
+Ligand::Ligand(const Residue &res, const std::vector<Bond> &orig_bonds)
 {
-    Residue *new_res = new Residue(res);
+    Monomer *new_res = new Monomer(res);
     residues.push_back(new_res);
 
     const MIAtomList &orig_atoms = res.atoms();      //Create a vector of ptrs to the atoms in the original residue
@@ -45,9 +45,9 @@ Ligand::Ligand(const RESIDUE &res, const std::vector<Bond> &orig_bonds)
     }
 }
 
-Ligand::Ligand(const RESIDUE *res, const std::vector<Bond> &orig_bonds)
+Ligand::Ligand(const Residue *res, const std::vector<Bond> &orig_bonds)
 {
-    Residue *new_res = new Residue(*res);
+    Monomer *new_res = new Monomer(*res);
     residues.push_back(new_res);
 
     const MIAtomList &orig_atoms = res->atoms();     //Create a vector of ptrs to the atoms in the original residue
@@ -66,17 +66,17 @@ Ligand::Ligand(const RESIDUE *res, const std::vector<Bond> &orig_bonds)
     }
 }
 
-Ligand::Ligand(const std::vector<Residue*> &orig_res, const std::vector<Bond> &orig_bonds)
+Ligand::Ligand(const std::vector<Monomer*> &orig_res, const std::vector<Bond> &orig_bonds)
 {
     if (orig_res.empty())
     {
         return;
     }
 
-    std::vector<Residue*>::const_iterator res;
+    std::vector<Monomer*>::const_iterator res;
     for (res = orig_res.begin(); res != orig_res.end(); ++res)
     {
-        residues.push_back(new Residue(**res));
+        residues.push_back(new Monomer(**res));
     }
 
     MIAtomList new_atoms;
@@ -99,28 +99,28 @@ Ligand::Ligand(const std::vector<Residue*> &orig_res, const std::vector<Bond> &o
 Ligand::~Ligand()
 {
     // clean up residues;
-    std::vector<Residue*>::iterator ri;
+    std::vector<Monomer*>::iterator ri;
     for (ri = residues.begin(); ri != residues.end(); ++ri)
     {
-        Residue *res = *ri;
+        Monomer *res = *ri;
         delete res;
     }
 }
 
-void Ligand::Export(std::vector<RESIDUE*> &rdues, std::vector<Bond> &bnds)
+void Ligand::Export(std::vector<Residue*> &rdues, std::vector<Bond> &bnds)
 {
     MIAtomList mifit_atms;
     MIAtomList orig_atms;
 
-    std::vector<Residue*>::iterator ri;
+    std::vector<Monomer*>::iterator ri;
     for (ri = residues.begin(); ri != residues.end(); ++ri)
     {
-        Residue *res = *ri;
+        Monomer *res = *ri;
         for (unsigned int i = 0; i < res->atoms().size(); ++i)
         {
             orig_atms.push_back(res->atom(i));
         }
-        RESIDUE *r = new RESIDUE(*res);
+        Residue *r = new Residue(*res);
         copy(r->atoms().begin(), r->atoms().end(), back_inserter(mifit_atms));
         rdues.push_back(r);
     }
@@ -133,7 +133,7 @@ void Ligand::Export(std::vector<RESIDUE*> &rdues, std::vector<Bond> &bnds)
 }
 
 void Ligand::GetConstraints(const MIAtomList &mifit_atms,
-                            const std::vector<RESIDUE*> &mifit_residues,
+                            const std::vector<Residue*> &mifit_residues,
                             std::vector<Bond> &bond_lengths,
                             std::vector<ANGLE> &angles,
                             std::vector<TORSION> &torsions,
@@ -144,10 +144,10 @@ void Ligand::GetConstraints(const MIAtomList &mifit_atms,
 
     //Create a vector of ptrs to the MIAtom objects
     std::vector<const MIAtom*> orig_atms;
-    std::vector<Residue*>::iterator ri;
+    std::vector<Monomer*>::iterator ri;
     for (ri = residues.begin(); ri != residues.end(); ++ri)
     {
-        Residue *res = *ri;
+        Monomer *res = *ri;
         for (unsigned int i = 0; i < res->atoms().size(); ++i)
         {
             orig_atms.push_back(res->atom(i));
@@ -155,7 +155,7 @@ void Ligand::GetConstraints(const MIAtomList &mifit_atms,
     }
 
     //Create a vector of ptrs to the residues objects
-    std::vector<const Residue*> orig_residues;
+    std::vector<const Monomer*> orig_residues;
     for (size_t i = 0; i< residues.size(); ++i) // was CpyResPtrs(orig_residues, residues);
     {
         orig_residues.push_back(residues[i]);
@@ -210,24 +210,24 @@ void Ligand::GetConstraints(const MIAtomList &mifit_atms,
     }
 }
 
-Residue*Ligand::AddRes(const std::string &type, const std::string &name, unsigned short linkage_type,
+Monomer*Ligand::AddRes(const std::string &type, const std::string &name, unsigned short linkage_type,
                        unsigned short chain_id, char secstr)
 {
 
-    Residue target;
+    Monomer target;
     target.setType(type);
     target.setName(name);
     target.set_linkage_type(linkage_type);
     target.set_chain_id(chain_id);
     target.setSecstr(secstr);
 
-    residues.push_back(new Residue(target));
+    residues.push_back(new Monomer(target));
     return residues.back();
 }
 
-Residue*Ligand::AddRes(const RESIDUE &res, const std::vector<Bond> &orig_bonds)
+Monomer*Ligand::AddRes(const Residue &res, const std::vector<Bond> &orig_bonds)
 {
-    Residue *new_res = new Residue(res);
+    Monomer *new_res = new Monomer(res);
     residues.push_back(new_res);
 
     const MIAtomList &orig_atoms = res.atoms();      //Create a vector of ptrs to the atoms in the original residue (The order of these is important.)
@@ -325,7 +325,7 @@ void Ligand::ClearBondOrders()
 
     for (size_t i = 0; i < residues.size(); ++i)
     {
-        Residue *r = residues[i];
+        Monomer *r = residues[i];
         for (int i = 0; i < r->atomCount(); ++i)
         {
             r->atom(i)->ClearHybrid();
@@ -348,7 +348,7 @@ void Ligand::GuessBondOrders()
     //Step 1: Iterate over all the atoms, guessing its hybridization from the bond
     //        angles or (for terminal atoms) the bond length.
     //*
-    std::vector<Residue*>::iterator r, re;
+    std::vector<Monomer*>::iterator r, re;
     MIAtom_const_iter a, ae;
 
     int natoms = GetNumAtoms();
@@ -486,7 +486,7 @@ void Ligand::FixAtomicNumbers()
     // fixes the atomicnumber field in a residue
     // sometimes this is a bit of a guess becuase it is not
     // clear what the atom type is by name alone!
-    std::vector<Residue*>::iterator ri;
+    std::vector<Monomer*>::iterator ri;
     unsigned int i;
     bool ispep, isnuc;
     //	char *name;
@@ -494,7 +494,7 @@ void Ligand::FixAtomicNumbers()
     std::string name;
     for (ri = residues.begin(); ri != residues.end(); ++ri)
     {
-        Residue *res = *ri;
+        Monomer *res = *ri;
         ispep = IsPeptide(*res) != 0;
         isnuc = IsNucleic(&(*res)) != 0;
         for (i = 0; i < res->atoms().size(); i++)
@@ -548,11 +548,11 @@ int Ligand::FindRingSystems()
     //Now cluster cyclic atoms into ring systems
     //by looping over all cyclic atoms
     unsigned int i;
-    std::vector<Residue*>::iterator ri;
+    std::vector<Monomer*>::iterator ri;
     RingSystem rs;
     for (ri = residues.begin(); ri != residues.end(); ++ri)
     {
-        Residue *res = *ri;
+        Monomer *res = *ri;
         for (i = 0; i < res->atoms().size(); ++i)
         {
             if (!res->atom(i)->iscyclic())
@@ -590,10 +590,10 @@ int Ligand::FindRingSystems()
 void Ligand::InitRingData()
 {
     unsigned int i;
-    std::vector<Residue*>::iterator ri;
+    std::vector<Monomer*>::iterator ri;
     for (ri = residues.begin(); ri != residues.end(); ++ri)
     {
-        Residue *res = *ri;
+        Monomer *res = *ri;
         for (i = 0; i < res->atoms().size(); ++i)
         {
             res->atom(i)->setIscyclic(false);
@@ -691,10 +691,10 @@ void Ligand::SetRingFlags()
     //any atom with a cyclic bond is cyclic
     unsigned int i, j;
     Bond *bond;
-    std::vector<Residue*>::iterator ri;
+    std::vector<Monomer*>::iterator ri;
     for (ri = residues.begin(); ri != residues.end(); ++ri)
     {
-        Residue *res = *ri;
+        Monomer *res = *ri;
         for (i = 0; i < res->atoms().size(); ++i)
         {
             for (j = 0; j < res->atom(i)->bondnumbers().size(); ++j)
@@ -713,10 +713,10 @@ void Ligand::SetRingFlags()
 void Ligand::ResetSearchFlags()
 {
     unsigned int i;
-    std::vector<Residue*>::iterator ri;
+    std::vector<Monomer*>::iterator ri;
     for (ri = residues.begin(); ri != residues.end(); ++ri)
     {
-        Residue *res = *ri;
+        Monomer *res = *ri;
         for (i = 0; i < res->atoms().size(); ++i)
         {
             res->atom(i)->set_search_flag(0);
@@ -870,7 +870,7 @@ void Ligand::FreeBonds()
 
 //Function to get all the bonds in a Ligand that contain at least one atom from
 //the specified residue.
-void Ligand::GetResidueBonds(const Residue *res, std::vector<Bond*> &resbonds)
+void Ligand::GetResidueBonds(const Monomer *res, std::vector<Bond*> &resbonds)
 {
     std::vector<int>::const_iterator xbond; //Iterator for looping over bonds to an atom
     Bond *bnd;              //Points to current bond
@@ -893,7 +893,7 @@ void Ligand::GetResidueBonds(const Residue *res, std::vector<Bond*> &resbonds)
 
 //Function to get all the bonds in a molecule that are contained within the
 //the specified residue.
-void Ligand::GetResidueIntBonds(const Residue *res, std::vector<Bond> &resbonds)
+void Ligand::GetResidueIntBonds(const Monomer *res, std::vector<Bond> &resbonds)
 {
     std::vector<int>::const_iterator xbond; //Iterator for looping over bonds to an atom
 
@@ -950,10 +950,10 @@ int Ligand::GetIndex(MIAtom *query, MIAtom **domain, int size)
 
 void Ligand::Translate(double xstep, double ystep, double zstep)
 {
-    std::vector<Residue*>::iterator ri;
+    std::vector<Monomer*>::iterator ri;
     for (ri = residues.begin(); ri != residues.end(); ++ri)
     {
-        Residue *res = *ri;
+        Monomer *res = *ri;
         for (unsigned int i = 0; i < res->atoms().size(); ++i)
         {
             res->atom(i)->translate((float)xstep,
@@ -965,10 +965,10 @@ void Ligand::Translate(double xstep, double ystep, double zstep)
 
 void Ligand::Scale(double scale_factor)
 {
-    std::vector<Residue*>::iterator ri;
+    std::vector<Monomer*>::iterator ri;
     for (ri = residues.begin(); ri != residues.end(); ++ri)
     {
-        Residue *res = *ri;
+        Monomer *res = *ri;
         for (unsigned int i = 0; i < res->atoms().size(); ++i)
         {
             res->atom(i)->scale(scale_factor);
@@ -1171,7 +1171,7 @@ void Ligand::LSqrPlane(double vm[3], double *d) const
     double zip = 1.0E-5;
     double orm, vm0, ratio0, ratio1, ratio2, rat01, rat02;
     int i, j, kk, nnn, n;
-    std::vector<Residue*>::const_iterator ri;
+    std::vector<Monomer*>::const_iterator ri;
 
     n = 0;
     for (i = 0; i < 3; i++)
@@ -1180,7 +1180,7 @@ void Ligand::LSqrPlane(double vm[3], double *d) const
     }
     for (ri = residues.begin(); ri != residues.end(); ++ri)
     {
-        Residue *res = *ri;
+        Monomer *res = *ri;
         for (unsigned int k = 0; k < res->atoms().size(); ++k)
         {
 
@@ -1204,7 +1204,7 @@ void Ligand::LSqrPlane(double vm[3], double *d) const
 
     for (ri = residues.begin(); ri != residues.end(); ++ri)
     {
-        Residue *res = *ri;
+        Monomer *res = *ri;
         for (unsigned int k = 0; k < res->atoms().size(); ++k)
         {
             xxs[0][0] += res->atom(k)->x() * res->atom(k)->x();
@@ -1308,10 +1308,10 @@ void Ligand::RandomizeCoords(std::pair<double, double> xbounds,
     double yWidth = ybounds.second - ybounds.first;
     double zWidth = zbounds.second - zbounds.first;
 
-    std::vector<Residue*>::iterator ri, re = residues.end();
+    std::vector<Monomer*>::iterator ri, re = residues.end();
     for (ri = residues.begin(); ri != re; ++ri)
     {
-        Residue *res = *ri;
+        Monomer *res = *ri;
         for (unsigned int i = 0; i < res->atoms().size(); ++i)
         {
             res->atom(i)->setPosition((float)(xbounds.first + xWidth * (double) rand() / (double) RAND_MAX),
@@ -1324,12 +1324,12 @@ void Ligand::RandomizeCoords(std::pair<double, double> xbounds,
 void Ligand::MapAtomPtrs(std::map<MIAtom*, int> &atom_map)
 {
 
-    std::vector<Residue*>::iterator ri, re = residues.end();
+    std::vector<Monomer*>::iterator ri, re = residues.end();
     int xAtom = 0;
 
     for (ri = residues.begin(); ri != re; ++ri)
     {
-        Residue *res = *ri;
+        Monomer *res = *ri;
         int n = res->atoms().size();
         MIAtom *atm = res->atom(0);
         for (int i = 0; i < n; ++i, ++atm)
@@ -1342,12 +1342,12 @@ void Ligand::MapAtomPtrs(std::map<MIAtom*, int> &atom_map)
 void Ligand::MapAtomPtrs(std::map<const MIAtom*, int> &atom_map) const
 {
 
-    std::vector<Residue*>::const_iterator ri, re = residues.end();
+    std::vector<Monomer*>::const_iterator ri, re = residues.end();
     int xAtom = 0;
 
     for (ri = residues.begin(); ri != re; ++ri)
     {
-        Residue *res = *ri;
+        Monomer *res = *ri;
         int n = res->atoms().size();
         const MIAtom *atm = res->atom(0);
         for (int i = 0; i < n; ++i, ++atm)

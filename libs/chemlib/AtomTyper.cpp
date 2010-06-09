@@ -5,7 +5,7 @@ using namespace std;
 namespace chemlib
 {
 
-AtomTyper::AtomTyper(const RESIDUE &res, const vector<Bond> &bonds)
+AtomTyper::AtomTyper(const Residue &res, const vector<Bond> &bonds)
     : m_mol(res, bonds)
 {
     LigandPerceiver lp;

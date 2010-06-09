@@ -7,11 +7,11 @@
 class LigDictEntry
 {
 public:
-    LigDictEntry(chemlib::RESIDUE *r); // note takes ownership of r!
+    LigDictEntry(chemlib::Residue *r); // note takes ownership of r!
 
     ~LigDictEntry();
 
-    chemlib::RESIDUE *res;
+    chemlib::Residue *res;
     std::vector<chemlib::Bond> bonds;
     std::vector<chemlib::ANGLE> angles;
     std::vector<chemlib::TORSDICT> torsions;

@@ -4,7 +4,7 @@
 namespace chemlib
 {
 
-    class RESIDUE;
+    class Residue;
 
 }
 

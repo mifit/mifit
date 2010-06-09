@@ -48,7 +48,7 @@ Molecule::Molecule(int type)
     symm_radius = 0.0;
 }
 
-Molecule::Molecule(RESIDUE *reslist, std::string cmpd, FILE *fp, Bond *conns, int nconns, int type)
+Molecule::Molecule(Residue *reslist, std::string cmpd, FILE *fp, Bond *conns, int nconns, int type)
     : MIMoleculeBase(reslist, cmpd.c_str(), conns, nconns),
       mapheader(new CMapHeader),
       m_pSecondaryStructure(NULL),
@@ -92,7 +92,7 @@ void Molecule::GetPDBInfo(FILE *fp)
     char buf[1000];
     char startname[20], endname[20];
     char startchain, endchain;
-    RESIDUE *res1, *res2;
+    Residue *res1, *res2;
     int i, nsecstr = 0;
     int inhead = true;
     compound = "";
@@ -220,8 +220,8 @@ void Molecule::GetPDBInfo(FILE *fp)
             res1 = residue_from_name(residues, startname, startchain);
             res2 = residue_from_name(residues, endname, endchain);
 
-            MIIter<RESIDUE> res = GetResidues();
-            for (; Residue::isValid(res); ++res)
+            MIIter<Residue> res = GetResidues();
+            for (; Monomer::isValid(res); ++res)
             {
                 if (res == res1)
                 {
@@ -247,8 +247,8 @@ void Molecule::GetPDBInfo(FILE *fp)
             res1 = residue_from_name(residues, startname, startchain);
             res2 = residue_from_name(residues, endname, endchain);
 
-            MIIter<RESIDUE> res = GetResidues();
-            for (; Residue::isValid(res); ++res)
+            MIIter<Residue> res = GetResidues();
+            for (; Monomer::isValid(res); ++res)
             {
                 if (res == res1)
                 {
@@ -321,7 +321,7 @@ bool Molecule::VisibleBounds(ViewPoint *viewpoint, int &axmin, int &axmax,
     unsigned int i;
     int x, y, z;
 
-    for (MIIter<RESIDUE> res = GetResidues(); Residue::isValid(res); ++res)
+    for (MIIter<Residue> res = GetResidues(); Monomer::isValid(res); ++res)
     {
         for (i = 0; i < (unsigned int) res->atomCount(); i++)
         {
@@ -782,7 +782,7 @@ static void setradiustype(MIAtom *a, int type, std::string atoms)
     a->set_radius_type(type);
 }
 
-int Molecule::getcolor(RESIDUE *res, MIAtom *a, bool docolor, int color, int colormethod, std::string atoms)
+int Molecule::getcolor(Residue *res, MIAtom *a, bool docolor, int color, int colormethod, std::string atoms)
 {
     if (!atoms.empty() && atoms[0] != '*')
     {
@@ -852,14 +852,14 @@ int Molecule::getcolor(RESIDUE *res, MIAtom *a, bool docolor, int color, int col
 }
 
 void Molecule::Select(int clear, int main, int sides, int nonprotein,
-                      std::string resshow, std::string atoms, RESIDUE *start, RESIDUE *end,
+                      std::string resshow, std::string atoms, Residue *start, Residue *end,
                       bool docolor, int color, int colormethod, int link, int waters, int listtype,
                       int radiustype)
 {
     // traverse the residue list selecting residues and atoms
     // as appropiate
 
-    RESIDUE *last = NULL;
+    Residue *last = NULL;
     int i, inrange = 0;
     bool dna;
     Bond bond;
@@ -878,7 +878,7 @@ void Molecule::Select(int clear, int main, int sides, int nonprotein,
         }
     }
     atoms += ";";
-    for (MIIter<RESIDUE> res = GetResidues(); Residue::isValid(res); ++res)
+    for (MIIter<Residue> res = GetResidues(); Monomer::isValid(res); ++res)
     {
         if (!start)
         {
@@ -905,7 +905,7 @@ void Molecule::Select(int clear, int main, int sides, int nonprotein,
     {
         end = last;
     }
-    for (MIIter<RESIDUE> res = GetResidues(); Residue::isValid(res); ++res)
+    for (MIIter<Residue> res = GetResidues(); Monomer::isValid(res); ++res)
     {
         if (!inrange)
         {
@@ -1037,10 +1037,10 @@ void Molecule::Select(int clear, int main, int sides, int nonprotein,
     if (link)
     {
         MIAtom *a1, *a2, *a3;
-        RESIDUE *firstres = residues, *nextres;
+        Residue *firstres = residues, *nextres;
         char linkname[10];
         double maxdist;
-        RESIDUE *res = residues;
+        Residue *res = residues;
         //if(nlinks > 0 && nlinks <= nbonds){
         // since the bonds get sorted the only way to
         // get rid of the old links is to rebuild
@@ -1189,7 +1189,7 @@ MIAtom*Molecule::GetAtom(int natom)
     return NULL;
 }
 
-RESIDUE*Molecule::MatchPentamer(std::string &pentdir, RESIDUE *start)
+Residue*Molecule::MatchPentamer(std::string &pentdir, Residue *start)
 {
     MIAtomList vCA, vCB;
     if (start == NULL)
@@ -1198,8 +1198,8 @@ RESIDUE*Molecule::MatchPentamer(std::string &pentdir, RESIDUE *start)
     }
 
     // check that start is in residue list
-    MIIter<RESIDUE> res = GetResidues();
-    for (; Residue::isValid(res); ++res)
+    MIIter<Residue> res = GetResidues();
+    for (; Monomer::isValid(res); ++res)
     {
         if (res == start)
         {
@@ -1229,7 +1229,7 @@ RESIDUE*Molecule::MatchPentamer(std::string &pentdir, RESIDUE *start)
     return pdbvec(pentdir, vCA, vCB);
 }
 
-void Molecule::TranslateResidueToCenter(RESIDUE *res, ViewPoint *viewpoint)
+void Molecule::TranslateResidueToCenter(Residue *res, ViewPoint *viewpoint)
 {
     float cx = viewpoint->getcenter(0);
     float cy = viewpoint->getcenter(1);
@@ -1279,7 +1279,7 @@ void Molecule::ShowAll()
 {
     // printf("In ShowAll\n");
     MIAtomList changed;
-    for (MIIter<RESIDUE> res = GetResidues(); Residue::isValid(res); ++res)
+    for (MIIter<Residue> res = GetResidues(); Monomer::isValid(res); ++res)
     {
         for (int i = 0; i < res->atomCount(); i++)
         {
@@ -1298,7 +1298,7 @@ void Molecule::HideAll()
     // printf("In HideAll\n");
 
     MIAtomList changed;
-    for (MIIter<RESIDUE> res = GetResidues(); Residue::isValid(res); ++res)
+    for (MIIter<Residue> res = GetResidues(); Monomer::isValid(res); ++res)
     {
         for (int i = 0; i < res->atomCount(); i++)
         {
@@ -1345,9 +1345,9 @@ MIAtom*Molecule::AllocRibbonAtom()
 
 void Molecule::BuildRibbons()
 {
-    RESIDUE *res = residues;
-    RESIDUE *nextres = NULL;
-    RESIDUE *lastres = NULL;
+    Residue *res = residues;
+    Residue *nextres = NULL;
+    Residue *lastres = NULL;
     MIAtom *O1;
     MIAtom *CA1;
     MIAtom *lastCA1 = NULL;
@@ -1761,14 +1761,14 @@ void Molecule::Save(XMLArchive &ar)
     // give all the atoms a unique number
     size_t i;
     int n = 0;
-    for (MIIter<RESIDUE> res = GetResidues(); Residue::isValid(res); ++res)
+    for (MIIter<Residue> res = GetResidues(); Monomer::isValid(res); ++res)
     {
         for (int i = 0; i < res->atomCount(); i++)
         {
             res->atom(i)->setAtomnumber(n++);
         }
     }
-    for (MIIter<RESIDUE> res = GetSymmResidues(); Residue::isValid(res); ++res)
+    for (MIIter<Residue> res = GetSymmResidues(); Monomer::isValid(res); ++res)
     {
         for (int i = 0; i < res->atomCount(); i++)
         {
@@ -1807,7 +1807,7 @@ void Molecule::Save(XMLArchive &ar)
     ar.WriteField("symmatoms_visible", symmatoms_visible);
     ar.WriteSymmCenter(symm_center);
     ar.BeginTag("ResidueList");
-    for (MIIter<RESIDUE> res = GetResidues(); Residue::isValid(res); ++res)
+    for (MIIter<Residue> res = GetResidues(); Monomer::isValid(res); ++res)
     {
         ar.WriteField(res);
     }
@@ -1821,7 +1821,7 @@ void Molecule::Save(XMLArchive &ar)
     ar.WriteMapHeader(*mapheader);
     // write SymmResidues
     ar.BeginTag("SymmResidueList");
-    for (MIIter<RESIDUE> res = GetSymmResidues(); Residue::isValid(res); ++res)
+    for (MIIter<Residue> res = GetSymmResidues(); Monomer::isValid(res); ++res)
     {
         ar.WriteField(res);
     }
@@ -1882,7 +1882,7 @@ void Molecule::Save(XMLArchive &ar)
 void Molecule::Do()
 {
     short savec;
-    for (MIIter<RESIDUE> res = GetResidues(); Residue::isValid(res); ++res)
+    for (MIIter<Residue> res = GetResidues(); Monomer::isValid(res); ++res)
     {
         for (int i = 0; i < res->atomCount(); i++)
         {
@@ -1901,7 +1901,7 @@ void Molecule::UnDo()
     {
         return;
     }
-    for (MIIter<RESIDUE> res = GetResidues(); Residue::isValid(res); ++res)
+    for (MIIter<Residue> res = GetResidues(); Monomer::isValid(res); ++res)
     {
         for (int i = 0; i < res->atomCount(); i++)
         {
@@ -1942,7 +1942,7 @@ long Molecule::SolventSurface(ViewPoint*, float dotsper)
     }
     initspheres(radius);
 
-    for (MIIter<RESIDUE> res = GetResidues(); Residue::isValid(res) && SurfResult != 0; ++res)
+    for (MIIter<Residue> res = GetResidues(); Monomer::isValid(res) && SurfResult != 0; ++res)
     {
         if (!IsWater(res))
         {
@@ -1952,7 +1952,7 @@ long Molecule::SolventSurface(ViewPoint*, float dotsper)
                 atom = res->atom(k);
                 r1 = atom->getRadius() + radius_offset;
                 nb = 0;
-                for (MIIter<RESIDUE> res2 = GetResidues(); Residue::isValid(res2); ++res2)
+                for (MIIter<Residue> res2 = GetResidues(); Monomer::isValid(res2); ++res2)
                 {
                     if (!IsWater(res2))
                     {
@@ -2002,7 +2002,7 @@ long Molecule::SurfaceResidues(float dotsper, ViewPoint *vp, bool ignore_hidden)
     SurfResult = 1;
     srfdotsper = dotsper;
     //ndots = 0;
-    for (MIIter<RESIDUE> res = GetResidues(); (bool)res && SurfResult != 0; ++res)
+    for (MIIter<Residue> res = GetResidues(); (bool)res && SurfResult != 0; ++res)
     {
         if (res->flags()&128)
         {
@@ -2025,7 +2025,7 @@ long Molecule::SurfaceResidues(float dotsper, ViewPoint *vp, bool ignore_hidden)
     return (dots.size());
 }
 
-long Molecule::SurfaceResidue(RESIDUE *res, float dotsper, ViewPoint *vp, bool ignore_hidden)
+long Molecule::SurfaceResidue(Residue *res, float dotsper, ViewPoint *vp, bool ignore_hidden)
 {
     int i;
     long nadots = 0;
@@ -2126,7 +2126,7 @@ long Molecule::Surface(MIAtom *atom, bool ignore_hidden, bool send_signal)
     long maxadots = 0;
     void *hdots = NULL;
 
-    for (MIIter<RESIDUE> res = GetResidues(); res; ++res)
+    for (MIIter<Residue> res = GetResidues(); res; ++res)
     {
         for (i = 0; i < res->atomCount(); i++)
         {
@@ -2163,7 +2163,7 @@ long Molecule::Surface(MIAtom *atom, bool ignore_hidden, bool send_signal)
 
 void Molecule::ShowHydrogens(bool Show)
 {
-    for (MIIter<RESIDUE> res = GetResidues(); res; ++res)
+    for (MIIter<Residue> res = GetResidues(); res; ++res)
     {
         for (int i = 0; i < res->atomCount(); i++)
         {
@@ -2197,7 +2197,7 @@ long Molecule::SurfaceCenter(ViewPoint *viewpoint, float dotsper, float boxsize,
     boxsize *= (float)(CRS*CRS*boxsize);
     radius = (long)boxsize;
     std::vector<SURFDOT>().swap(dots); // was dots.clear();
-    for (MIIter<RESIDUE> res = GetResidues(); (bool)res && SurfResult != 0; ++res)
+    for (MIIter<Residue> res = GetResidues(); (bool)res && SurfResult != 0; ++res)
     {
         for (i = 0; i < res->atomCount(); i++)
         {
@@ -2246,7 +2246,7 @@ void Molecule::MakeSecondaryStructure(bool bRibbon, bool bSchematic)
     {
         if (bRibbon)
         {
-            RESIDUE *res = residues;
+            Residue *res = residues;
             while (res != NULL)
             {
                 while ((res != NULL) && atom_from_name("CA", *res) == NULL)
@@ -2257,7 +2257,7 @@ void Molecule::MakeSecondaryStructure(bool bRibbon, bool bSchematic)
                 {
                     break;
                 }
-                RESIDUE *startResidue = res;
+                Residue *startResidue = res;
                 int residueCount = 0;
                 unsigned short currentChain = res->chain_id();
                 while ((res != NULL) && atom_from_name("CA", *res) != NULL && res->chain_id() == currentChain)
@@ -2271,12 +2271,12 @@ void Molecule::MakeSecondaryStructure(bool bRibbon, bool bSchematic)
 
         if (bSchematic)
         {
-            std::vector<std::pair<RESIDUE*, RESIDUE*> > pHelix;
-            std::vector<std::pair<RESIDUE*, RESIDUE*> > pSheet;
-            std::vector<std::pair<RESIDUE*, RESIDUE*> > pTurn;
-            std::vector<std::pair<RESIDUE*, RESIDUE*> > pRandom;
+            std::vector<std::pair<Residue*, Residue*> > pHelix;
+            std::vector<std::pair<Residue*, Residue*> > pSheet;
+            std::vector<std::pair<Residue*, Residue*> > pTurn;
+            std::vector<std::pair<Residue*, Residue*> > pRandom;
 
-            RESIDUE *res = residues;
+            Residue *res = residues;
             int residueCount = 0;
             while (res != NULL)
             {
@@ -2292,12 +2292,12 @@ void Molecule::MakeSecondaryStructure(bool bRibbon, bool bSchematic)
                 unsigned short currentChain = res->chain_id();
                 int currentSS;
                 char startSS = res->secstr();
-                RESIDUE *startRes = res;
-                RESIDUE *endRes = NULL;
-                RESIDUE *prevRes = res;
+                Residue *startRes = res;
+                Residue *endRes = NULL;
+                Residue *prevRes = res;
                 while (res != NULL)
                 {
-                    RESIDUE *nextRes = res->next();
+                    Residue *nextRes = res->next();
                     if ((nextRes != NULL) && ((atom_from_name("CA", *nextRes) == NULL) || nextRes->chain_id() != currentChain))
                     {
                         res = res->next();
@@ -2501,9 +2501,9 @@ bool Molecule::isAtomLabeled(MIAtom *atom)
     return findLabelForAtom(atom) != NULL;
 }
 
-void Molecule::labelAtom(MIAtom *atom, RESIDUE *res)
+void Molecule::labelAtom(MIAtom *atom, Residue *res)
 {
-    if (!MIAtom::isValid(atom) || !Residue::isValid(res))
+    if (!MIAtom::isValid(atom) || !Monomer::isValid(res))
     {
         return;
     }
@@ -2538,7 +2538,7 @@ void Molecule::labelAtomStyle(MIAtom *atom, int style)
 void Molecule::labelEveryNthResidue(int n)
 {
     int ir = 0;
-    for (MIIter<RESIDUE> res = GetResidues(); res; ++res)
+    for (MIIter<Residue> res = GetResidues(); res; ++res)
     {
         ir++;
         if (ir%n == 0)
@@ -2681,9 +2681,9 @@ void Molecule::setAtomsColor(MIAtomList atoms, int color)
     atomChanged(this, atoms);
 }
 
-void Molecule::toggleChainHidden(RESIDUE *chain)
+void Molecule::toggleChainHidden(Residue *chain)
 {
-    RESIDUE *residue = chain;
+    Residue *residue = chain;
     int chain_id = chain->chain_id();
     MIAtomList changed;
     while ((residue != NULL) && chain_id == residue->chain_id())
@@ -2698,7 +2698,7 @@ void Molecule::toggleChainHidden(RESIDUE *chain)
     atomChanged(this, changed);
 }
 
-void Molecule::toggleResidueHidden(RESIDUE *residue)
+void Molecule::toggleResidueHidden(Residue *residue)
 {
     MIAtomList changed;
     for (int i = 0; i < residue->atomCount(); i++)
@@ -2709,12 +2709,12 @@ void Molecule::toggleResidueHidden(RESIDUE *residue)
     atomChanged(this, changed);
 }
 
-void Molecule::toggleResiduesHidden(std::vector<RESIDUE*> &residues)
+void Molecule::toggleResiduesHidden(std::vector<Residue*> &residues)
 {
     MIAtomList changed;
     for (size_t j = 0; j< residues.size(); ++j)
     {
-        RESIDUE *residue = residues[j];
+        Residue *residue = residues[j];
         for (int i = 0; i < residue->atomCount(); i++)
         {
             residue->atom(i)->setColor(-residue->atom(i)->color());
@@ -2745,7 +2745,7 @@ void Molecule::toggleAtomsHidden(MIAtomList &atoms)
 }
 
 
-void Molecule::setResidueColor(RESIDUE *residue, int color, int colorMethod)
+void Molecule::setResidueColor(Residue *residue, int color, int colorMethod)
 {
     MIAtomList changed;
     for (int i = 0; i < residue->atomCount(); i++)
@@ -2757,13 +2757,13 @@ void Molecule::setResidueColor(RESIDUE *residue, int color, int colorMethod)
     atomChanged(this, changed);
 }
 
-void Molecule::setResiduesColor(std::vector<RESIDUE*> &residues, int color, int colorMethod)
+void Molecule::setResiduesColor(std::vector<Residue*> &residues, int color, int colorMethod)
 {
     MIAtomList changed;
 
     for (size_t j = 0; j< residues.size(); ++j)
     {
-        RESIDUE *residue = residues[j];
+        Residue *residue = residues[j];
         for (int i = 0; i < residue->atomCount(); i++)
         {
             MIAtom *atom = residue->atom(i);
@@ -2774,10 +2774,10 @@ void Molecule::setResiduesColor(std::vector<RESIDUE*> &residues, int color, int 
     atomChanged(this, changed);
 }
 
-void Molecule::setChainColor(RESIDUE *chain, int color, int colorMethod)
+void Molecule::setChainColor(Residue *chain, int color, int colorMethod)
 {
     MIAtomList changed;
-    RESIDUE *residue = chain;
+    Residue *residue = chain;
     short chain_id = chain->chain_id();
     while ((residue != NULL) && residue->chain_id() == chain_id)
     {
@@ -2795,7 +2795,7 @@ void Molecule::setChainColor(RESIDUE *chain, int color, int colorMethod)
 void Molecule::setColor(int color, int colorMethod)
 {
     MIAtomList changed;
-    for (MIIter<RESIDUE> res = GetResidues(); res; ++res)
+    for (MIIter<Residue> res = GetResidues(); res; ++res)
     {
         for (int i = 0; i < res->atomCount(); i++)
         {
@@ -2910,7 +2910,7 @@ void Molecule::FixHeaders(std::vector<std::string> &headers)
 int Molecule::SaveSymmMolecule(MIAtom *symatom, FILE *fp)
 {
     /* write a model at the symm position in atom to file fp */
-    MIIter<RESIDUE> res = GetResidues();
+    MIIter<Residue> res = GetResidues();
     if (!res)
     {
         return 0;
@@ -2940,7 +2940,7 @@ int Molecule::SaveSymmMolecule(MIAtom *symatom, FILE *fp)
     {
         if (res->atomCount() > 0)
         {
-            RESIDUE *sres = new RESIDUE(*res);
+            Residue *sres = new Residue(*res);
             //for(j=0;j<MAXNAME;j++)if(sres.name[j]=='#')sres.name[j]=0;
             for (j = 0; j < res->atomCount(); j++)
             {
@@ -2977,7 +2977,7 @@ void Molecule::Center(int &x, int &y, int &z)
     int zmax = INT_MIN;
     int ix, iy, iz, i;
 
-    for (MIIter<RESIDUE> res = GetResidues(); res; ++res)
+    for (MIIter<Residue> res = GetResidues(); res; ++res)
     {
         for (i = 0; i < res->atomCount(); i++)
         {
@@ -3020,7 +3020,7 @@ void Molecule::Load(FILE *fp)
 {
     char buf[1024];
     int r, n;
-    RESIDUE *res;
+    Residue *res;
     MIAtom *atom;
     char resid[20], atomid[20], c;
     while (fgets(buf, sizeof buf, fp))
@@ -3070,7 +3070,7 @@ void Molecule::Load(FILE *fp)
             if (n == modelnumber)
             {
                 res = residues;
-                while (Residue::isValid(res) && fgets(buf, sizeof buf, fp))
+                while (Monomer::isValid(res) && fgets(buf, sizeof buf, fp))
                 {
                     if (!strncmp(buf, "endcolor", 8))
                     {
@@ -3090,7 +3090,7 @@ void Molecule::Load(FILE *fp)
             if (n == modelnumber)
             {
                 res = residues;
-                while (Residue::isValid(res) && fgets(buf, sizeof buf, fp))
+                while (Monomer::isValid(res) && fgets(buf, sizeof buf, fp))
                 {
                     if (!strncmp(buf, "endradius", 8))
                     {

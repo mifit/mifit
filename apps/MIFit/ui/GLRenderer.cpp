@@ -199,7 +199,7 @@ void GLRenderer::computeBounds(std::list<Molecule*> &molecules)
     {
         Molecule *molecule = *molIter;
         molIter++;
-        for (MIIter<RESIDUE> res = molecule->GetResidues(); res; ++res)
+        for (MIIter<Residue> res = molecule->GetResidues(); res; ++res)
         {
             for (int i = 0; i < res->atomCount(); i++)
             {
@@ -890,7 +890,7 @@ void GLRenderer::DrawStack(Stack *stack, int x, int y)
         {
             item = *iter;
             ++iter;
-            if (MIAtom::isValid(item.atom) && Residue::isValid(item.residue) && MIMoleculeBase::isValid(item.molecule) && item.molecule->Visible())
+            if (MIAtom::isValid(item.atom) && Monomer::isValid(item.residue) && MIMoleculeBase::isValid(item.molecule) && item.molecule->Visible())
             {
                 s = "4: ";
                 s += item.residue->type().c_str();
@@ -907,7 +907,7 @@ void GLRenderer::DrawStack(Stack *stack, int x, int y)
         {
             item = *iter;
             ++iter;
-            if (MIAtom::isValid(item.atom) && Residue::isValid(item.residue) && MIMoleculeBase::isValid(item.molecule) && item.molecule->Visible())
+            if (MIAtom::isValid(item.atom) && Monomer::isValid(item.residue) && MIMoleculeBase::isValid(item.molecule) && item.molecule->Visible())
             {
                 s = "3: ";
                 s += item.residue->type().c_str();
@@ -924,7 +924,7 @@ void GLRenderer::DrawStack(Stack *stack, int x, int y)
         {
             item = *iter;
             ++iter;
-            if (MIAtom::isValid(item.atom) && Residue::isValid(item.residue) && MIMoleculeBase::isValid(item.molecule) && item.molecule->Visible())
+            if (MIAtom::isValid(item.atom) && Monomer::isValid(item.residue) && MIMoleculeBase::isValid(item.molecule) && item.molecule->Visible())
             {
                 s = "2: ";
                 s += item.residue->type().c_str();
@@ -940,7 +940,7 @@ void GLRenderer::DrawStack(Stack *stack, int x, int y)
         glColor3f(1.0f, 1.0f, 1.0f);
         item = *iter;
         ++iter;
-        if (MIAtom::isValid(item.atom) && Residue::isValid(item.residue) && MIMoleculeBase::isValid(item.molecule) && item.molecule->Visible())
+        if (MIAtom::isValid(item.atom) && Monomer::isValid(item.residue) && MIMoleculeBase::isValid(item.molecule) && item.molecule->Visible())
         {
             s = "1: ";
             s += item.residue->type().c_str();
@@ -1432,7 +1432,7 @@ void GLRenderer::drawBondLine(const Vector3<float> &pos1, int color1, const Vect
     glPopAttrib();
 }
 
-void GLRenderer::drawResidueAtoms(MIIter<RESIDUE> &res)
+void GLRenderer::drawResidueAtoms(MIIter<Residue> &res)
 {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -1491,7 +1491,7 @@ void GLRenderer::drawMolecule(Molecule *molecule)
         DrawContacts(molecule->hbondContacts);
         if (style.isAtomBall())
         {
-            MIIter<RESIDUE> res = molecule->GetResidues();
+            MIIter<Residue> res = molecule->GetResidues();
             drawResidueAtoms(res);
         }
         if (molecule->DotsVisible())
@@ -1508,7 +1508,7 @@ void GLRenderer::drawSymmetryMolecule(Molecule *molecule, bool showSymmetryAsBac
         drawBonds(molecule->getSymmetryBonds());
         if (!showSymmetryAsBackbone && style.isAtomBall())
         {
-            MIIter<RESIDUE> res = molecule->GetSymmResidues();
+            MIIter<Residue> res = molecule->GetSymmResidues();
             drawResidueAtoms(res);
         }
     }

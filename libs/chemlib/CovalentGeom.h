@@ -16,7 +16,7 @@ namespace chemlib
     class CovalentGeometry
     {
     public:
-        CovalentGeometry(Ligand*, const Residue*);
+        CovalentGeometry(Ligand*, const Monomer*);
         void AssignResidue();
         void InitBondAngle(MIAtom*, MIAtom*, MIAtom*, Angle&);
         //	void AssignBondAngle(MIAtom *, MIAtom *, MIAtom *);
@@ -41,7 +41,7 @@ namespace chemlib
         void AddLength(const char*, const char*, int, int, unsigned char, float, BondLength&);
         void AddAngle(const char*, const char*, const char*, int, int, int,
                       unsigned char, unsigned char, float, Angle&, const Bond&, const Bond&);
-        const Residue *_res;
+        const Monomer *_res;
         Ligand *_lig;
         ConstraintList _cl;
         float _sigmaangle;

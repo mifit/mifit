@@ -18,10 +18,10 @@ using namespace chemlib;
 int Molecule::SeqMax()
 {
     //int seqmax = 0;
-    MIIter<RESIDUE> ri = GetResidues();
+    MIIter<Residue> ri = GetResidues();
     ri.Last();
-    RESIDUE *res = ri;
-    if (!Residue::isValid(res))
+    Residue *res = ri;
+    if (!Monomer::isValid(res))
     {
         return 0;
     }
@@ -126,7 +126,7 @@ int Molecule::WriteSequence(std::string path, int type)
     else if (type == SEQ_FORMAT_MODEL)
     {
         i = 0;
-        for (MIIter<RESIDUE> res = GetResidues(); Residue::isValid(res); ++res)
+        for (MIIter<Residue> res = GetResidues(); Monomer::isValid(res); ++res)
         {
             c = (char)res->name1();
             if (!(c == '?' || c == 'B' || c == 'J' || c == 'O' || c == 'U' || c == 'X' || c == 'Z') && isupper(c))
@@ -167,14 +167,14 @@ int Molecule::WriteSequence(std::string path, int type)
     return 1;
 }
 
-void Molecule::InsertGap(RESIDUE *gap_point)
+void Molecule::InsertGap(Residue *gap_point)
 {
     if (gap_point == NULL)
     {
         return;
     }
-    MIIter<RESIDUE> res = GetResidues();
-    while (Residue::isValid(res))
+    MIIter<Residue> res = GetResidues();
+    while (Monomer::isValid(res))
     {
         if (gap_point == res)
         {
@@ -189,15 +189,15 @@ void Molecule::InsertGap(RESIDUE *gap_point)
     }
 }
 
-void Molecule::DeleteGap(RESIDUE *gap_point)
+void Molecule::DeleteGap(Residue *gap_point)
 {
     if (gap_point == NULL)
     {
         return;
     }
-    MIIter<RESIDUE> res = GetResidues();
-    RESIDUE *prev = NULL;
-    while (Residue::isValid(res))
+    MIIter<Residue> res = GetResidues();
+    Residue *prev = NULL;
+    while (Monomer::isValid(res))
     {
         if (gap_point == res)
         {
@@ -227,7 +227,7 @@ void Molecule::DeleteGap(RESIDUE *gap_point)
     }
 }
 
-void Molecule::InsertLowerGap(RESIDUE *gap_point)
+void Molecule::InsertLowerGap(Residue *gap_point)
 {
     if (!gap_point)
     {
@@ -242,7 +242,7 @@ void Molecule::InsertLowerGap(RESIDUE *gap_point)
     alt_seq.insert(p, ".");
 }
 
-void Molecule::DeleteLowerGap(RESIDUE *gap_point)
+void Molecule::DeleteLowerGap(Residue *gap_point)
 {
     if (!gap_point)
     {
@@ -267,7 +267,7 @@ int Molecule::SequenceIdentities()
     int l = alt_seq.length();
     if (l > 0)
     {
-        for (MIIter<RESIDUE> res = GetResidues(); Residue::isValid(res); ++res)
+        for (MIIter<Residue> res = GetResidues(); Monomer::isValid(res); ++res)
         {
             if (res->seqpos() < (unsigned int)l)
             {

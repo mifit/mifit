@@ -18,8 +18,8 @@ class Displaylist;
 class MATCH
 {
 public:
-    chemlib::RESIDUE *target;
-    chemlib::RESIDUE *source;
+    chemlib::Residue *target;
+    chemlib::Residue *source;
     int length;
     std::string atomtype;
 };
@@ -56,7 +56,7 @@ public:
     void ListSource();
     void ListMatches();
     bool MatchOK(MATCH*);
-    chemlib::RESIDUE *targetres, *sourceres;
+    chemlib::Residue *targetres, *sourceres;
 
     std::vector<MATCH> Matches;
 

@@ -7,7 +7,7 @@
 namespace chemlib
 {
     class MIAtom;
-    class RESIDUE;
+    class Residue;
 
     class PLANE
     {
@@ -36,7 +36,7 @@ namespace chemlib
         /**
          * the residue the bond is from.
          */
-        const RESIDUE *res;
+        const Residue *res;
 
     };
 #define MAXPLANE 20

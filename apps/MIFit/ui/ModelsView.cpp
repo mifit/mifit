@@ -73,7 +73,7 @@ class AtomsTree
     QTreeWidgetItem *rootId;
     MIGLWidget *view;
     Molecule *model;
-    RESIDUE *residue;
+    Residue *residue;
     MIAtom *currentAtom;
 
     ImageIndexMap imageIndex;
@@ -92,7 +92,7 @@ public:
 
     void setView(MIGLWidget *view);
     void setModel(Molecule *model);
-    void setResidue(RESIDUE *residue);
+    void setResidue(Residue *residue);
     void setCurrentAtom(MIAtom *atom);
     MIAtom *getCurrentAtom();
     void stylizeAtom(MIAtom *atom);
@@ -226,7 +226,7 @@ void AtomsTree::setModel(Molecule *model)
     }
 }
 
-void AtomsTree::setResidue(RESIDUE *residue)
+void AtomsTree::setResidue(Residue *residue)
 {
     currentAtom = NULL;
     atomToData.clear();
@@ -486,7 +486,7 @@ void AtomsTree::DeleteItem()
 unsigned int CountAtoms(Molecule *model)
 {
     unsigned int count = 0;
-    for (MIIter<RESIDUE> currRes = model->GetResidues(); currRes; ++currRes)
+    for (MIIter<Residue> currRes = model->GetResidues(); currRes; ++currRes)
     {
         count += currRes->atomCount();
     }
@@ -549,10 +549,10 @@ class ResiduesTree
     AtomsTree *atomsTree;
     MIGLWidget *view;
     Molecule *model;
-    RESIDUE *currentResidue;
+    Residue *currentResidue;
 
     ImageIndexMap imageIndex;
-    typedef std::map<RESIDUE*, TreeData*> ResidueToDataMap;
+    typedef std::map<Residue*, TreeData*> ResidueToDataMap;
     ResidueToDataMap residueToData;
 
     QMenu *_menu;
@@ -571,13 +571,13 @@ public:
     void setAtomsTree(AtomsTree *tree);
     void setModel(Molecule *model);
     Molecule *getModel();
-    void setChain(RESIDUE *chain);
-    void setCurrentResidue(RESIDUE *residue);
-    RESIDUE *getCurrentResidue();
-    void stylizeResidue(RESIDUE *residue);
+    void setChain(Residue *chain);
+    void setCurrentResidue(Residue *residue);
+    Residue *getCurrentResidue();
+    void stylizeResidue(Residue *residue);
 
 private slots:
-    void residuesToBeDeleted(chemlib::MIMoleculeBase *model, std::vector<chemlib::RESIDUE*> &residues);
+    void residuesToBeDeleted(chemlib::MIMoleculeBase *model, std::vector<chemlib::Residue*> &residues);
     void atomChanged(chemlib::MIMoleculeBase *model, chemlib::MIAtomList &atoms);
 
     void OnItemClicked(QTreeWidgetItem *item, int column); // single click
@@ -671,14 +671,14 @@ void ResiduesTree::setModel(Molecule *model)
 {
     if (this->model != NULL)
     {
-        disconnect(this->model, SIGNAL(residuesToBeDeleted(chemlib::MIMoleculeBase*, std::vector<chemlib::RESIDUE*>&)));
+        disconnect(this->model, SIGNAL(residuesToBeDeleted(chemlib::MIMoleculeBase*, std::vector<chemlib::Residue*>&)));
         disconnect(this->model, SIGNAL(atomChanged(chemlib::MIMoleculeBase*, chemlib::MIAtomList&)));
     }
     this->model = model;
     if (model != NULL)
     {
-        connect(model, SIGNAL(residuesToBeDeleted(chemlib::MIMoleculeBase*, std::vector<chemlib::RESIDUE*>&)),
-                this, SLOT(residuesToBeDeleted(chemlib::MIMoleculeBase*, std::vector<chemlib::RESIDUE*>&)));
+        connect(model, SIGNAL(residuesToBeDeleted(chemlib::MIMoleculeBase*, std::vector<chemlib::Residue*>&)),
+                this, SLOT(residuesToBeDeleted(chemlib::MIMoleculeBase*, std::vector<chemlib::Residue*>&)));
         connect(model, SIGNAL(atomChanged(chemlib::MIMoleculeBase*, chemlib::MIAtomList&)),
                 this, SLOT(atomChanged(chemlib::MIMoleculeBase*, chemlib::MIAtomList&)));
     }
@@ -689,13 +689,13 @@ Molecule*ResiduesTree::getModel()
     return model;
 }
 
-void ResiduesTree::residuesToBeDeleted(MIMoleculeBase*, std::vector<RESIDUE*> &residues)
+void ResiduesTree::residuesToBeDeleted(MIMoleculeBase*, std::vector<Residue*> &residues)
 {
     bool setCurrent = false;
-    std::vector<RESIDUE*>::iterator iter;
+    std::vector<Residue*>::iterator iter;
     for (iter = residues.begin(); iter != residues.end(); ++iter)
     {
-        RESIDUE *residue = *iter;
+        Residue *residue = *iter;
         if (residueToData.find(residue) != residueToData.end())
         {
             TreeData *data = residueToData[residue];
@@ -723,7 +723,7 @@ void ResiduesTree::residuesToBeDeleted(MIMoleculeBase*, std::vector<RESIDUE*> &r
 }
 
 
-void ResiduesTree::setChain(RESIDUE *chain)
+void ResiduesTree::setChain(Residue *chain)
 {
     setVisible(false);
     setCurrentResidue(NULL);
@@ -737,12 +737,12 @@ void ResiduesTree::setChain(RESIDUE *chain)
     if (chain != NULL)
     {
         int chain_id = chain->chain_id();
-        RESIDUE *res = chain;
+        Residue *res = chain;
         while ((res != NULL) && res->chain_id() == chain_id)
         {
             TreeData *data = new TreeData;
             data->residue = res;
-            QTreeWidgetItem *item = appendItem(rootId, RESIDUE::liststring(res).c_str(), imageIndex["residue"], imageIndex["residueSelected"], data);
+            QTreeWidgetItem *item = appendItem(rootId, Residue::liststring(res).c_str(), imageIndex["residue"], imageIndex["residueSelected"], data);
             if (!item)
             {
                 continue;
@@ -757,13 +757,13 @@ void ResiduesTree::setChain(RESIDUE *chain)
     update();
 }
 
-void ResiduesTree::setCurrentResidue(RESIDUE *residue)
+void ResiduesTree::setCurrentResidue(Residue *residue)
 {
     if (residue == currentResidue)
     {
         return;
     }
-    RESIDUE *oldResidue = currentResidue;
+    Residue *oldResidue = currentResidue;
     currentResidue = residue;
     stylizeResidue(oldResidue);
     stylizeResidue(residue);
@@ -785,32 +785,32 @@ void ResiduesTree::setCurrentResidue(RESIDUE *residue)
     }
 }
 
-RESIDUE*ResiduesTree::getCurrentResidue()
+Residue*ResiduesTree::getCurrentResidue()
 {
     return currentResidue;
 }
 
 void ResiduesTree::atomChanged(MIMoleculeBase *model, MIAtomList &atoms)
 {
-    std::set<RESIDUE*> residues;
+    std::set<Residue*> residues;
     MIAtom_iter iter = atoms.begin();
     while (iter != atoms.end())
     {
         MIAtom *atom = *iter;
         ++iter;
-        RESIDUE *res = residue_from_atom(model->getResidues(), atom);
+        Residue *res = residue_from_atom(model->getResidues(), atom);
         residues.insert(res);
     }
-    std::set<RESIDUE*>::iterator iter2 = residues.begin();
+    std::set<Residue*>::iterator iter2 = residues.begin();
     while (iter2 != residues.end())
     {
-        RESIDUE *res = *iter2;
+        Residue *res = *iter2;
         ++iter2;
         stylizeResidue(res);
     }
 }
 
-void ResiduesTree::stylizeResidue(RESIDUE *residue)
+void ResiduesTree::stylizeResidue(Residue *residue)
 {
     if (residue == NULL)
     {
@@ -892,7 +892,7 @@ void ResiduesTree::stylizeResidue(RESIDUE *residue)
     }
     item->setIcon(0, _imageList[ image]);
     item->setIcon(0, _imageList[ image ]);
-    item->setText(0, RESIDUE::liststring(residue).c_str());
+    item->setText(0, Residue::liststring(residue).c_str());
 }
 
 void ResiduesTree::OnItemClicked(QTreeWidgetItem *item, int)
@@ -910,7 +910,7 @@ void ResiduesTree::OnItemClicked(QTreeWidgetItem *item, int)
 
     if (data->residue != NULL)
     {
-        RESIDUE *residue = data->residue;
+        Residue *residue = data->residue;
         setCurrentResidue(residue);
         if (syncView && currentResidue != NULL)
         {
@@ -930,7 +930,7 @@ void ResiduesTree::OnItemActivated(QTreeWidgetItem *item, int)
         }
         if (data->residue != NULL)
         {
-            RESIDUE *residue = data->residue;
+            Residue *residue = data->residue;
             view->setFocusResidue(residue);
         }
     }
@@ -970,7 +970,7 @@ void ResiduesTree::ShowItem()
     {
         return;
     }
-    std::vector<RESIDUE*> residues;
+    std::vector<Residue*> residues;
     for (int i = 0; i < selected.size(); ++i)
     {
         QTreeWidgetItem *item = selected[i];
@@ -985,7 +985,7 @@ void ResiduesTree::ShowItem()
         }
         if (data->residue != NULL)
         {
-            RESIDUE *residue = data->residue;
+            Residue *residue = data->residue;
             residues.push_back(residue);
         }
     }
@@ -1001,7 +1001,7 @@ void ResiduesTree::ColorItem()
     {
         return;
     }
-    std::vector<RESIDUE*> residues;
+    std::vector<Residue*> residues;
     for (int i = 0; i < selected.size(); ++i)
     {
         QTreeWidgetItem *item = selected[i];
@@ -1016,7 +1016,7 @@ void ResiduesTree::ColorItem()
         }
         if (data->residue != NULL)
         {
-            RESIDUE *residue = data->residue;
+            Residue *residue = data->residue;
             residues.push_back(residue);
         }
     }
@@ -1049,7 +1049,7 @@ void ResiduesTree::DeleteItem()
     {
         return;
     }
-    std::vector<RESIDUE*> residues;
+    std::vector<Residue*> residues;
     for (int i = 0; i < selected.size(); ++i)
     {
         QTreeWidgetItem *item = selected[i];
@@ -1064,14 +1064,14 @@ void ResiduesTree::DeleteItem()
         }
         if (data->residue != NULL)
         {
-            RESIDUE *residue = data->residue;
+            Residue *residue = data->residue;
             residues.push_back(residue);
         }
     }
     if (residues.size() == 1)
     {
         std::string mess;
-        RESIDUE *residue = residues[0];
+        Residue *residue = residues[0];
         mess = ::format("Are you sure you want to delete residue %s?", residue->name().c_str());
         if (QMessageBox::question(this, "Confirm Delete Residue", mess.c_str(), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
         {
@@ -1108,7 +1108,7 @@ void ResiduesTree::EditItem()
 
     std::string newname("");
     bool first = true;
-    std::vector<RESIDUE*> residues;
+    std::vector<Residue*> residues;
 
     for (int i = 0; i < selected.size(); ++i)
     {
@@ -1128,7 +1128,7 @@ void ResiduesTree::EditItem()
             if (first)
             {
                 first = false;
-                RESIDUE *residue = data->residue;
+                Residue *residue = data->residue;
                 std::string s;
                 s = ::format("Enter new starting residue number (%d digits max)", (int)(MAXNAME -1));
                 QString str = QInputDialog::getText(this, "Edit residue number", s.c_str(), QLineEdit::Normal, residue->name().c_str());
@@ -1169,8 +1169,8 @@ void ResiduesTree::EditItemAtoms()
         {
             continue;
         }
-        RESIDUE *res = data->residue;
-        if (Residue::isValid(res) && res->atomCount() > 0)
+        Residue *res = data->residue;
+        if (Monomer::isValid(res) && res->atomCount() > 0)
         {
             for (int j = 0; j < res->atomCount(); ++j)
             {
@@ -1224,7 +1224,7 @@ void ResiduesTree::CopyItem()
         }
         if (data->residue != NULL)
         {
-            RESIDUE *residue = data->residue;
+            Residue *residue = data->residue;
             Application::instance()->CopyResidueBuffer(residue);
         }
     }
@@ -1252,9 +1252,9 @@ void ResiduesTree::InsertItem()
         }
         if (data->residue != NULL)
         {
-            RESIDUE *residue = data->residue;
+            Residue *residue = data->residue;
             unsigned short chain_id = residue->chain_id();
-            RESIDUE *buffer = Application::instance()->GetResidueBuffer();
+            Residue *buffer = Application::instance()->GetResidueBuffer();
             model->InsertResidues(residue, buffer, 0, chain_id);
             model->SortChains();
             break;
@@ -1273,7 +1273,7 @@ void ResiduesTree::PasteItem()
     {
         return;
     }
-    std::vector<RESIDUE*> toDelete;
+    std::vector<Residue*> toDelete;
     for (int i = 0; i < selected.size(); ++i)
     {
         QTreeWidgetItem *item = selected[i];
@@ -1288,11 +1288,11 @@ void ResiduesTree::PasteItem()
         }
         if (data->residue != NULL)
         {
-            RESIDUE *residue = data->residue;
+            Residue *residue = data->residue;
             toDelete.push_back(residue);
         }
     }
-    std::vector<RESIDUE*> insertedResidues;
+    std::vector<Residue*> insertedResidues;
     for (int i = 0; i < selected.size(); ++i)
     {
         QTreeWidgetItem *item = selected[i];
@@ -1307,9 +1307,9 @@ void ResiduesTree::PasteItem()
         }
         if (data->residue != NULL)
         {
-            RESIDUE *residue = data->residue;
+            Residue *residue = data->residue;
             unsigned short chain_id = residue->chain_id();
-            RESIDUE *buffer = Application::instance()->GetResidueBuffer();
+            Residue *buffer = Application::instance()->GetResidueBuffer();
             model->InsertResidues(residue, buffer, 0, chain_id);
             break;
         }
@@ -1318,10 +1318,10 @@ void ResiduesTree::PasteItem()
     model->DeleteResidues(toDelete);
 
     model->Build();
-    std::vector<RESIDUE*>::iterator iter = insertedResidues.begin();
+    std::vector<Residue*>::iterator iter = insertedResidues.begin();
     while (iter != insertedResidues.end())
     {
-        RESIDUE *res = *iter;
+        Residue *res = *iter;
         if (iter == insertedResidues.begin())
         {
             setCurrentResidue(res);
@@ -1353,12 +1353,12 @@ class ModelsTree
     ResiduesTree *residuesTree;
     AtomsTree *atomsTree;
     Molecule *currentModel;
-    RESIDUE *currentChain;
+    Residue *currentChain;
 
     bool colorDialog(int &color, int &colorMethod);
     void refreshChains(Molecule *model);
-    RESIDUE *findChain(RESIDUE *residue);
-    Molecule *findModel(RESIDUE *residue);
+    Residue *findChain(Residue *residue);
+    Molecule *findModel(Residue *residue);
 
     int truncateWidth;
 
@@ -1387,11 +1387,11 @@ public:
     void addMap(EMap *map);
     void addMapCrystal(EMap *map);
     void addChains(Molecule *model);
-    void setCurrentChain(RESIDUE *residue);
-    RESIDUE *getCurrentChain();
+    void setCurrentChain(Residue *residue);
+    Residue *getCurrentChain();
     void stylizeModel(Molecule *model);
     void stylizeMap(EMap *map);
-    void stylizeChain(RESIDUE *residue);
+    void stylizeChain(Residue *residue);
     void stylizeCrystal(CMapHeaderBase *mapHeader);
     void restylize();
     void setTruncateWidth(int width);
@@ -1409,11 +1409,11 @@ private slots:
     void mapToBeDeleted(EMap *model);
     void currentMapChanged(EMap *oldModel, EMap *newModel);
     void mapFftRecalculated(EMap *map);
-    void residuesToBeDeleted(chemlib::MIMoleculeBase *model, std::vector<chemlib::RESIDUE*> &residues);
+    void residuesToBeDeleted(chemlib::MIMoleculeBase *model, std::vector<chemlib::Residue*> &residues);
     void residuesDeleted(chemlib::MIMoleculeBase *model);
     void mapHeaderChanged(CMapHeaderBase *mapHeader);
-    void focusResidueChanged(chemlib::RESIDUE *residue);
-    void selectionChanged(Molecule *model, chemlib::RESIDUE *residue, chemlib::MIAtom *atom);
+    void focusResidueChanged(chemlib::Residue *residue);
+    void selectionChanged(Molecule *model, chemlib::Residue *residue, chemlib::MIAtom *atom);
 
 private:
     QTreeWidgetItem *rootId;
@@ -1429,9 +1429,9 @@ private:
     MapToDataMap mapToData;
     MapToDataMap mapToCrystalData;
 
-    typedef std::map<RESIDUE*, Molecule*> ResidueToModelMap;
+    typedef std::map<Residue*, Molecule*> ResidueToModelMap;
     ResidueToModelMap chainToModel;
-    typedef std::map<RESIDUE*, TreeData*> ResidueToDataMap;
+    typedef std::map<Residue*, TreeData*> ResidueToDataMap;
     ResidueToDataMap residueToChainData;
 
     typedef std::map<CMapHeaderBase*, TreeData*> MapHeaderToDataMap;
@@ -1665,13 +1665,13 @@ void ModelsTree::contextActionTriggered(QAction *action)
         view->OnFindLigandDensity();
 }
 
-void ModelsTree::setCurrentChain(RESIDUE *residue)
+void ModelsTree::setCurrentChain(Residue *residue)
 {
     if (residue == currentChain)
     {
         return;
     }
-    RESIDUE *oldChain = currentChain;
+    Residue *oldChain = currentChain;
     currentChain = residue;
     if (currentChain != NULL)
     {
@@ -1700,8 +1700,8 @@ void ModelsTree::goToResidue(const std::string &nameRef)
     std::string residueName = name;
     char chain_id;
 
-    RESIDUE *chain = NULL;
-    RESIDUE *residue = NULL;
+    Residue *chain = NULL;
+    Residue *residue = NULL;
     if (currentChain != NULL)
     {
         // Search current chain using full string
@@ -1754,7 +1754,7 @@ void ModelsTree::goToResidue(const std::string &nameRef)
     }
 }
 
-RESIDUE*ModelsTree::getCurrentChain()
+Residue*ModelsTree::getCurrentChain()
 {
     return currentChain;
 }
@@ -1773,7 +1773,7 @@ void ModelsTree::OnItemActivated(QTreeWidgetItem *item, int)
 
     if (data->chain != NULL)
     {
-        RESIDUE *residue = data->chain;
+        Residue *residue = data->chain;
         view->setFocusResidue(residue);
     }
 }
@@ -1945,7 +1945,7 @@ void ModelsTree::ShowItem()
         }
         else if (data->chain != NULL)
         {
-            RESIDUE *chain = data->chain;
+            Residue *chain = data->chain;
             Molecule *model = chainToModel[chain];
             model->toggleChainHidden(chain);
         }
@@ -1962,7 +1962,7 @@ void ModelsTree::ColorItem()
         return;
     }
     std::vector<Molecule*> models;
-    std::vector<RESIDUE*> chains;
+    std::vector<Residue*> chains;
     std::vector<EMap*> maps;
     for (int i = 0; i < selected.size(); ++i)
     {
@@ -2010,10 +2010,10 @@ void ModelsTree::ColorItem()
     }
     if (chains.size() > 0)
     {
-        std::vector<RESIDUE*>::iterator iter = chains.begin();
+        std::vector<Residue*>::iterator iter = chains.begin();
         for (; iter != chains.end(); ++iter)
         {
-            RESIDUE *chain = *iter;
+            Residue *chain = *iter;
             Molecule *model = chainToModel[chain];
             model->setChainColor(chain, color, colorMethod);
         }
@@ -2038,7 +2038,7 @@ void ModelsTree::DeleteItem()
         return;
     }
     std::vector<Molecule*> models;
-    std::vector<RESIDUE*> chains;
+    std::vector<Residue*> chains;
     std::vector<EMap*> maps;
     for (int i = 0; i < selected.size(); ++i)
     {
@@ -2097,7 +2097,7 @@ void ModelsTree::DeleteItem()
         std::string mess;
         if (chains.size() == 1)
         {
-            RESIDUE *chain = chains[0];
+            Residue *chain = chains[0];
             mess = ::format("Are you sure you want to delete chain\n%s?", chainstring(chain).c_str());
         }
         else
@@ -2106,10 +2106,10 @@ void ModelsTree::DeleteItem()
         }
         if (QMessageBox::question(this, "Confirm Delete Chains", mess.c_str(), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
         {
-            std::vector<RESIDUE*>::iterator iter = chains.begin();
+            std::vector<Residue*>::iterator iter = chains.begin();
             for (; iter != chains.end(); ++iter)
             {
-                RESIDUE *chain = *iter;
+                Residue *chain = *iter;
                 Molecule *model = chainToModel[chain];
                 mess = ::format("Deleted chain %s", chainstring(chain).c_str());
                 view->SaveModelFile(model, mess.c_str());
@@ -2155,7 +2155,7 @@ void ModelsTree::EditItem()
     {
         return;
     }
-    std::vector<RESIDUE*> chains;
+    std::vector<Residue*> chains;
     std::vector<EMap*> maps;
     std::vector<CMapHeaderBase*> crystals;
     for (int i = 0; i < selected.size(); ++i)
@@ -2187,10 +2187,10 @@ void ModelsTree::EditItem()
     std::set<Molecule*> chainsModified;
     if (chains.size() > 0)
     {
-        std::vector<RESIDUE*>::iterator iter = chains.begin();
+        std::vector<Residue*>::iterator iter = chains.begin();
         for (; iter != chains.end(); ++iter)
         {
-            RESIDUE *chain = *iter;
+            Residue *chain = *iter;
             Molecule *model = chainToModel[chain];
             int chain_id = chain->chain_id();
             char chainid = (char)(chain_id&255);
@@ -2268,7 +2268,7 @@ void ModelsTree::SortChains()
 
         if (data->chain != NULL)
         {
-            RESIDUE *chain = data->chain;
+            Residue *chain = data->chain;
             Molecule *model = chainToModel[chain];
             view->SaveModelFile(model, "Sorted chains");
             model->SortChains();
@@ -2300,8 +2300,8 @@ void ModelsTree::CopyItem()
         }
         if (data->chain != NULL)
         {
-            RESIDUE *chain = data->chain;
-            RESIDUE *res = chain;
+            Residue *chain = data->chain;
+            Residue *res = chain;
             while (res != NULL && res->chain_id() == chain->chain_id())
             {
                 Application::instance()->CopyResidueBuffer(res);
@@ -2310,7 +2310,7 @@ void ModelsTree::CopyItem()
         }
         else if (data->residue != NULL)
         {
-            RESIDUE *residue = data->residue;
+            Residue *residue = data->residue;
             Application::instance()->CopyResidueBuffer(residue);
         }
     }
@@ -2345,7 +2345,7 @@ void ModelsTree::InsertItem()
                 return;
             }
             unsigned char c = chainId.toAscii().at(0);
-            RESIDUE *buffer = Application::instance()->GetResidueBuffer();
+            Residue *buffer = Application::instance()->GetResidueBuffer();
             model->InsertResidues(model->getResidues(), buffer, 3, (c&255) + 1*256);
             model->Build();
             model->SortChains();
@@ -2355,10 +2355,10 @@ void ModelsTree::InsertItem()
         }
         else if (data->chain != NULL)
         {
-            RESIDUE *chain = data->chain;
+            Residue *chain = data->chain;
             Molecule *model = chainToModel[chain];
             unsigned short chain_id = chain->chain_id();
-            RESIDUE *buffer = Application::instance()->GetResidueBuffer();
+            Residue *buffer = Application::instance()->GetResidueBuffer();
             model->InsertResidues(chain, buffer, 3, chain_id);
             model->Build();
             model->SortChains();
@@ -2465,8 +2465,8 @@ void ModelsTree::setView(MIGLWidget *view)
         return;
     }
     this->view = view;
-    connect(view, SIGNAL(focusResidueChanged(chemlib::RESIDUE*)),
-            this, SLOT(focusResidueChanged(chemlib::RESIDUE*)));
+    connect(view, SIGNAL(focusResidueChanged(chemlib::Residue*)),
+            this, SLOT(focusResidueChanged(chemlib::Residue*)));
     addModels(displaylist());
     addMaps(displaylist());
 }
@@ -2481,12 +2481,12 @@ void ModelsTree::setAtomsTree(AtomsTree *tree)
     atomsTree = tree;
 }
 
-RESIDUE*ModelsTree::findChain(RESIDUE *residue)
+Residue*ModelsTree::findChain(Residue *residue)
 {
     if (!residue)
         return NULL;
 
-    RESIDUE *chain = NULL;
+    Residue *chain = NULL;
     bool found = false;
     Displaylist::ModelList::iterator modelIter = displaylist()->begin();
     while (!found && modelIter != displaylist()->end())
@@ -2494,7 +2494,7 @@ RESIDUE*ModelsTree::findChain(RESIDUE *residue)
         Molecule *model = *modelIter;
         ++modelIter;
         unsigned short chain_id = 0;
-        for (RESIDUE *res = model->getResidues(); res != NULL; res = res->next())
+        for (Residue *res = model->getResidues(); res != NULL; res = res->next())
         {
             if ((res->chain_id()) != chain_id)
             {
@@ -2515,7 +2515,7 @@ RESIDUE*ModelsTree::findChain(RESIDUE *residue)
     return chain;
 }
 
-Molecule*ModelsTree::findModel(RESIDUE *residue)
+Molecule*ModelsTree::findModel(Residue *residue)
 {
     Molecule *model = NULL;
     bool found = false;
@@ -2524,7 +2524,7 @@ Molecule*ModelsTree::findModel(RESIDUE *residue)
     {
         model = *modelIter;
         ++modelIter;
-        for (RESIDUE *res = model->getResidues(); res != NULL; res = res->next())
+        for (Residue *res = model->getResidues(); res != NULL; res = res->next())
         {
             if (res == residue)
             {
@@ -2540,11 +2540,11 @@ Molecule*ModelsTree::findModel(RESIDUE *residue)
     return model;
 }
 
-void ModelsTree::focusResidueChanged(RESIDUE *residue)
+void ModelsTree::focusResidueChanged(Residue *residue)
 {
     if (syncView)
     {
-        RESIDUE *chain = findChain(residue);
+        Residue *chain = findChain(residue);
         if (chain != NULL)
         {
             setCurrentChain(chain);
@@ -2553,11 +2553,11 @@ void ModelsTree::focusResidueChanged(RESIDUE *residue)
     }
 }
 
-void ModelsTree::selectionChanged(Molecule*, RESIDUE *residue, MIAtom *atom)
+void ModelsTree::selectionChanged(Molecule*, Residue *residue, MIAtom *atom)
 {
     if (syncView)
     {
-        RESIDUE *chain = findChain(residue);
+        Residue *chain = findChain(residue);
         if (chain != NULL)
         {
             setCurrentChain(chain);
@@ -2585,8 +2585,8 @@ void ModelsTree::addModels(Displaylist *displaylist)
             this, SLOT(modelAdded(Molecule*)));
     connect(displaylist, SIGNAL(currentMoleculeChanged(Molecule*, Molecule*)),
             this, SLOT(currentModelChanged(Molecule*, Molecule*)));
-    connect(displaylist, SIGNAL(selectionChanged(Molecule*, chemlib::RESIDUE*, chemlib::MIAtom*)),
-            this, SLOT(selectionChanged(Molecule*, chemlib::RESIDUE*, chemlib::MIAtom*)));
+    connect(displaylist, SIGNAL(selectionChanged(Molecule*, chemlib::Residue*, chemlib::MIAtom*)),
+            this, SLOT(selectionChanged(Molecule*, chemlib::Residue*, chemlib::MIAtom*)));
 }
 
 void ModelsTree::addMaps(Displaylist *displaylist)
@@ -2633,8 +2633,8 @@ void ModelsTree::addModel(Molecule *model)
 
     connect(model, SIGNAL(moleculeToBeDeleted(chemlib::MIMoleculeBase*)),
             this, SLOT(modelToBeDeleted(chemlib::MIMoleculeBase*)));
-    connect(model, SIGNAL(residuesToBeDeleted(chemlib::MIMoleculeBase*, std::vector<chemlib::RESIDUE*>&)),
-            this, SLOT(residuesToBeDeleted(chemlib::MIMoleculeBase*, std::vector<chemlib::RESIDUE*>&)));
+    connect(model, SIGNAL(residuesToBeDeleted(chemlib::MIMoleculeBase*, std::vector<chemlib::Residue*>&)),
+            this, SLOT(residuesToBeDeleted(chemlib::MIMoleculeBase*, std::vector<chemlib::Residue*>&)));
     connect(model, SIGNAL(residuesDeleted(chemlib::MIMoleculeBase*)),
             this, SLOT(residuesDeleted(chemlib::MIMoleculeBase*)));
     connect(model, SIGNAL(moleculeChanged(chemlib::MIMoleculeBase*)),
@@ -2654,12 +2654,12 @@ void ModelsTree::moleculeChanged(MIMoleculeBase *model)
     }
 }
 
-void ModelsTree::residuesToBeDeleted(MIMoleculeBase*, std::vector<RESIDUE*> &residues)
+void ModelsTree::residuesToBeDeleted(MIMoleculeBase*, std::vector<Residue*> &residues)
 {
-    std::vector<RESIDUE*>::iterator iter;
+    std::vector<Residue*>::iterator iter;
     for (iter = residues.begin(); iter != residues.end(); ++iter)
     {
-        RESIDUE *residue = *iter;
+        Residue *residue = *iter;
         if (residueToChainData.find(residue) != residueToChainData.end())
         {
             if (currentChain == residue)
@@ -2733,7 +2733,7 @@ void ModelsTree::refreshChains(Molecule *model)
     ResidueToDataMap::iterator iter = residueToChainData.begin();
     while (iter != residueToChainData.end())
     {
-        RESIDUE *residue = iter->first;
+        Residue *residue = iter->first;
         TreeData *data = iter->second;
         ++iter;
         if (validTreeData(data))
@@ -2753,7 +2753,7 @@ void ModelsTree::refreshChains(Molecule *model)
         QTreeWidgetItem *item = data->GetId();
         if (item && data->chain != NULL)
         {
-            RESIDUE *chain = data->chain;
+            Residue *chain = data->chain;
             Delete(item);
             residueToChainData.erase(chain);
             chainToModel.erase(chain);
@@ -2782,7 +2782,7 @@ void ModelsTree::addChains(Molecule *model)
     std::set<TreeData*> currentChainDataSet;
     int chain_id = -9999;
     QTreeWidgetItem *previousChainItem;
-    for (RESIDUE *res = model->getResidues(); res != NULL; res = res->next())
+    for (Residue *res = model->getResidues(); res != NULL; res = res->next())
     {
         if (res->chain_id() != chain_id)
         {
@@ -2840,7 +2840,7 @@ void ModelsTree::addChains(Molecule *model)
         QTreeWidgetItem *chainItem = data->GetId();
         if (chainItem && data->chain != NULL)
         {
-            RESIDUE *chain = data->chain;
+            Residue *chain = data->chain;
             Molecule *chainModel = chainToModel[chain];
             if (model == chainModel
                 && currentChainDataSet.find(data) == currentChainDataSet.end())
@@ -2872,7 +2872,7 @@ void ModelsTree::restylize()
     ResidueToDataMap::iterator iter2 = residueToChainData.begin();
     while (iter2 != residueToChainData.end())
     {
-        RESIDUE *chain = iter2->first;
+        Residue *chain = iter2->first;
         TreeData *data = iter2->second;
         ++iter2;
         if (data == NULL || !validTreeData(data))
@@ -3006,32 +3006,32 @@ void ModelsTree::stylizeMap(EMap *map)
 
 void ModelsTree::atomChanged(MIMoleculeBase *model, MIAtomList &atoms)
 {
-    std::set<RESIDUE*> chains;
+    std::set<Residue*> chains;
     MIAtom_iter iter = atoms.begin();
     while (iter != atoms.end())
     {
         MIAtom *atom = *iter;
         ++iter;
-        RESIDUE *res = residue_from_atom(model->getResidues(), atom);
+        Residue *res = residue_from_atom(model->getResidues(), atom);
         if (res != NULL)
         {
-            RESIDUE *chain = findChain(res);
+            Residue *chain = findChain(res);
             if (chain != NULL)
             {
                 chains.insert(chain);
             }
         }
     }
-    std::set<RESIDUE*>::iterator iter2 = chains.begin();
+    std::set<Residue*>::iterator iter2 = chains.begin();
     while (iter2 != chains.end())
     {
-        RESIDUE *chain = *iter2;
+        Residue *chain = *iter2;
         ++iter2;
         stylizeChain(chain);
     }
 }
 
-void ModelsTree::stylizeChain(RESIDUE *residue)
+void ModelsTree::stylizeChain(Residue *residue)
 {
     if (residue == NULL || residueToChainData.find(residue) == residueToChainData.end())
     {
@@ -3053,7 +3053,7 @@ void ModelsTree::stylizeChain(RESIDUE *residue)
     bool hidden = true;
     int shownAtoms = 0;
     int hiddenAtoms = 0;
-    RESIDUE *res = residue;
+    Residue *res = residue;
     int chainId = res->chain_id();
     while (res != NULL && chainId == res->chain_id())
     {
@@ -3228,7 +3228,7 @@ void ModelsTree::modelToBeDeleted(MIMoleculeBase *mol)
     {
         setCurrentChain(NULL);
     }
-    for (RESIDUE *res = model->getResidues(); RESIDUE::isValid(res); res = res->next())
+    for (Residue *res = model->getResidues(); Residue::isValid(res); res = res->next())
     {
         residueToChainData.erase(res);
     }

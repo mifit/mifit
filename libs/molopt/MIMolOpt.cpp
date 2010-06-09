@@ -948,8 +948,8 @@ int MIMolOpt::minimize_map()
         return 0;
     }
     CMapHeaderBase *mh = CurrentMap->GetMapHeader();
-    RESIDUE *res;
-    RESIDUE *reslist = RefiRes;
+    Residue *res;
+    Residue *reslist = RefiRes;
     int nres = nRefiRes;
     float mweight = 1.0;
     int sliderweight = GetMapWeightI();
@@ -971,7 +971,7 @@ int MIMolOpt::minimize_map()
     dxyz = mh->resmin/3.0f;
 
     res = reslist;
-    while (Residue::isValid(res) && n < nres)
+    while (Monomer::isValid(res) && n < nres)
     {
         for (i = 0; i < res->atomCount(); i++)
         {
@@ -1458,7 +1458,7 @@ int MIMolOpt::takestep(int seed)
     long init;
     vector<MIAtom*> refiAtoms;
     MIAtomList atoms;
-    RESIDUE *res = RefiRes;
+    Residue *res = RefiRes;
     MIAtom *a;
     //FILE	*fpin_ptr, *fpout;
 
@@ -1489,7 +1489,7 @@ int MIMolOpt::takestep(int seed)
 
     //fclose(fpin_ptr);
 
-    while (Residue::isValid(res) && n < nRefiRes)
+    while (Monomer::isValid(res) && n < nRefiRes)
     {
         for (i = 0; i < res->atomCount(); i++)
         {
@@ -1695,10 +1695,10 @@ int MIMolOpt::resetderivatives()
     {
         return 0;
     }
-    RESIDUE *res = RefiRes;
+    Residue *res = RefiRes;
     int i;
     int n = 0;
-    while (Residue::isValid(res) && n < nRefiRes)
+    while (Monomer::isValid(res) && n < nRefiRes)
     {
         for (i = 0; i < res->atomCount(); i++)
         {
@@ -1717,13 +1717,13 @@ int MIMolOpt::applyderivatives()
     {
         return 0;
     }
-    RESIDUE *res = RefiRes;
+    Residue *res = RefiRes;
     int i;
     int n = 0;
     MIAtom *a;
     float dx, dy, dz;
     float maxd = 1.0F;
-    while (Residue::isValid(res) && n < nRefiRes)
+    while (Monomer::isValid(res) && n < nRefiRes)
     {
         for (i = 0; i < res->atomCount(); i++)
         {
@@ -1780,17 +1780,17 @@ void MIMolOpt::ConnectTo(MIMoleculeBase *mol)
             this, SLOT(moleculeDeleted(chemlib::MIMoleculeBase*)));
     connect(mol, SIGNAL(moleculeToBeDeleted(chemlib::MIMoleculeBase*)),
             this, SLOT(moleculeToBeDeleted(chemlib::MIMoleculeBase*)));
-    connect(mol, SIGNAL(residuesToBeDeleted(chemlib::MIMoleculeBase*, std::vector<chemlib::RESIDUE*>&)),
-            this, SLOT(residuesToBeDeleted(chemlib::MIMoleculeBase*, std::vector<chemlib::RESIDUE*>&)));
+    connect(mol, SIGNAL(residuesToBeDeleted(chemlib::MIMoleculeBase*, std::vector<chemlib::Residue*>&)),
+            this, SLOT(residuesToBeDeleted(chemlib::MIMoleculeBase*, std::vector<chemlib::Residue*>&)));
     connect(mol, SIGNAL(atomsToBeDeleted(chemlib::MIMoleculeBase*, chemlib::MIAtomList)),
             this, SLOT(atomsToBeDeleted(chemlib::MIMoleculeBase*, chemlib::MIAtomList)));
 }
 
 
-long MIMolOpt::SetRefiRes(RESIDUE *res1, RESIDUE *res2, MIMoleculeBase *node, EMapBase *emap)
+long MIMolOpt::SetRefiRes(Residue *res1, Residue *res2, MIMoleculeBase *node, EMapBase *emap)
 {
-    RESIDUE *res;
-    RESIDUE *start = NULL;
+    Residue *res;
+    Residue *start = NULL;
     int nres;
     if (dict.EmptyDictCheck() == false)
     {
@@ -1900,15 +1900,15 @@ void MIMolOpt::moleculeToBeDeleted(MIMoleculeBase *molecule)
 {
     Purge(molecule);
 
-    std::vector<RESIDUE*> residues;
-    for (MIIter<RESIDUE> res = molecule->GetResidues(); res; ++res)
+    std::vector<Residue*> residues;
+    for (MIIter<Residue> res = molecule->GetResidues(); res; ++res)
     {
         residues.push_back(res);
     }
     residuesToBeDeleted(molecule, residues);
 }
 
-void MIMolOpt::residuesToBeDeleted(MIMoleculeBase *mol, std::vector<RESIDUE*> &residues)
+void MIMolOpt::residuesToBeDeleted(MIMoleculeBase *mol, std::vector<Residue*> &residues)
 {
 
     MIAtomList atoms;
@@ -1928,11 +1928,11 @@ void MIMolOpt::atomsToBeDeleted(MIMoleculeBase* /* mol */, const MIAtomList &ato
     }
 }
 
-void MIMolOpt::RefiAllTorsions(RESIDUE *reslist)
+void MIMolOpt::RefiAllTorsions(Residue *reslist)
 {
     int i;
     TORSION *t;
-    while (Residue::isValid(reslist))
+    while (Monomer::isValid(reslist))
     {
         if (dict.DictMap.find(reslist->type()) == dict.DictMap.end())
         {
@@ -2093,7 +2093,7 @@ float bond_radius(MIAtom *atom)
     return (r);
 }
 
-int MIMolOpt::getbonddist(RESIDUE *res, Bond *bond)
+int MIMolOpt::getbonddist(Residue *res, Bond *bond)
 {
     MIAtom *a1 = NULL, *a2 = NULL;
     int i;
@@ -2136,7 +2136,7 @@ void MIMolOpt::Do()
     ConnectTo(CurrentModel); //Connect up signals
     SaveToken = geomsaver.Save(RefiRes, nRefiRes, CurrentModel);
 
-    RESIDUE *res = RefiRes;
+    Residue *res = RefiRes;
     int i = 0, j;
     while (res != NULL && i < nRefiRes)
     {
@@ -2242,7 +2242,7 @@ void MIMolOpt::Purge(MIMoleculeBase *node)
     geomsaver.Purge(node);
 }
 
-void MIMolOpt::Purge(RESIDUE *res)
+void MIMolOpt::Purge(Residue *res)
 {
     if (IsRefining())
     {
@@ -2263,7 +2263,7 @@ void MIMolOpt::Purge(MIAtom *atom)
     {
         //this will only get hit the for the first atom in the mol, after which
         // IsRefining will be false, so it's not too expensive to do this
-        RESIDUE *res = residue_from_atom(CurrentModel->getResidues(), atom);
+        Residue *res = residue_from_atom(CurrentModel->getResidues(), atom);
         if (res)
         {
             clearRefineTarget();
@@ -3012,7 +3012,7 @@ void MIMolOpt::FullOptimize(MIAtomList &CurrentAtoms, MIMoleculeBase *fitmol, EM
     unsigned int itrial, maxtrials = 10, nconftries = 0;
     float conf_angle = 180.0;
     vector<TORSION>  torsions;
-    RESIDUE *res;
+    Residue *res;
     unsigned short *tatomflags;
     GeomSaver best_solution;
     float screen_center_x = center[0];
@@ -3431,7 +3431,7 @@ void MIMolOpt::LigandOptimize(MIAtomList &CurrentAtoms, MIMoleculeBase *fitmol, 
     unsigned int itrial, maxtrials = 10;
     float conf_angle = 180.0;
     vector<TORSION>  torsions;                  //Not used any more, but score_full() needs a placeholder
-    RESIDUE *res;
+    Residue *res;
     unsigned short *tatomflags = NULL;
     GeomSaver best_solution;
     float screen_center_x = center[0];
@@ -3869,7 +3869,7 @@ void MIMolOpt::LigandOptimize(MIAtomList &CurrentAtoms, MIMoleculeBase *fitmol, 
     Logger::footer("");
 }
 
-bool MIMolOpt::BuildMainchain(RESIDUE *res, MIMoleculeBase *model, EMapBase *emap, bool addAtomsToNextResidue)
+bool MIMolOpt::BuildMainchain(Residue *res, MIMoleculeBase *model, EMapBase *emap, bool addAtomsToNextResidue)
 {
     // build a peptide plane between two residues, the input and the next one.
     // and then find the best rotation along the CA-CA axis according to the map
@@ -3877,7 +3877,7 @@ bool MIMolOpt::BuildMainchain(RESIDUE *res, MIMoleculeBase *model, EMapBase *ema
     {
         return false;
     }
-    RESIDUE *next = res->next();
+    Residue *next = res->next();
     if (!next)
     {
         return false;
@@ -4082,10 +4082,10 @@ bool MIMolOpt::BuildMainchain(RESIDUE *res, MIMoleculeBase *model, EMapBase *ema
 int MIMolOpt::FindNeighbours(MIAtomList &CurrentAtoms, MIAtomList &Neighbours,
                              MIMoleculeBase *fitmol, float distance)
 {
-    RESIDUE *res;
+    Residue *res;
     MIAtom *a;
     unsigned int i, j;
-    for (res = fitmol->getResidues(); Residue::isValid(res); res = res->next())
+    for (res = fitmol->getResidues(); Monomer::isValid(res); res = res->next())
     {
         for (i = 0; i < (unsigned int)res->atomCount(); i++)
         {
@@ -4113,7 +4113,7 @@ int MIMolOpt::FindNeighbours(MIAtomList &CurrentAtoms, MIAtomList &Neighbours,
 nextresidue:;
     }
     res = fitmol->getSymmResidues();
-    while (Residue::isValid(res))
+    while (Monomer::isValid(res))
     {
         for (i = 0; i < (unsigned int)res->atomCount(); i++)
         {
@@ -4284,8 +4284,8 @@ void MIMolOpt::MolecularReplace(MIMoleculeBase *model, EMapBase *emap)
         return;
     }
 
-    RESIDUE *res = model->getResidues();
-    while (Residue::isValid(res))
+    Residue *res = model->getResidues();
+    while (Monomer::isValid(res))
     {
         for (int i = 0; i < res->atomCount(); i++)
         {
@@ -4476,10 +4476,10 @@ bool MIMolOpt::IsBeingRefined(MIAtom *atom)
     {
         return false;
     }
-    RESIDUE *res = RefiRes;
+    Residue *res = RefiRes;
     int i;
     int n = 0;
-    while (Residue::isValid(res) && n < nRefiRes)
+    while (Monomer::isValid(res) && n < nRefiRes)
     {
         for (i = 0; i < res->atomCount(); i++)
         {
@@ -4500,7 +4500,7 @@ bool TorsionMatch::operator ()(const chemlib::TORSION &t, const chemlib::TORSDIC
            && strncmp(t.type, td.type, 11) == 0;
 }
 
-void MIMolOpt::internalSetRefiRes(chemlib::RESIDUE *residue, int nResidues)
+void MIMolOpt::internalSetRefiRes(chemlib::Residue *residue, int nResidues)
 {
     bool wasRefining = IsRefining();
     RefiRes = residue;

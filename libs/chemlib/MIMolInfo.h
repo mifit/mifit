@@ -27,7 +27,7 @@ namespace chemlib
 
         // readers allocate and return a new residue for this,
         // writers expect this to be set to the residue to write
-        RESIDUE *res;                   // could make a vector, prob not worth the trouble
+        Residue *res;                   // could make a vector, prob not worth the trouble
 
         std::vector<Bond> bonds;
         std::vector<ANGLE> angles;       // mmCIF only

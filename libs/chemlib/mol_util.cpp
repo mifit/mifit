@@ -370,12 +370,12 @@ bool IsBondRotatable::operator()(const Bond &bond) const
 // Output:      Writes the atom pointers to a vector
 // Requires:
 /////////////////////////////////////////////////////////////////////////////
-void GatherAtmPtrs(MIAtomList &target, const std::vector<Residue*> &source)
+void GatherAtmPtrs(MIAtomList &target, const std::vector<Monomer*> &source)
 {
 
     target.reserve((source.front())->atoms().size() * source.size());
 
-    std::vector<Residue*>::const_iterator res;
+    std::vector<Monomer*>::const_iterator res;
     for (res = source.begin(); res != source.end(); ++res)
     {
         for (unsigned int i = 0; i < (*res)->atoms().size(); ++i)
@@ -904,7 +904,7 @@ void TrimBonds(std::vector<Bond> &trimmed_bonds,
     }
 }
 
-int CountResBonds(const RESIDUE &res, const std::vector<Bond> &bonds)
+int CountResBonds(const Residue &res, const std::vector<Bond> &bonds)
 {
     return count_if(bonds.begin(), bonds.end(), bind2nd(ResContainsBond(), res));
 }
@@ -931,8 +931,8 @@ int Build(Ligand &lig)
     float x, y, z;
     //		int ix,iy,iz;
     double dx, dy, dz, dist = 1.90, d1;
-    std::vector<Residue*>::iterator ri;
-    std::vector<Residue*>::iterator nter = lig.residues.begin();
+    std::vector<Monomer*>::iterator ri;
+    std::vector<Monomer*>::iterator nter = lig.residues.begin();
     short nextid;
     //		nresidues = 0;
     Bond bond;
@@ -949,7 +949,7 @@ int Build(Ligand &lig)
 
     for (ri = lig.residues.begin(); ri != lig.residues.end(); ++ri)
     {
-        Residue *res = *ri;
+        Monomer *res = *ri;
         for (unsigned int i = 0; i < res->atoms().size(); i++)
         {
             res->atom(i)->removeType(AtomType::BONDED);
@@ -962,7 +962,7 @@ int Build(Ligand &lig)
 
     for (ri = lig.residues.begin(); ri != lig.residues.end(); ++ri)
     {
-        Residue *res = *ri;
+        Monomer *res = *ri;
         /*   gather atoms in residue and "pointtovu" them */
         for (unsigned int i = 1; i < res->atoms().size(); i++)
         {
@@ -1156,7 +1156,7 @@ skip2:            if (ri+1 != lig.residues.end())
     return (lig.bonds.size());
 }
 
-bool IsPeptide(const Residue &res)
+bool IsPeptide(const Monomer &res)
 {
     // does residue have minimal requirements for peptide?
     int found = 0;
@@ -1205,7 +1205,7 @@ bool IsPeptide(const Residue &res)
     }
 }
 
-bool IsNucleic(Residue *res)
+bool IsNucleic(Monomer *res)
 {
 
     static char type3[][4] =
@@ -1235,7 +1235,7 @@ bool IsNucleic(Residue *res)
     return (0);
 }
 
-bool IsNucleic(RESIDUE *res)
+bool IsNucleic(Residue *res)
 {
 
     static char type3[][4] =
@@ -1265,7 +1265,7 @@ bool IsNucleic(RESIDUE *res)
     return false;
 }
 
-bool IsWater(const RESIDUE *res)
+bool IsWater(const Residue *res)
 {
     if (!strcmp(res->type().c_str(), "HOH"))
     {
@@ -1286,7 +1286,7 @@ bool IsWater(const RESIDUE *res)
     return 0;
 }
 
-int IsDna(const Residue &res)     // does residue have minimal requirements for dna?
+int IsDna(const Monomer &res)     // does residue have minimal requirements for dna?
 {
     int found = 0, primefound = 1;
     for (unsigned int i = 0; i < res.atoms().size(); i++)
@@ -1355,7 +1355,7 @@ int IsDna(const Residue &res)     // does residue have minimal requirements for 
     }
 }
 
-int IsDna(const RESIDUE &res)     // does residue have minimal requirements for dna?
+int IsDna(const Residue &res)     // does residue have minimal requirements for dna?
 {
     int found = 0, primefound = 1;
     for (int i = 0; i < res.atomCount(); i++)
@@ -1424,7 +1424,7 @@ int IsDna(const RESIDUE &res)     // does residue have minimal requirements for 
     }
 }
 
-bool IsAminoAcid(RESIDUE *res)
+bool IsAminoAcid(Residue *res)
 {
 
     static char type3[][4] =
@@ -1489,10 +1489,10 @@ bool IsAminoAcid(RESIDUE *res)
     return false;
 }
 
-void AminoOrNucleic(RESIDUE *res1, int reset)
+void AminoOrNucleic(Residue *res1, int reset)
 {
-    RESIDUE *res;
-    for (res = res1; Residue::isValid(res); res = res->next())
+    Residue *res;
+    for (res = res1; Monomer::isValid(res); res = res->next())
     {
         if (reset)
         {
@@ -1503,7 +1503,7 @@ void AminoOrNucleic(RESIDUE *res1, int reset)
     }
 }
 
-bool hbondable(const MIAtom &a1, const MIAtom &a2, const Residue &r1, const Residue &r2)
+bool hbondable(const MIAtom &a1, const MIAtom &a2, const Monomer &r1, const Monomer &r2)
 {
     /* compares a bunch of rules for h-bonding and returns
        true if an h-bond is plausible and false if its not
@@ -1597,7 +1597,7 @@ bool hbondable(const MIAtom &a1, const MIAtom &a2, const Residue &r1, const Resi
     return true;
 }
 
-MIAtom *atom_from_name(const char *name, const Residue &residue)
+MIAtom *atom_from_name(const char *name, const Monomer &residue)
 {
     for (size_t i = 0; i < residue.atoms().size(); i++)
     {
@@ -1624,9 +1624,9 @@ void BisectAtom(const MIAtom *source, double *v)
     }
 }
 
-RESIDUE *residue_from_name(RESIDUE *res, const char *resid, const char c)
+Residue *residue_from_name(Residue *res, const char *resid, const char c)
 {
-    while (Residue::isValid(res))
+    while (Monomer::isValid(res))
     {
         if (!strcmp(resid, res->name().c_str()))
         {
@@ -1640,9 +1640,9 @@ RESIDUE *residue_from_name(RESIDUE *res, const char *resid, const char c)
     return (NULL);
 }
 
-static RESIDUE *LAST_RES = NULL;
-static RESIDUE *LAST_RES_LIST = NULL;
-void clear_residue_from_atom_cache(const Residue *res)
+static Residue *LAST_RES = NULL;
+static Residue *LAST_RES_LIST = NULL;
+void clear_residue_from_atom_cache(const Monomer *res)
 {
 
     if (res == LAST_RES)
@@ -1652,7 +1652,7 @@ void clear_residue_from_atom_cache(const Residue *res)
     }
 }
 
-RESIDUE *residue_from_atom(RESIDUE *res, MIAtom *a)
+Residue *residue_from_atom(Residue *res, MIAtom *a)
 {
 
     // simple cache: assume most likely place for atom is last residue found,
@@ -1660,7 +1660,7 @@ RESIDUE *residue_from_atom(RESIDUE *res, MIAtom *a)
     // residue list
 
     // if LAST_RES is not valid, clear the cache
-    if (!Residue::isValid(LAST_RES))
+    if (!Monomer::isValid(LAST_RES))
     {
         LAST_RES = NULL;
         LAST_RES_LIST = NULL;
@@ -1668,8 +1668,8 @@ RESIDUE *residue_from_atom(RESIDUE *res, MIAtom *a)
     if (LAST_RES_LIST && LAST_RES && LAST_RES_LIST == res)
     {
 
-        RESIDUE *r = LAST_RES;
-        if (Residue::isValid(r))
+        Residue *r = LAST_RES;
+        if (Monomer::isValid(r))
         {
             for (int i = 0; i< r->atomCount(); ++i)
             {
@@ -1683,7 +1683,7 @@ RESIDUE *residue_from_atom(RESIDUE *res, MIAtom *a)
             r = r->next(); // nope, try next
         }
 
-        if (Residue::isValid(r))
+        if (Monomer::isValid(r))
         {
             for (int i = 0; i< r->atomCount(); ++i)
             {
@@ -1697,7 +1697,7 @@ RESIDUE *residue_from_atom(RESIDUE *res, MIAtom *a)
             r = r->prev(); // nope, try prev
         }
 
-        if (Residue::isValid(r))
+        if (Monomer::isValid(r))
         {
             for (int i = 0; i< r->atomCount(); ++i)
             {
@@ -1712,8 +1712,8 @@ RESIDUE *residue_from_atom(RESIDUE *res, MIAtom *a)
     }
 
     //not in cache; do full search
-    RESIDUE *r = res;
-    while (Residue::isValid(r))
+    Residue *r = res;
+    while (Monomer::isValid(r))
     {
         for (int i = 0; i < r->atomCount(); i++)
         {
@@ -1730,17 +1730,17 @@ RESIDUE *residue_from_atom(RESIDUE *res, MIAtom *a)
     return NULL;
 }
 
-std::vector<Residue*>::iterator
+std::vector<Monomer*>::iterator
 ResSearch(const MIAtom *query,
-          std::vector<Residue*>::iterator res_begin,
-          std::vector<Residue*>::iterator res_end)
+          std::vector<Monomer*>::iterator res_begin,
+          std::vector<Monomer*>::iterator res_end)
 {
 
-    std::vector<Residue*>::iterator ri;
+    std::vector<Monomer*>::iterator ri;
     unsigned int i;
     for (ri = res_begin; ri != res_end; ++ri)
     {
-        Residue *res = *ri;
+        Monomer *res = *ri;
         for (i = 0; i < res->atoms().size(); ++i)
         {
             if (query == res->atom(i))
@@ -1910,7 +1910,7 @@ bool AtFiveFiveFusion(const MIAtom &atom, const std::vector<Bond> &bonds)
     return nFive == 3;
 }
 
-void GuessBondOrders(RESIDUE *res, vector<Bond> &bonds)
+void GuessBondOrders(Residue *res, vector<Bond> &bonds)
 {
 
     Ligand mol(*res, bonds);
@@ -2130,13 +2130,13 @@ const char *tripleletter(const char t)
     return (NULL);
 }
 
-int BuildCALinks(vector<Bond> &bonds, const RESIDUE *res)
+int BuildCALinks(vector<Bond> &bonds, const Residue *res)
 {
     MIAtom *a1, *a2;
     Bond bond;
-    const RESIDUE *firstres = res, *nextres;
+    const Residue *firstres = res, *nextres;
     int nlinks = 0;
-    while (Residue::isValid(res) && (nextres = res->next()) != NULL)
+    while (Monomer::isValid(res) && (nextres = res->next()) != NULL)
     {
         if (res->chain_id() != nextres->chain_id())
         {
@@ -2159,7 +2159,7 @@ int BuildCALinks(vector<Bond> &bonds, const RESIDUE *res)
     return nlinks;
 }
 
-bool IsPolarH(const MIAtom *atom, const RESIDUE *res)
+bool IsPolarH(const MIAtom *atom, const Residue *res)
 {
     static char hnames[][5] =
     {
@@ -2220,10 +2220,10 @@ bool IsPolarH(const MIAtom *atom, const RESIDUE *res)
 //        Also note, if this returns false, the coordinates of the
 //        target residue are now garbage.
 /////////////////////////////////////////////////////////////////////////////
-bool MICopyCoords(RESIDUE *target, const RESIDUE *source)
+bool MICopyCoords(Residue *target, const Residue *source)
 {
     int i;
-    if (!Residue::isValid(source))
+    if (!Monomer::isValid(source))
     {
         return false;
     }

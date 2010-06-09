@@ -45,9 +45,9 @@ public:
 };
 
 bool ScanBond(std::multimap<std::string, BondDICT> &bondMap, const char *line);
-bool CreateDictBonds(RESIDUE *res, const std::multimap<std::string, BondDICT> &bondMap);
+bool CreateDictBonds(Residue *res, const std::multimap<std::string, BondDICT> &bondMap);
 bool ScanAngle(std::multimap<std::string, ANGLEDICT> &angleMap, const char *line);
-bool CreateDictAngles(RESIDUE *res, const std::multimap<std::string, ANGLEDICT> &angleMap);
+bool CreateDictAngles(Residue *res, const std::multimap<std::string, ANGLEDICT> &angleMap);
 
 using namespace chemlib;
 using namespace std;
@@ -72,7 +72,7 @@ public:
 static std::vector<SYNONYM> Synonym;
 
 // atom_from_name, including synonyms
-MIAtom *MIAtomFromNameIncludingSynonyms(const char *name, const RESIDUE *residue)
+MIAtom *MIAtomFromNameIncludingSynonyms(const char *name, const Residue *residue)
 {
     MIAtom *a = atom_from_name(name, *residue);
     if (a)
@@ -111,7 +111,7 @@ using namespace chemlib;
 using namespace std;
 
 MIMolDictionary::MIMolDictionary()
-    : cres(new RESIDUE)
+    : cres(new Residue)
 {
     RefiHBonds = false;
     RefiSecStruct = false;
@@ -275,9 +275,9 @@ void MIMolDictionary::build_map()
     DictMap.clear();
     dict_map::iterator p;
     std::string s;
-    for (RESIDUE *res = ResDict; res != NULL; res = res->next())
+    for (Residue *res = ResDict; res != NULL; res = res->next())
     {
-        if (!Residue::isValid(res))
+        if (!Monomer::isValid(res))
         {
             continue;
         }
@@ -306,7 +306,7 @@ int MIMolDictionary::CountConformers(const std::string &type) const
     dict_map::const_iterator p = DictMap.begin();
     while (p != DictMap.end())
     {
-        if (type == p->second.Residue()->type())
+        if (type == p->second.residue()->type())
         {
             n++;
         }
@@ -315,9 +315,9 @@ int MIMolDictionary::CountConformers(const std::string &type) const
     return n;
 }
 
-void MIMolDictionary::RestrainEnds(RESIDUE *RefiRes, int nRefiRes)
+void MIMolDictionary::RestrainEnds(Residue *RefiRes, int nRefiRes)
 {
-    RESIDUE *res = RefiRes;
+    Residue *res = RefiRes;
     int n = 0, i;
     if (RefiRes && nRefiRes > 0)
     {
@@ -330,12 +330,12 @@ void MIMolDictionary::RestrainEnds(RESIDUE *RefiRes, int nRefiRes)
             }
         }
         /* find C terminus */
-        while (Residue::isValid(res) && n < nRefiRes-1)
+        while (Monomer::isValid(res) && n < nRefiRes-1)
         {
             n++;
             res = res->next();
         }
-        if (Residue::isValid(res))
+        if (Monomer::isValid(res))
         {
             for (i = 0; i < res->atomCount(); i++)
             {
@@ -405,7 +405,7 @@ int MIMolDictionary::AreBonded(const char *restype, MIAtom *atom1, MIAtom *atom2
  * residues given a dictionary of guide residues with perfect geometry
  * as an example to follow
  */
-int MIMolDictionary::FindGeom(RESIDUE *reslist, int nres, RESIDUE *ResActiveModel)
+int MIMolDictionary::FindGeom(Residue *reslist, int nres, Residue *ResActiveModel)
 {
     if (EmptyDictCheck() == false)
     {
@@ -417,8 +417,8 @@ int MIMolDictionary::FindGeom(RESIDUE *reslist, int nres, RESIDUE *ResActiveMode
     int i, j;
     MIAtom *a1, *a2, *a3;
     MIAtom *b1, *b2, *b3;
-    RESIDUE *res2;
-    RESIDUE *prev = NULL, *next, *start;
+    Residue *res2;
+    Residue *prev = NULL, *next, *start;
     TORSION *chi = NULL;
     std::string mess;
     int n = 0, na, it;
@@ -1537,13 +1537,13 @@ int MIMolDictionary::FindGeom(RESIDUE *reslist, int nres, RESIDUE *ResActiveMode
     return 1;
 }
 
-void MIMolDictionary::ConstrainCalpha(RESIDUE *RefiRes, int nRefiRes)
+void MIMolDictionary::ConstrainCalpha(Residue *RefiRes, int nRefiRes)
 {
-    RESIDUE *res = RefiRes;
+    Residue *res = RefiRes;
     int n = 0, i;
     if (RefiRes && nRefiRes > 0)
     {
-        while (Residue::isValid(res) && n < nRefiRes)
+        while (Monomer::isValid(res) && n < nRefiRes)
         {
             for (i = 0; i < res->atomCount(); i++)
             {
@@ -1625,9 +1625,9 @@ int MIMolDictionary::AddConstraint(MIAtom *a1, MIAtom *a2, const char *target, c
     return 1;
 }
 
-int MIMolDictionary::BuildBumps(RESIDUE *RefiRes, int nRefiRes)
+int MIMolDictionary::BuildBumps(Residue *RefiRes, int nRefiRes)
 {
-    RESIDUE *res, *res2;
+    Residue *res, *res2;
     MIAtom *a1, *a2;
     Bond bond;
     int n2, n;
@@ -1635,7 +1635,7 @@ int MIMolDictionary::BuildBumps(RESIDUE *RefiRes, int nRefiRes)
     int found;
     float d;
     int nres = nRefiRes;
-    RESIDUE *reslist = RefiRes;
+    Residue *reslist = RefiRes;
     res = reslist;
 
     // build some maps first to keep from having to search the entire RefiBonds/ RefiAtoms each time!
@@ -1661,7 +1661,7 @@ int MIMolDictionary::BuildBumps(RESIDUE *RefiRes, int nRefiRes)
      * reasonably close */
     n = 0;
     RefiBumps.clear();
-    while (Residue::isValid(res) && n < nres)
+    while (Monomer::isValid(res) && n < nres)
     {
         for (i = 0; i < res->atomCount(); i++)
         {
@@ -1756,7 +1756,7 @@ int MIMolDictionary::BuildBumps(RESIDUE *RefiRes, int nRefiRes)
     return 1;
 }
 
-int MIMolDictionary::GetResidueTorsions(RESIDUE *res, vector<TORSION> &torsions)
+int MIMolDictionary::GetResidueTorsions(Residue *res, vector<TORSION> &torsions)
 {
     int nFound = 0;
     unsigned int i, in;
@@ -1817,7 +1817,7 @@ int MIMolDictionary::GetResidueTorsions(RESIDUE *res, vector<TORSION> &torsions)
     return nFound;
 }
 
-TORSION*MIMolDictionary::getTORSION(RESIDUE *res, const char *type, RESIDUE *prev) const
+TORSION*MIMolDictionary::getTORSION(Residue *res, const char *type, Residue *prev) const
 {
     /* search for a torsion in dict that matches
      * res type and torsion type and then
@@ -1826,7 +1826,7 @@ TORSION*MIMolDictionary::getTORSION(RESIDUE *res, const char *type, RESIDUE *pre
     char name[10];
     TORSION *torsion;
     unsigned int i, in;
-    RESIDUE *next = NULL, *current;
+    Residue *next = NULL, *current;
     MIAtom *a[4];
     a[0] = a[1] = a[2] = a[3] = NULL;
     current = res;
@@ -1834,7 +1834,7 @@ TORSION*MIMolDictionary::getTORSION(RESIDUE *res, const char *type, RESIDUE *pre
     {
         return NULL;
     }
-    if (Residue::isValid(res->next()))
+    if (Monomer::isValid(res->next()))
     {
         next = res->next();
     }
@@ -1865,7 +1865,7 @@ TORSION*MIMolDictionary::getTORSION(RESIDUE *res, const char *type, RESIDUE *pre
             res = next;
             name[strlen(name)-1] = '\0';
         }
-        if (Residue::isValid(res))
+        if (Monomer::isValid(res))
         {
             a[in] = MIAtomFromNameIncludingSynonyms(name, res);
         }
@@ -1940,7 +1940,7 @@ static bool in_to_add(vector<std::string> &to_add, char *type)
 
 void MIMolDictionary::DeleteConformers(const std::string &type)
 {
-    RESIDUE *next, *oldres;
+    Residue *next, *oldres;
 
     oldres = ResDict;
     while (oldres != NULL)
@@ -2008,13 +2008,13 @@ static bool ContainsAdjacentAtoms(const TORSDICT &t)
 //				new dictionary
 // Requires:
 /////////////////////////////////////////////////////////////////////////////
-int MIMolDictionary::LoadRes(RESIDUE *respdb, bool append, bool replace_old, bool rplc_backbone_tor)
+int MIMolDictionary::LoadRes(Residue *respdb, bool append, bool replace_old, bool rplc_backbone_tor)
 {
-    RESIDUE *res;
+    Residue *res;
     unsigned int i, j;
     vector<std::string> to_add;
-    RESIDUE *newres;
-    RESIDUE *prev, *next, *oldres;
+    Residue *newres;
+    Residue *prev, *next, *oldres;
 
     //Can't append to non-existent dictionary!
     if (ResDict == NULL)
@@ -2026,7 +2026,7 @@ int MIMolDictionary::LoadRes(RESIDUE *respdb, bool append, bool replace_old, boo
     {
         char oldtype[MAXNAME];
         newres = respdb;
-        while (Residue::isValid(newres))
+        while (Monomer::isValid(newres))
         {
             oldres = ResDict;
             while (oldres != NULL)
@@ -2094,7 +2094,7 @@ int MIMolDictionary::LoadRes(RESIDUE *respdb, bool append, bool replace_old, boo
         while (newres != NULL)
         {
             oldres = respdb;
-            while (Residue::isValid(oldres))
+            while (Monomer::isValid(oldres))
             {
                 next = oldres->next();
                 if (strcmp(oldres->type().c_str(), newres->type().c_str()) == 0)
@@ -2124,7 +2124,7 @@ int MIMolDictionary::LoadRes(RESIDUE *respdb, bool append, bool replace_old, boo
     }
 
     newres = respdb;
-    while (Residue::isValid(newres))
+    while (Monomer::isValid(newres))
     {
         to_add.push_back(newres->type());
         newres = newres->next();
@@ -2221,11 +2221,11 @@ int MIMolDictionary::LoadRes(RESIDUE *respdb, bool append, bool replace_old, boo
     return (nResDict);
 }
 
-bool MIMolDictionary::AddConfs(RESIDUE *res, const std::string res_type)
+bool MIMolDictionary::AddConfs(Residue *res, const std::string res_type)
 {
     if (DictContains(res_type))
     {
-        RESIDUE *last = ResDict;
+        Residue *last = ResDict;
         while (last->next())
         {
             last = last->next();
@@ -2244,7 +2244,7 @@ bool MIMolDictionary::AddConfs(RESIDUE *res, const std::string res_type)
 bool MIMolDictionary::AddConfs(const ConfSaver &confs, bool replace)
 {
     int n = std::min(confs.NumberSets(), 999999);
-    RESIDUE *dictres = GetDictResidue(confs.GetResidue()->type().c_str(), 0);
+    Residue *dictres = GetDictResidue(confs.GetResidue()->type().c_str(), 0);
     if (dictres != confs.GetResidue())
     {
         return false;
@@ -2254,12 +2254,12 @@ bool MIMolDictionary::AddConfs(const ConfSaver &confs, bool replace)
     ConfSaver orig(dictres);
     orig.Save();
 
-    RESIDUE *first_new, *current_new, *prev_new;
+    Residue *first_new, *current_new, *prev_new;
     for (int i = 0; i < n; ++i)
     {
         char buf[MAXNAME];
         confs.Restore(i+1);
-        current_new = new RESIDUE(*dictres);
+        current_new = new Residue(*dictres);
         sprintf(buf, "%d", i+1);
         current_new->setName(std::string(buf));
 
@@ -2282,7 +2282,7 @@ bool MIMolDictionary::AddConfs(const ConfSaver &confs, bool replace)
         orig.Restore(1);
     }
 
-    RESIDUE *last = ResDict;
+    Residue *last = ResDict;
     if (last)
     {
         while (last->next())
@@ -2309,7 +2309,7 @@ bool MIMolDictionary::AddConfs(const ConfSaver &confs, bool replace)
 // Requires:	That the atom names be the same in the model and the dictionary
 /////////////////////////////////////////////////////////////////////////////
 
-bool GetConfs(GeomSaver &confs, RESIDUE *res, MIMolDictionary *dict, MIMoleculeBase *model, unsigned int max)
+bool GetConfs(GeomSaver &confs, Residue *res, MIMolDictionary *dict, MIMoleculeBase *model, unsigned int max)
 {
     //First save the current coords of res, to restore at the end of this ftn
     GeomSaver tmp;
@@ -2319,7 +2319,7 @@ bool GetConfs(GeomSaver &confs, RESIDUE *res, MIMolDictionary *dict, MIMoleculeB
     //of res to that conformer and then saving it to the geomsaver
     int i, nFound = 0;
     int nConf = std::min(dict->GetNumberInDict(res->type().c_str()), max);
-    RESIDUE *conf;
+    Residue *conf;
 
     for (i = 0; i < nConf; ++i)
     {
@@ -2335,21 +2335,21 @@ bool GetConfs(GeomSaver &confs, RESIDUE *res, MIMolDictionary *dict, MIMoleculeB
     return nFound > 0;
 }
 
-RESIDUE *ExpandConfs(const RESIDUE *single, const GeomSaver &confs)
+Residue *ExpandConfs(const Residue *single, const GeomSaver &confs)
 {
     int n = std::min(confs.NumberSets() - 1, 999999);           //Cap at 1 million confs
     if (n <= 0)
     {
-        RESIDUE *current = new RESIDUE(*single);
+        Residue *current = new Residue(*single);
         return current;
     }
 
-    RESIDUE *first, *current, *prev;
+    Residue *first, *current, *prev;
     for (int i = 0; i < n; ++i)
     {
         char buf[MAXNAME];
         confs.Restore(i+1);
-        current = new RESIDUE(*single);
+        current = new Residue(*single);
         sprintf(buf, "%d", i+1);
         current->setName(std::string(buf));
 
@@ -2372,13 +2372,13 @@ RESIDUE *ExpandConfs(const RESIDUE *single, const GeomSaver &confs)
 int MIMolDictionary::LoadDict(FILE *fp, bool append, bool replace_old)
 {
     float value;
-    RESIDUE *res, *respdb;
+    Residue *res, *respdb;
     char buf[2000];
     vector<Bond> connects;
     unsigned int i, j;
     vector<std::string> to_add;
-    RESIDUE *newres;
-    RESIDUE *next, *oldres;
+    Residue *newres;
+    Residue *next, *oldres;
 
     respdb = LoadPDB(fp, &connects);
 
@@ -2871,7 +2871,7 @@ int MIMolDictionary::AddTorsion(const TORSDICT &torsion)
 
     for (int i = 0; i < 4; ++i)
     {
-        if (CountAtomsByName(torsion.name[i], p->second.Residue()) != 1)
+        if (CountAtomsByName(torsion.name[i], p->second.residue()) != 1)
         {
             return 0;
         }
@@ -2905,7 +2905,7 @@ int MIMolDictionary::AddPlane(const PLANEDICT &plane)
 
     for (int i = 0; i < plane.natoms; ++i)
     {
-        if (CountAtomsByName(plane.name[i], p->second.Residue()) != 1)
+        if (CountAtomsByName(plane.name[i], p->second.residue()) != 1)
         {
             return 0;
         }
@@ -2938,7 +2938,7 @@ int MIMolDictionary::AddChiral(const CHIRALDICT &chiral)
 
     for (int i = 0; i < 4; ++i)
     {
-        if (CountAtomsByName(chiral.name[i], p->second.Residue()) != 1)
+        if (CountAtomsByName(chiral.name[i], p->second.residue()) != 1)
         {
             return 0;
         }
@@ -2988,20 +2988,20 @@ vector<std::string> MIMolDictionary::GetDictResList()
     choices.clear();
     if (p != DictMap.end())
     {
-        choices.push_back(p->second.Residue()->type());
+        choices.push_back(p->second.residue()->type());
     }
     while (p != DictMap.end())
     {
-        if (p->second.Residue()->type() != choices.back())
+        if (p->second.residue()->type() != choices.back())
         {
-            choices.push_back(p->second.Residue()->type());
+            choices.push_back(p->second.residue()->type());
         }
         p++;
     }
     return choices;
 }
 
-RESIDUE*MIMolDictionary::GetDictResidue(const char *type, int nconformer)
+Residue*MIMolDictionary::GetDictResidue(const char *type, int nconformer)
 {
     if (EmptyDictCheck() == false)
     {
@@ -3014,11 +3014,11 @@ RESIDUE*MIMolDictionary::GetDictResidue(const char *type, int nconformer)
     }
     else
     {
-        return p->second.Residue();
+        return p->second.residue();
     }
 }
 
-RESIDUE*MIMolDictionary::GetDictResidue(const char single, int nconformer)
+Residue*MIMolDictionary::GetDictResidue(const char single, int nconformer)
 {
     const char *type = tripleletter(single);
     if (type)
@@ -3115,7 +3115,7 @@ unsigned int MIMolDictionary::BuildInternalBumpBonds(MIAtomList &CurrentAtoms, v
 
 //FIXME: move Stddev functions into this class from MIMolOpt?
 
-bool MIMolDictionary::DictHCheck(RESIDUE *res, unsigned int &level_return)
+bool MIMolDictionary::DictHCheck(Residue *res, unsigned int &level_return)
 {
     level_return = HLevel;
 
@@ -3220,7 +3220,7 @@ bool MIMolDictionary::SaveDictionary(const char *pathname, const char *res_type)
 
 bool MIMolDictionary::fwriteDictEntry(FILE *fp, const char *res_type)
 {
-    RESIDUE *res = GetDictResidue(res_type);
+    Residue *res = GetDictResidue(res_type);
     size_t i;
     if (!res)
     {
@@ -3234,7 +3234,7 @@ bool MIMolDictionary::fwriteDictEntry(FILE *fp, const char *res_type)
         res = GetDictResidue(res_type, i);
         if (!res)
             return false;
-        RESIDUE *tmp = res->next();
+        Residue *tmp = res->next();
         res->setNext(NULL);
         bool result = SavePDB(fp, res, NULL, 0, false);
         res->setNext(tmp);
@@ -3302,12 +3302,12 @@ bool MIMolDictionary::fwriteDictEntry_mmCIF(FILE *fp, const char *res_type)
     bool retval;
 
     //Lets grab the residue and populate all the necessary vectors and whatnot
-    RESIDUE *dictres = GetDictResidue(res_type);
+    Residue *dictres = GetDictResidue(res_type);
     if (!dictres)
     {
         return false;
     }
-    RESIDUE *reslist = new RESIDUE(*dictres);
+    Residue *reslist = new Residue(*dictres);
 
     //Note: this was changed from SetRefiRes (a fn in MIMolOpt) to FindGeom,
     //which simply creates the data structures we need w/o enabling
@@ -3352,7 +3352,7 @@ void MIMolDictionary::RemoveConstraints()
     RefiConstraints.clear();
 }
 
-int MIMolDictionary::GetFlexibleTorsions(vector <TORSION> &torsions, RESIDUE *res) const
+int MIMolDictionary::GetFlexibleTorsions(vector <TORSION> &torsions, Residue *res) const
 {
     int n = 0;
 
@@ -3397,7 +3397,7 @@ bool ScanBond(multimap<std::string, BondDICT> &bondMap, const char *line)
     }
 }
 
-bool CreateDictBonds(RESIDUE *res, const multimap<std::string, BondDICT> &bondMap)
+bool CreateDictBonds(Residue *res, const multimap<std::string, BondDICT> &bondMap)
 {
     multimap<std::string, BondDICT>::const_iterator b;
     pair<multimap<std::string, BondDICT>::const_iterator,
@@ -3434,7 +3434,7 @@ bool ScanAngle(multimap<std::string, ANGLEDICT> &angleMap, const char *line)
     }
 }
 
-bool CreateDictAngles(RESIDUE *res, const multimap<std::string, ANGLEDICT> &angleMap)
+bool CreateDictAngles(Residue *res, const multimap<std::string, ANGLEDICT> &angleMap)
 {
     multimap<std::string, ANGLEDICT>::const_iterator a;
     pair<multimap<std::string, ANGLEDICT>::const_iterator,

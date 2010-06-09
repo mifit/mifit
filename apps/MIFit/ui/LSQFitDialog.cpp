@@ -69,7 +69,7 @@ void LSQFitDialog::on_sourceListWidget_currentTextChanged(const QString &str)
     }
 
     std::string resstr = str.toStdString();
-    RESIDUE *res = m_source->getResidues();
+    Residue *res = m_source->getResidues();
     while (res != NULL)
     {
         if (resid(res) == resstr)
@@ -91,7 +91,7 @@ void LSQFitDialog::on_targetListWidget_currentTextChanged(const QString &str)
     }
 
     std::string resstr = str.toStdString();
-    RESIDUE *res = m_target->getResidues();
+    Residue *res = m_target->getResidues();
     while (res != NULL)
     {
         if (resid(res) == resstr)
@@ -147,7 +147,7 @@ void LSQFitDialog::on_calcButton_clicked()
     double *w;
     MATCH *m;
     MIAtom *atom;
-    RESIDUE *tres, *sres, **sourcefrom;
+    Residue *tres, *sres, **sourcefrom;
     MIAtom **sourceatoms;
     MIAtom **targetatoms;
     int n = 0, i;
@@ -162,7 +162,7 @@ void LSQFitDialog::on_calcButton_clicked()
     }
     a = new double[n][3];
     b = new double[n][3];
-    sourcefrom = new (RESIDUE(*[n]));
+    sourcefrom = new (Residue(*[n]));
     targetatoms = new (MIAtom(*[n]));
     sourceatoms = new (MIAtom(*[n]));
     w = new double[n];
@@ -335,7 +335,7 @@ void LSQFitDialog::ListSource()
 {
     if (m_source)
     {
-        RESIDUE *res = m_source->getResidues();
+        Residue *res = m_source->getResidues();
         QListWidget *list = sourceListWidget;
         QComboBox *chains = chainsChoice;
         list->clear();
@@ -359,7 +359,7 @@ void LSQFitDialog::ListTarget()
 {
     if (m_target)
     {
-        RESIDUE *res = m_target->getResidues();
+        Residue *res = m_target->getResidues();
         QListWidget *list = targetListWidget;
         list->clear();
         while (res != NULL)
@@ -413,7 +413,7 @@ void LSQFitDialog::SetAtomType(const char *t)
 
 bool LSQFitDialog::MatchOK(MATCH *m)
 {
-    RESIDUE *res = m->target;
+    Residue *res = m->target;
     int n = 0;
     while ((res != NULL) &&  n < m->length)
     {

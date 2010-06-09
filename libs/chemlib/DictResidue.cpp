@@ -7,21 +7,21 @@
 using namespace chemlib;
 using namespace std;
 
-DictResidue::DictResidue(RESIDUE *r)
+DictResidue::DictResidue(Residue *r)
 {
-    residue = r; // just keep a reference to the residue, not a copy
+    _residue = r; // just keep a reference to the residue, not a copy
 
-    if (residue->prefBonds().size() == 0 && residue->prefAngles().size() == 0)
+    if (_residue->prefBonds().size() == 0 && _residue->prefAngles().size() == 0)
     {
         Build();
     }
-    else if (residue->prefAngles().size() == 0)
+    else if (_residue->prefAngles().size() == 0)
     {
         bonds.clear();
         bonds.assign(r->prefBonds().begin(), r->prefBonds().end());
         BuildAngles();
     }
-    else if (residue->prefBonds().size() == 0)
+    else if (_residue->prefBonds().size() == 0)
     {
         angles.clear();
         angles.assign(r->prefAngles().begin(), r->prefAngles().end());
@@ -43,7 +43,7 @@ DictResidue::~DictResidue()
 void DictResidue::BuildAngles()
 {
 
-    if (!Residue::isValid(residue))
+    if (!Monomer::isValid(_residue))
     {
         return;
     }
@@ -99,7 +99,7 @@ void DictResidue::BuildAngles()
             angle.atom3 = a3;
             angle.ideal_angle = (float)AtomDist(*a1, *a3);
             angle.tolerance = 0.03F;
-            angle.res = residue;
+            angle.res = _residue;
             angles.push_back(angle);
         }
     }
@@ -113,16 +113,16 @@ void DictResidue::BuildBonds()
     MIAtom *atom1, *atom2;
 
     bonds.clear();
-    if (!Residue::isValid(residue))
+    if (!Monomer::isValid(_residue))
     {
         return;
     }
-    for (i = 0; i < (unsigned int)residue->atomCount(); i++)
+    for (i = 0; i < (unsigned int)_residue->atomCount(); i++)
     {
-        atom1 = residue->atom(i);
-        for (j = i+1; j < (unsigned int)residue->atomCount(); j++)
+        atom1 = _residue->atom(i);
+        for (j = i+1; j < (unsigned int)_residue->atomCount(); j++)
         {
-            atom2 = residue->atom(j);
+            atom2 = _residue->atom(j);
             // check to see if distance bondable
             dlimit = BondLimit(atom1->name())+ BondLimit(atom2->name());
             if ((d = AtomDist(*atom1, *atom2)) < dlimit)
@@ -146,16 +146,16 @@ bool DictResidue::Build()
 
     bonds.clear();
     angles.clear();
-    if (!Residue::isValid(residue))
+    if (!Monomer::isValid(_residue))
     {
         return false;
     }
-    for (i = 0; i < (unsigned int)residue->atomCount(); i++)
+    for (i = 0; i < (unsigned int)_residue->atomCount(); i++)
     {
-        atom1 = residue->atom(i);
-        for (j = i+1; j < (unsigned int) residue->atomCount(); j++)
+        atom1 = _residue->atom(i);
+        for (j = i+1; j < (unsigned int) _residue->atomCount(); j++)
         {
-            atom2 = residue->atom(j);
+            atom2 = _residue->atom(j);
             // check to see if distance bondable
             dlimit = BondLimit(atom1->name())+ BondLimit(atom2->name());
             if ((d = AtomDist(*atom1, *atom2)) < dlimit)
@@ -217,21 +217,21 @@ bool DictResidue::Build()
             angle.atom3 = a3;
             angle.ideal_angle = (float)AtomDist(*a1, *a3);
             angle.tolerance = 0.03F;
-            angle.res = residue;
+            angle.res = _residue;
             angles.push_back(angle);
         }
     }
     return true;
 }
 
-RESIDUE*DictResidue::Residue()
+Residue*DictResidue::residue()
 {
-    return residue;
+    return _residue;
 }
 
-const RESIDUE*DictResidue::Residue() const
+const Residue*DictResidue::residue() const
 {
-    return residue;
+    return _residue;
 }
 
 std::vector<Bond>*DictResidue::Bonds()

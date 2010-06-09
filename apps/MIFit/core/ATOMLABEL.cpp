@@ -31,7 +31,7 @@ ATOMLABEL::ATOMLABEL()
     label_ = labelString(residue_, atom_, style_);
 }
 
-ATOMLABEL::ATOMLABEL(const RESIDUE *residue, const MIAtom *atom)
+ATOMLABEL::ATOMLABEL(const Residue *residue, const MIAtom *atom)
     : atom_(atom),
       residue_(residue),
       useDefaultStyle_(true),
@@ -51,7 +51,7 @@ ATOMLABEL::ATOMLABEL(const RESIDUE *residue, const MIAtom *atom)
     label_ = labelString(residue_, atom_, style_);
 }
 
-const RESIDUE*ATOMLABEL::residue() const
+const Residue*ATOMLABEL::residue() const
 {
     return residue_;
 }
@@ -260,11 +260,11 @@ void ATOMLABEL::defaultSize(int value)
     defaultSize_ = value;
 }
 
-std::string ATOMLABEL::labelString(const RESIDUE *res, const MIAtom *atom, int style)
+std::string ATOMLABEL::labelString(const Residue *res, const MIAtom *atom, int style)
 {
 
     static char id[128];
-    if (!Residue::isValid(res) || !MIAtom::isValid(atom))
+    if (!Monomer::isValid(res) || !MIAtom::isValid(atom))
     {
         strcpy(id, "???");
         return (id);

@@ -2,7 +2,7 @@
 
 #include <chemlib/RESIDUE_.h>
 
-LigDictEntry::LigDictEntry(chemlib::RESIDUE *r)
+LigDictEntry::LigDictEntry(chemlib::Residue *r)
     : res(r)
 {
 

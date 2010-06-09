@@ -18,9 +18,9 @@ static unsigned int DELETION_COUNT = 0;
 static std::map<Residue*, unsigned int> DELETED_RESIDUES;
 #endif
 
-Residue::ResidueRefCountMap Residue::refCounts;
+Monomer::MonomerRefCountMap Monomer::refCounts;
 
-bool Residue::isValid(const Residue *res)
+bool Monomer::isValid(const Monomer *res)
 {
     bool result = false;
     if (res != NULL && refCounts.find(res) != refCounts.end())
@@ -37,7 +37,7 @@ bool Residue::isValid(const Residue *res)
     return result;
 }
 
-Residue::Residue()
+Monomer::Monomer()
     : linkage_type_(0),
       chain_id_(' '),
       secstr_('U'),
@@ -53,7 +53,7 @@ Residue::Residue()
     name_ = "";
 }
 
-Residue::Residue(const Residue &rhs)
+Monomer::Monomer(const Monomer &rhs)
 {
     ++refCounts[this];
     *this = rhs;
@@ -68,7 +68,7 @@ Residue::Residue(const Residue &rhs)
     }
 }
 
-Residue&Residue::operator=(const Residue &rhs)
+Monomer&Monomer::operator=(const Monomer &rhs)
 {
     if (this == &rhs)
     {
@@ -104,7 +104,7 @@ Residue&Residue::operator=(const Residue &rhs)
 }
 
 
-Residue::~Residue()
+Monomer::~Monomer()
 {
     clear_residue_from_atom_cache(this);
 
@@ -124,7 +124,7 @@ Residue::~Residue()
 #endif
 }
 
-void Residue::setAtoms(const MIAtomList &a)
+void Monomer::setAtoms(const MIAtomList &a)
 {
     MIAtomList::iterator iter = atoms_.begin();
     for (; iter != atoms_.end(); ++iter)
@@ -133,7 +133,7 @@ void Residue::setAtoms(const MIAtomList &a)
     atoms_ = a;
 }
 
-const MIAtom*Residue::atomByName(const std::string &name) const
+const MIAtom*Monomer::atomByName(const std::string &name) const
 {
     MIAtom_const_iter i;
 
@@ -149,7 +149,7 @@ const MIAtom*Residue::atomByName(const std::string &name) const
     }
 }
 
-int Residue::indexOfAtom(const MIAtom *patm) const
+int Monomer::indexOfAtom(const MIAtom *patm) const
 {
     for (unsigned int i = 0; i < atoms_.size(); ++i)
     {

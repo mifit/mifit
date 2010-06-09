@@ -316,7 +316,7 @@ atom_has_density(MIAtom *a /*, RESIDUE *res*/)
 #define mdex(ix, iy, iz, nx, ny, nz) (nx*(ny*((iz+64*nz)%nz)+(iy+64*ny)%ny)+(ix+64*nx)%nx)
 
 
-static void rhocoefs(MIAtom *atom, RESIDUE *res, int nx, int ny, int nz, CMapHeaderBase *mh, float *ae, float *be, float *boxrad, float *dmax)
+static void rhocoefs(MIAtom *atom, Residue *res, int nx, int ny, int nz, CMapHeaderBase *mh, float *ae, float *be, float *boxrad, float *dmax)
 {
     float d, dx, dy, dz;
     float r, r0;
@@ -379,7 +379,7 @@ static double drand48(void)
 
 #endif
 
-static void addrho(MIAtom *atom, micomplex *cmap, int nx, int ny, int nz, CMapHeaderBase *mh, RESIDUE *res, float shake_coords = 0.0)
+static void addrho(MIAtom *atom, micomplex *cmap, int nx, int ny, int nz, CMapHeaderBase *mh, Residue *res, float shake_coords = 0.0)
 {
     int ix, iy, iz;
     int xl, xu, yl, yu, zl, zu;
@@ -488,12 +488,12 @@ static void addrho(MIAtom *atom, micomplex *cmap, int nx, int ny, int nz, CMapHe
     }
 }
 
-static micomplex *buildrho(RESIDUE *reslist, CMapHeaderBase *mh)
+static micomplex *buildrho(Residue *reslist, CMapHeaderBase *mh)
 {
     micomplex *cmap;
     int nx, ny, nz;
     int i, doingsym;
-    RESIDUE *res;
+    Residue *res;
     MIAtom *a;
     int n = 0;
     sfinit();
@@ -3551,18 +3551,18 @@ bool EMapBase::IsCCP4MTZFile(const char *pathname)
     return (file_is_mtz);
 }
 
-bool EMapBase::SFCalc(RESIDUE *res)
+bool EMapBase::SFCalc(Residue *res)
 {
     float fft_scale;
     bool result = false;
-    if (Residue::isValid(res))
+    if (Monomer::isValid(res))
     {
         result = sfFFT(res, fft_scale) != 0;
     }
     return result;
 }
 
-int EMapBase::sfFFT(RESIDUE *res, float &scale)
+int EMapBase::sfFFT(Residue *res, float &scale)
 {
     micomplex *rho;
     float sc;
@@ -4473,8 +4473,8 @@ int EMapBase::HydrateMap(int minlevel, int maxadd, int add_water, MIMoleculeBase
     int ix, iy, iz;
     float fx, fy, fz;
     float cx, cy, cz;
-    RESIDUE *res;
-    RESIDUE *residues = model->getResidues();
+    Residue *res;
+    Residue *residues = model->getResidues();
     CMapHeaderBase *mh = mapheader;
     //MINATOM * atoms=NULL;
     MINATOM atom, symatom;
@@ -4675,7 +4675,7 @@ int EMapBase::HydrateMap(int minlevel, int maxadd, int add_water, MIMoleculeBase
     Logger::footer("Kept %d peaks after sorting\n", kept);
 
     /* evaluate peaks for wateryness */
-    RESIDUE *focusres;
+    Residue *focusres;
 
     for (i = 0; (unsigned int)i < peaks.size(); i++)
     {
@@ -5105,7 +5105,7 @@ float EMapBase::CorrScore(MIAtomList atoms)
 
     MIAtom *a;
     int n = 0;
-    RESIDUE res;
+    Residue res;
     res.setType("ALA");
     sfinit();
 

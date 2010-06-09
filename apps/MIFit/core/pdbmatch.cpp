@@ -55,7 +55,7 @@ static void copya(double a[3], MIAtom *atom)
     a[2] = atom->z();
 }
 
-RESIDUE *pdbvec(std::string &pentdir, const MIAtomList &CA, const MIAtomList &CB)
+Residue *pdbvec(std::string &pentdir, const MIAtomList &CA, const MIAtomList &CB)
 {
     FILE *fvec;
     std::string vectorfile = pentdir + "/pdbvec.list";
@@ -65,7 +65,7 @@ RESIDUE *pdbvec(std::string &pentdir, const MIAtomList &CA, const MIAtomList &CB
         return NULL;
     }
 
-    RESIDUE *hit = matchvec(CA, CB, pentdir, fvec);
+    Residue *hit = matchvec(CA, CB, pentdir, fvec);
     fclose(fvec);
     if (!hit)
     {
@@ -78,7 +78,7 @@ RESIDUE *pdbvec(std::string &pentdir, const MIAtomList &CA, const MIAtomList &CB
     double r[3][3];
     double v[3];
     MIAtom *atom;
-    RESIDUE *sres;
+    Residue *sres;
     std::vector<float> x_target;
     std::vector<float> y_target;
     std::vector<float> z_target;
@@ -212,7 +212,7 @@ RESIDUE *pdbvec(std::string &pentdir, const MIAtomList &CA, const MIAtomList &CB
     Logger::log("RMS Distances of matches = %0.2f\n", (float)sum);
 
     sres = hit;
-    while (Residue::isValid(sres))
+    while (Monomer::isValid(sres))
     {
         for (i = 0; i < sres->atomCount(); i++)
         {
@@ -327,7 +327,7 @@ static MIAtom *scan_atom(const char *linebuf)
 #define MAXHITS 1
 #define column(n) (buf+(n)-1)
 
-RESIDUE *matchvec(const MIAtomList &CA, const MIAtomList &CB, std::string &pentdir, FILE *fvec)
+Residue *matchvec(const MIAtomList &CA, const MIAtomList &CB, std::string &pentdir, FILE *fvec)
 {
     FILE *fpdb;
     int nvec = 0, i, n, d, best = 9999999;
@@ -492,7 +492,7 @@ RESIDUE *matchvec(const MIAtomList &CA, const MIAtomList &CB, std::string &pentd
      * for(i=0;i<MAXHITS;i++){
      */
     n = 0;
-    RESIDUE *res = (RESIDUE*)NULL, *reslist = 0;
+    Residue *res = (Residue*)NULL, *reslist = 0;
     MIAtom *atom;
     MIAtomList atoms;
     for (i = MAXHITS-1; i >= 0; i--)

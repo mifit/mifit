@@ -16,7 +16,7 @@ class ATOMLABEL
      */
     const chemlib::MIAtom *atom_;
 
-    const chemlib::RESIDUE *residue_;
+    const chemlib::Residue *residue_;
 
     bool useDefaultStyle_;
 
@@ -56,9 +56,9 @@ public:
 
     ATOMLABEL();
 
-    ATOMLABEL(const chemlib::RESIDUE *residue, const chemlib::MIAtom *atom);
+    ATOMLABEL(const chemlib::Residue *residue, const chemlib::MIAtom *atom);
 
-    const chemlib::RESIDUE *residue() const;
+    const chemlib::Residue *residue() const;
 
     const chemlib::MIAtom *atom() const;
 
@@ -112,7 +112,7 @@ public:
     static int defaultSize();
     static void defaultSize(int value);
 
-    static std::string labelString(const chemlib::RESIDUE *res, const chemlib::MIAtom *atom, int style);
+    static std::string labelString(const chemlib::Residue *res, const chemlib::MIAtom *atom, int style);
 };
 
 #endif // ifndef mifit_model_ATOMLABEL_H

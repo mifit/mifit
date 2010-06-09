@@ -93,7 +93,7 @@ public:
     {
     }
 
-    bool CenterAtResidue(const chemlib::RESIDUE *res);
+    bool CenterAtResidue(const chemlib::Residue *res);
     void PutOnLeft(float x, float y, float z);
     void PutVertical(float x, float y, float z);
 

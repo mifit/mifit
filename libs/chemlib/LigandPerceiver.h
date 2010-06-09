@@ -11,19 +11,19 @@ namespace chemlib
     {
     public:
         void AssignImpHydrogens(Ligand *lig);
-        void AssignImpHydrogens(Residue &res, const std::vector<Bond> bonds);
+        void AssignImpHydrogens(Monomer &res, const std::vector<Bond> bonds);
         void AssignImpHydrogens(MIAtom &atom, const std::vector<Bond> bonds);
 
         void AssignChirality(Ligand*);
-        void AssignChirality(Residue&, Ligand*);
+        void AssignChirality(Monomer&, Ligand*);
         int DefaultChiralClass(MIAtom&);
 
         void AssignHybridization(Ligand*);
-        void AssignHybridization(Residue&, Ligand*);
+        void AssignHybridization(Monomer&, Ligand*);
         void AssignHybridization(MIAtom*, Ligand*);
         void AdjustHybridization(MIAtom*, Ligand*);
         void AssignAtomGeom(Ligand*);
-        void AssignAtomGeom(Residue&);
+        void AssignAtomGeom(Monomer&);
         void AssignAtomGeom(MIAtom&);
 
     };

@@ -7,7 +7,7 @@ namespace chemlib
 {
     class MIAtom;
     class Bond;
-    class RESIDUE;
+    class Residue;
     class TORSION;
 }
 //Torsion class to: determine ideal angles, store the atoms
@@ -48,7 +48,7 @@ namespace conflib
         std::vector<chemlib::Bond>::const_iterator _bond;
     };
 
-    chemlib::MIAtom *SetUpTorsion(const chemlib::RESIDUE *res,
+    chemlib::MIAtom *SetUpTorsion(const chemlib::Residue *res,
                                   const std::vector<chemlib::Bond> &bonds,
                                   chemlib::MIAtom *atom1,
                                   chemlib::MIAtom *atom2,

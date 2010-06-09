@@ -6,7 +6,7 @@
 namespace chemlib
 {
     class MIAtom;
-    class RESIDUE;
+    class Residue;
 
     class TORSDICT
     {
@@ -69,7 +69,7 @@ namespace chemlib
         /**
          * the residue the torsion is from
          */
-        const RESIDUE *res;
+        const Residue *res;
         char type[11];
         /**
          * True if the central bond (atom2->atom3) is cyclic

@@ -8,7 +8,7 @@
 namespace chemlib
 {
 
-RESIDUE *SmilesToMol(const std::string &smiles,
+Residue *SmilesToMol(const std::string &smiles,
                      std::vector<Bond> &bonds,
                      std::string &error_message)
 {
@@ -42,7 +42,7 @@ RESIDUE *SmilesToMol(const std::string &smiles,
     cg.AssignResidue();
 
 
-    std::vector<RESIDUE*> residues;
+    std::vector<Residue*> residues;
     lig.Export(residues, bonds);
     return residues.front();
 }
@@ -228,7 +228,7 @@ SmilesReader::SmilesReader(const char *smistr, Ligand *lig)
 }
 
 //SMILES string and target mol can be passed to the Constructor
-SmilesReader::SmilesReader(const char *smistr, Ligand *lig, RESIDUE &res, std::vector<Bond> &bonds)
+SmilesReader::SmilesReader(const char *smistr, Ligand *lig, Residue &res, std::vector<Bond> &bonds)
 {
 
     _smistr = new char[strlen(smistr)+1];

@@ -41,26 +41,26 @@ namespace chemlib
         static bool isValid(MIMoleculeBase *mol);
 
         MIMoleculeBase();
-        MIMoleculeBase(RESIDUE *reslist, const std::string &cmpd, Bond *conns, int nconns);
+        MIMoleculeBase(Residue *reslist, const std::string &cmpd, Bond *conns, int nconns);
         virtual ~MIMoleculeBase();
 
 #ifndef USE_ONLY_MIITER
 // Use of these functions should be replaced by the MIIter<RESIDUE> versions.
 
-        RESIDUE *getResidues()
+        Residue *getResidues()
         {
             return residues;
         }
 
-        RESIDUE *getSymmResidues()
+        Residue *getSymmResidues()
         {
             return SymmResidues;
         }
 
 #endif
-        MIIterBase<RESIDUE> *GetResidues();
+        MIIterBase<Residue> *GetResidues();
 
-        MIIterBase<RESIDUE> *GetSymmResidues();
+        MIIterBase<Residue> *GetSymmResidues();
 
         virtual MIAtom *GetAtom(int natom);
 
@@ -88,7 +88,7 @@ namespace chemlib
             modified = m;
         }
 
-        RESIDUE *AddWater(float x, float y, float z, bool rebuild = true);
+        Residue *AddWater(float x, float y, float z, bool rebuild = true);
 
         //torsion handling
         void SetTatom(MIAtom *a1, MIAtom *a2)
@@ -106,18 +106,18 @@ namespace chemlib
 
 
         void Translate(float, float, float, MIAtomList *atoms);
-        bool Contains(RESIDUE *res);
+        bool Contains(Residue *res);
 
         std::string compound;
 
-        void ReplaceRes(RESIDUE *oldres, RESIDUE *dictres);
-        RESIDUE *InsertRes(RESIDUE *atres, const RESIDUE *dictres, int where, unsigned short chain_id = 0);
-        void InsertResidues(RESIDUE *atResidue, RESIDUE *residues, int where, unsigned short chain_id = 0);
-        void DeleteRes(RESIDUE*);
-        void DeleteResidues(std::vector<RESIDUE*> residues);
+        void ReplaceRes(Residue *oldres, Residue *dictres);
+        Residue *InsertRes(Residue *atres, const Residue *dictres, int where, unsigned short chain_id = 0);
+        void InsertResidues(Residue *atResidue, Residue *residues, int where, unsigned short chain_id = 0);
+        void DeleteRes(Residue*);
+        void DeleteResidues(std::vector<Residue*> residues);
         void DeleteAllResidues();
-        void doDeleteRes(RESIDUE *residue);
-        void DeleteChain(RESIDUE *chain);
+        void doDeleteRes(Residue *residue);
+        void DeleteChain(Residue *chain);
 
 
         size_t SplitAtoms(MIAtomList &atoms, bool torsion_only);
@@ -168,7 +168,7 @@ namespace chemlib
         void BuildHBonds();
         bool AddHBond(MIAtom*, MIAtom*);
 
-        bool ReplaceMainChain(RESIDUE *where, RESIDUE *with, int nres);
+        bool ReplaceMainChain(Residue *where, Residue *with, int nres);
 
 
 
@@ -184,10 +184,10 @@ namespace chemlib
         bool linked(MIAtom*, MIAtom*);
         bool linked(MIAtom*);
 
-        bool BuildCB(RESIDUE *res);
+        bool BuildCB(Residue *res);
         bool Revert(const char *pathname);
         void FixAtomicNumbers();
-        void SetSecStr(RESIDUE *r1, RESIDUE *r2, char sec_str);
+        void SetSecStr(Residue *r1, Residue *r2, char sec_str);
         void Connect(Bond &connect);
 
         void SymmLink();
@@ -210,7 +210,7 @@ namespace chemlib
         /**
          * Set the float to the torsion value if we find a match
          */
-        bool GetTorsionValue(char*, RESIDUE*);
+        bool GetTorsionValue(char*, Residue*);
         std::vector<std::string> *GetFileHead()
         {
             return &FileHead;
@@ -221,9 +221,9 @@ namespace chemlib
             return &FileTail;
         }
 
-        void setResidueNames(std::vector<RESIDUE*> &residues, const std::string &name);
-        void setChainId(RESIDUE *chain, char c);
-        void renumberChain(RESIDUE *chain, int n);
+        void setResidueNames(std::vector<Residue*> &residues, const std::string &name);
+        void setChainId(Residue *chain, char c);
+        void renumberChain(Residue *chain, int n);
 
 
         // General rules for deletion signalling:
@@ -283,7 +283,7 @@ namespace chemlib
         void atomsDeleted(chemlib::MIMoleculeBase*);
 
         // sent when residue[s] deleted
-        void residuesToBeDeleted(chemlib::MIMoleculeBase*, std::vector<chemlib::RESIDUE*>&);
+        void residuesToBeDeleted(chemlib::MIMoleculeBase*, std::vector<chemlib::Residue*>&);
         void residuesDeleted(chemlib::MIMoleculeBase*);
 
         // sent when molecule is deleted
@@ -304,15 +304,15 @@ namespace chemlib
 
     protected:
 
-        RESIDUE *doInsertRes(RESIDUE *atres, const RESIDUE *dictres, int where, unsigned short chain_id);
+        Residue *doInsertRes(Residue *atres, const Residue *dictres, int where, unsigned short chain_id);
         int searchbonds();
         int searchbonds(MIAtomList*);
 
         MIAtom *Tatom1;
         MIAtom *Tatom2;
 
-        RESIDUE *SymmResidues;
-        RESIDUE *residues;
+        Residue *SymmResidues;
+        Residue *residues;
 
         bool coords_changed;
         bool modified;
@@ -330,7 +330,7 @@ namespace chemlib
         virtual void PurgeSymmetryAtom(MIAtom*);
         virtual void PurgeAllAtoms();
         virtual void PurgeReferences(MIAtom*);
-        void PurgeReferences(RESIDUE*);
+        void PurgeReferences(Residue*);
         virtual void PurgeAtom(MIAtom*);
         virtual void updateFixChainOptions(bool* /* breakByDiscontinuity */,
                                            bool* /* breakByNonpeptide */)
@@ -340,8 +340,8 @@ namespace chemlib
         void doDeleteAtom(MIAtom *a);
 
     private:
-        void PurgeResidue(RESIDUE*);
-        void PurgeSymmetryResidues(RESIDUE*);
+        void PurgeResidue(Residue*);
+        void PurgeSymmetryResidues(Residue*);
 
 
     };

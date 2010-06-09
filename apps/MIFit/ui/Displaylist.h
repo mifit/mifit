@@ -51,7 +51,7 @@ private:
     ModelList Models;
     Molecule *current;
     chemlib::MIAtom *PickedAtom;
-    chemlib::RESIDUE *PickedResidue;
+    chemlib::Residue *PickedResidue;
     Molecule *PickedMolecule;
     std::vector<CONTACT> Contacts;
 
@@ -85,7 +85,7 @@ public:
      * @param reslist the residues to be checked for contats with the atom list
      * @param atoms a vector of atoms around which contacts are to be found
      */
-    void ProbeSurface(chemlib::RESIDUE *reslist, std::vector<chemlib::MIAtom*> atoms);
+    void ProbeSurface(chemlib::Residue *reslist, std::vector<chemlib::MIAtom*> atoms);
 
     /**
      * Clear the current surface.
@@ -151,7 +151,7 @@ public:
     /**
      * Add a new model from a residue list.
      */
-    int AddItem(chemlib::RESIDUE*, std::string, FILE*, std::vector<chemlib::Bond>*, int = MoleculeType::PDB);
+    int AddItem(chemlib::Residue*, std::string, FILE*, std::vector<chemlib::Bond>*, int = MoleculeType::PDB);
 
     /**
      * Delete a model from the list.
@@ -199,12 +199,12 @@ public:
      */
     chemlib::MIAtom *GetPickedAtom();
 
-    void SetPicked(Molecule *mol, chemlib::RESIDUE *res, chemlib::MIAtom *atom);
+    void SetPicked(Molecule *mol, chemlib::Residue *res, chemlib::MIAtom *atom);
 
     /**
      * Return a pointer to the residue picked.
      */
-    chemlib::RESIDUE *GetPickedResidue();
+    chemlib::Residue *GetPickedResidue();
 
     /**
      * Return a pointer to the model picked.
@@ -225,7 +225,7 @@ public:
      * Find the contacts to an atom in the context of a residue list.
      * Contacts are lines between adjacent atoms with a distance label.
      */
-    int FindContacts(chemlib::MIAtom*, chemlib::RESIDUE *res, float, ViewPoint *vp);
+    int FindContacts(chemlib::MIAtom*, chemlib::Residue *res, float, ViewPoint *vp);
 
     /**
      * Add a contact between two atoms.
@@ -265,11 +265,11 @@ signals:
     void mapAdded(EMap*);
     void mapToBeDeleted(EMap*);
     void currentMapChanged(EMap *oldMap, EMap *newMap);
-    void selectionChanged(Molecule*, chemlib::RESIDUE*, chemlib::MIAtom*);
+    void selectionChanged(Molecule*, chemlib::Residue*, chemlib::MIAtom*);
 
 private slots:
     void atomsToBeDeleted(chemlib::MIMoleculeBase *model, const chemlib::MIAtomList &atoms);
-    void residuesToBeDeleted(chemlib::MIMoleculeBase *model, std::vector<chemlib::RESIDUE*> &res);
+    void residuesToBeDeleted(chemlib::MIMoleculeBase *model, std::vector<chemlib::Residue*> &res);
     void moleculeToBeDeleted(chemlib::MIMoleculeBase *model);
     void symmetryToBeCleared(chemlib::MIMoleculeBase *model);
 };
@@ -373,7 +373,7 @@ inline chemlib::MIAtom*Displaylist::GetPickedAtom()
     return PickedAtom;
 }
 
-inline chemlib::RESIDUE*Displaylist::GetPickedResidue()
+inline chemlib::Residue*Displaylist::GetPickedResidue()
 {
     return PickedResidue;
 }

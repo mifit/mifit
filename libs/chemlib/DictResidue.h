@@ -16,19 +16,19 @@ namespace chemlib
     class DictResidue
     {
     private:
-        RESIDUE *residue; // reference only, not owned by this class
+        Residue *_residue; // reference only, not owned by this class
         std::vector<Bond> bonds;
         std::vector<ANGLE> angles;
 
     public:
-        DictResidue(RESIDUE *r); // a reference to the input residue is kept, it is not copied
+        DictResidue(Residue *r); // a reference to the input residue is kept, it is not copied
         ~DictResidue();
 
         bool Build();
         void BuildAngles();
         void BuildBonds();
-        RESIDUE *Residue();
-        const RESIDUE *Residue() const;
+        Residue *residue();
+        const Residue *residue() const;
         std::vector<Bond> *Bonds();
         std::vector<ANGLE> *Angles();
     };

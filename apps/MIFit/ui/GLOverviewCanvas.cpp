@@ -210,7 +210,7 @@ void GLOverviewCanvas::paintGL()
 
     glTranslatef(-viewpoint->getcenter(0), -viewpoint->getcenter(1), -viewpoint->getcenter(2));
 
-    const RESIDUE *res = GetView()->getFocusResidue();
+    const Residue *res = GetView()->getFocusResidue();
     MIAtom *focusedResidueAlphaCarbon = NULL;
     if (res != NULL)
     {

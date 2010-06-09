@@ -234,7 +234,7 @@ void XMLArchive::WriteField(const MIAtom *a)
     Write(f);
 }
 
-void XMLArchive::WriteField(const RESIDUE *res)
+void XMLArchive::WriteField(const Residue *res)
 {
     /* write a RESIDUE field */
     tags.push_back("Residue");

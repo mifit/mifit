@@ -10,14 +10,14 @@
 namespace chemlib
 {
 
-    class RESIDUE;
+    class Residue;
     class MIMoleculeBase;
 
     typedef  std::list<SaveAtom>::iterator confAtomIter;
 
     class ConfSaver
     {
-        RESIDUE *_res;
+        Residue *_res;
         int _natoms;
         ConfSaver(const ConfSaver &rhs);
         ConfSaver&operator=(const ConfSaver &rhs);
@@ -27,13 +27,13 @@ namespace chemlib
 
     public:
 
-        ConfSaver(RESIDUE *res);
+        ConfSaver(Residue *res);
         virtual ~ConfSaver();
         void Save();
         void Restore(unsigned int set) const;
         void RestoreLast() const;
         int NumberSets() const;
-        const RESIDUE *GetResidue() const;
+        const Residue *GetResidue() const;
         void ConvertToGeomSaver(GeomSaver &gs, MIMoleculeBase *model);
     };
 }

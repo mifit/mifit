@@ -58,7 +58,7 @@ bool RibbonSegment::SetColor(unsigned char bRed, unsigned char bGreen, unsigned 
     return true;
 }
 
-bool RibbonSegment::MakeRibbon(RESIDUE *pFirstResidue, int nResidues)
+bool RibbonSegment::MakeRibbon(Residue *pFirstResidue, int nResidues)
 {
 
     //If there is already a ribbon, delete it.
@@ -79,7 +79,7 @@ bool RibbonSegment::MakeRibbon(RESIDUE *pFirstResidue, int nResidues)
 
     //Now generate the spans.  We need four residues.
     //Double up the first at the start of the segment and the last at the end
-    RESIDUE *pRes[4];
+    Residue *pRes[4];
     pRes[0] = pFirstResidue;
     pRes[1] = pFirstResidue;
     pRes[2] = pRes[1]->next();

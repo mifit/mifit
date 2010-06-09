@@ -13,7 +13,7 @@ namespace conflib
 //ConfIterator::ConfIterator(RESIDUE *res, vector<Bond> &bonds) {}
 //ConfIterator::~ConfItereator() {}
 
-ConfEnumerator::ConfEnumerator(RESIDUE *res, vector<Bond> &bonds, vector<TORSION> &torsions)
+ConfEnumerator::ConfEnumerator(Residue *res, vector<Bond> &bonds, vector<TORSION> &torsions)
     : _res(res)
 {
 
@@ -169,7 +169,7 @@ bool ConfEnumerator::CheckConf()
     return true;
 }
 
-ConfSampler::ConfSampler(RESIDUE *res, vector<Bond> &bonds, vector<TORSION> &torsions)
+ConfSampler::ConfSampler(Residue *res, vector<Bond> &bonds, vector<TORSION> &torsions)
     : _res(res)
 {
 

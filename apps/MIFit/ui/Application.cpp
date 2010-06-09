@@ -637,12 +637,12 @@ void Application::backgroundColor()
     SetBackgroundColor(color);
 }
 
-bool Application::CopyResidueBuffer(const RESIDUE *buffer)
+bool Application::CopyResidueBuffer(const Residue *buffer)
 {
-    RESIDUE *newres = new RESIDUE(*buffer);
+    Residue *newres = new Residue(*buffer);
     if (ResidueBuffer)
     {
-        RESIDUE *end = ResidueBuffer;
+        Residue *end = ResidueBuffer;
         while (end->next() != NULL)
         {
             end = end->next();

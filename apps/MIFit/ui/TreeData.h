@@ -24,8 +24,8 @@ class TreeData
 
 public:
     chemlib::MIAtom *atom;
-    chemlib::RESIDUE *residue;
-    chemlib::RESIDUE *chain;
+    chemlib::Residue *residue;
+    chemlib::Residue *chain;
     CMapHeaderBase *mapHeader;
     EMap *map;
     Molecule *model;

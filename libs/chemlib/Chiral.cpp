@@ -243,7 +243,7 @@ CHIRAL Chiral::ToCHIRAL(const MIAtomList &new_atoms,
  */
 
 
-std::string FindChiralCenters(const Residue &res, const std::vector<Bond> &bonds)
+std::string FindChiralCenters(const Monomer &res, const std::vector<Bond> &bonds)
 {
     std::string list;
 
@@ -340,7 +340,7 @@ std::string FindChiralCenters(const Residue &res, const std::vector<Bond> &bonds
     return list;
 }
 
-std::string FindChiralCenters(const RESIDUE *res, std::vector<Bond> &bonds, bool copyChiralClasses)
+std::string FindChiralCenters(const Residue *res, std::vector<Bond> &bonds, bool copyChiralClasses)
 {
     Ligand mol(res, bonds);
     std::string result = FindChiralCenters(*(mol.residues.front()), mol.bonds);
@@ -359,7 +359,7 @@ std::string FindChiralCenters(const RESIDUE *res, std::vector<Bond> &bonds, bool
     return result;
 }
 
-void GraphPotentials(const Residue &res,
+void GraphPotentials(const Monomer &res,
                      const std::vector<Bond> &bonds,
                      std::vector<double> &gp)
 {
@@ -382,7 +382,7 @@ void GraphPotentials(const Residue &res,
     }
 }
 
-void GraphPotentials(const RESIDUE &res,
+void GraphPotentials(const Residue &res,
                      const std::vector<Bond> &bonds,
                      std::vector<double> &gp)
 {
@@ -404,7 +404,7 @@ void GraphPotentials(const RESIDUE &res,
     }
 }
 
-void construct_g_matrix(const Residue &res,
+void construct_g_matrix(const Monomer &res,
                         const std::vector<Bond> &bonds,
                         TNT::Matrix<double> &m)
 {
@@ -445,7 +445,7 @@ void construct_g_matrix(const Residue &res,
     }
 }
 
-void construct_g_matrix(const RESIDUE &res,
+void construct_g_matrix(const Residue &res,
                         const std::vector<Bond> &bonds,
                         TNT::Matrix<double> &m)
 {
@@ -487,7 +487,7 @@ void construct_c_matrix(const Ligand &lig, TNT::Matrix<double> &m)
     }
 }
 
-void construct_c_matrix(const Residue &res, TNT::Matrix<double> &m)
+void construct_c_matrix(const Monomer &res, TNT::Matrix<double> &m)
 {
     m.newsize(res.atoms().size(), 1);
 
@@ -497,7 +497,7 @@ void construct_c_matrix(const Residue &res, TNT::Matrix<double> &m)
     }
 }
 
-void construct_c_matrix(const RESIDUE &res,
+void construct_c_matrix(const Residue &res,
                         const std::vector<Bond> &bonds,
                         TNT::Matrix<double> &m)
 {

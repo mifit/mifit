@@ -12,7 +12,7 @@ using namespace std;
 namespace chemlib
 {
 
-int GetAtomIndex(const MIAtom *patm, const RESIDUE &res)
+int GetAtomIndex(const MIAtom *patm, const Residue &res)
 {
     int i = 0;
 
@@ -372,7 +372,7 @@ void Add2Tetrahedrals(const MIAtom *atom, double length, MIAtomList &atoms)
     atoms.push_back(h);
 }
 
-void ClearCharges(const RESIDUE *res)
+void ClearCharges(const Residue *res)
 {
     //		if (Residue::isValid(res)) {
     if (res != NULL)
@@ -432,7 +432,7 @@ double SignedAtomVolume(const MIAtom &a1, const MIAtom &a2, const MIAtom &a3, co
 }
 
 
-bool ResContainsBond::operator ()(const Bond &bond, const RESIDUE &res) const
+bool ResContainsBond::operator ()(const Bond &bond, const Residue &res) const
 {
     return (find(res.atoms().begin(), res.atoms().end(), bond.getAtom1()) != res.atoms().end())
            && (find(res.atoms().begin(), res.atoms().end(), bond.getAtom2()) != res.atoms().end());
@@ -489,7 +489,7 @@ float ZByName(const char *name)
     return (z);
 }
 
-void renameResidueAtomsToUnique(const Residue *res)
+void renameResidueAtomsToUnique(const Monomer *res)
 {
     for (int i = 0; i < res->atomCount(); ++i)
     {

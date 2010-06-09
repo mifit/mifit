@@ -78,7 +78,7 @@ Molecule*Displaylist::operator [](int elem)
     return *mp;
 }
 
-int Displaylist::AddItem(RESIDUE *reslist, std::string cmpd, FILE *fp, std::vector<Bond> *connects, int type)
+int Displaylist::AddItem(Residue *reslist, std::string cmpd, FILE *fp, std::vector<Bond> *connects, int type)
 {
     Bond *edges = NULL;
     if (connects->size() > 0)
@@ -93,8 +93,8 @@ int Displaylist::AddItem(RESIDUE *reslist, std::string cmpd, FILE *fp, std::vect
 void Displaylist::symmetryToBeCleared(MIMoleculeBase *mol)
 {
     // treat as if all symmetry residues are being deleted
-    std::vector<RESIDUE*> deaders;
-    for (MIIter<RESIDUE> res = mol->GetSymmResidues(); Residue::isValid(res); ++res)
+    std::vector<Residue*> deaders;
+    for (MIIter<Residue> res = mol->GetSymmResidues(); Monomer::isValid(res); ++res)
     {
         deaders.push_back(res);
     }
@@ -111,12 +111,12 @@ void Displaylist::moleculeToBeDeleted(MIMoleculeBase *mol)
     if (!mol) //is this even possible?
         return;
 
-    std::vector<RESIDUE*> residues;
-    for (MIIter<RESIDUE> res = mol->GetResidues(); res; ++res)
+    std::vector<Residue*> residues;
+    for (MIIter<Residue> res = mol->GetResidues(); res; ++res)
     {
         residues.push_back(res);
     }
-    for (MIIter<RESIDUE> res = mol->GetSymmResidues(); Residue::isValid(res); ++res)
+    for (MIIter<Residue> res = mol->GetSymmResidues(); Monomer::isValid(res); ++res)
     {
         residues.push_back(res);
     }
@@ -141,7 +141,7 @@ void Displaylist::moleculeToBeDeleted(MIMoleculeBase *mol)
     SetPicked(NULL, NULL, NULL);
 }
 
-void Displaylist::residuesToBeDeleted(MIMoleculeBase *mol, std::vector<RESIDUE*> &residues)
+void Displaylist::residuesToBeDeleted(MIMoleculeBase *mol, std::vector<Residue*> &residues)
 {
 
     MIAtomList atoms;
@@ -192,7 +192,7 @@ static void AddAnnotations(Molecule *model)
         return;
     }
 
-    std::map<RESIDUE*, std::string> annotations;
+    std::map<Residue*, std::string> annotations;
     std::string err_type;
     std::vector<std::string> headers = *model->GetFileHead();
 
@@ -260,7 +260,7 @@ static void AddAnnotations(Molecule *model)
                 || (sscanf(headers[i].c_str(),
                            "REMARK 501   %d %s %c %s", &dum, rname, &chain, rnum)==4))
             {
-                RESIDUE *res = residue_from_name(model->getResidues(), rnum, chain);
+                Residue *res = residue_from_name(model->getResidues(), rnum, chain);
                 if (res != NULL)
                 {
                     std::string tmp = annotations[res];
@@ -277,9 +277,9 @@ static void AddAnnotations(Molecule *model)
     bool hidden = (MIConfig::Instance()->GetProfileInt("DisplayView", "autoShowError", 1) == 0);
 
 
-    for (std::map<RESIDUE*, std::string>::iterator i = annotations.begin(); i!=annotations.end(); ++i)
+    for (std::map<Residue*, std::string>::iterator i = annotations.begin(); i!=annotations.end(); ++i)
     {
-        RESIDUE *res = i->first;
+        Residue *res = i->first;
         std::string &text = i->second;
         MIAtom *atom = atom_from_name("CA", *res);
         if (atom == NULL && res->atomCount() > 0)
@@ -309,8 +309,8 @@ int Displaylist::AddItem(Molecule *node)   //  add a new node in displaylist
         connect(node,
                 SIGNAL(atomsToBeDeleted(chemlib::MIMoleculeBase*, chemlib::MIAtomList)),
                 this, SLOT(atomsToBeDeleted(chemlib::MIMoleculeBase*, chemlib::MIAtomList)));
-        connect(node, SIGNAL(residuesToBeDeleted(chemlib::MIMoleculeBase*, std::vector<chemlib::RESIDUE*>&)),
-                this, SLOT(residuesToBeDeleted(chemlib::MIMoleculeBase*, std::vector<chemlib::RESIDUE*>&)));
+        connect(node, SIGNAL(residuesToBeDeleted(chemlib::MIMoleculeBase*, std::vector<chemlib::Residue*>&)),
+                this, SLOT(residuesToBeDeleted(chemlib::MIMoleculeBase*, std::vector<chemlib::Residue*>&)));
         connect(node, SIGNAL(moleculeToBeDeleted(chemlib::MIMoleculeBase*)),
                 this, SLOT(moleculeToBeDeleted(chemlib::MIMoleculeBase*)));
         connect(node, SIGNAL(symmetryToBeCleared(chemlib::MIMoleculeBase*)),
@@ -400,7 +400,7 @@ Molecule*Displaylist::SetCurrent(Molecule *mol)
     return current;
 }
 
-int Displaylist::FindContacts(MIAtom *a, RESIDUE *r, float cutoff, ViewPoint *vp)
+int Displaylist::FindContacts(MIAtom *a, Residue *r, float cutoff, ViewPoint *vp)
 {
     int n = 0, i;
     long lcut = (long)(cutoff*CRS);
@@ -409,7 +409,7 @@ int Displaylist::FindContacts(MIAtom *a, RESIDUE *r, float cutoff, ViewPoint *vp
     std::list<Molecule*>::iterator node = Models.begin();
     while (node != Models.end())
     {
-        for (MIIter<RESIDUE> res = (*node)->GetResidues(); res; ++res)
+        for (MIIter<Residue> res = (*node)->GetResidues(); res; ++res)
         {
             if (r != res)
             {
@@ -580,11 +580,11 @@ void Displaylist::ClearCurrentSurface()
     std::vector<SURFDOT>().swap(CurrentDots); // was CurrentDots.clear();
 }
 
-void Displaylist::ProbeSurface(RESIDUE *reslist, MIAtomList a)
+void Displaylist::ProbeSurface(Residue *reslist, MIAtomList a)
 {
     vector<SURFDOT>::iterator p;
     MIAtom_iter pa;
-    RESIDUE *res = reslist;
+    Residue *res = reslist;
     float r1, dx, dy, dz, dr;
     int i;
     MIAtomList b;
@@ -707,7 +707,7 @@ APOINT Displaylist::GetVuCenter()
     return p;
 }
 
-void Displaylist::SetPicked(Molecule *mol, RESIDUE *res, MIAtom *atom)
+void Displaylist::SetPicked(Molecule *mol, Residue *res, MIAtom *atom)
 {
     if (PickedMolecule == mol && PickedResidue == res && PickedAtom == atom)
     {

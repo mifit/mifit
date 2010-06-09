@@ -280,7 +280,7 @@ void DictEditCanvas::initializeForRender()
     model->Select(1, 1, 1, 1, resshow, at, NULL, NULL, 0, 0, 0, 0, 1);
     Point3<double> center;
     int atomCount = 0;
-    for (MIIter<RESIDUE> res = model->GetResidues(); res; ++res)
+    for (MIIter<Residue> res = model->GetResidues(); res; ++res)
     {
         for (int i = 0; i < res->atomCount(); i++)
         {
@@ -295,7 +295,7 @@ void DictEditCanvas::initializeForRender()
     center.y /= atomCount;
     center.z /= atomCount;
 
-    MIIter<RESIDUE> res = model->GetResidues();
+    MIIter<Residue> res = model->GetResidues();
     for (int i = 0; i < res->atomCount(); i++)
     {
         res->atom(i)->setType(0);
@@ -312,7 +312,7 @@ void DictEditCanvas::initializeForRender()
 
     Point3<double> pos;
     float maxDistance = 0.0;
-    for (MIIter<RESIDUE> res = model->GetResidues(); res; ++res)
+    for (MIIter<Residue> res = model->GetResidues(); res; ++res)
     {
         for (int i = 0; i < res->atomCount(); i++)
         {
@@ -383,7 +383,7 @@ void DictEditCanvas::AutoFindChirals(bool copyChiralClass)
     {
         return;
     }
-    RESIDUE *res = geomrefiner->GetCurrentModel()->getResidues();
+    Residue *res = geomrefiner->GetCurrentModel()->getResidues();
     std::string list = FindChiralCenters(res, geomrefiner->dict.RefiBonds, copyChiralClass);
 
     CHIRAL c;
@@ -436,7 +436,7 @@ void DictEditCanvas::UpdateGeom()
     size_t i;
     std::string s;
 
-    RESIDUE *res;
+    Residue *res;
     res = model->getResidues();
     if (res == NULL)
     {
@@ -877,7 +877,7 @@ bool DictEditCanvas::handlePick(const QPoint &point)
             if (atom != NULL)
             {
                 Molecule *molecule = 0;
-                RESIDUE *res = 0;
+                Residue *res = 0;
                 std::list<Molecule*>::iterator molIter = Models->getMolecules().begin();
                 while (molIter != Models->getMolecules().end())
                 {
@@ -1087,7 +1087,7 @@ void DictEditCanvas::OnExport(const char *optionalFilename)
 void DictEditCanvas::OnRemoveAtomsFromPlane()
 {
     MIAtom *a = NULL;
-    RESIDUE *res = NULL;
+    Residue *res = NULL;
     if (pickedPlane == NULL)
     {
         return;
@@ -1119,7 +1119,7 @@ void DictEditCanvas::OnRemoveAtomsFromPlane()
 void DictEditCanvas::OnRemoveAtomFromPlane()
 {
     MIAtom *a = NULL;
-    RESIDUE *res = NULL;
+    Residue *res = NULL;
     if (pickedPlane == NULL)
     {
         return;
@@ -1260,7 +1260,7 @@ void DictEditCanvas::OnAddPlane()
     float a[3];
     float b[3];
     MIAtom *atom;
-    RESIDUE *res = 0;
+    Residue *res = 0;
     PLANE p;
     p.natoms = AtomStack->size();
     if (p.natoms < 3)
@@ -1858,7 +1858,7 @@ void DictEditCanvas::OnRemoveHydrogens()
 {
     AtomStack->Clear();
     Molecule *mol = (Molecule*)geomrefiner->GetCurrentModel();
-    for (MIIter<RESIDUE> res = mol->GetResidues(); res; ++res)
+    for (MIIter<Residue> res = mol->GetResidues(); res; ++res)
     {
         for (int i = 0; i < res->atomCount(); i++)
         {
@@ -1997,7 +1997,7 @@ void DictEditCanvas::OnChangeAtomType()
     float anb; //atom total bond order
     const char *oldname;
     MIAtom *atom;
-    RESIDUE *res;
+    Residue *res;
     Bond *orig_picked;
     std::string newname;
     MIAtom tatom;
@@ -2300,7 +2300,7 @@ void DictEditCanvas::GrowPlane(int size)
 void DictEditCanvas::OnIncludeAtomInPlane()
 {
     MIAtom *a = NULL;
-    RESIDUE *res = NULL;
+    Residue *res = NULL;
     if (pickedPlane == NULL)
     {
         return;
@@ -2334,7 +2334,7 @@ void DictEditCanvas::OnIncludeAtomsInPlane()
         return;
     }
     MIAtom *a = NULL;
-    RESIDUE *res = NULL;
+    Residue *res = NULL;
     vector<MIAtom*> atoms;
     while (!AtomStack->empty() )
     {
@@ -2371,7 +2371,7 @@ void DictEditCanvas::OnIncludeAtomsInPlane()
 void DictEditCanvas::on_resetButton_clicked()
 {
     model = (Molecule*)geomrefiner->GetCurrentModel();
-    RESIDUE *dictres = geomrefiner->dict.GetDictResidue(model->getResidues()->type().c_str(), 0);
+    Residue *dictres = geomrefiner->dict.GetDictResidue(model->getResidues()->type().c_str(), 0);
     // Effectivly the cancel function from Geomrefiner
     geomrefiner->dict.Clear();
     delete model;
@@ -2384,7 +2384,7 @@ void DictEditCanvas::on_resetButton_clicked()
     AtomStack->Clear();
 
     // similar to the geomrefiner OnEdit function and our own init function
-    RESIDUE *reslist = new RESIDUE(*dictres);
+    Residue *reslist = new Residue(*dictres);
     Molecule *newmodel = new Molecule(reslist, "Dictionary", NULL, NULL, 0, MoleculeType::Other);
     geomrefiner->SetRefiRes(reslist, reslist, newmodel);
     model = (Molecule*)geomrefiner->GetCurrentModel();
@@ -2419,7 +2419,7 @@ void DictEditCanvas::OnOk()
     // in the other dictionaries (i.e. the PlaneDict)
     model->getResidues()->setPrefBonds(geomrefiner->dict.RefiBonds);
     model->getResidues()->setPrefAngles(geomrefiner->dict.RefiAngles);
-    RESIDUE *multiConf = ExpandConfs(model->getResidues(), confs);
+    Residue *multiConf = ExpandConfs(model->getResidues(), confs);
     geomrefiner->dict.LoadRes(multiConf, true, true, false);
     FreeResidueList(multiConf);
     model->getResidues()->clearPrefBonds();
@@ -2477,7 +2477,7 @@ void DictEditCanvas::OnOk()
 void DictEditCanvas::OnRenameAtom()
 {
     const char *on, *nn;  //oldname ptr and new name ptr
-    RESIDUE *res;
+    Residue *res;
     MIAtom *atom;
     if (AtomStack->empty())
     {

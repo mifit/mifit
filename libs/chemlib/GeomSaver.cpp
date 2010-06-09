@@ -21,16 +21,16 @@ GeomSaver::~GeomSaver()
 {
 }
 
-unsigned int GeomSaver::Save(RESIDUE *res, int nres, MIMoleculeBase *model)
+unsigned int GeomSaver::Save(Residue *res, int nres, MIMoleculeBase *model)
 {
     SaveSets.push_back(SaveItem(model, std::string("")));
     unsigned int token = SaveSets.size()-1;
     int n = 0;
-    RESIDUE *lastres = res;
-    RESIDUE *firstres = res;
+    Residue *lastres = res;
+    Residue *firstres = res;
     vector<SaveAtom> *Save = &(SaveSets[token].SaveSet);
     MIAtom_const_iter atom, endAtom;
-    for (MIIter<RESIDUE> resIter = RESIDUE::getIter(res); resIter && n < nres; ++resIter)
+    for (MIIter<Residue> resIter = Residue::getIter(res); resIter && n < nres; ++resIter)
     {
         const MIAtomList &atoms = resIter->atoms();
         endAtom = atoms.end();

@@ -60,7 +60,7 @@ namespace chemlib
                                    const std::string &homedir);
         bool LoadDictionary(const char *path, bool append = false, bool replace = false,
                             unsigned int new_h_level = DictionaryHLevel::Unknown);
-        int LoadRes(RESIDUE *respdb, bool append = false, bool replace_old = true,
+        int LoadRes(Residue *respdb, bool append = false, bool replace_old = true,
                     bool rplc_backbone_tor = true);
         //	int LoadRes(RESIDUE *respdb, std::vector<ANGLE> &angles
 
@@ -69,17 +69,17 @@ namespace chemlib
         bool fwriteDictEntry_mmCIF(FILE *fp, const char *res_type);
 
         bool EmptyDictCheck();
-        bool DictHCheck(RESIDUE *res, unsigned int &level);
+        bool DictHCheck(Residue *res, unsigned int &level);
         bool DictContains(const std::string &res) const;
 
         unsigned int GetNumberInDict(const char *type);
 
-        RESIDUE *GetBeta2()
+        Residue *GetBeta2()
         {
             return Beta2;
         }
 
-        RESIDUE *GetAlpha2()
+        Residue *GetAlpha2()
         {
             return Alpha2;
         }
@@ -88,24 +88,24 @@ namespace chemlib
         std::vector<ANGLE> *GetDictAngles(const char *type, int nconformer = 0);
         //std::vector<CHIRAL> * GetDictChirals(const char *type, int nconformer=0);
 
-        RESIDUE *GetDictResidue(const char *type, int nconformer = 0);
-        RESIDUE *GetDictResidue(const char single, int nconformer = 0);
+        Residue *GetDictResidue(const char *type, int nconformer = 0);
+        Residue *GetDictResidue(const char single, int nconformer = 0);
         std::vector<std::string> GetDictResList();
         dict_map::iterator GetDictEntry(const char *type, int nconformer = 0);
-        RESIDUE *GetResdict()
+        Residue *GetResdict()
         {
             return ResDict;
         }
 
-        int GetFlexibleTorsions(std::vector <TORSION> &torsions, RESIDUE *res) const;
-        TORSION *getTORSION(RESIDUE *res, const char *type, RESIDUE *prev = NULL) const;
-        int GetResidueTorsions(RESIDUE *res, std::vector<TORSION> &torsions);
+        int GetFlexibleTorsions(std::vector <TORSION> &torsions, Residue *res) const;
+        TORSION *getTORSION(Residue *res, const char *type, Residue *prev = NULL) const;
+        int GetResidueTorsions(Residue *res, std::vector<TORSION> &torsions);
         int AreBonded(const char *restype, MIAtom *atom1, MIAtom *atom2, Bond &bond);
 
         int CountConformers(const std::string &type) const;
         void DeleteConformers(const std::string &type);
 
-        bool AddConfs(RESIDUE *res, const std::string res_type);
+        bool AddConfs(Residue *res, const std::string res_type);
         bool AddConfs(const ConfSaver &confs, bool replace = false);
 
         int AddTorsion(const TORSION &torsion);
@@ -117,8 +117,8 @@ namespace chemlib
 
         int AddConstraint(MIAtom *a1, const char *sigma);
         int AddConstraint(MIAtom *a1, MIAtom *a2, const char *d, const char *s);
-        void ConstrainCalpha(RESIDUE*, int);
-        void RestrainEnds(RESIDUE*, int);
+        void ConstrainCalpha(Residue*, int);
+        void RestrainEnds(Residue*, int);
         void RemoveConstraints();
 
         std::vector<TORSDICT>::const_iterator TBegin() const
@@ -235,8 +235,8 @@ namespace chemlib
     private:
         friend class ::DictEditCanvas;
 
-        int BuildBumps(RESIDUE *RefiRes, int nRefiRes);
-        int FindGeom(RESIDUE *reslist, int nres, RESIDUE *ResActiveModel);
+        int BuildBumps(Residue *RefiRes, int nRefiRes);
+        int FindGeom(Residue *reslist, int nres, Residue *ResActiveModel);
         int LoadDict(FILE *fp, bool append = false, bool replace = false);
         unsigned int BuildInternalBumpBonds(MIAtomList &CurrentAtoms, std::vector<Bond> &bonds);
         void Clear();
@@ -249,11 +249,11 @@ namespace chemlib
         bool modified;
 
         int nResDict;
-        RESIDUE *ResDict;
+        Residue *ResDict;
 
-        RESIDUE *Alpha2;
-        RESIDUE *Beta2;
-        RESIDUE *cres;
+        Residue *Alpha2;
+        Residue *Beta2;
+        Residue *cres;
 
         dict_map DictMap;
 
@@ -270,14 +270,14 @@ namespace chemlib
         std::vector<TORSDICT> TorsDict;
     };
 
-    MIAtom *MIAtomFromNameIncludingSynonyms(const char *name, const RESIDUE *residue);
+    MIAtom *MIAtomFromNameIncludingSynonyms(const char *name, const Residue *residue);
 
 //Retrieves conformations from the dictionary, and creates a geomsaver associated
 //with the given residue and molecule
-    bool GetConfs(GeomSaver &confs, RESIDUE *res, MIMolDictionary *dict, MIMoleculeBase *model, unsigned int max = 10000);
+    bool GetConfs(GeomSaver &confs, Residue *res, MIMolDictionary *dict, MIMoleculeBase *model, unsigned int max = 10000);
 
 //Converts conformation data from a GeomSaver to a list of residues
-    RESIDUE *ExpandConfs(const RESIDUE *single, const GeomSaver &confs);
+    Residue *ExpandConfs(const Residue *single, const GeomSaver &confs);
 
 
 

@@ -8,7 +8,7 @@
 namespace chemlib
 {
 
-    class RESIDUE;
+    class Residue;
     class MIMoleculeBase;
 
 /**
@@ -26,7 +26,7 @@ namespace chemlib
         virtual ~GeomSaver();
 
         MIMoleculeBase *Model(unsigned int token);
-        unsigned int Save(RESIDUE *res, int nres, MIMoleculeBase *model);
+        unsigned int Save(Residue *res, int nres, MIMoleculeBase *model);
         unsigned int Save(const MIAtomList&, MIMoleculeBase *model);
         int Restore(unsigned int set) const;
         bool RestoreColor(unsigned int token, unsigned int mask);

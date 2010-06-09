@@ -280,7 +280,7 @@ int SumDistances(const AtomGraph &graph, AtomGraphIndex *distances, AtomGraphInd
     return std::accumulate(distances, distances + num_vertices(graph), 0);
 }
 
-void GatherFlexAtoms(const AtomGraphIndex *distances, const RESIDUE *res, std::vector<MIAtom*> &atoms)
+void GatherFlexAtoms(const AtomGraphIndex *distances, const Residue *res, std::vector<MIAtom*> &atoms)
 {
     int i;
     for (i = 0; i < res->atomCount(); ++i)
@@ -292,7 +292,7 @@ void GatherFlexAtoms(const AtomGraphIndex *distances, const RESIDUE *res, std::v
     }
 }
 
-MIAtom *SetUpTorsion(const RESIDUE *res,
+MIAtom *SetUpTorsion(const Residue *res,
                      const std::vector<Bond> &bonds,
                      MIAtom *atom1,
                      MIAtom *atom2,

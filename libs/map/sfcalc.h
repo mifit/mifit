@@ -8,7 +8,7 @@
 
 namespace chemlib
 {
-    class RESIDUE;
+    class Residue;
     class MIAtom;
 }
 
@@ -24,7 +24,7 @@ float ComputeScale(std::vector<CREFL> &refl, CMapHeaderBase *mh);
 int ApplyScale(std::vector<CREFL> &refl, float scale, CMapHeaderBase *mh);
 float ComputeScale2(CREFL refl[], int nrefl, CMapHeaderBase *mh);
 float RePhase(std::vector<CREFL> &refl, CMapHeaderBase *mh);
-int sfcalc(chemlib::RESIDUE *  res, CREFL refl[], int nrefl, CMapHeaderBase *mh, int init);
+int sfcalc(chemlib::Residue *  res, CREFL refl[], int nrefl, CMapHeaderBase *mh, int init);
 int AtomDeriv();
 int ScattIndex(const char *aname, const char *restype);
 int CalcBulkSolvent(CREFL refl[], int nrefl, CMapHeaderBase *mh);

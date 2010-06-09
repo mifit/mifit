@@ -184,7 +184,7 @@ unsigned int RichardsonRamaData::region(float phi, float psi)
 
 void RamaPlotMgr::operator()(int keycode, bool shift)
 {
-    if (!_view || !Residue::isValid(_focusres) || !_view->IsFitting())
+    if (!_view || !Monomer::isValid(_focusres) || !_view->IsFitting())
     {
         return;
     }
@@ -226,8 +226,8 @@ void RamaPlotMgr::operator()(int keycode, bool shift)
 
 void RamaPlotMgr::operator()(const GR_POINT &gr)
 {
-    RESIDUE *res = static_cast<RESIDUE*>(gr.data);
-    if (Residue::isValid(res))
+    Residue *res = static_cast<Residue*>(gr.data);
+    if (Monomer::isValid(res))
     {
         if (_view)
         {
@@ -257,8 +257,8 @@ void RamaPlotMgr::Mouseover(int id)
     //only add label if not already labeled
     if (!(points[id].flag & asplib::GR_LABEL))
     {
-        RESIDUE *res = static_cast<RESIDUE*>(points[id].data);
-        if (Residue::isValid(res))
+        Residue *res = static_cast<Residue*>(points[id].data);
+        if (Monomer::isValid(res))
         {
             char c = (char)res->chain_id()&255;
             sprintf(buf, "%s%c", res->name().c_str(), c);
@@ -273,16 +273,16 @@ void RamaPlotMgr::Mouseover(int id)
     }
 }
 
-void RamaPlotMgr::GraphResidue(RESIDUE *prev,
-                               RESIDUE *res,
-                               RESIDUE *next,
+void RamaPlotMgr::GraphResidue(Residue *prev,
+                               Residue *res,
+                               Residue *next,
                                int replace)
 {
     MIAtom *N, *C, *CA, *Nnext, *Cprev;
     unsigned int typ = 0;
     char buf[2000];
 
-    if (!Residue::isValid(res) || !Residue::isValid(prev) || !Residue::isValid(next))
+    if (!Monomer::isValid(res) || !Monomer::isValid(prev) || !Monomer::isValid(next))
     {
         return;
     }
@@ -386,7 +386,7 @@ void RamaPlotMgr::GraphResidue(RESIDUE *prev,
         }
 
         // label focusres if in model
-        if (Residue::isValid(_focusres))
+        if (Monomer::isValid(_focusres))
         {
             if ((strcmp(_focusres->name().c_str(), res->name().c_str()) == 0)
                 && ((res->chain_id()&255) == (_focusres->chain_id()&255)))
@@ -496,15 +496,15 @@ void RamaPlotMgr::CreateData()
         return;
     }
 
-    MIIter<RESIDUE> res = _mol->GetResidues();
-    if (!Residue::isValid(res))
+    MIIter<Residue> res = _mol->GetResidues();
+    if (!Monomer::isValid(res))
     {
         return;
     }
     /* skip first residue */
-    RESIDUE *prev_res2 = res;
+    Residue *prev_res2 = res;
     ++res;
-    RESIDUE *prev_res = res;
+    Residue *prev_res = res;
     ++res;
     for (; res; ++res)
     {
@@ -523,7 +523,7 @@ void RamaPlotMgr::CreateData()
 }
 
 void RamaPlotMgr::Update(MIMoleculeBase *mol,
-                         RESIDUE *focusres,
+                         Residue *focusres,
                          std::string modelname)
 {
 
@@ -570,13 +570,13 @@ bool RamaPlotMgr::IsShown()
     return _gw->isVisible();
 }
 
-void RamaPlotMgr::Update(RESIDUE *focusres, unsigned int select_type)
+void RamaPlotMgr::Update(Residue *focusres, unsigned int select_type)
 {
     const std::vector<GR_POINT> &points = _gw->GetData();
 
     _focusres = focusres;
 
-    if (!Residue::isValid(_focusres) || !MIMoleculeBase::isValid(_mol) || _atom_changed
+    if (!Monomer::isValid(_focusres) || !MIMoleculeBase::isValid(_mol) || _atom_changed
         || (select_type != SINGLERESIDUE
             && select_type != SINGLEATOM))
     {
@@ -593,9 +593,9 @@ void RamaPlotMgr::Update(RESIDUE *focusres, unsigned int select_type)
     }
 
     //get residue prev to focus res, and one prev to that
-    RESIDUE *prev_res = 0, *prev_res2 = 0, *thisres = 0;
-    RESIDUE *next_res = 0, *next_res2 = 0;
-    for (MIIter<RESIDUE> res = _mol->GetResidues(); res; ++res)
+    Residue *prev_res = 0, *prev_res2 = 0, *thisres = 0;
+    Residue *next_res = 0, *next_res2 = 0;
+    for (MIIter<Residue> res = _mol->GetResidues(); res; ++res)
     {
         if (res == _focusres)
         {
@@ -618,8 +618,8 @@ void RamaPlotMgr::Update(RESIDUE *focusres, unsigned int select_type)
     bool updated = false;
     for (unsigned int i = 0; i < points.size(); ++i)
     {
-        RESIDUE *r = static_cast<RESIDUE*>(points[i].data);
-        if (Residue::isValid(r))
+        Residue *r = static_cast<Residue*>(points[i].data);
+        if (Monomer::isValid(r))
         {
             if (r == prev_res)
             {

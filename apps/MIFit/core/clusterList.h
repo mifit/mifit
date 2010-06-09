@@ -29,7 +29,7 @@ public:
         dmax = d;
     }
 
-    chemlib::RESIDUE *BuildClusters(chemlib::RESIDUE *first, chemlib::RESIDUE *last = NULL, int min_size = 5);
+    chemlib::Residue *BuildClusters(chemlib::Residue *first, chemlib::Residue *last = NULL, int min_size = 5);
     ClusterList();
     virtual ~ClusterList();
 

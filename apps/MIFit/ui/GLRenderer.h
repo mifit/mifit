@@ -142,7 +142,7 @@ class GLRenderer
 
     void applyProjection(float scale);
 
-    void drawResidueAtoms(MIIter<chemlib::RESIDUE> &res);
+    void drawResidueAtoms(MIIter<chemlib::Residue> &res);
 
     void DrawSecondaryStructure(SecondaryStructure *secondaryStructure);
     void DrawRibbonSegment(RibbonSegment *ribbonSegment);

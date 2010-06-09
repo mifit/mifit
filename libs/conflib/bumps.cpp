@@ -67,7 +67,7 @@ bool AssignBump(MIAtom *atom1, MIAtom *atom2, Bond &bump, const std::vector<Bond
 // Output:      Stores the bump info in Bond structs
 // Requires:	The method FindRingSystems() has been run for the residue
 /////////////////////////////////////////////////////////////////////////////
-void GetBumps(const RESIDUE *res, std::vector<Bond> &bumps, const std::vector<Bond> &bonds)
+void GetBumps(const Residue *res, std::vector<Bond> &bumps, const std::vector<Bond> &bonds)
 {
     int i, j;
     Bond bump;
@@ -93,7 +93,7 @@ void GetBumps(const RESIDUE *res, std::vector<Bond> &bumps, const std::vector<Bo
 //				value for atoms that have been moved since the last check.  (For
 //				the first check, set all the search_flags.)
 /////////////////////////////////////////////////////////////////////////////
-bool CheckBumps(RESIDUE*, std::vector<Bond> &bumps)
+bool CheckBumps(Residue*, std::vector<Bond> &bumps)
 {
     std::vector<Bond>::iterator i = bumps.begin();
     std::vector<Bond>::iterator e = bumps.end();

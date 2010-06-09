@@ -7,7 +7,7 @@ using namespace std;
 namespace chemlib
 {
 
-ConfSaver::ConfSaver(RESIDUE *res)
+ConfSaver::ConfSaver(Residue *res)
     : _res(res)
 {
     // the first position is empty. A value of 0 for a save token
@@ -22,7 +22,7 @@ ConfSaver::~ConfSaver()
 
 void ConfSaver::Save()
 {
-    if (!Residue::isValid(_res) || (_res->atomCount() != _natoms) )
+    if (!Monomer::isValid(_res) || (_res->atomCount() != _natoms) )
     {
         throw "Residue has been modified in the middle of a conformation save";
     }
@@ -78,7 +78,7 @@ int ConfSaver::NumberSets() const
     return SaveSets.size() - 1;
 }
 
-const RESIDUE*ConfSaver::GetResidue() const
+const Residue*ConfSaver::GetResidue() const
 {
     return _res;
 }

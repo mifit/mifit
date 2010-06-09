@@ -9,7 +9,7 @@
 namespace chemlib
 {
 
-    class RESIDUE;
+    class Residue;
 
 
 // move these to "system"

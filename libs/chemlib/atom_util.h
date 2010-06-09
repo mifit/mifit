@@ -183,16 +183,16 @@ namespace chemlib
     int PositionHydrogens(const MIAtom *atom, MIAtomList &atoms);
     void Add2Tetrahedrals(const MIAtom *atom, double length, MIAtomList &atoms);
 
-    int GetAtomIndex(const MIAtom *patm, const RESIDUE &res);
+    int GetAtomIndex(const MIAtom *patm, const Residue &res);
 
 //Queries a residue as to whether it contains the given bond
-    struct ResContainsBond : public std::binary_function<Bond, const RESIDUE, bool>
+    struct ResContainsBond : public std::binary_function<Bond, const Residue, bool>
     {
-        bool operator()(const Bond &bond, const RESIDUE &res) const;
+        bool operator()(const Bond &bond, const Residue &res) const;
     };
 
 
-    void ClearCharges(const RESIDUE *res);
+    void ClearCharges(const Residue *res);
 
     void CenterOfMass(const MIAtomList &atoms, double *com);
 
@@ -219,7 +219,7 @@ namespace chemlib
 
     float ZByName(const char *name);
 
-    void renameResidueAtomsToUnique(const Residue *res);
+    void renameResidueAtomsToUnique(const Monomer *res);
 
 } //namespace chemlib
 

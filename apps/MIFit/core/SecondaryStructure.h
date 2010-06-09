@@ -8,7 +8,7 @@ class RibbonSegment;
 class Helix;
 namespace chemlib
 {
-    class RESIDUE;
+    class Residue;
 }
 
 
@@ -18,12 +18,12 @@ public:
     SecondaryStructure();
     virtual ~SecondaryStructure();
 
-    bool AddRibbonSegment(chemlib::RESIDUE *pFirstResidue, int nResidues);
+    bool AddRibbonSegment(chemlib::Residue *pFirstResidue, int nResidues);
     bool AddSchematic(chemlib::MIMoleculeBase *mol,
-                      std::vector<std::pair<chemlib::RESIDUE*, chemlib::RESIDUE*> > &pHelix,
-                      std::vector<std::pair<chemlib::RESIDUE*, chemlib::RESIDUE*> > &pSheet,
-                      std::vector<std::pair<chemlib::RESIDUE*, chemlib::RESIDUE*> > &pTurn,
-                      std::vector<std::pair<chemlib::RESIDUE*, chemlib::RESIDUE*> > &pRandom);
+                      std::vector<std::pair<chemlib::Residue*, chemlib::Residue*> > &pHelix,
+                      std::vector<std::pair<chemlib::Residue*, chemlib::Residue*> > &pSheet,
+                      std::vector<std::pair<chemlib::Residue*, chemlib::Residue*> > &pTurn,
+                      std::vector<std::pair<chemlib::Residue*, chemlib::Residue*> > &pRandom);
     bool DeleteAllRibbonSegments();
     bool DeleteAllSchematic();
 

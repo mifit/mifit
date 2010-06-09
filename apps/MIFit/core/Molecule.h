@@ -134,13 +134,13 @@ public:
     bool symmatoms_visible;
     std::vector<CONTACT> hbondContacts;
 
-    Molecule(chemlib::RESIDUE *reslist, std::string cmpd, FILE *fp, chemlib::Bond *conns, int nconns, int type = MoleculeType::PDB);
+    Molecule(chemlib::Residue *reslist, std::string cmpd, FILE *fp, chemlib::Bond *conns, int nconns, int type = MoleculeType::PDB);
     Molecule(int type = MoleculeType::Other);
     ~Molecule();
 
     void FixHeaders(std::vector<std::string> &headers);
 
-    void TranslateResidueToCenter(chemlib::RESIDUE *res, ViewPoint *viewpoint);
+    void TranslateResidueToCenter(chemlib::Residue *res, ViewPoint *viewpoint);
     void TranslateAtomsToCenter(std::vector<chemlib::MIAtom*>&, ViewPoint *viewpoint);
 
     AtomLabelList&getAtomLabels();
@@ -153,7 +153,7 @@ public:
     void updateAtomLabels();
     void deleteAtomLabel(ATOMLABEL *label);
     void clearAtomLabels();
-    void labelAtom(chemlib::MIAtom *atom, chemlib::RESIDUE *res);
+    void labelAtom(chemlib::MIAtom *atom, chemlib::Residue *res);
     void labelAtomStyle(chemlib::MIAtom *atom, int style);
     void unlabelAtom(chemlib::MIAtom *atom);
     void labelEveryNthResidue(int n);
@@ -207,7 +207,7 @@ public:
     void DrawAnnotationBox(bool on);
     bool isDrawAnnotationBox();
 
-    chemlib::RESIDUE *MatchPentamer(std::string &pentdir, chemlib::RESIDUE *start);
+    chemlib::Residue *MatchPentamer(std::string &pentdir, chemlib::Residue *start);
 
     chemlib::MIAtom *GetAtom(int natom);
 
@@ -225,11 +225,11 @@ public:
     void PurgeReferences(chemlib::MIAtom*);
 
     int SequenceIdentities();
-    void DeleteLowerGap(chemlib::RESIDUE *gap_point);
-    void InsertLowerGap(chemlib::RESIDUE *gap_point);
-    void DeleteGap(chemlib::RESIDUE *res);
+    void DeleteLowerGap(chemlib::Residue *gap_point);
+    void InsertLowerGap(chemlib::Residue *gap_point);
+    void DeleteGap(chemlib::Residue *res);
     char GetSeq(int index);
-    void InsertGap(chemlib::RESIDUE *res);
+    void InsertGap(chemlib::Residue *res);
     int WriteSequence(std::string path, int type);
     void ReadSequence(std::string path, int type, int skiplines);
     void SetSequence(std::string);
@@ -241,7 +241,7 @@ public:
     bool UnDoable(Molecule *node);
     void Do();
     void UnDo();
-    int getcolor(chemlib::RESIDUE*, chemlib::MIAtom*, bool, int, int, std::string);
+    int getcolor(chemlib::Residue*, chemlib::MIAtom*, bool, int, int, std::string);
     long getndots();
     SURFDOT *GetDots();
     SurfaceDots&getDots();
@@ -267,7 +267,7 @@ public:
     void HideLabels();
     int LabelsVisible();
 
-    void Select(int, int, int, int, std::string, std::string, chemlib::RESIDUE*, chemlib::RESIDUE*,
+    void Select(int, int, int, int, std::string, std::string, chemlib::Residue*, chemlib::Residue*,
                 bool, int, int, int, int, int listtype = 0, int radiustype = 0);
     void FreeDots();
 
@@ -278,7 +278,7 @@ public:
     long SolventSurface(ViewPoint*, float);
     long SurfaceAtom(chemlib::MIAtom*, float, bool ignore_hidden = true);
     long SurfaceAroundAtom(chemlib::MIAtom*, float, float);
-    long SurfaceResidue(chemlib::RESIDUE*, float, ViewPoint *vp, bool ignore_hidden = true);
+    long SurfaceResidue(chemlib::Residue*, float, ViewPoint *vp, bool ignore_hidden = true);
     long SurfaceResidues(float, ViewPoint *vp, bool ignore_hidden = true);
     long Surface(chemlib::MIAtom*, bool ignore_hidden = true, bool send_signal = true);
     void Save(XMLArchive&);
@@ -298,20 +298,20 @@ public:
     bool isSecondaryStructureRibbons();
     bool isSecondaryStructureSchematic();
 
-    void toggleChainHidden(chemlib::RESIDUE *chain);
+    void toggleChainHidden(chemlib::Residue *chain);
     void toggleAtomHidden(chemlib::MIAtom *atom);
-    void toggleResidueHidden(chemlib::RESIDUE *residue);
-    void setResidueColor(chemlib::RESIDUE *residue, int color, int colorMethod);
+    void toggleResidueHidden(chemlib::Residue *residue);
+    void setResidueColor(chemlib::Residue *residue, int color, int colorMethod);
 
     void toggleAtomsHidden(std::vector<chemlib::MIAtom*> &atoms);
-    void toggleResiduesHidden(std::vector<chemlib::RESIDUE*> &residues);
-    void setResiduesColor(std::vector<chemlib::RESIDUE*> &residues, int color, int colorMethod);
+    void toggleResiduesHidden(std::vector<chemlib::Residue*> &residues);
+    void setResiduesColor(std::vector<chemlib::Residue*> &residues, int color, int colorMethod);
 
     void setAtomBValueAndOccupancy(chemlib::MIAtom *atom, float bvalue, float occ);
     void setAtomsBValueAndOccupancy(std::vector<chemlib::MIAtom*> atoms, float bvalue, float occ);
     void setAtomColor(chemlib::MIAtom *atom, int color);
     void setAtomsColor(std::vector<chemlib::MIAtom*> atoms, int color);
-    void setChainColor(chemlib::RESIDUE *chain, int color, int colorMethod);
+    void setChainColor(chemlib::Residue *chain, int color, int colorMethod);
 
     void setColor(int color, int colorMethod);
 

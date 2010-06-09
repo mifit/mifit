@@ -59,7 +59,7 @@ MIMoleculeBase::MIMoleculeBase()
     nlinks = nresidues = 0;
 }
 
-MIMoleculeBase::MIMoleculeBase(RESIDUE *reslist, const std::string &cmpd, Bond *conns, int nconns)
+MIMoleculeBase::MIMoleculeBase(Residue *reslist, const std::string &cmpd, Bond *conns, int nconns)
 {
     ++refCounts[this];
     compound = cmpd;
@@ -106,20 +106,20 @@ MIMoleculeBase::~MIMoleculeBase()
 #endif
 }
 
-MIIterBase<RESIDUE>*MIMoleculeBase::GetResidues()
+MIIterBase<Residue>*MIMoleculeBase::GetResidues()
 {
-    return RESIDUE::getIter(residues);
+    return Residue::getIter(residues);
 }
 
-MIIterBase<RESIDUE>*MIMoleculeBase::GetSymmResidues()
+MIIterBase<Residue>*MIMoleculeBase::GetSymmResidues()
 {
-    return RESIDUE::getIter(SymmResidues);
+    return Residue::getIter(SymmResidues);
 }
 
 MIAtom*MIMoleculeBase::GetAtom(int natom)
 {
     MIAtom_const_iter atom, endAtom;
-    for (MIIter<RESIDUE> res = GetResidues(); res; ++res)
+    for (MIIter<Residue> res = GetResidues(); res; ++res)
     {
         const MIAtomList &atoms = res->atoms();
         endAtom = atoms.end();
@@ -133,7 +133,7 @@ MIAtom*MIMoleculeBase::GetAtom(int natom)
         }
     }
 
-    for (MIIter<RESIDUE> res = GetSymmResidues(); res; ++res)
+    for (MIIter<Residue> res = GetSymmResidues(); res; ++res)
     {
         const MIAtomList &atoms = res->atoms();
         endAtom = atoms.end();
@@ -178,8 +178,8 @@ int MIMoleculeBase::Build(bool symmetryAtomsOnly)
     MIAtom *atom2;
     float x, y, z;
     double dx, dy, dz, dist = 1.90;
-    RESIDUE *res = residues;
-    RESIDUE *nter = residues;
+    Residue *res = residues;
+    Residue *nter = residues;
     short nextid;
     nresidues = 0;
     Bond bond;
@@ -210,7 +210,7 @@ int MIMoleculeBase::Build(bool symmetryAtomsOnly)
             nter = residues;
         }
 
-        while (Residue::isValid(res))
+        while (Monomer::isValid(res))
         {
             nresidues++;
             for (i = 0; i < res->atomCount(); i++)
@@ -548,19 +548,19 @@ void MIMoleculeBase::Translate(float x, float y, float z, MIAtomList *atoms)
 void MIMoleculeBase::SymmLink()
 {
     MIAtom *a1, *a2, *a3;
-    RESIDUE *firstres = SymmResidues, *nextres;
-    RESIDUE *start = firstres;
-    RESIDUE *end = NULL;
+    Residue *firstres = SymmResidues, *nextres;
+    Residue *start = firstres;
+    Residue *end = NULL;
     char linkname[10];
     double maxdist;
-    RESIDUE *res = firstres;
+    Residue *res = firstres;
     bool dna;
     Bond bond;
     int inrange = 0;
 
     symmetryBonds.clear();
 
-    while (Residue::isValid(res) && (nextres = res->next()) != NULL)
+    while (Monomer::isValid(res) && (nextres = res->next()) != NULL)
     {
         if (!inrange)
         {
@@ -692,7 +692,7 @@ void MIMoleculeBase::BuildLinks()
 void MIMoleculeBase::FixChains()
 {
 
-    RESIDUE *reslist = residues;
+    Residue *reslist = residues;
 
     if (reslist == NULL)
     {
@@ -701,8 +701,8 @@ void MIMoleculeBase::FixChains()
     // Reset linkage_types
     AminoOrNucleic(reslist, true);
 
-    RESIDUE *res = reslist;
-    if (!Residue::isValid(res))
+    Residue *res = reslist;
+    if (!Monomer::isValid(res))
     {
         return;
     }
@@ -713,11 +713,11 @@ void MIMoleculeBase::FixChains()
 
     int chainno = 0;
     int state = 0;
-    RESIDUE *prevRes = NULL;
+    Residue *prevRes = NULL;
     int prevState = -1;
     do
     {
-        if (!Residue::isValid(res))
+        if (!Monomer::isValid(res))
         {
             state = -1;
         }
@@ -833,11 +833,11 @@ void MIMoleculeBase::Connect(Bond &connect)
     SetCoordsChanged(true);
 }
 
-bool MIMoleculeBase::ReplaceMainChain(RESIDUE *where, RESIDUE *with, int nres)
+bool MIMoleculeBase::ReplaceMainChain(Residue *where, Residue *with, int nres)
 {
     // replaces the main chain atoms of where with atoms in with for nres residues
     int i, j;
-    RESIDUE *res_to = where, *res_from = with;
+    Residue *res_to = where, *res_from = with;
     // just checking...
     for (i = 0; i < nres; i++)
     {
@@ -910,9 +910,9 @@ bool MIMoleculeBase::ReplaceMainChain(RESIDUE *where, RESIDUE *with, int nres)
     return true;
 }
 
-void MIMoleculeBase::SetSecStr(RESIDUE *res1, RESIDUE *res2, char sec_str)
+void MIMoleculeBase::SetSecStr(Residue *res1, Residue *res2, char sec_str)
 {
-    RESIDUE *start = NULL, *end = NULL, *res;
+    Residue *start = NULL, *end = NULL, *res;
 
     // fiind the first residue
     res = getResidues();
@@ -937,7 +937,7 @@ void MIMoleculeBase::SetSecStr(RESIDUE *res1, RESIDUE *res2, char sec_str)
         return;
     }
     res = start;
-    while (Residue::isValid(res))
+    while (Monomer::isValid(res))
     {
         res->setSecstr(sec_str);
         if (res == end)
@@ -953,11 +953,11 @@ void MIMoleculeBase::FixAtomicNumbers()
     // fixes the atomicnumber field in a residue
     // sometimes this is a bit of a guess becuase it is not
     // clear what the atom type is by name alone!
-    RESIDUE *res = getResidues();
+    Residue *res = getResidues();
     int i;
     bool ispep, isnuc;
     std::string name;
-    while (Residue::isValid(res))
+    while (Monomer::isValid(res))
     {
         ispep = IsPeptide(*res) != 0;
         isnuc = IsNucleic(res) != 0;
@@ -1004,7 +1004,7 @@ bool MIMoleculeBase::Revert(const char *pathname)
         return false;
     }
     std::vector<Bond> connct;
-    RESIDUE *newlist = LoadPDB(fp, &connct);
+    Residue *newlist = LoadPDB(fp, &connct);
     fclose(fp);
     if (newlist == NULL)
     {
@@ -1021,9 +1021,9 @@ bool MIMoleculeBase::Revert(const char *pathname)
     return true;
 }
 
-bool MIMoleculeBase::BuildCB(RESIDUE *test)
+bool MIMoleculeBase::BuildCB(Residue *test)
 {
-    if (!Residue::isValid(test))
+    if (!Monomer::isValid(test))
     {
         return false;
     }
@@ -1031,7 +1031,7 @@ bool MIMoleculeBase::BuildCB(RESIDUE *test)
     {
         return false;
     }
-    RESIDUE *res = getResidues(), *prev = NULL, *next = test->next();
+    Residue *res = getResidues(), *prev = NULL, *next = test->next();
     while (res != NULL)
     {
         if (res->next() == test)
@@ -1098,7 +1098,7 @@ bool MIMoleculeBase::BuildCB(RESIDUE *test)
     return true;
 }
 
-static int greaterthan(RESIDUE *res1, RESIDUE *res2)
+static int greaterthan(Residue *res1, Residue *res2)
 {
     int chainid1 = res1->chain_id()&255;
     int chainid2 = res2->chain_id()&255;
@@ -1117,15 +1117,15 @@ static int greaterthan(RESIDUE *res1, RESIDUE *res2)
     return (atoi(res1->name().c_str()) > atoi(res2->name().c_str()));
 }
 
-RESIDUE*MIMoleculeBase::AddWater(float x, float y, float z, bool rebuild)
+Residue*MIMoleculeBase::AddWater(float x, float y, float z, bool rebuild)
 {
     // adds a water to end of model
-    RESIDUE *res = getResidues();
+    Residue *res = getResidues();
     while (res->next() != NULL)
     {
         res = res->next();
     }
-    RESIDUE *water = new RESIDUE();
+    Residue *water = new Residue();
     res->insertResidue(water);
     water->setName(std::string(ftoa(1+(int)(atof(res->name().c_str())))));
     water->setType(std::string("HOH"));
@@ -1153,14 +1153,14 @@ RESIDUE*MIMoleculeBase::AddWater(float x, float y, float z, bool rebuild)
     return water;
 }
 
-static RESIDUE *findChainEnd(RESIDUE *res)
+static Residue *findChainEnd(Residue *res)
 {
     if (res == NULL)
     {
         return res;
     }
     int chainId = res->chain_id()&255;
-    RESIDUE *next = res->next();
+    Residue *next = res->next();
     while (next != NULL)
     {
         if ((next->chain_id()&255) != chainId)
@@ -1181,18 +1181,18 @@ void MIMoleculeBase::SortChains()
     int done = true;
     do
     {
-        RESIDUE *chainStart = residues;
-        RESIDUE *chainEnd = findChainEnd(chainStart);
-        RESIDUE *prevChainEnd = NULL;
+        Residue *chainStart = residues;
+        Residue *chainEnd = findChainEnd(chainStart);
+        Residue *prevChainEnd = NULL;
         done = true;
-        while (Residue::isValid(chainStart))
+        while (Monomer::isValid(chainStart))
         {
-            RESIDUE *nextChainStart = chainEnd->next();
+            Residue *nextChainStart = chainEnd->next();
             if (nextChainStart == NULL)
             {
                 break;
             }
-            RESIDUE *nextChainEnd = findChainEnd(nextChainStart);
+            Residue *nextChainEnd = findChainEnd(nextChainStart);
             if (greaterthan(chainStart, nextChainStart))
             {
                 // Swap chains
@@ -1223,14 +1223,14 @@ void MIMoleculeBase::SortChains()
     SetCoordsChanged(true);
 }
 
-bool MIMoleculeBase::Contains(RESIDUE *test)
+bool MIMoleculeBase::Contains(Residue *test)
 {
-    if (!Residue::isValid(test))
+    if (!Monomer::isValid(test))
     {
         return false;
     }
-    RESIDUE *res = getResidues();
-    while (Residue::isValid(res))
+    Residue *res = getResidues();
+    while (Monomer::isValid(res))
     {
         if (test == res)
         {
@@ -1263,8 +1263,8 @@ void MIMoleculeBase::DeleteAtom(MIAtom *a)
 
 void MIMoleculeBase::doDeleteAtom(MIAtom *a)
 {
-    RESIDUE *res = residue_from_atom(getResidues(), a);
-    if (!Residue::isValid(res))
+    Residue *res = residue_from_atom(getResidues(), a);
+    if (!Monomer::isValid(res))
     {
         return;
     }
@@ -1284,8 +1284,8 @@ void MIMoleculeBase::doDeleteAtom(MIAtom *a)
 size_t MIMoleculeBase::LengthChain(unsigned short chain_id)
 {
     size_t n = 0;
-    RESIDUE *res = getResidues();
-    while (Residue::isValid(res))
+    Residue *res = getResidues();
+    while (Monomer::isValid(res))
     {
         if (res->chain_id() == chain_id)
         {
@@ -1299,7 +1299,7 @@ size_t MIMoleculeBase::LengthChain(unsigned short chain_id)
 bool MIMoleculeBase::ClearTorsion(void)
 {
     int i;
-    RESIDUE *res = residues;
+    Residue *res = residues;
     while (res != NULL)
     {
         for (i = 0; i < res->atomCount(); i++)
@@ -1312,7 +1312,7 @@ bool MIMoleculeBase::ClearTorsion(void)
     return false;
 }
 
-bool MIMoleculeBase::GetTorsionValue(char *str, RESIDUE *res)
+bool MIMoleculeBase::GetTorsionValue(char *str, Residue *res)
 {
     static bool found = false;
     static MIAtom *atom1 = NULL;
@@ -1391,7 +1391,7 @@ void MIMoleculeBase::RotateTorsion(float alpha)
         (float)(Tatom2->y()-Tatom1->y()),
         (float)(Tatom2->z()-Tatom1->z()),
         alpha, mat);
-    for (RESIDUE *res = residues; res; res = res->next())
+    for (Residue *res = residues; res; res = res->next())
     {
         for (i = 0; i < res->atomCount(); i++)
         {
@@ -1414,7 +1414,7 @@ void MIMoleculeBase::RotateTorsion(float alpha)
 size_t MIMoleculeBase::SplitAtoms(MIAtomList &atoms, bool torsion_only)
 {
     size_t nsplit = 0;
-    RESIDUE *res;
+    Residue *res;
     char old_alt, new_alt;
     float new_occ, old_occ;
     for (size_t i = 0; i < atoms.size(); i++)
@@ -1505,7 +1505,7 @@ int MIMoleculeBase::SetupTorsion(MIAtom *a1, MIAtom *a2, MIAtomList *atoms)
 {
     //find the atoms bound to a2 and collect them for torsion
     int i, n, nt = 0;
-    RESIDUE *res = residues;
+    Residue *res = residues;
     Tatom1 = NULL;
     Tatom2 = NULL;
     while (res != NULL)
@@ -1548,7 +1548,7 @@ int MIMoleculeBase::SetupTorsion(MIAtom *a1, MIAtom *a2)
 {
     //find the atoms bound to a2 and collect them for torsion
     int i, n, nt = 0;
-    RESIDUE *res = residues;
+    Residue *res = residues;
     Tatom1 = NULL;
     Tatom2 = NULL;
     while (res != NULL)
@@ -1613,17 +1613,17 @@ int MIMoleculeBase::searchbonds()
     return n;
 }
 
-void MIMoleculeBase::DeleteRes(RESIDUE *oldres)
+void MIMoleculeBase::DeleteRes(Residue *oldres)
 {
-    std::vector<RESIDUE*> residues;
+    std::vector<Residue*> residues;
     residues.push_back(oldres);
     DeleteResidues(residues);
 }
 
-void MIMoleculeBase::DeleteResidues(std::vector<RESIDUE*> residues)
+void MIMoleculeBase::DeleteResidues(std::vector<Residue*> residues)
 {
     residuesToBeDeleted(this, residues);
-    std::vector<RESIDUE*>::iterator iter;
+    std::vector<Residue*>::iterator iter;
     for (iter = residues.begin(); iter != residues.end(); ++iter)
     {
         doDeleteRes(*iter);
@@ -1633,8 +1633,8 @@ void MIMoleculeBase::DeleteResidues(std::vector<RESIDUE*> residues)
 
 void MIMoleculeBase::DeleteAllResidues()
 {
-    std::vector<RESIDUE*> r;
-    RESIDUE *i = residues;
+    std::vector<Residue*> r;
+    Residue *i = residues;
     while (i != NULL)
     {
         r.push_back(i);
@@ -1643,7 +1643,7 @@ void MIMoleculeBase::DeleteAllResidues()
     DeleteResidues(r);
 }
 
-void MIMoleculeBase::doDeleteRes(RESIDUE *oldres)
+void MIMoleculeBase::doDeleteRes(Residue *oldres)
 {
     PurgeResidue(oldres);
     SetCoordsChanged(true);
@@ -1673,7 +1673,7 @@ void MIMoleculeBase::PurgeSymmetryAtom(MIAtom *atom)
 //the given object, they don't delete the objects.  This is used in
 //ReplaceRes, and as a delegate to do the work in PurgeResidue (which does
 //actually do a deletion)
-void MIMoleculeBase::PurgeReferences(RESIDUE *oldres)
+void MIMoleculeBase::PurgeReferences(Residue *oldres)
 {
     for (int i = 0; i < oldres->atomCount(); i++)
     {
@@ -1722,9 +1722,9 @@ void MIMoleculeBase::PurgeReferences(MIAtom *atom)
     }
 }
 
-void MIMoleculeBase::PurgeResidue(RESIDUE *oldres)
+void MIMoleculeBase::PurgeResidue(Residue *oldres)
 {
-    RESIDUE *res = residues;
+    Residue *res = residues;
     SetCoordsChanged(true);
     while (res != NULL)
     {
@@ -1744,10 +1744,10 @@ void MIMoleculeBase::PurgeResidue(RESIDUE *oldres)
     }
 }
 
-void MIMoleculeBase::PurgeSymmetryResidues(RESIDUE *res)
+void MIMoleculeBase::PurgeSymmetryResidues(Residue *res)
 {
     int i;
-    RESIDUE *oldres;
+    Residue *oldres;
     while (res != NULL)
     {
         for (i = 0; i < res->atomCount(); i++)
@@ -1762,18 +1762,18 @@ void MIMoleculeBase::PurgeSymmetryResidues(RESIDUE *res)
     res = NULL;
 }
 
-RESIDUE*MIMoleculeBase::InsertRes(RESIDUE *atres, const RESIDUE *dictres, int where, unsigned short chain_id)
+Residue*MIMoleculeBase::InsertRes(Residue *atres, const Residue *dictres, int where, unsigned short chain_id)
 {
-    RESIDUE *result = doInsertRes(atres, dictres, where, chain_id);
+    Residue *result = doInsertRes(atres, dictres, where, chain_id);
     moleculeChanged(this);
     return result;
 }
 
-void MIMoleculeBase::InsertResidues(RESIDUE *atResidue, RESIDUE *residues, int where, unsigned short chain_id)
+void MIMoleculeBase::InsertResidues(Residue *atResidue, Residue *residues, int where, unsigned short chain_id)
 {
     if (residues != NULL)
     {
-        RESIDUE *res = doInsertRes(atResidue, residues, where, chain_id);
+        Residue *res = doInsertRes(atResidue, residues, where, chain_id);
         residues = residues->next();
         while (residues != NULL)
         {
@@ -1784,7 +1784,7 @@ void MIMoleculeBase::InsertResidues(RESIDUE *atResidue, RESIDUE *residues, int w
     moleculeChanged(this);
 }
 
-RESIDUE*MIMoleculeBase::doInsertRes(RESIDUE *atres, const RESIDUE *dictres, int where, unsigned short chain_id)
+Residue*MIMoleculeBase::doInsertRes(Residue *atres, const Residue *dictres, int where, unsigned short chain_id)
 {
     // values for where:
     // 0 - After atres
@@ -1809,7 +1809,7 @@ RESIDUE*MIMoleculeBase::doInsertRes(RESIDUE *atres, const RESIDUE *dictres, int 
     }
     //if(natoms == 0)return NULL;
 
-    RESIDUE *res = residues, *prev_res = NULL, *new_res;
+    Residue *res = residues, *prev_res = NULL, *new_res;
     if (where == 2)
     {
         atres = residues;
@@ -1819,7 +1819,7 @@ RESIDUE*MIMoleculeBase::doInsertRes(RESIDUE *atres, const RESIDUE *dictres, int 
     {
         if (res)
         {
-            while (Residue::isValid(res->next()) && !IsWater(res->next()))
+            while (Monomer::isValid(res->next()) && !IsWater(res->next()))
             {
                 res = res->next();
             }
@@ -1829,7 +1829,7 @@ RESIDUE*MIMoleculeBase::doInsertRes(RESIDUE *atres, const RESIDUE *dictres, int 
     }
     // allocate more space to copy dictres into
     //long insertat = natoms-1;
-    new_res = new RESIDUE(*dictres);
+    new_res = new Residue(*dictres);
     if (!new_res)
     {
         Logger::message("Disaster! Unable to allocate one more residue in MIMoleculeBase::InsertRes! Save and restart!");
@@ -1866,7 +1866,7 @@ RESIDUE*MIMoleculeBase::doInsertRes(RESIDUE *atres, const RESIDUE *dictres, int 
 
         // find the insertion point
         res = residues;
-        while (Residue::isValid(res))
+        while (Monomer::isValid(res))
         {
             if (res == atres)
             {
@@ -1908,11 +1908,11 @@ RESIDUE*MIMoleculeBase::doInsertRes(RESIDUE *atres, const RESIDUE *dictres, int 
     return new_res;
 }
 
-void MIMoleculeBase::ReplaceRes(RESIDUE *oldres, RESIDUE *dictres)
+void MIMoleculeBase::ReplaceRes(Residue *oldres, Residue *dictres)
 {
     MIAtom N, O, C, CA, H;
     int i;
-    RESIDUE *res;
+    Residue *res;
     if (!dictres || !oldres)
     {
         return;
@@ -2036,8 +2036,8 @@ void MIMoleculeBase::ReplaceRes(RESIDUE *oldres, RESIDUE *dictres)
 void MIMoleculeBase::BuildHBonds()
 {
 
-    RESIDUE *res = residues;
-    RESIDUE *list;
+    Residue *res = residues;
+    Residue *list;
     MIAtom *a1;
     MIAtom *a2;
     int i, j;
@@ -2141,8 +2141,8 @@ bool MIMoleculeBase::SavePDBFile(const char *savepath)
 
 void MIMoleculeBase::SecStrFromAngles()
 {
-    RESIDUE *res = residues;
-    RESIDUE *prev = NULL;
+    Residue *res = residues;
+    Residue *prev = NULL;
     int i = 0;
     float angle1, angle2;
     MIAtom *po, *pc, *ro, *rc, *no, *nc;
@@ -2222,7 +2222,7 @@ void MIMoleculeBase::SecStrFromAngles()
     }
 
     // get rid of helices shorter than 4
-    RESIDUE *start = NULL;
+    Residue *start = NULL;
     int length = 0;
     res = residues;
     while (res != NULL)
@@ -2242,7 +2242,7 @@ void MIMoleculeBase::SecStrFromAngles()
                 if (length > 0 && length < 4)
                 {
                     // erase the helix
-                    RESIDUE *r = start;
+                    Residue *r = start;
                     for (int i = 0; i < length; i++)
                     {
                         r->setSecstr('C');
@@ -2277,12 +2277,12 @@ bool MIMoleculeBase::SavePDBFileVisible(const char *savepath)
 
 //here
 
-void MIMoleculeBase::DeleteChain(RESIDUE *chain)
+void MIMoleculeBase::DeleteChain(Residue *chain)
 {
-    std::vector<RESIDUE*> residuesToDelete;
-    RESIDUE *res = chain;
+    std::vector<Residue*> residuesToDelete;
+    Residue *res = chain;
     short chain_id = chain->chain_id();
-    while (Residue::isValid(res) && res->chain_id() == chain_id)
+    while (Monomer::isValid(res) && res->chain_id() == chain_id)
     {
         residuesToDelete.push_back(res);
         res = res->next();
@@ -2290,7 +2290,7 @@ void MIMoleculeBase::DeleteChain(RESIDUE *chain)
     DeleteResidues(residuesToDelete);
 }
 
-void MIMoleculeBase::setResidueNames(std::vector<RESIDUE*> &residues, const std::string &name)
+void MIMoleculeBase::setResidueNames(std::vector<Residue*> &residues, const std::string &name)
 {
     int rnum = atoi(name.c_str());
     for (unsigned int i = 0; i<residues.size(); ++i)
@@ -2298,12 +2298,12 @@ void MIMoleculeBase::setResidueNames(std::vector<RESIDUE*> &residues, const std:
     moleculeChanged(this);
 }
 
-void MIMoleculeBase::setChainId(RESIDUE *chain, char c)
+void MIMoleculeBase::setChainId(Residue *chain, char c)
 {
     int chain_id = chain->chain_id();
     int chainno = chain_id/256;
-    RESIDUE *res = chain;
-    while (Residue::isValid(res) && (chain_id == res->chain_id()))
+    Residue *res = chain;
+    while (Monomer::isValid(res) && (chain_id == res->chain_id()))
     {
         res->set_chain_id((c&255) + chainno* 256);
         res = res->next();
@@ -2311,11 +2311,11 @@ void MIMoleculeBase::setChainId(RESIDUE *chain, char c)
     moleculeChanged(this);
 }
 
-void MIMoleculeBase::renumberChain(RESIDUE *chain, int n)
+void MIMoleculeBase::renumberChain(Residue *chain, int n)
 {
     int chain_id = chain->chain_id();
-    RESIDUE *res = chain;
-    while (Residue::isValid(res) && (chain_id == res->chain_id()))
+    Residue *res = chain;
+    while (Monomer::isValid(res) && (chain_id == res->chain_id()))
     {
         res->setName(std::string(ftoa(n)));
         n++;
@@ -2328,7 +2328,7 @@ void MIMoleculeBase::renumberChain(RESIDUE *chain, int n)
 int MIMoleculeBase::getnresidues()
 {
     nresidues = 0;
-    for (RESIDUE *r = residues; r != NULL; r = r->next())
+    for (Residue *r = residues; r != NULL; r = r->next())
     {
         nresidues++;
     }
@@ -2339,7 +2339,7 @@ int MIMoleculeBase::getnresidues()
 void MIMoleculeBase::InitSeqPos()
 {
     int n = 0;
-    for (RESIDUE *res = residues; Residue::isValid(res); res = res->next())
+    for (Residue *res = residues; Monomer::isValid(res); res = res->next())
     {
         res->setSeqpos(n);
         res->setName1(singleletter(res->type().c_str()));

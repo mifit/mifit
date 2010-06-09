@@ -14,12 +14,12 @@ namespace chemlib
     class MIAtom;
     class Bond;
     class Ligand;
-    class Residue;
+    class Monomer;
 
     class LigDictionary
     {
     public:
-        LigDictionary(Ligand*, const Residue*);
+        LigDictionary(Ligand*, const Monomer*);
         void AnalyzeRings();
         void AddPlane(Plane&);
         void AddTorsion(Torsion &tor);
@@ -40,14 +40,14 @@ namespace chemlib
         {
             return _sigmaplane;
         }
-        const Residue *GetResidue()
+        const Monomer *GetResidue()
         {
             return _res;
         }
         void UnspecDoubleBond(Bond*);
     protected:
         Ligand *lig;
-        const Residue *_res;
+        const Monomer *_res;
         std::vector<Plane> planes;
         std::vector<Torsion> torsions;
         std::vector<Improper> impropers;

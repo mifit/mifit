@@ -12,7 +12,7 @@
 namespace chemlib
 {
 
-    RESIDUE *SmilesToMol(const std::string &smiles,
+    Residue *SmilesToMol(const std::string &smiles,
                          std::vector<Bond> &bonds,
                          std::string &ErrorMessage);
 
@@ -47,7 +47,7 @@ namespace chemlib
     {
     public:
         SmilesReader(const char*, Ligand*);
-        SmilesReader(const char*, Ligand*, RESIDUE&, std::vector<Bond> &bonds);
+        SmilesReader(const char*, Ligand*, Residue&, std::vector<Bond> &bonds);
         ~SmilesReader();
         void TraverseString();
         int CountAtoms();
@@ -70,7 +70,7 @@ namespace chemlib
         char _bond_stereo; //Current bond stereo flags
         MIAtom _atom;
         MIAtomList _atoms;
-        Residue *_res;
+        Monomer *_res;
     };
 
 } //namepsace chemlb

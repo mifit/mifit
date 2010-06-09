@@ -6,7 +6,7 @@
 namespace chemlib
 {
     class MIAtom;
-    class RESIDUE;
+    class Residue;
 }
 class EMapBase;
 
@@ -26,7 +26,7 @@ private:
     EMapBase *emap;
     void Init();
 public:
-    void ZeroModel(chemlib::RESIDUE *model);
+    void ZeroModel(chemlib::Residue *model);
     InterpBox(std::vector<chemlib::MIAtom*> &atoms, EMapBase *from_map);
     float RDensity(std::vector<chemlib::MIAtom*> CurrentAtoms);
 };

@@ -24,9 +24,9 @@ bool GeomRefiner::EditEntry(const char *type)
         Logger::message("Can not edit dictionary entry while refining\nCancel Refine and start again");
         return false;
     }
-    RESIDUE *dictres = dict.GetDictResidue(type, 0);
+    Residue *dictres = dict.GetDictResidue(type, 0);
     //RESIDUE * reslist = new RESIDUE;
-    RESIDUE *reslist = new RESIDUE(*dictres);
+    Residue *reslist = new Residue(*dictres);
     Molecule *model = new Molecule(reslist, "Dictionary", NULL, NULL, 0, MoleculeType::Other);
 
     //Store state of constraint prefs to restore and
@@ -68,11 +68,11 @@ unsigned long GeomRefiner::FindGeomErrors(Molecule *model, float error_threshold
     bool found_geom = false;
     if (!IsRefining())
     {
-        MIIter<RESIDUE> ri = model->GetResidues();
-        RESIDUE *firstres = ri;
+        MIIter<Residue> ri = model->GetResidues();
+        Residue *firstres = ri;
         ri.Last();
-        RESIDUE *last = ri;
-        if (!Residue::isValid(firstres) || !Residue::isValid(last))
+        Residue *last = ri;
+        if (!Monomer::isValid(firstres) || !Monomer::isValid(last))
         {
             return 0;
         }
@@ -314,9 +314,9 @@ unsigned long GeomRefiner::FindGeomErrors(Molecule *model, float error_threshold
             }
             if (atom1->altloc() != ' ' || atom2->altloc() != ' ')
             {
-                MIIter<RESIDUE> ri = model->GetResidues();
-                RESIDUE *res1 = residue_from_atom(ri, atom1);
-                RESIDUE *res2 = residue_from_atom(ri, atom2);
+                MIIter<Residue> ri = model->GetResidues();
+                Residue *res1 = residue_from_atom(ri, atom1);
+                Residue *res2 = residue_from_atom(ri, atom2);
                 if (res1 == res2)
                 {
                     continue;

@@ -12,7 +12,7 @@ class Stack;
 typedef struct
 {
     chemlib::MIAtom *atom;
-    chemlib::RESIDUE *residue;
+    chemlib::Residue *residue;
     Molecule *molecule;
 } StackItem;
 
@@ -38,7 +38,7 @@ private:
 
     void dataPop();
     void Purge(chemlib::MIMoleculeBase *model);
-    void Purge(chemlib::RESIDUE *res);
+    void Purge(chemlib::Residue *res);
     void Purge(chemlib::MIAtom *atom);
 
 public:
@@ -53,17 +53,17 @@ public:
     bool empty();
     StackItem top();
     const DataContainer&getData();
-    void Pop(chemlib::MIAtom* &atom, chemlib::RESIDUE* &res);
-    void Pop(chemlib::MIAtom* &atom, chemlib::RESIDUE* &res, Molecule* &m);
+    void Pop(chemlib::MIAtom* &atom, chemlib::Residue* &res);
+    void Pop(chemlib::MIAtom* &atom, chemlib::Residue* &res, Molecule* &m);
     chemlib::MIAtom *Pop();
-    void Peek(chemlib::MIAtom* &atom, chemlib::RESIDUE* &res, Molecule* &m);
-    void Push(chemlib::MIAtom *atom, chemlib::RESIDUE *res, Molecule *m);
+    void Peek(chemlib::MIAtom* &atom, chemlib::Residue* &res, Molecule* &m);
+    void Push(chemlib::MIAtom *atom, chemlib::Residue *res, Molecule *m);
 
     void Clear();
     void ExpandTopAllAtoms();
     void ExpandTop2AllAtoms();
     void ExpandTop2Range();
-    bool InStack(chemlib::RESIDUE *res);
+    bool InStack(chemlib::Residue *res);
 
     bool StackChanged();
     void ClearChanged();
@@ -80,7 +80,7 @@ public:
     void ToggleMinMax();
 
     // note: in practice these slots are called by CMolwView, not directly by the signal
-    void residuesToBeDeleted(chemlib::MIMoleculeBase *model, std::vector<chemlib::RESIDUE*> &residues);
+    void residuesToBeDeleted(chemlib::MIMoleculeBase *model, std::vector<chemlib::Residue*> &residues);
     void atomsToBeDeleted(chemlib::MIMoleculeBase *model, const chemlib::MIAtomList &atoms);
     void moleculeToBeDeleted(chemlib::MIMoleculeBase *model);
 

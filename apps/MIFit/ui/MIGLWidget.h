@@ -92,7 +92,7 @@ class MIGLWidget : public QGLWidget, public MIEventHandler
     CMolwViewSlabPickingRenderable *slabPickingRenderable;
 
     bool is_drawing;
-    chemlib::RESIDUE *PentamerStart;
+    chemlib::Residue *PentamerStart;
     int batonposition;
     chemlib::MIAtom *batonatom;
 
@@ -107,7 +107,7 @@ private:
     QMdiSubWindow *oldParent;
     QWidget *containerWidget;
 
-    chemlib::RESIDUE *focusres;
+    chemlib::Residue *focusres;
     bool focusresDeleted;
     bool DragStart;
 
@@ -182,16 +182,16 @@ private:
 
     void doSlabDrag(int x, int y, int dx, int dy);
 
-    void findResidueAndMoleculeForAtom(chemlib::MIAtom *atom, chemlib::RESIDUE* &res, Molecule* &mol);
-    void doSetFocusResidue(chemlib::RESIDUE *res);
+    void findResidueAndMoleculeForAtom(chemlib::MIAtom *atom, chemlib::Residue* &res, Molecule* &mol);
+    void doSetFocusResidue(chemlib::Residue *res);
 
     /**
      * Get rid of any pointers or objects pointing to model.
      * Prevents accessing bad pointers leading to a seg fault.
      */
     void Purge(Molecule *model);
-    void PurgeChain(chemlib::RESIDUE *chain);
-    void Purge(chemlib::RESIDUE *res);
+    void PurgeChain(chemlib::Residue *chain);
+    void Purge(chemlib::Residue *res);
     void Purge(chemlib::MIAtom *atom);
 
     /**
@@ -306,11 +306,11 @@ public:
     //@{
     // Load a dictionary residue.
     //@}
-    chemlib::RESIDUE *GetDictRes(const char *key, int confomer = 0);
+    chemlib::Residue *GetDictRes(const char *key, int confomer = 0);
     //@{
     // Load a dictionary residue.
     //@}
-    chemlib::RESIDUE *GetDictRes(const char single, int confomer = 0);
+    chemlib::Residue *GetDictRes(const char single, int confomer = 0);
     //@{
     // Return a pointer to the dictionary residue linked list.
     //@}
@@ -378,11 +378,11 @@ public:
      * The current residue.
      * If NULL there is currently no focus.
      */
-    const chemlib::RESIDUE *getFocusResidue();
+    const chemlib::Residue *getFocusResidue();
     /**
      * Set the current residue.
      */
-    void setFocusResidue(chemlib::RESIDUE *res, bool recenter = true, bool deleted = false);
+    void setFocusResidue(chemlib::Residue *res, bool recenter = true, bool deleted = false);
 
     /**
      * The current model containing the focus residue.
@@ -392,7 +392,7 @@ public:
      * The residue being currently fit, if any.
      * NULL value indicate no residue being fit.
      */
-    chemlib::RESIDUE *fitres;
+    chemlib::Residue *fitres;
     /**
      * The model being currently fit, if any.
      * NULL value indicate no model being fit.
@@ -462,7 +462,7 @@ public:
      * Fills current atoms and some other things.
      */
     unsigned int SetupFit(const std::vector<chemlib::MIAtom*> &atoms, Molecule *model, char altloc = ' ');
-    unsigned int SetupFit(chemlib::RESIDUE *start, chemlib::RESIDUE *end, Molecule *model, char altloc = ' ');
+    unsigned int SetupFit(chemlib::Residue *start, chemlib::Residue *end, Molecule *model, char altloc = ' ');
 
     /**
      * True if it is OK to do a fitting.
@@ -616,7 +616,7 @@ public:
      * @param model the model into which the MRK is added.
      * @param after if true the resideu is added after where, otherwise before where.
      */
-    void InsertMRK(chemlib::RESIDUE *where, Molecule *model, bool after);
+    void InsertMRK(chemlib::Residue *where, Molecule *model, bool after);
     void UpdateCurrent();
 
     /**
@@ -694,18 +694,18 @@ public slots:
     void mapVisibilityChanged(EMapBase *map);
 
     void modelAtomsToBeDeleted(chemlib::MIMoleculeBase *model, const chemlib::MIAtomList &atoms);
-    void modelResiduesToBeDeleted(chemlib::MIMoleculeBase *model, std::vector<chemlib::RESIDUE*> &res);
+    void modelResiduesToBeDeleted(chemlib::MIMoleculeBase *model, std::vector<chemlib::Residue*> &res);
     void moleculeToBeDeleted(chemlib::MIMoleculeBase *model);
 
     void symmetryToBeCleared(chemlib::MIMoleculeBase *mol);
 
 public:
-    void recenter(chemlib::RESIDUE *residue, chemlib::MIAtom *atom);
+    void recenter(chemlib::Residue *residue, chemlib::MIAtom *atom);
 
-    void select(Molecule *model, chemlib::RESIDUE *residue, chemlib::MIAtom *atom, bool label = true);
+    void select(Molecule *model, chemlib::Residue *residue, chemlib::MIAtom *atom, bool label = true);
 
 signals:
-    void focusResidueChanged(chemlib::RESIDUE*);
+    void focusResidueChanged(chemlib::Residue*);
 public:
 
     void doRefresh();

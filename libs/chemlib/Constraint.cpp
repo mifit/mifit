@@ -159,8 +159,8 @@ bool Plane::operator==(const Plane &pln2) const
 
 PLANE Plane::ToPLANE(const MIAtomList &new_atoms,
                      const std::vector<const MIAtom*> &old_atoms,
-                     const std::vector<RESIDUE*> &new_residues,
-                     const std::vector<const Residue*> &old_residues)
+                     const std::vector<Residue*> &new_residues,
+                     const std::vector<const Monomer*> &old_residues)
 {
     PLANE pln;
     pln.natoms = atoms.size();
@@ -189,7 +189,7 @@ PLANE Plane::ToPLANE(const MIAtomList &new_atoms,
 
     pln.tolerance = _tolerance;
 
-    int xRes = GetIndex<const Residue*>(_res, old_residues);
+    int xRes = GetIndex<const Monomer*>(_res, old_residues);
 
     if (xRes < 0)
     {
@@ -247,8 +247,8 @@ void Torsion::Card(std::string &s)
 
 TORSION Torsion::ToTORSION(const MIAtomList &new_atoms,
                            const std::vector<const MIAtom*> &old_atoms,
-                           const std::vector<RESIDUE*> &new_residues,
-                           const std::vector<const Residue*> &old_residues)
+                           const std::vector<Residue*> &new_residues,
+                           const std::vector<const Monomer*> &old_residues)
 {
     TORSION tors;
 
@@ -273,7 +273,7 @@ TORSION Torsion::ToTORSION(const MIAtomList &new_atoms,
     tors.atom4 = new_atoms[i4];
     tors.nideal = 0;
 
-    int xRes = GetIndex<const Residue*>(_res, old_residues);
+    int xRes = GetIndex<const Monomer*>(_res, old_residues);
 
     if (xRes < 0)
     {
@@ -521,8 +521,8 @@ double Improper::ConvertToDistance(const ConstraintList &geom) const
 
 TORSION Improper::ToTORSION(const MIAtomList &new_atoms,
                             const std::vector<const MIAtom*> &old_atoms,
-                            const std::vector<RESIDUE*> &new_residues,
-                            const std::vector<const Residue*> &old_residues)
+                            const std::vector<Residue*> &new_residues,
+                            const std::vector<const Monomer*> &old_residues)
 {
     TORSION imp;
 
@@ -563,7 +563,7 @@ TORSION Improper::ToTORSION(const MIAtomList &new_atoms,
         imp.ideal[i] = (float)_angles[i];
     }
 
-    int xRes = GetIndex<const Residue*>(_res, old_residues);
+    int xRes = GetIndex<const Monomer*>(_res, old_residues);
 
     if (xRes < 0)
     {

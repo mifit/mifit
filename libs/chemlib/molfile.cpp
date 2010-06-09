@@ -25,7 +25,7 @@ molfile::~molfile()
 {
 }
 
-bool molfile::SquirtAtoms(FILE *fp, const RESIDUE &res, const vector<Bond> &bonds,
+bool molfile::SquirtAtoms(FILE *fp, const Residue &res, const vector<Bond> &bonds,
                           const vector<CHIRAL> &chirals)
 {
     int chirality;
@@ -59,7 +59,7 @@ bool molfile::SquirtAtoms(FILE *fp, const RESIDUE &res, const vector<Bond> &bond
     return true;
 }
 
-bool molfile::SquirtBonds(FILE *fp, const RESIDUE &res, const vector<Bond> &bonds)
+bool molfile::SquirtBonds(FILE *fp, const Residue &res, const vector<Bond> &bonds)
 {
     int x1, x2;
 
@@ -116,7 +116,7 @@ int molfile::ChargeCode(int charge)
     }
 }
 
-int molfile::ChiralCode(const MIAtom *patom, const RESIDUE &res, const vector<Bond> &bonds)
+int molfile::ChiralCode(const MIAtom *patom, const Residue &res, const vector<Bond> &bonds)
 {
     if (patom->chiral_class() != CH_TETRAHEDRAL)
     {
@@ -260,7 +260,7 @@ bool molfile::Write(FILE *fp, MIMolInfo &mol)
     time(&t);
     struct tm *foo = localtime(&t);
 
-    while (Residue::isValid(mol.res))
+    while (Monomer::isValid(mol.res))
     {
         int ischiral = mol.chirals.empty() ?  0 : 1;
         //int nbonds = CountResBonds(*mol.res, mol.bonds);
@@ -303,7 +303,7 @@ bool molfile::Write(FILE *fp, MIMolInfo &mol)
     return true;
 }
 
-bool molfile::SlurpAtoms(FILE *fp, RESIDUE *res, int natoms)
+bool molfile::SlurpAtoms(FILE *fp, Residue *res, int natoms)
 {
     char line[MAX_MOLFILE_LINE], symbol[3];
     int charge_code, chiral_code;
@@ -367,7 +367,7 @@ bool molfile::SlurpAtoms(FILE *fp, RESIDUE *res, int natoms)
     return true;
 }
 
-bool molfile::SlurpBonds(FILE *fp, vector<Bond> &bonds, const RESIDUE *res, int nbonds)
+bool molfile::SlurpBonds(FILE *fp, vector<Bond> &bonds, const Residue *res, int nbonds)
 {
     char line[MAX_MOLFILE_LINE];
     int xAtom1, xAtom2, order, stereo;
@@ -402,7 +402,7 @@ bool molfile::Read(FILE *fp, MIMolInfo &mol)
     // clear current mol
     MIMolInfo foo;
     mol = foo;
-    mol.res = new RESIDUE();
+    mol.res = new Residue();
 
     fgets(line, MAX_MOLFILE_LINE, fp);      //mol header lines
     fgets(line, MAX_MOLFILE_LINE, fp);
@@ -426,7 +426,7 @@ bool molfile::Read(FILE *fp, MIMolInfo &mol)
     return true;
 }
 
-bool molfile::SlurpProperties(FILE *fp, RESIDUE *res)
+bool molfile::SlurpProperties(FILE *fp, Residue *res)
 {
     bool first_charge = true;
     int xAtom, charge;

@@ -45,7 +45,7 @@ mmCIF::~mmCIF()
 bool mmCIF::Write(FILE *fp, MIMolInfo &mol)
 {
     int i;
-    RESIDUE *res = mol.res;
+    Residue *res = mol.res;
     std::string resname; // Used to convert residue type to proper format
     std::string line; // Used to setup the output for an individual line item
     std::string poly;
@@ -143,7 +143,7 @@ bool mmCIF::Write(FILE *fp, MIMolInfo &mol)
 }
 
 bool mmCIF::SquirtAtoms(FILE *fp, map<MIAtom*, int> &atom_map,
-                        RESIDUE *res)
+                        Residue *res)
 {
     int i;
     float charge;
@@ -302,7 +302,7 @@ bool mmCIF::SquirtTreeAtom(FILE *fp, std::string &resname, MIAtom *patom,
 }
 
 bool mmCIF::SquirtTree(FILE *fp, std::string &resname,
-                       map<MIAtom*, int> &atom_map, RESIDUE *res, vector<Bond> &bonds)
+                       map<MIAtom*, int> &atom_map, Residue *res, vector<Bond> &bonds)
 {
     int j;
     vector<Bond>::iterator o, r;
@@ -656,7 +656,7 @@ bool mmCIF::SquirtTorsions(FILE *fp, std::string &resname, map<MIAtom*, int> &at
 }
 
 bool mmCIF::SquirtChirality(FILE *fp, std::string &resname,
-                            map<MIAtom*, int> &atom_map, RESIDUE *res, vector<Bond> &bonds)
+                            map<MIAtom*, int> &atom_map, Residue *res, vector<Bond> &bonds)
 {
     //TODO: See e-mail from Keith on Friday 2:05:09pm on 5-20-05
     int i, id;
@@ -839,7 +839,7 @@ bool mmCIF::Read(FILE *fp, MIMolInfo &mol)
     // clear current mol
     MIMolInfo foo;
     mol = foo;
-    mol.res = new RESIDUE();
+    mol.res = new Residue();
 
     map<std::string, TORSDICT> torsion_map;
     map<std::string, PLANEDICT> plane_map;
@@ -936,7 +936,7 @@ bool mmCIF::Read(FILE *fp, MIMolInfo &mol)
     return true;
 }
 
-bool mmCIF::SlurpAtoms(CifLoop &loop, RESIDUE *res)
+bool mmCIF::SlurpAtoms(CifLoop &loop, Residue *res)
 {
 
     CifTokenizer toker(loop._values);
@@ -1111,7 +1111,7 @@ bool mmCIF::SlurpBonds(CifLoop &loop, map<std::string, MIAtom*> &atom_map, vecto
 bool mmCIF::SlurpAngles(CifLoop &loop,
                         map<std::string, MIAtom*> &atom_map,
                         vector<ANGLE> &angles,
-                        RESIDUE *current_res)
+                        Residue *current_res)
 {
     CifTokenizer toker(loop._values);
     int nCols = loop._names.size();
@@ -1636,7 +1636,7 @@ bool mmCIF::SlurpChiralAtoms(CifLoop &loop, map<std::string, CHIRALDICT> &chiral
     return true;
 }
 
-bool mmCIF::SlurpHeader(CifLoop &loop, RESIDUE *res)
+bool mmCIF::SlurpHeader(CifLoop &loop, Residue *res)
 {
 
     CifTokenizer toker(loop._values);

@@ -21,7 +21,7 @@ using namespace std;
 #define Y 1
 #define Z 2
 
-int read_colors(const RESIDUE *res, char *buf, int nbuf)
+int read_colors(const Residue *res, char *buf, int nbuf)
 {
     char name[100];
     int i = 0;
@@ -85,7 +85,7 @@ int read_colors(const RESIDUE *res, char *buf, int nbuf)
     return i;
 }
 
-int read_radii(const RESIDUE *res, char *buf, int nbuf)
+int read_radii(const Residue *res, char *buf, int nbuf)
 {
     char name[20];
     int i = 0;
@@ -127,7 +127,7 @@ int read_radii(const RESIDUE *res, char *buf, int nbuf)
     return i;
 }
 
-string resid(const RESIDUE *res)
+string resid(const Residue *res)
 {
     string id;
     if (res != NULL)
@@ -173,7 +173,7 @@ char chargetype(char t)
 }
 
 float
-phi(const RESIDUE *prev, const RESIDUE *res)
+phi(const Residue *prev, const Residue *res)
 {
     MIAtom *a1 = NULL;
     MIAtom *a2 = NULL;
@@ -212,7 +212,7 @@ phi(const RESIDUE *prev, const RESIDUE *res)
 }
 
 float
-psi(const RESIDUE *res, const RESIDUE *next)
+psi(const Residue *res, const Residue *next)
 {
     MIAtom *a1 = NULL;
     MIAtom *a2 = NULL;
@@ -251,7 +251,7 @@ psi(const RESIDUE *res, const RESIDUE *next)
     return (-360.0);
 }
 
-bool MoveOnto(const RESIDUE *res, RESIDUE *fitres, int nres)
+bool MoveOnto(const Residue *res, Residue *fitres, int nres)
 {
     // move res onto fitres
     int ma = 0, mb = 0, m = 0;
@@ -398,11 +398,11 @@ bool outside_sphere(float p[3], float radius, float InclusionCenter[3])
     return true;
 }
 
-RESIDUE *SymmResidue(const RESIDUE *Model, CMapHeaderBase *mh, float center[3], float r, int color)
+Residue *SymmResidue(const Residue *Model, CMapHeaderBase *mh, float center[3], float r, int color)
 {
     /* set unity to true if operator = x,y,z to avoid looking at 0,0,0 position */
-    const RESIDUE *model;
-    RESIDUE *res = NULL, *newres, *Res = NULL;
+    const Residue *model;
+    Residue *res = NULL, *newres, *Res = NULL;
     char label[MAXNAME];
     int nlabel;
     int nadd = 0;
@@ -561,7 +561,7 @@ RESIDUE *SymmResidue(const RESIDUE *Model, CMapHeaderBase *mh, float center[3], 
                             {
                                 continue;
                             }
-                            newres = new RESIDUE(*model);
+                            newres = new Residue(*model);
                             if (Res == NULL)
                             {
                                 Res = res = newres;
@@ -615,10 +615,10 @@ RESIDUE *SymmResidue(const RESIDUE *Model, CMapHeaderBase *mh, float center[3], 
 
 
 
-void getchain(unsigned short chain_id, RESIDUE *reslist, RESIDUE* &nter, RESIDUE* &cter)
+void getchain(unsigned short chain_id, Residue *reslist, Residue* &nter, Residue* &cter)
 {
     nter = cter = NULL;
-    RESIDUE *res = reslist;
+    Residue *res = reslist;
     while ((res != NULL) && res->chain_id() != chain_id)
     {
         res = res->next();
@@ -631,10 +631,10 @@ void getchain(unsigned short chain_id, RESIDUE *reslist, RESIDUE* &nter, RESIDUE
     }
 }
 
-int order_ends(RESIDUE* &res1, RESIDUE* &res2, RESIDUE *res)
+int order_ends(Residue* &res1, Residue* &res2, Residue *res)
 {
     int nres = 0;
-    RESIDUE *start = NULL, *end = NULL;
+    Residue *start = NULL, *end = NULL;
     if (res1 == res2)
     {
         nres = 1;
@@ -678,14 +678,14 @@ int order_ends(RESIDUE* &res1, RESIDUE* &res2, RESIDUE *res)
     return nres;
 }
 
-const string chainstring(const RESIDUE *res)
+const string chainstring(const Residue *res)
 {
     char chainid;
     int chainno;
     static string buff;
     chainid = (char)(res->chain_id() & 255);
-    const RESIDUE *res2 = res;
-    const RESIDUE *r = res;
+    const Residue *res2 = res;
+    const Residue *r = res;
     while (r != NULL)
     {
         if (r->chain_id() == res->chain_id())
@@ -721,9 +721,9 @@ const string chainstring(const RESIDUE *res)
     return (buff);
 }
 
-RESIDUE *make_res(const MIAtomList &atoms)
+Residue *make_res(const MIAtomList &atoms)
 {
-    RESIDUE *res = new RESIDUE();
+    Residue *res = new Residue();
     res->setAtoms(atoms);
     return res;
 }

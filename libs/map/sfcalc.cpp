@@ -201,12 +201,12 @@ int sfatom(const MIAtom &atom, CREFL refl[], int nrefl, CMapHeaderBase *mh)
  * if init = 0 then sums are zeroed before beginning
  * else they are summed
  */
-int sfcalc(RESIDUE *res, CREFL refl[], int nrefl, CMapHeaderBase *mh, int init)
+int sfcalc(Residue *res, CREFL refl[], int nrefl, CMapHeaderBase *mh, int init)
 {
     int i, n = 0, nr = 0;
     float natoms = 0.0;
     char buf[200];
-    RESIDUE *start;
+    Residue *start;
 
     start = res;
     if (init == 0)
@@ -608,7 +608,7 @@ float RePhase(std::vector<CREFL> &refl, CMapHeaderBase *mh)
     return ( sumphi / (float)n);
 }
 
-int randomize(RESIDUE *res, float maxdev)
+int randomize(Residue *res, float maxdev)
 {
     int i;
     int n = 0;

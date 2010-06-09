@@ -6,7 +6,7 @@
 namespace chemlib
 {
     class MIAtom;
-    class RESIDUE;
+    class Residue;
 
     class ANGLE
     {
@@ -32,7 +32,7 @@ namespace chemlib
         /**
          * the residue the angle is from
          */
-        const RESIDUE *res;
+        const Residue *res;
         /**
          * True if all three atoms are in the same ring system
          */

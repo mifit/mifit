@@ -3,7 +3,7 @@
 
 namespace chemlib
 {
-    class RESIDUE;
+    class Residue;
 }
 
 class Helix
@@ -16,7 +16,7 @@ public:
     Helix *m_pNext;
 
     bool MakeHelix(chemlib::MIMoleculeBase *mol,
-                   chemlib::RESIDUE *pHelixStart, chemlib::RESIDUE *pHelixStop);
+                   chemlib::Residue *pHelixStart, chemlib::Residue *pHelixStop);
     bool CreateAxis(int axis_len, double caA[4][3], double caB[4][3]);
     bool ProjectPoint(double pt[3], double enda[3], double endb[3], double ptp[3]);
     bool CreateCylinder();

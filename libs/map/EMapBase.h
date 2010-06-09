@@ -13,7 +13,7 @@
 
 namespace chemlib
 {
-    class RESIDUE;
+    class Residue;
     class MIAtom;
 }
 
@@ -59,7 +59,7 @@ protected:
     long SaveXtalViewPhase(FILE *fp);
     long SaveWarpPhase(FILE *fp);
     long SaveCNSPhase(FILE *fp);
-    int sfFFT(chemlib::RESIDUE *res, float &scale);
+    int sfFFT(chemlib::Residue *res, float &scale);
 
     std::vector<float> map_points;
     std::vector<float> section;
@@ -427,7 +427,7 @@ public:
     // Crystal must be set properly for this work.
     // May also want to set the resolution limits.
     //@}
-    bool SFCalc(chemlib::RESIDUE *res);
+    bool SFCalc(chemlib::Residue *res);
     //@{
     // Load a CCP4 mtz map (reflections file).
     // the function guesses the columns that will be used and asks the

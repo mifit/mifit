@@ -12,7 +12,7 @@ using namespace std;
 namespace conflib
 {
 
-void GenerateDictionary(RESIDUE *res,
+void GenerateDictionary(Residue *res,
                         std::vector<Bond> &bonds,
                         std::vector<Bond> &BondLengths,
                         std::vector<ANGLE> &Angles,
@@ -23,7 +23,7 @@ void GenerateDictionary(RESIDUE *res,
 {
 
     MIAtomList orig_atoms = res->atoms();
-    std::vector<RESIDUE*> orig_res;
+    std::vector<Residue*> orig_res;
     orig_res.push_back(res);
 
     Ligand lig(*res, bonds);
@@ -77,7 +77,7 @@ void GenerateDictionary(RESIDUE *res,
     }
 }
 
-int GenerateEnsemble(RESIDUE *res,
+int GenerateEnsemble(Residue *res,
                      std::vector<Bond> &bonds,
                      MIMolDictionary *dictionary,
                      bool replace)
@@ -114,7 +114,7 @@ int GenerateEnsemble(RESIDUE *res,
     return nConfs;
 }
 
-int GenerateEnsemble(RESIDUE *res,
+int GenerateEnsemble(Residue *res,
                      MIMoleculeBase *model,
                      std::vector<Bond> &bonds,
                      std::vector<TORSION> &torsions,
@@ -148,14 +148,14 @@ int GenerateEnsemble(RESIDUE *res,
     return nConfs;
 }
 
-void GenerateCoordinates(RESIDUE *res,
+void GenerateCoordinates(Residue *res,
                          const std::vector<Bond> &bonds,
                          std::string&)
 {
 
     //Construct a ligand object
     Ligand lig(*res, bonds);
-    Residue *new_res = (lig.residues.front());
+    Monomer *new_res = (lig.residues.front());
 
     //Assign some basic features of the molecule
     LigandPerceiver lp;

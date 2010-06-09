@@ -86,7 +86,7 @@ bool MoleculeXmlHandler::startElement(const QString &namespaceURI,
     if (name == "Residue")
     {
         MI_ASSERT(residue == NULL);
-        residue = new RESIDUE();
+        residue = new Residue();
         residue->setSecstr('U');
         if (residueList == NULL)
         {

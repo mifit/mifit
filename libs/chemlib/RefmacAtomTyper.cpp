@@ -9,7 +9,7 @@ using namespace std;
 namespace chemlib
 {
 
-RefmacAtomTyper::RefmacAtomTyper(const RESIDUE &res, const vector<Bond> &bonds)
+RefmacAtomTyper::RefmacAtomTyper(const Residue &res, const vector<Bond> &bonds)
     : AtomTyper(res, bonds)
 {
 }

@@ -34,7 +34,7 @@ public:
     MIMolOpt();
     virtual ~MIMolOpt();
 
-    bool BuildMainchain(chemlib::RESIDUE *res, chemlib::MIMoleculeBase *model, EMapBase *emap, bool addAtomsToNextResidue = true);
+    bool BuildMainchain(chemlib::Residue *res, chemlib::MIMoleculeBase *model, EMapBase *emap, bool addAtomsToNextResidue = true);
     void RigidOptimize(std::vector<chemlib::MIAtom*>&, chemlib::MIMoleculeBase *fitmol, EMapBase *emap);
     void TorsionOptimize(std::vector<chemlib::MIAtom*> &CurrentAtoms, chemlib::MIMoleculeBase *fitmol, EMapBase *emap,
                          std::vector<chemlib::TORSION> &torsions, bool do_setup = true);
@@ -45,10 +45,10 @@ public:
                         const float *center, InterpBox &box, unsigned int refine_level, chemlib::GeomSaver &conformations,
                         MIMolOptCheckPoint *checkpoint = 0);
     void MolecularReplace(chemlib::MIMoleculeBase *fitmol, EMapBase *emap);
-    void RefiAllTorsions(chemlib::RESIDUE *reslist);
+    void RefiAllTorsions(chemlib::Residue *reslist);
 
     void Purge(chemlib::MIMoleculeBase*);
-    void Purge(chemlib::RESIDUE*);
+    void Purge(chemlib::Residue*);
     void Purge(chemlib::MIAtom*);
     void Purge(EMapBase*);
 
@@ -71,7 +71,7 @@ public:
     void Accept();
     void Refine();
 
-    long SetRefiRes(chemlib::RESIDUE *res1, chemlib::RESIDUE *res2, chemlib::MIMoleculeBase *model, EMapBase *emap = NULL);
+    long SetRefiRes(chemlib::Residue *res1, chemlib::Residue *res2, chemlib::MIMoleculeBase *model, EMapBase *emap = NULL);
 
     void lockRefineTarget();
     void unlockRefineTarget();
@@ -204,8 +204,8 @@ protected:
     bool RefiVerbose;
     bool fit_while_refine;
     chemlib::GeomSaver geomsaver;
-    chemlib::RESIDUE *RefiRes;
-    chemlib::RESIDUE *ResActiveModel;
+    chemlib::Residue *RefiRes;
+    chemlib::Residue *ResActiveModel;
     bool refineTargetLocked;
 
     float BondWeight, AngleWeight, PlaneWeight, MapWeight, TorsionWeight, BumpWeight;
@@ -214,9 +214,9 @@ protected:
     int nRefiRes;
     int nucleic;
 
-    void internalSetRefiRes(chemlib::RESIDUE *residue, int nResidues);
+    void internalSetRefiRes(chemlib::Residue *residue, int nResidues);
 
-    int getbonddist(chemlib::RESIDUE *res, chemlib::Bond *bond);
+    int getbonddist(chemlib::Residue *res, chemlib::Bond *bond);
 
     int minimize_bonds(std::vector<chemlib::Bond>&, unsigned int);
     int minimize_angles(std::vector<chemlib::ANGLE>&, unsigned int);
@@ -245,7 +245,7 @@ protected:
 public slots:
     void ConnectTo(chemlib::MIMoleculeBase *mol);
     void atomsToBeDeleted(chemlib::MIMoleculeBase *model, const chemlib::MIAtomList &atoms);
-    void residuesToBeDeleted(chemlib::MIMoleculeBase *model, std::vector<chemlib::RESIDUE*> &res);
+    void residuesToBeDeleted(chemlib::MIMoleculeBase *model, std::vector<chemlib::Residue*> &res);
     void moleculeToBeDeleted(chemlib::MIMoleculeBase *molecule);
     void moleculeDeleted(chemlib::MIMoleculeBase *molecule);
 };

@@ -24,7 +24,7 @@ namespace conflib
     class CoordGenerator
     {
     public:
-        CoordGenerator(chemlib::Ligand *mol, chemlib::Residue *res)
+        CoordGenerator(chemlib::Ligand *mol, chemlib::Monomer *res)
         {
             _lig = mol;
             _res = res;
@@ -49,7 +49,7 @@ namespace conflib
         int CountPlaced(chemlib::Plane*);
         void PartialPlane(chemlib::Plane*, chemlib::Plane*);
         chemlib::Ligand *_lig;
-        chemlib::Residue *_res;
+        chemlib::Monomer *_res;
         chemlib::ConstraintList _master;
         chemlib::ConstraintList _current;
         int _nplaced;               //Number of atoms placed thus far

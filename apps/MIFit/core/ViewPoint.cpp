@@ -401,7 +401,7 @@ void ViewPoint::Center(MIMoleculeBase *mol)
     {
         return;
     }
-    for (MIIter<RESIDUE> res = mol->GetResidues(); res; ++res)
+    for (MIIter<Residue> res = mol->GetResidues(); res; ++res)
     {
         for (i = 0; i < res->atomCount(); i++)
         {
@@ -729,9 +729,9 @@ void ViewPoint::PutOnLeft(float x2, float y2, float z2)
     rotate(bestx, besty, bestz);
 }
 
-bool ViewPoint::CenterAtResidue(const RESIDUE *res)
+bool ViewPoint::CenterAtResidue(const Residue *res)
 {
-    if (!Residue::isValid(res))
+    if (!Monomer::isValid(res))
     {
         return false;
     }

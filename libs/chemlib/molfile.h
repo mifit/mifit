@@ -16,17 +16,17 @@ namespace chemlib
     class molfile : public Reader, public Writer
     {
 
-        bool SquirtAtoms(FILE *fp,  const RESIDUE &res, const std::vector<Bond> &bonds,
+        bool SquirtAtoms(FILE *fp,  const Residue &res, const std::vector<Bond> &bonds,
                          const std::vector<CHIRAL> &chirals);
-        bool SquirtBonds(FILE *fp, const RESIDUE &res, const std::vector<Bond> &bonds);
-        bool SlurpAtoms(FILE *fp, RESIDUE *res, int natoms);
-        bool SlurpBonds(FILE *fp, std::vector<Bond> &bonds, const RESIDUE *res, int nbonds);
-        bool SlurpProperties(FILE *fp, RESIDUE *res);
-        bool SlurpChirals(RESIDUE *res, std::vector<CHIRALDICT> &chirals);
+        bool SquirtBonds(FILE *fp, const Residue &res, const std::vector<Bond> &bonds);
+        bool SlurpAtoms(FILE *fp, Residue *res, int natoms);
+        bool SlurpBonds(FILE *fp, std::vector<Bond> &bonds, const Residue *res, int nbonds);
+        bool SlurpProperties(FILE *fp, Residue *res);
+        bool SlurpChirals(Residue *res, std::vector<CHIRALDICT> &chirals);
         const CHIRAL *SearchChirals(const MIAtom *atom, const std::vector<CHIRAL> &chirals);
 
         int ChargeCode(int charge);
-        int ChiralCode(const MIAtom *patom, const RESIDUE &res, const std::vector<Bond> &bonds);
+        int ChiralCode(const MIAtom *patom, const Residue &res, const std::vector<Bond> &bonds);
         int BondCode(unsigned char order);
         int ProcessCharge(int charge_code);
         void ProcessChiral(MIAtom *patom, int chiral_code);

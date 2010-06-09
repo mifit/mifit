@@ -41,7 +41,7 @@ public:
     void WriteField(const char *tag, float value);
     void WriteField(const char *tag, const char *value);
     void WriteField(const char *tag);
-    void WriteField(const chemlib::RESIDUE*);
+    void WriteField(const chemlib::Residue*);
     void WriteField(const chemlib::MIAtom*);
     void WriteHBond(chemlib::Bond&);
     void WriteBond(chemlib::Bond&);

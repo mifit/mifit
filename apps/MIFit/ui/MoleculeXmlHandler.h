@@ -19,9 +19,9 @@ class MoleculeXmlHandler : public QXmlDefaultHandler
 
     char tmpElement[20];
     chemlib::MIAtom *atom;
-    chemlib::RESIDUE *residueList;
-    chemlib::RESIDUE *residue;
-    chemlib::RESIDUE *prev_res;
+    chemlib::Residue *residueList;
+    chemlib::Residue *residue;
+    chemlib::Residue *prev_res;
     Molecule *molecule;
     std::vector<chemlib::MIAtom*> atoms;
     chemlib::Bond bond;

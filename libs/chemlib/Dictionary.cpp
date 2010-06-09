@@ -9,7 +9,7 @@ using namespace std;
 namespace chemlib
 {
 
-LigDictionary::LigDictionary(Ligand *mol, const Residue *res)
+LigDictionary::LigDictionary(Ligand *mol, const Monomer *res)
 {
     lig = mol;                                              //Store pointers to the
     _res = res;                                             //molecule and residue to process

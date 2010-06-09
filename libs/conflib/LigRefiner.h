@@ -16,7 +16,7 @@ namespace conflib
         std::vector<chemlib::Plane> RefiPlanes;
         std::vector<chemlib::Improper> RefiTorsions;
         std::vector<chemlib::Bump> RefiBumps;
-        std::vector<chemlib::Residue*> RefiRes;
+        std::vector<chemlib::Monomer*> RefiRes;
 
         float BondWeight, AngleWeight, PlaneWeight, TorsionWeight, BumpWeight;
 
@@ -36,9 +36,9 @@ namespace conflib
         int resetderivatives();
         int applyderivatives();
 
-        void AddRefiRes(chemlib::Residue *res);
-        long SetRefiRes(std::vector<chemlib::Residue*>::iterator res1,
-                        std::vector<chemlib::Residue*>::iterator res2);
+        void AddRefiRes(chemlib::Monomer *res);
+        long SetRefiRes(std::vector<chemlib::Monomer*>::iterator res1,
+                        std::vector<chemlib::Monomer*>::iterator res2);
         void SetModel(chemlib::Ligand *model);
         int BuildBumps();
         void Clear();

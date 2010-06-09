@@ -20,10 +20,10 @@ ClusterList::~ClusterList()
 
 }
 
-RESIDUE*ClusterList::BuildClusters(RESIDUE *first, RESIDUE *last, int min_size)
+Residue*ClusterList::BuildClusters(Residue *first, Residue *last, int min_size)
 {
     vector<MIAtom*> atom_list;
-    RESIDUE *res = first;
+    Residue *res = first;
     MIAtom *a1, *a2;
     unsigned int i, j;
     int found, more;
@@ -87,11 +87,11 @@ RESIDUE*ClusterList::BuildClusters(RESIDUE *first, RESIDUE *last, int min_size)
         cluster.atoms.clear();
     } while (atom_list.size() > 0);
 
-    RESIDUE *reslist = NULL, *newres;
+    Residue *reslist = NULL, *newres;
     int color = 1;
     for (i = 0; i < clusters.size(); i++)
     {
-        newres = new RESIDUE();
+        newres = new Residue();
         newres->setName(format("%d", color));
         newres->setType("CLUST");
         newres->set_chain_id('x');
