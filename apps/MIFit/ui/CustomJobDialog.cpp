@@ -32,6 +32,7 @@ CustomJobDialog::CustomJobDialog(QWidget *parent)
     new MIBrowsePair(dataPushButton, dataLineEdit, "PDB file (*.pdb *.ent)");
 
     _okButton = buttonBox->button(QDialogButtonBox::Ok);
+    _okButton->setDefault(true);
 
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(validateTimeout()));
@@ -150,6 +151,7 @@ QString CustomJobDialog::dataFile() const
 void CustomJobDialog::showControls()
 {
     stackedWidget->setCurrentIndex(1);
+    saveButton->setDefault(true);
 }
 
 void CustomJobDialog::updateSaveButton()
@@ -164,4 +166,6 @@ void CustomJobDialog::saveToMenu()
                                      program(),
                                      BatchJob::parseArgs(arguments()),
                                      workingDirectory());
+    stackedWidget->setCurrentIndex(0);
+    _okButton->setDefault(true);
 }

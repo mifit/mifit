@@ -39,6 +39,9 @@
      <property name="text">
       <string>Browse...</string>
      </property>
+     <property name="autoDefault">
+      <bool>false</bool>
+     </property>
     </widget>
    </item>
    <item row="2" column="0">
@@ -65,6 +68,9 @@
     <widget class="QPushButton" name="workingDirPushButton">
      <property name="text">
       <string>Browse...</string>
+     </property>
+     <property name="autoDefault">
+      <bool>false</bool>
      </property>
     </widget>
    </item>
@@ -109,6 +115,9 @@
         <property name="text">
          <string>Browse...</string>
         </property>
+        <property name="autoDefault">
+         <bool>false</bool>
+        </property>
        </widget>
       </item>
      </layout>
@@ -128,6 +137,9 @@
     <widget class="QPushButton" name="dataPushButton">
      <property name="text">
       <string>Browse...</string>
+     </property>
+     <property name="autoDefault">
+      <bool>false</bool>
      </property>
     </widget>
    </item>
@@ -149,7 +161,7 @@
      <item>
       <widget class="QStackedWidget" name="stackedWidget">
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="buttonPage">
         <layout class="QHBoxLayout" name="horizontalLayout">

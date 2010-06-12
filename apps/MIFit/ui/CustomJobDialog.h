@@ -45,7 +45,7 @@ private slots:
     void saveToMenu();
 
 private:
-    QAbstractButton *_okButton;
+    QPushButton *_okButton;
 };
 
 #endif // ifndef CUSTOMJOBDIALOG_H
