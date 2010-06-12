@@ -24,6 +24,7 @@ private:
 private slots:
     void OnCustom();
     void OnUpdateForJobLimit();
+    void manageMenu();
 
 };
 

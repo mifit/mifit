@@ -139,7 +139,7 @@ QAction *BatchJobManager::customJobAction(const QString &menuName, const QString
     return jobAction;
 }
 
-void BatchJobManager::setupJobsMenu(QMenu *menu)
+void BatchJobManager::setupJobMenu(QMenu *menu)
 {
     QSettings *settings = MIGetQSettings();
     _customJobIndex = settings->beginReadArray("customJobs");
@@ -153,7 +153,25 @@ void BatchJobManager::setupJobsMenu(QMenu *menu)
         menu->addAction(jobAction);
     }
     settings->endArray();
+}
 
+void BatchJobManager::saveJobMenu(QMenu *menu)
+{
+    QSettings *settings = MIGetQSettings();
+    settings->beginWriteArray("customJobs");
+    int index = 0;
+    foreach (QAction *action, menu->actions())
+    {
+        if (action->isSeparator())
+            continue;
+        if (!action->data().isValid() || !action->data().canConvert<CustomJob>())
+            continue;
+
+        settings->setArrayIndex(index);
+        settings->setValue("job", action->data());
+        ++index;
+    }
+    settings->endArray();
 }
 
 void BatchJobManager::handleCustomJobAction()

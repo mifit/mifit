@@ -31,6 +31,7 @@
 #include "MIEventHandlerMacros.h"
 #include "MIGLWidget.h"
 #include "MIMainWindow.h"
+#include "PreferencesDialog.h"
 #include "molw.h"
 #include <script/LocalSocketScript.h>
 
@@ -158,9 +159,10 @@ void Tools::FillToolsMenu(QMenu *parent)
             this, SLOT(OnUpdateForJobLimit()));
 
     parent->addAction("Run Custom Job", this, SLOT(OnCustom()));
+    parent->addAction("Manage menu...", this, SLOT(manageMenu()));
     parent->addSeparator();
 
-    MIMainWindow::instance()->GetJobManager()->setupJobsMenu(parent);
+    MIMainWindow::instance()->GetJobManager()->setupJobMenu(parent);
 
     actions = parent->actions();
 }
@@ -185,4 +187,9 @@ Tools&Tools::instance()
 {
     static Tools _instance;
     return _instance;
+}
+
+void Tools::manageMenu()
+{
+    MIMainWindow::instance()->showPreferences(PreferencesDialog::CustomJobsPage);
 }

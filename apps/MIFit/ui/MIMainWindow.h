@@ -120,7 +120,10 @@ public:
     void setCurrentFile(const std::string &fname);
 
     QMenu *jobMenu() const;
+    void saveJobMenu();
     QString scriptPort() const;
+
+    void showPreferences(int page = 0);
 
 private slots:
     void OnClose();

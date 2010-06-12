@@ -74,7 +74,8 @@ public:
 
     int numberOfRunningJobs();
 
-    void setupJobsMenu(QMenu *menu);
+    void setupJobMenu(QMenu *menu);
+    void saveJobMenu(QMenu *menu);
 
 signals:
     void jobAdded(BatchJob*);

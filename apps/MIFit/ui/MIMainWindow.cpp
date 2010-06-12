@@ -786,7 +786,13 @@ void MIMainWindow::OnHelp()
 
 void MIMainWindow::OnPreferences()
 {
+    showPreferences();
+}
+
+void MIMainWindow::showPreferences(int page)
+{
     PreferencesDialog dlg(this);
+    dlg.setPage(page);
     if (dlg.exec() != QDialog::Accepted)
     {
         return;
@@ -2616,6 +2622,11 @@ void MIMainWindow::fillJobMenu()
 QMenu *MIMainWindow::jobMenu() const
 {
     return _jobMenu;
+}
+
+void MIMainWindow::saveJobMenu()
+{
+    GetJobManager()->saveJobMenu(_jobMenu);
 }
 
 void MIMainWindow::createLocalSocketScript()
