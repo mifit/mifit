@@ -28,6 +28,7 @@ def Usage():
     print "  --multi_search=yes or no  Try all pdb files in pdbin's directory? Default: no"   
     print "  --libfile                 The input library file.  Default: no file"
     print "  --fragfit=FILE            The fragfit file. Default: no file"
+    print "  --chemfit=FILE            The chemistry structure file. Default: no file"    
     print "  --frag_center=\"x y z\"     Center of the fragment. Default: none"
     print "  --mlwfile=FILE            Input session file for viewpoint. Default: none"
     print "  --pdbviewfile=FILE        Input PDB marker file for viewpoint. Default: none"
@@ -71,6 +72,7 @@ def Run(argv=None):
     multi_search = 'no'    
     libfile = 'none'
     fragfile = 'none'
+    chemfile = 'none'
     fragcenter = 'none'
     mlwfilein = 'none'
     pdbviewfile = 'none'
@@ -118,7 +120,7 @@ def Run(argv=None):
     optlist, args = getopt.getopt(
         args,'?',
         ['hklin=','workdir=','spacegroup_no=','reference_mtz=',
-         'pdbin=','multi_search=','libfile=','fragfit=',
+         'pdbin=','multi_search=','libfile=','fragfit=','chemfit=',
          'frag_center=','mlwfile=','pdbviewfile=','mifit=','bngsummary=',
          'sg_search=','molimagehome=','writemap=',
          'detector_constants=','process_engine=','help'])
@@ -155,6 +157,8 @@ def Run(argv=None):
                 libfile = param_value
             if arg_value=='--fragfit':
                 fragfile = param_value
+            if arg_value=='--chemfit':
+                chemfile = param_value
             if arg_value=='--frag_center':
                 fragcenter = param_value
             if arg_value=='--mlwfile':
@@ -256,27 +260,32 @@ def Run(argv=None):
         time.sleep(4)
         return 1
 
-    if not os.path.exists(libfile) and libfile != 'none':
+    if not os.path.exists(libfile) and os.path.basename(libfile) != 'none':
         print '\nThe input library file was not found\n'
         time.sleep(4)
         return 1
 
-    if not os.path.exists(referencemtz) and referencemtz != 'none':
+    if not os.path.exists(referencemtz) and os.path.basename(referencemtz) != 'none':
         print '\nThe input reference data file was not found\n'
         time.sleep(4)
         return 1
 
-    if not os.path.exists(fragfile) and fragfile != 'none' and fragfile != 'all':
+    if not os.path.exists(fragfile) and os.path.basename(fragfile) != 'none':
         print '\nThe input fragment coordinate file was not found\n'
         time.sleep(4)
         return 1
 
-    if not os.path.exists(mlwfilein) and mlwfilein != 'none':
+    if not os.path.exists(chemfile) and os.path.basename(chemfile) != 'none':
+        print '\nThe input chemistry structure file was not found\n'
+        time.sleep(4)
+        return 1
+
+    if not os.path.exists(mlwfilein) and os.path.basename(mlwfilein) != 'none':
         print '\nThe input session file was not found\n'
         time.sleep(4)
         return 1
 
-    if not os.path.exists(bngsummary) and bngsummary != 'none':
+    if not os.path.exists(bngsummary) and os.path.basename(bngsummary) != 'none':
         print '\nThe directory for the BNG job summary was not found\n'
         time.sleep(4)
         return 1
@@ -461,7 +470,7 @@ def Run(argv=None):
 
     file_tag_max = 0
 
-    if bngsummary != 'none':
+    if os.path.basename(bngsummary) != 'none':
 
         bngsummaryfile = os.path.join(bngsummary,bngsummaryname)
 
@@ -1073,9 +1082,12 @@ def Run(argv=None):
             # Automated ligand-fitting subscripts may be invoked here     #
             ###############################################################
 
+            # Example script for this option uses FFFEAR to perform 6D search with a single i/p ligand conformation
+            
             if fragcenter != 'none' and fragfile != 'none':
 
-                print '\nAUTOMATED LIGAND FITTING'               
+                print '\nRIGID-BODY LIGAND FITTING'
+                print 'This option uses the example script: mi_ligandfit.py'
 
                 # Obtain paths to the last coordinate file and last data file
 
@@ -1094,12 +1106,12 @@ def Run(argv=None):
                         mtzout = mtzout.strip()
 
                 if pdbfile == 'none':
-                    print '\nPDB file for session file was not found\n'
+                    print '\nPDB file for rigid-body ligand fitting was not found\n'
                     time.sleep(4)
                     return 1
 
                 if mtzout == 'none':
-                    print '\nMTZ file for session file was not found\n'
+                    print '\nMTZ file for rigid-body ligand fitting was not found\n'
                     time.sleep(4)
                     return 1
 
@@ -1110,17 +1122,13 @@ def Run(argv=None):
                 ############################################################################
                 # Run the ligand-fitting routine                                           #
                 # Ligand-fitting routines usually need:                                    #
-                #  pdbfile = the path to current model                                     #
+                #  pdbfile = the path to current protein model                             #
                 #  mtzout = the path to phased diffraction data from REFMAC                #
-                #  workingdir = the path to working directory                              #
-                #  fragcenter = approx x,y,z coordinates for ligand                       #
+                #  workingdir = the path to the working directory                          #
+                #  fragcenter = approx x,y,z coordinates for ligand                        #
                 #  fragfile = the path to an input 3D model of ligand                      #
                 #  pdbfileout = the path to o/p coordinates of protein with fitted ligand  #
                 ############################################################################
-
-                # Example script using FFFEAR to perform 6D search with single i/pligand conformation
-
-                print 'Example script mi_ligandfit.py only performs search on the input conformer'
 
                 tmpargs=[]
                 tmpargs.append("ligandfit")
@@ -1138,6 +1146,13 @@ def Run(argv=None):
                 tmpargs.append(pdbfileout)
                 import mi_ligandfit
                 mi_ligandfit.Run(tmpargs)
+
+            # User may supply script/technology here, with inputs patterned on the rigid-body exemple        
+
+            if fragcenter != 'none' and chemfile != 'none':
+
+                print '\nFLEXIBLE LIGAND FITTING'
+                print 'This option requires a user-supplied script to be called from mi_bng.py'
 
             #########################################################
             # Setup crystal and data files for interactive graphics #

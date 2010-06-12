@@ -4,7 +4,7 @@ import mifit
 
 
 class BindNGrindDialog(QtGui.QDialog):
-    def __init__(self, spaceGroupList=None, resList=None, parent=None):
+    def __init__(self, spaceGroupList=None, parent=None):
         super(BindNGrindDialog, self).__init__(parent)
 
         config = {
@@ -20,10 +20,10 @@ class BindNGrindDialog(QtGui.QDialog):
             'viewpoint_method': '',
             'viewpoint_coordinates': [],
             'viewpoint_file': '',
-            'bngsummary': '',
+            'bngsummary': '',           
             'place_ligand': False,
             'ligand_name': '',
-            'ligand_from_dictionary': False,
+            'chem_name': ''
         }
         settings = QtCore.QSettings("MIFit", "MIExpert")
         appSettings = settings.value("bng").toString()
@@ -38,12 +38,6 @@ class BindNGrindDialog(QtGui.QDialog):
             for i in spaceGroupList:
                 self.spaceGroupComboBox.addItem(i)
             self.spaceGroupComboBox.setCurrentIndex(0)
-
-        if resList:
-            for i in resList:
-                self.dictionaryComboBox.addItem(i)
-            self.dictionaryComboBox.setCurrentIndex(0)
-
 
         for item in config['hklin']:
             self.intensityDataListWidget.addItem(item)
@@ -91,13 +85,11 @@ class BindNGrindDialog(QtGui.QDialog):
 
         if config['place_ligand']:
             self.placeLigandPDBGroupBox.setChecked(True)
-            if config['ligand_from_dictionary']:
-                self.dictionaryRadioButton.setChecked(True)
-                self.dictionaryComboBox.setCurrentText(config['ligand_name'])
-            #elif config['ligand_name'] == 'all':
-            #    self.fromLigandsDirectoryRadioButton.setChecked(True)
+
+            if self.chemFileRadioButton.setChecked(True):
+                self.chemFileLineEdit.setText(config['chem_name'])
             else:
-                self.ligandFileCheckBox.setChecked(True)
+                self.ligandFileRadioButton.setChecked(True)
                 self.ligandFileLineEdit.setText(config['ligand_name'])
 
         self.timer = QtCore.QTimer(self)
@@ -130,7 +122,9 @@ class BindNGrindDialog(QtGui.QDialog):
 
     @QtCore.pyqtSlot()
     def on_htmlSummaryPushButton_clicked(self):
-        self.browseFile(self.htmlSummaryLineEdit, "")
+        dir = QtGui.QFileDialog.getExistingDirectory(None, "", self.htmlSummaryLineEdit.text())
+        if not dir.isEmpty():
+            self.htmlSummaryLineEdit.setText(dir)
 
     @QtCore.pyqtSlot()
     def on_dictionaryCIFPushButton_clicked(self):
@@ -147,6 +141,10 @@ class BindNGrindDialog(QtGui.QDialog):
     @QtCore.pyqtSlot()
     def on_ligandFilePushButton_clicked(self):
         self.browseFile(self.ligandFileLineEdit, "PDB Files (*.pdb *.ent)")
+
+    @QtCore.pyqtSlot()
+    def on_chemFilePushButton_clicked(self):
+        self.browseFile(self.chemFileLineEdit, "Chemistry Files (*.sdf *.sd *.mol *.cif)")       
 
     @QtCore.pyqtSlot()
     def on_addPushButton_clicked(self):
@@ -212,7 +210,7 @@ class BindNGrindDialog(QtGui.QDialog):
             somethingRequired = somethingRequired or thisRequired
 
             if self.placeLigandPDBGroupBox.isChecked():
-                thisRequired = self.ligandFileCheckBox.isChecked() and not QtCore.QFile.exists(self.ligandFileLineEdit.text())
+                thisRequired = self.ligandFileRadioButton.isChecked() and not QtCore.QFile.exists(self.ligandFileLineEdit.text())
                 self.markRequired(self.ligandFileLineEdit, thisRequired)
                 somethingRequired = somethingRequired or thisRequired
 
@@ -236,10 +234,10 @@ class BindNGrindDialog(QtGui.QDialog):
             'viewpoint_method': '',
             'viewpoint_coordinates': [],
             'viewpoint_file': '',
-            'bngsummary': '',
+            'bngsummary': '',          
             'place_ligand': False,
             'ligand_name': '',
-            'ligand_from_dictionary': False,
+            'chem_name':''
         }
 
         config['hklin'] = []
@@ -279,7 +277,9 @@ class BindNGrindDialog(QtGui.QDialog):
                 config['viewpoint_method'] = 'coordinates'
                 config['viewpoint_coordinates'] = [
                     str(self.xSpinBox.text()),
+                    ' ',
                     str(self.ySpinBox.text()),
+                    ' ',
                     str(self.zSpinBox.text()) ]
 
             elif self.sessionFileRadioButton.isChecked():
@@ -292,11 +292,11 @@ class BindNGrindDialog(QtGui.QDialog):
 
         if self.placeLigandPDBGroupBox.isChecked():
             config['place_ligand'] = True
-            if self.dictionaryRadioButton.isChecked():
-                config['ligand_from_dictionary'] = str(self.dictionaryComboBox.currentText())
-            #elif self.fromLigandsDirectoryRadioButton.isChecked():
-            #    config['ligand_name'] = 'all'
-            elif self.ligandFileCheckBox.isChecked():
+            
+            if self.chemFileRadioButton.isChecked():
+                config['chem_name'] = str(self.chemFileLineEdit.text())                
+                
+            elif self.ligandFileRadioButton.isChecked():
                 config['ligand_name'] = str(self.ligandFileLineEdit.text())
 
 
@@ -328,20 +328,27 @@ class BindNGrindDialog(QtGui.QDialog):
 
         args += [ "--libfile", str(QtCore.QFileInfo(config['libfile']).absoluteFilePath()) ]
 
-        args += [ config['viewpoint_method'] ]
+        if len(config['viewpoint_method']) > 0:
+        
+            if config['viewpoint_method'] == 'coordinates':
+                args += [ '--frag_center', config['viewpoint_coordinates'] ]
+            
+            if config['viewpoint_method'] == 'mlw':
+                args += [ '--mlwfile', str(QtCore.QFileInfo(config['viewpoint_file']).absoluteFilePath()) ]
+
+            if config['viewpoint_method'] == 'pdbview':
+                args += [ '--pdbviewfile', str(QtCore.QFileInfo(config['viewpoint_file']).absoluteFilePath())]               
 
         if len(config['bngsummary']) > 0:
-            args += [ '--bngsummary', str(QtCore.QFileInfo(config['bngsummary']).absoluteFilePath()) ]
+            args += [ '--bngsummary', str(QtCore.QFileInfo(config['bngsummary']).absoluteFilePath()) ]           
 
         args += [ '--mifit', 'no' ]
 
         if config['place_ligand'] and len(config['viewpoint_method']) > 0:
-            if config['ligand_from_dictionary']:
-                # Get ligand_name from MIFit and write to dictlig.pdb
-                lig = 'dictlig.pdb'
+            if self.chemFileRadioButton.isChecked():
+                args += [ '--chemfit', config['chem_name'] ]                
             else:
-                lig = config['ligand_name']
-            args += [ '--fragfit', lig ]
+                args += [ '--fragfit', config['ligand_name'] ]
 
 
         result = subprocess.call(args)
@@ -353,9 +360,8 @@ if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
 
     sgList = mifit.spacegroupList()
-    resList = mifit.dictionaryResidueList()
-
-    dialog = BindNGrindDialog(sgList, resList)
+ 
+    dialog = BindNGrindDialog(sgList)    
 
     if dialog.exec_():
         dialog.runJob()

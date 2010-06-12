@@ -305,13 +305,13 @@ def Run(argv=None):
         return 1
 
     fileexists = os.path.exists(libfile)
-    if fileexists == 0 and libfile != 'none':
+    if fileexists == 0 and os.path.basename(libfile) != 'none':
         print 'The library file was not found ',libfile
         time.sleep(4)
         return 1                    
 
     fileexists = os.path.exists(tlsfile)
-    if fileexists == 0 and tlsfile != 'none':
+    if fileexists == 0 and os.path.basename(tlsfile) != 'none':
         print 'The TLS specification file was not found ',tlsfile
         time.sleep(4)
         return 1
@@ -903,7 +903,7 @@ def Run(argv=None):
 
     # Copy library file (if any) to temp area. REFMAC5 read requires a full path.
 
-    if libfile != 'none':
+    if os.path.basename(libfile) != 'none':
 
         file = open(libfile,'r')
         allLines = file.readlines()
@@ -1169,7 +1169,7 @@ def Run(argv=None):
         print 'Job-ID:',job_id
         print 'Using mtz data:',flabel,',',sigflabel,',',rfreelabel
 
-        if libfile != 'none':
+        if os.path.basename(libfile) != 'none':
             print 'Using library file:',libfile
 
         # REFMAC specific file names
@@ -1181,7 +1181,7 @@ def Run(argv=None):
 
         # Establish TLS file
 
-        if tlsfile != 'none':
+        if os.path.basename(tlsfile) != 'none':
 
             file = open(tlsfile,'r')
             allLines = file.readlines()
@@ -1233,7 +1233,7 @@ def Run(argv=None):
 
         # TLS option - set uniform B, establish TLS then refine residual B-factors
 
-        if tlsfile != 'none':
+        if os.path.basename(tlsfile) != 'none':
             file.write('REFI TLSC 20\n')
             file.write('BFAC SET 30.0\n')
 
@@ -1278,7 +1278,7 @@ def Run(argv=None):
 
             print 'Refining'
 
-            if libfile == 'none':
+            if os.path.basename(libfile) == 'none':
                 runrefine = 'refmac5 HKLIN mi_refine.mtz XYZIN mi_refine.pdb XYZOUT mi_refine_out.pdb HKLOUT '\
                             + filename_mtz + tls_files + ' < ' + filename_in + ' > ' + filename_log
             else:
@@ -1568,7 +1568,7 @@ def Run(argv=None):
             time.sleep(4)
             return 1
 
-        if libfile != 'none':
+        if os.path.basename(libfile) != 'none':
             print 'Using library file:',libfile
 
             filelib = open(libfile,'r')
@@ -1771,7 +1771,7 @@ def Run(argv=None):
 
                     # Insert any extra restraints
 
-                    if libfile != 'none':
+                    if os.path.basename(libfile) != 'none':
                         for eachLibline in allLiblines:
                             file.write(eachLibline)
 
