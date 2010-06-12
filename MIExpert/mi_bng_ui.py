@@ -35,15 +35,13 @@ class BindNGrindDialog(QtGui.QDialog):
 
         if spaceGroupList:
             self.spaceGroupComboBox.addItem('Unchanged')
-            sg = spaceGroupList.split(',')
-            for i in sg:
+            for i in spaceGroupList:
                 self.spaceGroupComboBox.addItem(i)
             self.spaceGroupComboBox.setCurrentIndex(0)
 
         if resList:
-            res = resList.split(',')
-            for i in range(0, res.count()):
-                self.dictionaryComboBox.addItem(res[i])
+            for i in resList:
+                self.dictionaryComboBox.addItem(i)
             self.dictionaryComboBox.setCurrentIndex(0)
 
 

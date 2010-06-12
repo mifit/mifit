@@ -15,22 +15,19 @@ public:
     MIFitScriptObject(QScriptEngine *engine, QObject *parent = 0);
 
     void setJobMenu(QMenu *jobMenu);
-    void setScriptPort(const QString &scriptPort);
 
 public slots:
     QString version();
     QString directory();
-    QString scriptPort();
     bool writeCurrentModel(const QString &file);
     QStringList dictionaryResidueList();
     QStringList spacegroupList();
-    void addJob(const QString &menuName, const QString &jobName, const QString &executable, const QStringList &arguments);
+    void addJob(const QString &menuName, const QString &jobName, const QString &executable, const QStringList &arguments, const QString &workingDirectory);
     void setJobWorkDir(const QString &jobId, const QString &workDir);
 
 private:
     QScriptEngine *engine;
     QMenu *jobMenu;
-    QString scriptPort_;
 };
 
 #endif // ifndef script_MIFitScriptObject_h

@@ -49,6 +49,7 @@
 #include "ui/AtomColors.h"
 #include "ui/BValueColors.h"
 #include "CurrentMIGLWidgetAction.h"
+#include "script/LocalSocketScript.h"
 
 #ifdef _WIN32
 #include <images/mifit_icon_32x32.xpm>
@@ -519,7 +520,8 @@ MIMainWindow::MIMainWindow()
       logDock(NULL),
       ramaDock(NULL),
       logWindow(NULL),
-      solidSurfMenuAction(NULL)
+      solidSurfMenuAction(NULL),
+      _scriptSocket(NULL)
 {
 
     _instance = this;
@@ -1307,7 +1309,7 @@ void MIMainWindow::OnSaveDict()
     Application::instance()->saveDict();
 }
 
-BatchJobManager*MIMainWindow::GetJobManager()
+BatchJobManager *MIMainWindow::GetJobManager()
 {
     return JobManager;
 }
@@ -2274,8 +2276,8 @@ void MIMainWindow::createMenus()
     menu_bar->Append(analyze_menu, "&Analyze");
 
     JobManager = new BatchJobManager();
-    QMenu *job_menu = menuBar()->addMenu("&Job");
-    Tools::instance().FillToolsMenu(job_menu);
+    _jobMenu = menuBar()->addMenu("&Job");
+    QTimer::singleShot(0, this, SLOT(fillJobMenu()));
 
 
     hide_menu = new MIMenu(*this);
@@ -2604,3 +2606,33 @@ void MIMainWindow::updateRenderMenu()
     }
     renderLineThicknessMenu_->setEnabled(lineThicknessEnabled);
 }
+
+void MIMainWindow::fillJobMenu()
+{
+    createLocalSocketScript();
+    Tools::instance().FillToolsMenu(_jobMenu);
+}
+
+QMenu *MIMainWindow::jobMenu() const
+{
+    return _jobMenu;
+}
+
+void MIMainWindow::createLocalSocketScript()
+{
+    _scriptSocket = new LocalSocketScript(this);
+}
+
+QString MIMainWindow::scriptPort() const
+{
+    if (_scriptSocket)
+        return _scriptSocket->name();
+    return QString::null;
+}
+
+void MIMainWindow::addJob(const QString &menuName, const QString &jobName, const QString &executable, const QStringList &arguments, const QString &workingDirectory)
+{
+    QAction *jobAction = GetJobManager()->customJobAction(menuName, jobName, executable, arguments, workingDirectory);
+    jobMenu()->addAction(jobAction);
+}
+

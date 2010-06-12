@@ -22,6 +22,7 @@ class GLOverviewCanvas;
 class BatchJobManager;
 class RamaPlotMgr;
 class DependantActions;
+class LocalSocketScript;
 
 namespace chemlib
 {
@@ -80,6 +81,9 @@ public slots:
     void MiddleFooter(const std::string &str);
     void LeftFooter(const std::string &str, int timeout = 0);
     void UpdateToolBar();
+    void addJob(const QString &menuName, const QString &jobName,
+                const QString &executable, const QStringList &arguments,
+                const QString &workingDirectory);
 
 public:
     MIGLWidget *currentMIGLWidget();
@@ -114,6 +118,9 @@ public:
 
     void addRecentFileActions(QMenu*);
     void setCurrentFile(const std::string &fname);
+
+    QMenu *jobMenu() const;
+    QString scriptPort() const;
 
 private slots:
     void OnClose();
@@ -181,6 +188,10 @@ private slots:
 
     void setRenderLineThickness(int thickness);
     void updateRenderMenu();
+
+    void fillJobMenu();
+
+    void createLocalSocketScript();
 
 private:
     enum { MaxRecentFiles = 6 };
@@ -268,9 +279,12 @@ private:
     RamaPlotMgr *ramaPlotMgr;
 
     QMenu *renderLineThicknessMenu_;
+    QMenu *_jobMenu;
 
     QAction *_hardwareStereoAction;
     QAction *_stereoToggleAction;
+
+    LocalSocketScript* _scriptSocket;
 };
 
 //some shortcuts for MIMainWindow::instance()->Log, etc

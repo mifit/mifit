@@ -9,8 +9,12 @@ associated MIFit session. This will be the case for
 scripts run from the MIFit Jobs menu.
 """
 
+socketId = None
 mifitDir = None
 shelxDir = None
+
+if 'MIFIT_SOCKET_ID' in os.environ.keys():
+    socketId = os.environ['MIFIT_SOCKET_ID']
 
 if 'MIFIT_DIR' in os.environ.keys():
     mifitDir = os.environ['MIFIT_DIR']
@@ -21,7 +25,7 @@ if 'SHELX_DIR' in os.environ.keys():
 
 def exec_script(script):
     """Executes the given script in the associated MIFit session"""
-    socketId = os.environ['MIFIT_SOCKET_ID']
+    global socketId
     result = None
     sock = QtNetwork.QLocalSocket()
     sock.connectToServer(socketId)
@@ -53,21 +57,28 @@ def exec_script(script):
 
         sock.close()
     else:
-        print 'error connecting to local socket', sys.argv[1]
+        print 'error connecting to local socket', socketId
     sock = None
     return result
 
 def version():
     """Returns the version of MIFit"""
-    return exec_script("mifit.version()")
+    return str(exec_script("mifit.version"))
 
 def directory():
     """Returns the installation directory for MIFit"""
-    return exec_script("mifit.directory()")
+    return str(exec_script("mifit.directory()"))
 
 def scriptPort():
     """Returns the identifier for the local sockect port used for interaction with MIFit"""
-    return os.environ['MIFIT_SOCKET_ID']
+    global socketId
+    return socketId
+
+def setScriptPort(id):
+    """Sets the identifier for the local sockect port used for interaction with MIFit.
+Usually this will be obtained automatically from the MIFIT_SOCKET_ID environment variable."""
+    global socketId
+    socketId = id
 
 def setJobWorkDir(dir):
     """Sets the working directory for the current job (when the script is run from MIFit)"""
@@ -80,9 +91,20 @@ def writeCurrentModel(file):
 
 def dictionaryResidueList():
     """Returns the dictionary residue list from MIFit"""
-    return exec_script("mifit.dictionaryResidueList()")
+    result = exec_script("mifit.dictionaryResidueList()")
+    if result:
+        return str(result).split(',')
+    return None
 
 def spacegroupList():
     """Returns the spacegroup list from MIFit"""
-    return exec_script("mifit.spacegroupList()")
+    result = exec_script("mifit.spacegroupList()")
+    if result:
+        return str(result).split(',')
+    return None
 
+def addJob(menuName, jobName, executable, arguments, workingDirectory):
+    """Adds a new custom job to the MIFit Job menu"""
+    args = "[ '" + "', '".join(arguments) + "' ]"
+    script = "mifit.addJob('%s', '%s', '%s', %s, '%s')" % (menuName, jobName, executable, args, workingDirectory)
+    exec_script(script)

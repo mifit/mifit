@@ -51,9 +51,8 @@ class MolRepDialog(QtGui.QDialog):
 
         spaceGroupList = mifit.spacegroupList()
         if spaceGroupList:
-            sg = spaceGroupList.split(',')
             self.spaceGroupComboBox.clear()
-            for i in sg:
+            for i in spaceGroupList:
                 self.spaceGroupComboBox.addItem(i)
             self.spaceGroupComboBox.setCurrentIndex(-1)
 

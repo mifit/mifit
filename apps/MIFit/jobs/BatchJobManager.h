@@ -8,6 +8,7 @@
 
 class BatchJob;
 class QAction;
+class QMenu;
 
 /**
  * Runs a batch job in the background.
@@ -19,6 +20,7 @@ class BatchJobManager : public QObject
     Q_OBJECT
 
     std::vector<BatchJob*> JobList;
+    uint _customJobIndex;
 
 public:
     void ShowLogFile(BatchJob *b);
@@ -36,7 +38,7 @@ public:
 
     QAction *customJobAction(const QString &menuName, const QString &jobName,
                              const QString &executable, const QStringList &arguments,
-                             const QString &scriptPort);
+                             const QString &workingDirectory);
 
     /**
      * Returns a pointer to the ith job in the list (indexed from 0).
@@ -71,6 +73,8 @@ public:
     void CleanAll();
 
     int numberOfRunningJobs();
+
+    void setupJobsMenu(QMenu *menu);
 
 signals:
     void jobAdded(BatchJob*);

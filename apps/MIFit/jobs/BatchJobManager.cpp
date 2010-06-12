@@ -3,6 +3,7 @@
 #include <QDir>
 #include <QFile>
 #include <QFileDialog>
+#include <QMenu>
 #include <QSettings>
 #include "ui/Application.h"
 #include "BatchJob.h"
@@ -62,24 +63,42 @@ static QString pythonExe()
 
 struct CustomJob
 {
+    QString menuName;
     QString jobName;
     QString executable;
     QStringList arguments;
-    QString scriptPort;
+    QString workingDirectory;
 
     CustomJob()
     {
     }
 
-    CustomJob(const QString &jobName, const QString &executable, const QStringList &arguments,
-              const QString& scriptPort)
-        : jobName(jobName),
+    CustomJob(const QString &menuName, const QString &jobName, const QString &executable, const QStringList &arguments, const QString &workingDirectory)
+        : menuName(menuName),
+          jobName(jobName),
           executable(executable),
           arguments(arguments),
-          scriptPort(scriptPort)
+          workingDirectory(workingDirectory)
     {
     }
+
+    friend QDataStream &operator<<(QDataStream &out, const CustomJob &job);
+    friend QDataStream &operator>>(QDataStream &in, CustomJob &job);
 };
+
+QDataStream &operator<<(QDataStream &out, const CustomJob &job)
+{
+    out << job.menuName << job.jobName << job.executable << job.arguments
+            << job.workingDirectory;
+    return out;
+}
+
+QDataStream &operator>>(QDataStream &in, CustomJob &job)
+{
+    in >> job.menuName >> job.jobName >> job.executable >> job.arguments
+            >> job.workingDirectory;
+    return in;
+}
 
 Q_DECLARE_METATYPE(CustomJob);
 
@@ -87,6 +106,7 @@ Q_DECLARE_METATYPE(CustomJob);
 BatchJobManager::BatchJobManager()
 {
     qRegisterMetaType<CustomJob>("CustomJob");
+    qRegisterMetaTypeStreamOperators<CustomJob>("CustomJob");
 }
 
 BatchJobManager::~BatchJobManager()
@@ -100,14 +120,40 @@ BatchJobManager::~BatchJobManager()
     }
 }
 
-QAction*BatchJobManager::customJobAction(const QString &menuName, const QString &jobName,
+QAction *BatchJobManager::customJobAction(const QString &menuName, const QString &jobName,
                                          const QString &executable, const QStringList &arguments,
-                                         const QString &scriptPort)
+                                         const QString &workingDirectory)
 {
+    CustomJob customJob(menuName, jobName, executable, arguments, workingDirectory);
     QAction *jobAction = new QAction(menuName, this);
-    jobAction->setData(QVariant::fromValue(CustomJob(jobName, executable, arguments, scriptPort)));
+    jobAction->setData(QVariant::fromValue(customJob));
     connect(jobAction, SIGNAL(triggered()), this, SLOT(handleCustomJobAction()));
+
+    QSettings *settings = MIGetQSettings();
+    settings->beginWriteArray("customJobs");
+    settings->setArrayIndex(_customJobIndex);
+    settings->setValue("job", QVariant::fromValue(customJob));
+    ++_customJobIndex;
+    settings->endArray();
+
     return jobAction;
+}
+
+void BatchJobManager::setupJobsMenu(QMenu *menu)
+{
+    QSettings *settings = MIGetQSettings();
+    _customJobIndex = settings->beginReadArray("customJobs");
+    for (int i = 0; i < _customJobIndex; ++i)
+    {
+        settings->setArrayIndex(i);
+        CustomJob job = settings->value("job").value<CustomJob>();
+        QAction *jobAction = new QAction(job.menuName, this);
+        jobAction->setData(QVariant::fromValue(job));
+        connect(jobAction, SIGNAL(triggered()), this, SLOT(handleCustomJobAction()));
+        menu->addAction(jobAction);
+    }
+    settings->endArray();
+
 }
 
 void BatchJobManager::handleCustomJobAction()
@@ -128,11 +174,11 @@ void BatchJobManager::handleCustomJobAction()
         job->setProgram(customJob.executable);
     }
     job->setArguments(customJob.arguments);
-    job->setScriptPort(customJob.scriptPort);
+    job->setWorkingDirectory(customJob.workingDirectory);
     job->StartJob();
 }
 
-BatchJob*BatchJobManager::CreateJob()
+BatchJob *BatchJobManager::CreateJob()
 {
     BatchJob *job = new BatchJob;
     JobList.push_back(job);

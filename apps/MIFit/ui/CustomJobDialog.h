@@ -40,6 +40,9 @@ public:
 
 private slots:
     void validateTimeout();
+    void showControls();
+    void updateSaveButton();
+    void saveToMenu();
 
 private:
     QAbstractButton *_okButton;

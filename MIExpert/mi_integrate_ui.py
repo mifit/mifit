@@ -43,8 +43,7 @@ class IntegrateDialog(QtGui.QDialog):
         self.spaceGroupComboBox.clear()
         sgList = mifit.spacegroupList()
         if sgList:
-            sg = sgList.split(',')
-            for i in sg:
+            for i in sgList:
                 self.spaceGroupComboBox.addItem(i)
             self.spaceGroupComboBox.setCurrentIndex(self.data["spacegroup_no"] - 1)
 

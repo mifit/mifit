@@ -51,7 +51,6 @@ BatchJob::~BatchJob()
     {
         QFile::remove(logFile);
     }
-    delete process;
 }
 
 void BatchJob::setJobId()
@@ -73,7 +72,7 @@ bool BatchJob::StartJob()
     QStringList env = QProcess::systemEnvironment();
     env += QString("MIFIT_DIR=") + Application::instance()->GetMolimageHome().c_str();
     env += QString("MIFIT_JOB_ID=") + QString::number(jobId_);
-    env += QString("MIFIT_SOCKET_ID=") + scriptPort_;
+    env += QString("MIFIT_SOCKET_ID=") + MIMainWindow::instance()->scriptPort();
     process->setEnvironment(env);
 
     connect(process, SIGNAL(finished(int)),
@@ -250,11 +249,6 @@ QStringList BatchJob::parseArgs(const QString &program)
 void BatchJob::setArguments(const QString &arguments)
 {
     arguments_ = parseArgs(arguments);
-}
-
-void BatchJob::setScriptPort(const QString &scriptPort)
-{
-    scriptPort_ = scriptPort;
 }
 
 void BatchJob::setCommandLine(const QString &command)

@@ -2,6 +2,8 @@
 #include "MIBrowsePair.h"
 
 #include "core/corelib.h"
+#include "MIMainWindow.h"
+#include "jobs/BatchJob.h"
 #include <map/maplib.h>
 
 #include <vector>
@@ -19,6 +21,10 @@ CustomJobDialog::CustomJobDialog(QWidget *parent)
     : MIQDialog(parent)
 {
     setupUi(this);
+
+    connect(saveToMenuButton, SIGNAL(clicked()), this, SLOT(showControls()));
+    connect(menuItemName, SIGNAL(textEdited(QString)), this, SLOT(updateSaveButton()));
+    connect(saveButton, SIGNAL(clicked()), this, SLOT(saveToMenu()));
 
     new MIBrowsePair(commandPushButton, commandLineEdit, "Command file (*.* *)");
     new MIBrowsePair(workingDirPushButton, workingDirLineEdit, "", true);
@@ -139,4 +145,23 @@ QString CustomJobDialog::modelFile() const
 QString CustomJobDialog::dataFile() const
 {
     return dataLineEdit->text();
+}
+
+void CustomJobDialog::showControls()
+{
+    stackedWidget->setCurrentIndex(1);
+}
+
+void CustomJobDialog::updateSaveButton()
+{
+    saveButton->setEnabled(!menuItemName->text().isEmpty() && _okButton->isEnabled());
+}
+
+void CustomJobDialog::saveToMenu()
+{
+    MIMainWindow::instance()->addJob(menuItemName->text(),
+                                     jobName(),
+                                     program(),
+                                     BatchJob::parseArgs(arguments()),
+                                     workingDirectory());
 }

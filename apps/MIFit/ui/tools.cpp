@@ -154,37 +154,13 @@ void Tools::OnCustom()
 
 void Tools::FillToolsMenu(QMenu *parent)
 {
-
     connect(parent, SIGNAL(aboutToShow()),
             this, SLOT(OnUpdateForJobLimit()));
 
     parent->addAction("Run Custom Job", this, SLOT(OnCustom()));
     parent->addSeparator();
 
-    static LocalSocketScript scriptSocket;
-    std::auto_ptr<QScriptEngine> engine(new QScriptEngine);
-    MIFitScriptObject *mifitObject = new MIFitScriptObject(engine.get(), this);
-    mifitObject->setJobMenu(parent);
-    mifitObject->setScriptPort(scriptSocket.name());
-    QScriptValue objectValue = engine->newQObject(mifitObject);
-    engine->globalObject().setProperty("mifit", objectValue);
-
-    QFile jobsJsFile(Application::instance()->GetMolimageHome().c_str() + QString("/jobs.js"));
-    if (jobsJsFile.open(QIODevice::ReadOnly))
-    {
-        QString script = jobsJsFile.readAll();
-        QScriptValue scriptResult = engine->evaluate(script, "jobs.js");
-        if (engine->hasUncaughtException())
-        {
-            QScriptValue exception = engine->uncaughtException();
-            int lineNumber = engine->uncaughtExceptionLineNumber();
-            QStringList backtrace = engine->uncaughtExceptionBacktrace();
-            QString result = QString("Exception %1 on line %2\n\t%3")
-                             .arg(exception.toString()).arg(lineNumber)
-                             .arg(backtrace.join("\n\t"));
-            Logger::log(result.toStdString());
-        }
-    }
+    MIMainWindow::instance()->GetJobManager()->setupJobsMenu(parent);
 
     actions = parent->actions();
 }

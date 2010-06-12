@@ -9,7 +9,8 @@
 
 MIFitScriptObject::MIFitScriptObject(QScriptEngine *engine, QObject *parent)
     : QObject(parent),
-      engine(engine)
+      engine(engine),
+      jobMenu(NULL)
 {
 }
 
@@ -26,16 +27,6 @@ QString MIFitScriptObject::version()
 QString MIFitScriptObject::directory()
 {
     return Application::instance()->GetMolimageHome().c_str();
-}
-
-QString MIFitScriptObject::scriptPort()
-{
-    return scriptPort_;
-}
-
-void MIFitScriptObject::setScriptPort(const QString &scriptPort)
-{
-    scriptPort_ = scriptPort;
 }
 
 bool MIFitScriptObject::writeCurrentModel(const QString &file)
@@ -82,10 +73,9 @@ QStringList MIFitScriptObject::spacegroupList()
     return result;
 }
 
-void MIFitScriptObject::addJob(const QString &menuName, const QString &jobName, const QString &executable, const QStringList &arguments)
+void MIFitScriptObject::addJob(const QString &menuName, const QString &jobName, const QString &executable, const QStringList &arguments, const QString &workingDirectory)
 {
-    QAction *jobAction = MIMainWindow::instance()->GetJobManager()->customJobAction(menuName, jobName, executable, arguments, scriptPort_);
-    jobMenu->addAction(jobAction);
+    MIMainWindow::instance()->addJob(menuName, jobName, executable, arguments, workingDirectory);
 }
 
 void MIFitScriptObject::setJobWorkDir(const QString &jobId, const QString &workDir)
