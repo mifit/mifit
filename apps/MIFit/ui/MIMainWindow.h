@@ -85,6 +85,8 @@ public slots:
                 const QString &executable, const QStringList &arguments,
                 const QString &workingDirectory);
 
+    void runPythonScript(const std::string &file);
+
 public:
     MIGLWidget *currentMIGLWidget();
     QMdiArea *getMdiArea();

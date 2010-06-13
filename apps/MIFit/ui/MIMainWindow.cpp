@@ -654,7 +654,7 @@ static void initializeFileDialog()
     if (fileDialog == NULL)
     {
         fileDialog = new QFileDialog(0, "Open File(s)", "",
-                                     "Recognized files (*.mlw *.pdb *.mtz *.phs *.fcf *.cif *.map);;"
+                                     "Recognized files (*.mlw *.pdb *.mtz *.phs *.fcf *.cif *.map *.py);;"
                                      "MIFit session files (*.mlw);;"
                                      "PDB files (*.pdb);;"
                                      "MTZ files (*.mtz);;"
@@ -664,6 +664,7 @@ static void initializeFileDialog()
                                      "CIF files (*.cif);;"
 //        "Reflection files (*.ref);;"
                                      "Map files (*.map);;"
+                                     "Python scripts (*.py);;"
                                      "All files (*.*)");
         fileDialog->setFileMode(QFileDialog::ExistingFiles);
     }
@@ -1437,7 +1438,8 @@ static bool is_valid_extension(const char *ext)
                // || (strcmp(ext, ".sca") == 0)
                // || (strcmp(ext, ".ref") == 0)
             strcmp(ext, ".cif") == 0
-            || strcmp(ext, ".map") == 0);
+            || strcmp(ext, ".map") == 0
+            || strcmp(ext, ".py") == 0);
 }
 
 
@@ -1450,7 +1452,8 @@ void MIMainWindow::OpenFiles(const std::vector<std::string> &files, bool newWin)
 
     for (size_t i = 0; i<files.size(); ++i)
     {
-        const char *arg = files[i].c_str();
+        const std::string &file = files[i];
+        const char *arg = file.c_str();
 
         if (arg[0] == '-')
         {
@@ -1475,6 +1478,13 @@ void MIMainWindow::OpenFiles(const std::vector<std::string> &files, bool newWin)
             Log(::format("Unknown file type %s, ingoring.", arg));
             continue;
         }
+
+        if (strcmp(ext, ".py") == 0)
+        {
+            runPythonScript(file);
+            continue;
+        }
+
 
         if (!currentMIGLWidget())
             newWindow();
@@ -2647,3 +2657,11 @@ void MIMainWindow::addJob(const QString &menuName, const QString &jobName, const
     jobMenu()->addAction(jobAction);
 }
 
+void MIMainWindow::runPythonScript(const std::string &file)
+{
+    BatchJob *pythonJob = GetJobManager()->CreateJob();
+    pythonJob->setProgram(BatchJobManager::pythonExe());
+    pythonJob->setArguments(file.c_str());
+
+    pythonJob->StartJob();
+}

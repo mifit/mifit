@@ -13,7 +13,7 @@
 using namespace std;
 
 
-static QString pythonExe()
+QString BatchJobManager::pythonExe()
 {
     static QString pythonExePath;
     if (pythonExePath.isEmpty() || !QFile::exists(pythonExePath))
