@@ -2,7 +2,7 @@ include(conf.pri)
 include(common.pri)
 
 TEMPLATE = subdirs
-SUBDIRS += libs apps MIExpert
+SUBDIRS += libs apps
 
 data.path = $$PREFIX/data
 data.files = data/*
