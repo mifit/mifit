@@ -17,7 +17,7 @@ Installation from binaries
 Installation from source code
 
   MIFit may be built from source code using the Qt SDK
-  (version 2009.03 or later) and Boost (versino 1.39.0 or
+  (version 2009.03 or later) and Boost (version 1.39.0 or
   later)
 
   Windows
