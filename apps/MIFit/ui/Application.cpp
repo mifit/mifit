@@ -872,19 +872,22 @@ void Application::Init()
         }
     }
 
-    LoadDictionary();
+    geomrefiner = new GeomRefiner();
 
     // enable setting of colors when reading files
     MIRegisterColorSetter(new myColorSetter());
     MISetTorsionWritePrompt(new myTorsionWritePrompt());
     MISetMolPrefsHandler(new myMolPrefsHandler());
+}
 
+void Application::AfterInit()
+{
+    LoadDictionary();
 }
 
 //FIXME: previous dictionary is leaked!
 void Application::LoadDictionary()
 {
-    geomrefiner = new GeomRefiner();
     geomrefiner->dict.LoadDefaultDictionary(
         Application::instance()->getDictionary().c_str(),
         Application::instance()->MolimageHome.c_str());

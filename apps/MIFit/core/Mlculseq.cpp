@@ -169,7 +169,7 @@ int Molecule::WriteSequence(std::string path, int type)
 
 void Molecule::InsertGap(ResidueListIterator gap_point)
 {
-    if (gap_point == NULL)
+    if (gap_point == residuesEnd())
     {
         return;
     }
@@ -190,7 +190,7 @@ void Molecule::InsertGap(ResidueListIterator gap_point)
 
 void Molecule::DeleteGap(ResidueListIterator gap_point)
 {
-    if (gap_point == NULL)
+    if (gap_point == residuesEnd())
     {
         return;
     }

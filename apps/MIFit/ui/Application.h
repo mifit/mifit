@@ -17,6 +17,8 @@ class QSettings;
 
 class Application : public QApplication
 {
+    Q_OBJECT
+  
     // eventually, we should revoke this friendship, but it's grandfathered in now
     friend class EnvironmentPreferences;
     friend class GeneralPreferences;
@@ -88,6 +90,9 @@ public:
     Application(int &argc, char **argv);
     ~Application();
     void Init();
+public slots:
+    void AfterInit();
+public:
 
     void Write();
     void SetEnv();

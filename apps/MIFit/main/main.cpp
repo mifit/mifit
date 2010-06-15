@@ -16,6 +16,7 @@ int main(int argc, char **argv)
     try
     {
         MIMainWindow *mw = MIMainWindow::instance();
+        QTimer::singleShot(0, &app, SLOT(AfterInit()));
         QTimer::singleShot(500, mw, SLOT(AfterInit()));
 
         mw->show();
