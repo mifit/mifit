@@ -7,7 +7,7 @@
 #include <map>
 
 #include "MIAtom_fwd.h"
-#include "RESIDUE_fwd.h"
+#include "Residue_fwd.h"
 #include "PLANE.h"
 #include "Bond.h"
 #include "TORSION.h"

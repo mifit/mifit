@@ -284,13 +284,9 @@ private:
     bool _read_enabled;
 };
 
-Application*Application::instance_;
-
-Application*Application::instance()
+Application *Application::instance()
 {
-    if (!instance_)
-        instance_ = new Application();
-    return instance_;
+    return static_cast<Application*>(qApp);
 }
 
 namespace
@@ -299,10 +295,9 @@ const QString GL_FORMAT_GROUP("glformat");
 const QString GL_FORMAT_DEFAULT("default");
 }
 
-Application::Application(void)
+Application::Application(int &argc, char **argv)
+    : QApplication(argc, argv)
 {
-
-    instance_ = this;
 
     FileIo::setAsDefaultIo();
 

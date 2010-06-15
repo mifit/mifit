@@ -7,7 +7,7 @@
 
 #include "model.h"
 #include "MIAtom_fwd.h"
-#include "RESIDUE_fwd.h"
+#include "Residue_fwd.h"
 #include "Bond.h"
 #include "ANGLE.h"
 #include "PLANE.h"

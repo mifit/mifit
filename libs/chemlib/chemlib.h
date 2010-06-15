@@ -13,7 +13,7 @@
 // private #include "RefmacAtomTyper.h"
 
 #include "MIAtom_fwd.h"
-#include "RESIDUE_fwd.h"
+#include "Residue_fwd.h"
 #include "MIMoleculeBase_fwd.h"
 
 #include "atom_util.h"

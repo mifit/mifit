@@ -1,5 +1,5 @@
-#ifndef chemlib_RESIDUE_fwd_h
-#define chemlib_RESIDUE_fwd_h
+#ifndef chemlib_Residue_fwd_h
+#define chemlib_Residue_fwd_h
 
 namespace chemlib
 {

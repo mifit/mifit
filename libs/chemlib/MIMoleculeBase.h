@@ -6,7 +6,7 @@
 
 #include "model.h"
 #include "Bond.h"
-#include "RESIDUE_fwd.h"
+#include "Residue_fwd.h"
 #include "iterator.h"
 
 namespace chemlib

@@ -9,7 +9,7 @@
 
 #include "MIAtom_fwd.h"
 #include "Bond.h"
-#include "RESIDUE_fwd.h"
+#include "Residue_fwd.h"
 #include "mol_util.h"
 
 

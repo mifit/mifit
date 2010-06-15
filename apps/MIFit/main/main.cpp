@@ -8,11 +8,10 @@
 int main(int argc, char **argv)
 {
     int result = -1;
-    QApplication app(argc, argv);
+    Application app(argc, argv);
 #ifdef Q_OS_LINUX
     QApplication::setStyle("Plastique");
 #endif
-    Application::instance();
 
     try
     {
@@ -29,6 +28,5 @@ int main(int argc, char **argv)
         std::cerr << "MIFit: unknown exception\n";
         result = 1;
     }
-    delete Application::instance();
     return result;
 }

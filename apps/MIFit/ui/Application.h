@@ -8,16 +8,15 @@ class MIConfig;
 
 #include <map/maplib.h>
 #include <QtCore/QDir>
+#include <QtGui/QApplication>
 #include "core/corelib.h"
 
 class MISingleInstanceChecker;
 class GeomRefiner;
 class QSettings;
 
-class Application
+class Application : public QApplication
 {
-    static Application *instance_;
-
     // eventually, we should revoke this friendship, but it's grandfathered in now
     friend class EnvironmentPreferences;
     friend class GeneralPreferences;
@@ -61,8 +60,6 @@ class Application
 
     chemlib::Residue *ResidueBuffer;
 
-    Application();
-
     void WriteProfiles(); // Write the profiles to the registry (Windows) or the ~/.MIFitrc file.
     void WritePalette(); // Write the profiles to the registry (Windows) or the ~/.MIFitrc file.
     void WriteSecStr();  // Write the secondary structure settings to the registry (Windows) or the ~/.MIFitrc file.
@@ -88,6 +85,7 @@ class Application
 public:
     static Application *instance();
 
+    Application(int &argc, char **argv);
     ~Application();
     void Init();
 
