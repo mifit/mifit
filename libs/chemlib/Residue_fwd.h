@@ -5,6 +5,7 @@ namespace chemlib
 {
 
     class Residue;
+    class ResidueListIterator;
 
 }
 

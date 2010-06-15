@@ -28,18 +28,20 @@ bool Helix::MakeHelix(MIMoleculeBase* /* mol */, Residue *pHelixStart, Residue *
     }
 
     //Count the number of residues
-    std::vector<Residue*> pHelixFrags;
-    MIIter<Residue> pHelixNext = Residue::getIter(pHelixStart);
-    for (; Monomer::isValid(pHelixNext) && pHelixNext != pHelixStop; ++pHelixNext)
+    std::vector<ResidueListIterator> pHelixFrags;
+    ResidueListIterator pHelixNext = Residue::getIterator(pHelixStart);
+    ResidueListIterator pHelixEnd = Residue::getIterator(pHelixStop);
+    for (; pHelixNext != pHelixEnd; ++pHelixNext)
     {
         pHelixFrags.push_back(pHelixNext);
     }
     //Add the last one and one more because sequences have been shorted by 1 [old comment]
-    if (Monomer::isValid(pHelixNext))
+    ResidueListIterator end = Residue::getIterator(0);
+    if (pHelixNext != end)
     {
         pHelixFrags.push_back(pHelixNext);
         ++pHelixNext;
-        if (Monomer::isValid(pHelixNext))
+        if (pHelixNext != end)
         {
             pHelixFrags.push_back(pHelixNext);
         }

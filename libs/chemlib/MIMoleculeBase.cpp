@@ -111,6 +111,16 @@ MIIterBase<Residue>*MIMoleculeBase::GetResidues()
     return Residue::getIter(residues);
 }
 
+ResidueListIterator MIMoleculeBase::residuesBegin()
+{
+    return Residue::getIterator(residues);
+}
+
+ResidueListIterator MIMoleculeBase::residuesEnd()
+{
+    return Residue::getIterator(NULL);
+}
+
 MIIterBase<Residue>*MIMoleculeBase::GetSymmResidues()
 {
     return Residue::getIter(SymmResidues);

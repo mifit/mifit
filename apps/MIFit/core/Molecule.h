@@ -225,11 +225,11 @@ public:
     void PurgeReferences(chemlib::MIAtom*);
 
     int SequenceIdentities();
-    void DeleteLowerGap(chemlib::Residue *gap_point);
-    void InsertLowerGap(chemlib::Residue *gap_point);
-    void DeleteGap(chemlib::Residue *res);
+    void DeleteLowerGap(chemlib::ResidueListIterator gap_point);
+    void InsertLowerGap(chemlib::ResidueListIterator gap_point);
+    void DeleteGap(chemlib::ResidueListIterator res);
     char GetSeq(int index);
-    void InsertGap(chemlib::Residue *res);
+    void InsertGap(chemlib::ResidueListIterator res);
     int WriteSequence(std::string path, int type);
     void ReadSequence(std::string path, int type, int skiplines);
     void SetSequence(std::string);
@@ -241,7 +241,7 @@ public:
     bool UnDoable(Molecule *node);
     void Do();
     void UnDo();
-    int getcolor(chemlib::Residue*, chemlib::MIAtom*, bool, int, int, std::string);
+    int getcolor(chemlib::ResidueListIterator, chemlib::MIAtom*, bool, int, int, std::string);
     long getndots();
     SURFDOT *GetDots();
     SurfaceDots&getDots();

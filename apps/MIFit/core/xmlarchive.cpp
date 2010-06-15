@@ -234,28 +234,28 @@ void XMLArchive::WriteField(const MIAtom *a)
     Write(f);
 }
 
-void XMLArchive::WriteField(const Residue *res)
+void XMLArchive::WriteField(const Residue &res)
 {
     /* write a RESIDUE field */
     tags.push_back("Residue");
     calc_indent();
-    char secstr = res->secstr();
+    char secstr = res.secstr();
     // this fixes a wierd bug - if these happen to be 0 - disaster!
     if (!isalpha(secstr))
     {
         secstr = 'U';
     }
-    if (!isalpha(res->name1()))
+    if (!isalpha(res.name1()))
     {
         secstr = 'X';
     }
     f = format("%s<Residue name=\"%s\" type=\"%s\" chain=\"%d\" secstr=\"%c\" confomer=\"%d\" flags=\"%d\" linkage_type=\"%d\" name1=\"%c\" seqpos=\"%d\" >\n",
-               indent, res->name().c_str(), res->type().c_str(), (int)res->chain_id(), secstr, (int)res->confomer(), (int)res->flags(), (int)res->linkage_type(), res->name1(), res->seqpos());
+               indent, res.name().c_str(), res.type().c_str(), (int)res.chain_id(), secstr, (int)res.confomer(), (int)res.flags(), (int)res.linkage_type(), res.name1(), res.seqpos());
     Write(f);
     inTag++;
-    for (int i = 0; i < res->atomCount(); i++)
+    for (int i = 0; i < res.atomCount(); i++)
     {
-        WriteField(res->atom(i));
+        WriteField(res.atom(i));
     }
     EndTag();
 }

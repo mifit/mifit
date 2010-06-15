@@ -44,8 +44,8 @@ namespace chemlib
         MIMoleculeBase(Residue *reslist, const std::string &cmpd, Bond *conns, int nconns);
         virtual ~MIMoleculeBase();
 
-#ifndef USE_ONLY_MIITER
-// Use of these functions should be replaced by the MIIter<RESIDUE> versions.
+#ifndef USE_ONLY_RESIDUE_ITERATOR
+// Use of these functions should be replaced by the iterator versions.
 
         Residue *getResidues()
         {
@@ -59,6 +59,8 @@ namespace chemlib
 
 #endif
         MIIterBase<Residue> *GetResidues();
+        ResidueListIterator residuesBegin();
+        ResidueListIterator residuesEnd();
 
         MIIterBase<Residue> *GetSymmResidues();
 

@@ -1,6 +1,8 @@
 #ifndef MI_ITERATOR_H
 #define MI_ITERATOR_H
 
+#ifndef NO_MI_ITER
+
 //Base class for iterators
 template<class T>
 class MIIterBase
@@ -256,6 +258,8 @@ private:
     T *_start;
     T *_current;
 };
+
+#endif // NO_MI_ITER
 
 #endif // ifndef MI_ITERATOR_H
 

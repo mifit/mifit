@@ -341,4 +341,93 @@ const std::string Residue::liststring(Residue *res)
     return (buff);
 }
 
+ResidueListIterator::ResidueListIterator()
+    : _residue(NULL)
+{
 }
+
+#ifndef NO_RESIDUE_ITERATOR_IMPLICIT_CAST
+ResidueListIterator::ResidueListIterator(Residue* residue)
+    : _residue(residue)
+{
+}
+#endif
+
+#ifndef NO_MI_ITER
+ResidueListIterator::ResidueListIterator(MIIter<Residue> residue)
+    : _residue((Residue*)residue)
+{
+}
+#endif
+
+ResidueListIterator::ResidueListIterator(const ResidueListIterator &iter)
+    : _residue(iter._residue)
+{
+}
+
+ResidueListIterator &ResidueListIterator::operator=(const ResidueListIterator &iter)
+{
+    ResidueListIterator newIter(iter);
+    std::swap(*this, newIter);
+    return *this;
+}
+
+bool ResidueListIterator::operator==(const ResidueListIterator &iter)
+{
+    return _residue == iter._residue;
+}
+
+bool ResidueListIterator::operator!=(const ResidueListIterator &iter)
+{
+    return _residue != iter._residue;
+}
+
+Residue &ResidueListIterator::operator*() const
+{
+    return *_residue;
+}
+
+Residue *ResidueListIterator::operator->() const
+{
+    return _residue;
+}
+
+#ifndef NO_RESIDUE_ITERATOR_IMPLICIT_CAST
+ResidueListIterator::operator Residue*() const
+{
+    return operator->();
+}
+#endif
+
+ResidueListIterator &ResidueListIterator::operator++()
+{
+    if (_residue)
+        _residue = _residue->next();
+    return *this;
+}
+
+ResidueListIterator ResidueListIterator::operator++(int)
+{
+    ResidueListIterator tmp = *this;
+    if (_residue)
+        _residue = _residue->next();
+    return tmp;
+}
+
+ResidueListIterator &ResidueListIterator::operator--()
+{
+    if (_residue)
+        _residue = _residue->prev();
+    return *this;
+}
+
+ResidueListIterator ResidueListIterator::operator--(int)
+{
+    ResidueListIterator tmp = *this;
+    if (_residue)
+        _residue = _residue->prev();
+    return tmp;
+}
+
+
+} // namespace chemlib

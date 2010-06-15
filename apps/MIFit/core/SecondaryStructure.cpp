@@ -113,8 +113,9 @@ bool SecondaryStructure::AddSchematic(chemlib::MIMoleculeBase *mol,
     {
         //Ribbon stuff expexts start and number
         int nResidues = 1;
-        MIIter<Residue> res = Residue::getIter(pSheet[i].first);
-        for (; (bool) res && res != pSheet[i].second; ++res)
+        ResidueListIterator res = Residue::getIterator(pSheet[i].first);
+        ResidueListIterator resEnd = Residue::getIterator(pSheet[i].second);
+        for (; res != resEnd; ++res)
         {
             nResidues++;
         }
@@ -156,8 +157,9 @@ bool SecondaryStructure::AddSchematic(chemlib::MIMoleculeBase *mol,
     {
         //Ribbon stuff expexts start and number
         int nResidues = 1;
-        MIIter<Residue> res = Residue::getIter(pTurn[i].first);
-        for (; (bool) res && res != pTurn[i].second; ++res)
+        ResidueListIterator res = Residue::getIterator(pTurn[i].first);
+        ResidueListIterator resEnd = Residue::getIterator(pTurn[i].second);
+        for (; res != resEnd; ++res)
         {
             nResidues++;
         }
@@ -200,8 +202,9 @@ bool SecondaryStructure::AddSchematic(chemlib::MIMoleculeBase *mol,
     {
         //Ribbon stuff expexts start and number
         int nResidues = 1;
-        MIIter<Residue> res = Residue::getIter(pRandom[i].first);
-        for (; (bool) res && res != pRandom[i].second; ++res)
+        ResidueListIterator res = Residue::getIterator(pRandom[i].first);
+        ResidueListIterator resEnd = Residue::getIterator(pRandom[i].second);
+        for (; res != resEnd; ++res)
         {
             nResidues++;
         }

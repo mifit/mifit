@@ -16,6 +16,40 @@ namespace chemlib
 
 #define MAXNAME 6
 
+    class Residue;
+
+    class ResidueListIterator
+    {
+        friend class Residue;
+    public:
+        ResidueListIterator();
+#ifndef NO_RESIDUE_ITERATOR_IMPLICIT_CAST
+        ResidueListIterator(Residue* residue);
+#endif
+#ifndef NO_MI_ITER
+        ResidueListIterator(MIIter<Residue> residue);
+#endif
+        ResidueListIterator(const ResidueListIterator &iter);
+        ResidueListIterator &operator=(const ResidueListIterator &iter);
+
+        bool operator==(const ResidueListIterator &iter);
+        bool operator!=(const ResidueListIterator &iter);
+
+        Residue &operator*() const;
+        Residue *operator->() const;
+
+#ifndef NO_RESIDUE_ITERATOR_IMPLICIT_CAST
+        operator Residue*() const;
+#endif
+
+        ResidueListIterator &operator++();
+        ResidueListIterator operator++(int);
+        ResidueListIterator &operator--();
+        ResidueListIterator operator--(int);
+
+    private:
+        Residue *_residue;
+    };
 
     class Residue : public Monomer
     {
@@ -85,6 +119,14 @@ namespace chemlib
         {
             return new MIDoublyLinkedListIter<Residue>(start);
         }
+
+        static ResidueListIterator getIterator(Residue *start)
+        {
+            ResidueListIterator iter;
+            iter._residue = start;
+            return iter;
+        }
+
 
         /**
          * Inserts a residue after this residue.
@@ -158,8 +200,6 @@ namespace chemlib
     chemlib::MIAtom *atom_default(const chemlib::Residue *res);
 
 
-}
-
-
+} // namespace chemlib
 
 #endif // ifndef MI_RESIDUE_H

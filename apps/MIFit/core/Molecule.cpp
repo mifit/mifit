@@ -92,7 +92,6 @@ void Molecule::GetPDBInfo(FILE *fp)
     char buf[1000];
     char startname[20], endname[20];
     char startchain, endchain;
-    Residue *res1, *res2;
     int i, nsecstr = 0;
     int inhead = true;
     compound = "";
@@ -217,24 +216,24 @@ void Molecule::GetPDBInfo(FILE *fp)
             startchain = buf[19];
             sscanf(buf+33, "%s", endname);
             endchain = buf[31];
-            res1 = residue_from_name(residues, startname, startchain);
-            res2 = residue_from_name(residues, endname, endchain);
+            ResidueListIterator res1 = residue_from_name(residues, startname, startchain);
+            ResidueListIterator res2 = residue_from_name(residues, endname, endchain);
 
-            MIIter<Residue> res = GetResidues();
-            for (; Monomer::isValid(res); ++res)
+            ResidueListIterator res = residuesBegin();
+            for (; res != residuesEnd(); ++res)
             {
                 if (res == res1)
                 {
                     break;
                 }
             }
-            if (res)
+            if (res != residuesEnd())
             {
                 do
                 {
                     res->setSecstr('H');
                     ++res;
-                } while ((bool) res && res != res2);
+                } while (res != residuesEnd() && res != res2);
             }
         }
         else if (!strncmp(buf, "SHEET", 5))
@@ -244,24 +243,24 @@ void Molecule::GetPDBInfo(FILE *fp)
             startchain = buf[21];
             sscanf(buf+33, "%s", endname);
             endchain = buf[32];
-            res1 = residue_from_name(residues, startname, startchain);
-            res2 = residue_from_name(residues, endname, endchain);
+            ResidueListIterator res1 = residue_from_name(residues, startname, startchain);
+            ResidueListIterator res2 = residue_from_name(residues, endname, endchain);
 
-            MIIter<Residue> res = GetResidues();
-            for (; Monomer::isValid(res); ++res)
+            ResidueListIterator res = residuesBegin();
+            for (; res != residuesEnd(); ++res)
             {
                 if (res == res1)
                 {
                     break;
                 }
             }
-            if (res)
+            if (res != residuesEnd())
             {
                 do
                 {
                     res->setSecstr('S');
                     ++res;
-                } while ((bool) res && res != res2);
+                } while (res != residuesEnd() && res != res2);
             }
         }
     }
@@ -321,7 +320,8 @@ bool Molecule::VisibleBounds(ViewPoint *viewpoint, int &axmin, int &axmax,
     unsigned int i;
     int x, y, z;
 
-    for (MIIter<Residue> res = GetResidues(); Monomer::isValid(res); ++res)
+    ResidueListIterator res = residuesBegin();
+    for (; res != residuesEnd(); ++res)
     {
         for (i = 0; i < (unsigned int) res->atomCount(); i++)
         {
@@ -409,15 +409,6 @@ bool Molecule::VisibleBounds(ViewPoint *viewpoint, int &axmin, int &axmax,
     zmax = azmax;
     return true;
 }
-
-/*
-   bool Molecule::checkbonds()
-   {
-    return true;
-   }
- */
-
-
 
 void Molecule::FreeDots()
 {
@@ -782,7 +773,7 @@ static void setradiustype(MIAtom *a, int type, std::string atoms)
     a->set_radius_type(type);
 }
 
-int Molecule::getcolor(Residue *res, MIAtom *a, bool docolor, int color, int colormethod, std::string atoms)
+int Molecule::getcolor(ResidueListIterator res, MIAtom *a, bool docolor, int color, int colormethod, std::string atoms)
 {
     if (!atoms.empty() && atoms[0] != '*')
     {
@@ -1277,9 +1268,9 @@ void Molecule::TranslateAtomsToCenter(MIAtomList &atoms, ViewPoint *viewpoint)
 
 void Molecule::ShowAll()
 {
-    // printf("In ShowAll\n");
     MIAtomList changed;
-    for (MIIter<Residue> res = GetResidues(); Monomer::isValid(res); ++res)
+    ResidueListIterator res = residuesBegin();
+    for (; res != residuesEnd(); ++res)
     {
         for (int i = 0; i < res->atomCount(); i++)
         {
@@ -1298,7 +1289,8 @@ void Molecule::HideAll()
     // printf("In HideAll\n");
 
     MIAtomList changed;
-    for (MIIter<Residue> res = GetResidues(); Monomer::isValid(res); ++res)
+    ResidueListIterator res = residuesBegin();
+    for (; res != residuesEnd(); ++res)
     {
         for (int i = 0; i < res->atomCount(); i++)
         {
@@ -1761,7 +1753,7 @@ void Molecule::Save(XMLArchive &ar)
     // give all the atoms a unique number
     size_t i;
     int n = 0;
-    for (MIIter<Residue> res = GetResidues(); Monomer::isValid(res); ++res)
+    for (ResidueListIterator res = residuesBegin(); res != residuesEnd(); ++res)
     {
         for (int i = 0; i < res->atomCount(); i++)
         {
@@ -1807,9 +1799,9 @@ void Molecule::Save(XMLArchive &ar)
     ar.WriteField("symmatoms_visible", symmatoms_visible);
     ar.WriteSymmCenter(symm_center);
     ar.BeginTag("ResidueList");
-    for (MIIter<Residue> res = GetResidues(); Monomer::isValid(res); ++res)
+    for (ResidueListIterator res = residuesBegin(); res != residuesEnd(); ++res)
     {
-        ar.WriteField(res);
+        ar.WriteField(*res);
     }
     ar.EndTag();
     // write connects
