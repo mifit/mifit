@@ -353,22 +353,19 @@ ResidueListIterator::ResidueListIterator(Residue* residue)
 }
 #endif
 
-#ifndef NO_MI_ITER
-ResidueListIterator::ResidueListIterator(MIIter<Residue> residue)
-    : _residue((Residue*)residue)
-{
-}
-#endif
-
 ResidueListIterator::ResidueListIterator(const ResidueListIterator &iter)
     : _residue(iter._residue)
 {
 }
 
-ResidueListIterator &ResidueListIterator::operator=(const ResidueListIterator &iter)
+void ResidueListIterator::swap(ResidueListIterator &other)
 {
-    ResidueListIterator newIter(iter);
-    std::swap(*this, newIter);
+    std::swap(_residue, other._residue);
+}
+
+ResidueListIterator &ResidueListIterator::operator=(ResidueListIterator iter)
+{
+    swap(iter);
     return *this;
 }
 

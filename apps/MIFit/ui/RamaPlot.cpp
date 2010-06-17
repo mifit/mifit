@@ -273,9 +273,9 @@ void RamaPlotMgr::Mouseover(int id)
     }
 }
 
-void RamaPlotMgr::GraphResidue(Residue *prev,
-                               Residue *res,
-                               Residue *next,
+void RamaPlotMgr::GraphResidue(ResidueListIterator prev,
+                               ResidueListIterator res,
+                               ResidueListIterator next,
                                int replace)
 {
     MIAtom *N, *C, *CA, *Nnext, *Cprev;
@@ -496,17 +496,16 @@ void RamaPlotMgr::CreateData()
         return;
     }
 
-    MIIter<Residue> res = _mol->GetResidues();
-    if (!Monomer::isValid(res))
-    {
+    ResidueListIterator res = _mol->residuesBegin();
+    if (res == _mol->residuesEnd())
         return;
-    }
+
     /* skip first residue */
-    Residue *prev_res2 = res;
+    ResidueListIterator prev_res2 = res;
     ++res;
-    Residue *prev_res = res;
+    ResidueListIterator prev_res = res;
     ++res;
-    for (; res; ++res)
+    for (; res != _mol->residuesEnd(); ++res)
     {
         if (res->chain_id() == prev_res2->chain_id()
             && res->chain_id() == prev_res->chain_id())
@@ -595,9 +594,9 @@ void RamaPlotMgr::Update(Residue *focusres, unsigned int select_type)
     //get residue prev to focus res, and one prev to that
     Residue *prev_res = 0, *prev_res2 = 0, *thisres = 0;
     Residue *next_res = 0, *next_res2 = 0;
-    for (MIIter<Residue> res = _mol->GetResidues(); res; ++res)
+    for (ResidueListIterator res = _mol->residuesBegin(); res != _mol->residuesEnd(); ++res)
     {
-        if (res == _focusres)
+        if (res == ResidueListIterator(_focusres))
         {
             thisres = res;
             ++res;

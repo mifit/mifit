@@ -616,7 +616,7 @@ void DisplayTree::ImportErrors()
             {
                 continue;
             }
-            Residue *res = residue_from_name(model->getResidues(), residueName.c_str(), chain.size() ? chain[0] : '\0');
+            Residue *res = residue_from_name(model->residuesBegin(), residueName.c_str(), chain.size() ? chain[0] : '\0');
             if (res != NULL)
             {
                 MIAtom *atom = atom_from_name("CA", *res);

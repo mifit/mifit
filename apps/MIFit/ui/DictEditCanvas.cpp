@@ -150,7 +150,7 @@ DictEditCanvas::DictEditCanvas(DictEditDialog *daddy)
     ((Molecule*)geomrefiner->GetCurrentModel())->DrawAnnotationBox(false);
     createPlanes();
 
-    GetConfs(confs, geomrefiner->GetCurrentModel()->getResidues(), &geomrefiner->dict, geomrefiner->GetCurrentModel());
+    GetConfs(confs, geomrefiner->GetCurrentModel()->residuesBegin(), &geomrefiner->dict, geomrefiner->GetCurrentModel());
     conf = 1;
 
     mousePicker = new MousePicker();
@@ -280,7 +280,7 @@ void DictEditCanvas::initializeForRender()
     model->Select(1, 1, 1, 1, resshow, at, NULL, NULL, 0, 0, 0, 0, 1);
     Point3<double> center;
     int atomCount = 0;
-    for (MIIter<Residue> res = model->GetResidues(); res; ++res)
+    for (ResidueListIterator res = model->residuesBegin(); res != model->residuesEnd(); ++res)
     {
         for (int i = 0; i < res->atomCount(); i++)
         {
@@ -295,7 +295,7 @@ void DictEditCanvas::initializeForRender()
     center.y /= atomCount;
     center.z /= atomCount;
 
-    MIIter<Residue> res = model->GetResidues();
+    ResidueListIterator res = model->residuesBegin();
     for (int i = 0; i < res->atomCount(); i++)
     {
         res->atom(i)->setType(0);
@@ -312,7 +312,7 @@ void DictEditCanvas::initializeForRender()
 
     Point3<double> pos;
     float maxDistance = 0.0;
-    for (MIIter<Residue> res = model->GetResidues(); res; ++res)
+    for (ResidueListIterator res = model->residuesBegin(); res != model->residuesEnd(); ++res)
     {
         for (int i = 0; i < res->atomCount(); i++)
         {
@@ -383,7 +383,7 @@ void DictEditCanvas::AutoFindChirals(bool copyChiralClass)
     {
         return;
     }
-    Residue *res = geomrefiner->GetCurrentModel()->getResidues();
+    Residue *res = geomrefiner->GetCurrentModel()->residuesBegin();
     std::string list = FindChiralCenters(res, geomrefiner->dict.RefiBonds, copyChiralClass);
 
     CHIRAL c;
@@ -437,7 +437,7 @@ void DictEditCanvas::UpdateGeom()
     std::string s;
 
     Residue *res;
-    res = model->getResidues();
+    res = model->residuesBegin();
     if (res == NULL)
     {
         return;
@@ -883,7 +883,7 @@ bool DictEditCanvas::handlePick(const QPoint &point)
                 {
                     molecule = *molIter;
                     molIter++;
-                    res = residue_from_atom(molecule->getResidues(), atom);
+                    res = residue_from_atom(molecule->residuesBegin(), atom);
                     if (res != NULL)
                     {
                         break;
@@ -986,8 +986,8 @@ void DictEditCanvas::UpdateButtons()
     removePlaneAtomsAction->setEnabled(AtomStack->size() > 1 && pickedPlane != NULL);
     removePlaneAction->setEnabled(pickedPlane != NULL);
 
-    form->changeNameButton->setEnabled(model != NULL && model->getResidues() != NULL);
-    form->exportButton->setEnabled(model != NULL && model->getResidues() != NULL);
+    form->changeNameButton->setEnabled(model != NULL && model->residuesBegin() != model->residuesEnd());
+    form->exportButton->setEnabled(model != NULL && model->residuesBegin() != model->residuesEnd());
     form->conformerSpinbox->setRange(1, confs.NumberSets()-1);
     form->conformerSpinbox->setValue(conf);
     form->confCountLabel->setText(::format("of %d", confs.NumberSets()-1).c_str());
@@ -996,11 +996,11 @@ void DictEditCanvas::UpdateButtons()
 void DictEditCanvas::on_changeNameButton_clicked()
 {
     // change the 3-letter dictionary code of the residue
-    if (!model->getResidues())
+    if (!model->residuesBegin())
     {
         return;
     }
-    QString s = QInputDialog::getText(this, "Rename Dictionary Entry", "Enter 3-letter name:", QLineEdit::Normal, model->getResidues()->type().c_str());
+    QString s = QInputDialog::getText(this, "Rename Dictionary Entry", "Enter 3-letter name:", QLineEdit::Normal, model->residuesBegin()->type().c_str());
     if (s.isEmpty())
     {
         return;
@@ -1036,7 +1036,7 @@ void DictEditCanvas::on_changeNameButton_clicked()
         }
 
         // Finalize rename
-        model->getResidues()->setType(s.toStdString());
+        model->residuesBegin()->setType(s.toStdString());
         std::string t = ::format("Dictionary Editor - %s", s.toAscii().constData());
         parent->setWindowTitle(t.c_str());
         ReDraw();
@@ -1067,7 +1067,7 @@ void DictEditCanvas::OnExport(const char *optionalFilename)
 
     if (model)
     {
-        mi.res = model->getResidues();
+        mi.res = model->residuesBegin();
         mi.bonds = geomrefiner->dict.RefiBonds;
         mi.angles = geomrefiner->dict.RefiAngles;
         mi.torsions = geomrefiner->dict.RefiTorsions;
@@ -1858,7 +1858,7 @@ void DictEditCanvas::OnRemoveHydrogens()
 {
     AtomStack->Clear();
     Molecule *mol = (Molecule*)geomrefiner->GetCurrentModel();
-    for (MIIter<Residue> res = mol->GetResidues(); res; ++res)
+    for (ResidueListIterator res = mol->residuesBegin(); res != mol->residuesEnd(); ++res)
     {
         for (int i = 0; i < res->atomCount(); i++)
         {
@@ -2371,7 +2371,7 @@ void DictEditCanvas::OnIncludeAtomsInPlane()
 void DictEditCanvas::on_resetButton_clicked()
 {
     model = (Molecule*)geomrefiner->GetCurrentModel();
-    Residue *dictres = geomrefiner->dict.GetDictResidue(model->getResidues()->type().c_str(), 0);
+    Residue *dictres = geomrefiner->dict.GetDictResidue(model->residuesBegin()->type().c_str(), 0);
     // Effectivly the cancel function from Geomrefiner
     geomrefiner->dict.Clear();
     delete model;
@@ -2400,7 +2400,7 @@ void DictEditCanvas::on_resetButton_clicked()
 
     //Reset conformations
     confs.Clear();
-    GetConfs(confs, geomrefiner->GetCurrentModel()->getResidues(), &geomrefiner->dict, geomrefiner->GetCurrentModel());
+    GetConfs(confs, geomrefiner->GetCurrentModel()->residuesBegin(), &geomrefiner->dict, geomrefiner->GetCurrentModel());
     on_conformerSpinbox_valueChanged(1);
 
     UpdateGeom();
@@ -2413,17 +2413,17 @@ void DictEditCanvas::OnOk()
     geomrefiner->unlockRefineTarget();
 
     //This needs to push all the results in the the actual dictionary
-    const char *restype = model->getResidues()->type().c_str();
+    const char *restype = model->residuesBegin()->type().c_str();
 
     // Adding the residue in append mode will blast out the other entires for it
     // in the other dictionaries (i.e. the PlaneDict)
-    model->getResidues()->setPrefBonds(geomrefiner->dict.RefiBonds);
-    model->getResidues()->setPrefAngles(geomrefiner->dict.RefiAngles);
-    Residue *multiConf = ExpandConfs(model->getResidues(), confs);
+    model->residuesBegin()->setPrefBonds(geomrefiner->dict.RefiBonds);
+    model->residuesBegin()->setPrefAngles(geomrefiner->dict.RefiAngles);
+    Residue *multiConf = ExpandConfs(model->residuesBegin(), confs);
     geomrefiner->dict.LoadRes(multiConf, true, true, false);
     FreeResidueList(multiConf);
-    model->getResidues()->clearPrefBonds();
-    model->getResidues()->clearPrefAngles();
+    model->residuesBegin()->clearPrefBonds();
+    model->residuesBegin()->clearPrefAngles();
 
     //Add all the planes back in
     if (planes.size() > 0)
@@ -2708,7 +2708,7 @@ void DictEditCanvas::generateConformers(bool replace)
         confs.Clear();
     }
 
-    int nConf = conflib::GenerateEnsemble(model->getResidues(),
+    int nConf = conflib::GenerateEnsemble(model->residuesBegin(),
                                           model,
                                           geomrefiner->dict.RefiBonds,
                                           geomrefiner->dict.RefiTorsions,

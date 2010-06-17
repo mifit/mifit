@@ -94,10 +94,10 @@ void Displaylist::symmetryToBeCleared(MIMoleculeBase *mol)
 {
     // treat as if all symmetry residues are being deleted
     std::vector<Residue*> deaders;
-    for (MIIter<Residue> res = mol->GetSymmResidues(); Monomer::isValid(res); ++res)
-    {
+    ResidueListIterator res = mol->symmResiduesBegin();
+    for (; res != mol->symmResiduesEnd(); ++res)
         deaders.push_back(res);
-    }
+
     if (deaders.size())
     {
         delete_level++;
@@ -112,14 +112,14 @@ void Displaylist::moleculeToBeDeleted(MIMoleculeBase *mol)
         return;
 
     std::vector<Residue*> residues;
-    for (MIIter<Residue> res = mol->GetResidues(); res; ++res)
-    {
+    ResidueListIterator res = mol->residuesBegin();
+    for (; res != mol->residuesEnd(); ++res)
         residues.push_back(res);
-    }
-    for (MIIter<Residue> res = mol->GetSymmResidues(); Monomer::isValid(res); ++res)
-    {
+
+    res = mol->symmResiduesBegin();
+    for (; res != mol->symmResiduesEnd(); ++res)
         residues.push_back(res);
-    }
+
     delete_level++;
     residuesToBeDeleted(mol, residues);
     delete_level--;
@@ -260,7 +260,7 @@ static void AddAnnotations(Molecule *model)
                 || (sscanf(headers[i].c_str(),
                            "REMARK 501   %d %s %c %s", &dum, rname, &chain, rnum)==4))
             {
-                Residue *res = residue_from_name(model->getResidues(), rnum, chain);
+                Residue *res = residue_from_name(model->residuesBegin(), rnum, chain);
                 if (res != NULL)
                 {
                     std::string tmp = annotations[res];
@@ -409,7 +409,8 @@ int Displaylist::FindContacts(MIAtom *a, Residue *r, float cutoff, ViewPoint *vp
     std::list<Molecule*>::iterator node = Models.begin();
     while (node != Models.end())
     {
-        for (MIIter<Residue> res = (*node)->GetResidues(); res; ++res)
+        ResidueListIterator res = (*node)->residuesBegin();
+        for (; res != (*node)->residuesEnd(); ++res)
         {
             if (r != res)
             {

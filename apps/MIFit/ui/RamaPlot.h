@@ -2,12 +2,12 @@
 #define mifit_ui_RamaPlot_h
 
 #include <chemlib/MIAtom_fwd.h>
+#include <chemlib/Residue_fwd.h>
 
 #include "graphlib.h"
 
 namespace chemlib
 {
-    class Residue;
     class MIMoleculeBase;
 }
 
@@ -61,9 +61,9 @@ public slots:
 
 private:
     void CreateContours();
-    void GraphResidue(chemlib::Residue *prev,
-                      chemlib::Residue *res,
-                      chemlib::Residue *next,
+    void GraphResidue(chemlib::ResidueListIterator prev,
+                      chemlib::ResidueListIterator res,
+                      chemlib::ResidueListIterator next,
                       int replace = -1);
     void CreateData();
 

@@ -8,7 +8,6 @@
 #include "Bond.h"
 #include "ANGLE.h"
 #include "Monomer.h"
-#include "iterator.h"
 #include <util/utillib.h>
 
 namespace chemlib
@@ -26,11 +25,8 @@ namespace chemlib
 #ifndef NO_RESIDUE_ITERATOR_IMPLICIT_CAST
         ResidueListIterator(Residue* residue);
 #endif
-#ifndef NO_MI_ITER
-        ResidueListIterator(MIIter<Residue> residue);
-#endif
         ResidueListIterator(const ResidueListIterator &iter);
-        ResidueListIterator &operator=(const ResidueListIterator &iter);
+        ResidueListIterator &operator=(ResidueListIterator iter);
 
         bool operator==(const ResidueListIterator &iter);
         bool operator!=(const ResidueListIterator &iter);
@@ -48,6 +44,8 @@ namespace chemlib
         ResidueListIterator operator--(int);
 
     private:
+        void swap(ResidueListIterator &other);
+
         Residue *_residue;
     };
 
@@ -113,11 +111,6 @@ namespace chemlib
         void clearPrefAngles()
         {
             prefangles.clear();
-        }
-
-        static MIIterBase<Residue> *getIter(Residue *start)
-        {
-            return new MIDoublyLinkedListIter<Residue>(start);
         }
 
         static ResidueListIterator getIterator(Residue *start)

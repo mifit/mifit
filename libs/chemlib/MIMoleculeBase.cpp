@@ -106,11 +106,6 @@ MIMoleculeBase::~MIMoleculeBase()
 #endif
 }
 
-MIIterBase<Residue>*MIMoleculeBase::GetResidues()
-{
-    return Residue::getIter(residues);
-}
-
 ResidueListIterator MIMoleculeBase::residuesBegin()
 {
     return Residue::getIterator(residues);
@@ -121,15 +116,22 @@ ResidueListIterator MIMoleculeBase::residuesEnd()
     return Residue::getIterator(NULL);
 }
 
-MIIterBase<Residue>*MIMoleculeBase::GetSymmResidues()
+ResidueListIterator MIMoleculeBase::symmResiduesBegin()
 {
-    return Residue::getIter(SymmResidues);
+    return Residue::getIterator(SymmResidues);
 }
+
+ResidueListIterator MIMoleculeBase::symmResiduesEnd()
+{
+    return Residue::getIterator(NULL);
+}
+
 
 MIAtom*MIMoleculeBase::GetAtom(int natom)
 {
     MIAtom_const_iter atom, endAtom;
-    for (MIIter<Residue> res = GetResidues(); res; ++res)
+    ResidueListIterator res = residuesBegin();
+    for (; res != residuesEnd(); ++res)
     {
         const MIAtomList &atoms = res->atoms();
         endAtom = atoms.end();
@@ -143,7 +145,7 @@ MIAtom*MIMoleculeBase::GetAtom(int natom)
         }
     }
 
-    for (MIIter<Residue> res = GetSymmResidues(); res; ++res)
+    for (res = symmResiduesBegin(); res != symmResiduesEnd(); ++res)
     {
         const MIAtomList &atoms = res->atoms();
         endAtom = atoms.end();
@@ -925,7 +927,7 @@ void MIMoleculeBase::SetSecStr(Residue *res1, Residue *res2, char sec_str)
     Residue *start = NULL, *end = NULL, *res;
 
     // fiind the first residue
-    res = getResidues();
+    res = residuesBegin();
     while (res != NULL)
     {
         if (res == res1)
@@ -963,7 +965,7 @@ void MIMoleculeBase::FixAtomicNumbers()
     // fixes the atomicnumber field in a residue
     // sometimes this is a bit of a guess becuase it is not
     // clear what the atom type is by name alone!
-    Residue *res = getResidues();
+    Residue *res = residuesBegin();
     int i;
     bool ispep, isnuc;
     std::string name;
@@ -1041,7 +1043,7 @@ bool MIMoleculeBase::BuildCB(Residue *test)
     {
         return false;
     }
-    Residue *res = getResidues(), *prev = NULL, *next = test->next();
+    Residue *res = residuesBegin(), *prev = NULL, *next = test->next();
     while (res != NULL)
     {
         if (res->next() == test)
@@ -1130,7 +1132,7 @@ static int greaterthan(Residue *res1, Residue *res2)
 Residue*MIMoleculeBase::AddWater(float x, float y, float z, bool rebuild)
 {
     // adds a water to end of model
-    Residue *res = getResidues();
+    Residue *res = residuesBegin();
     while (res->next() != NULL)
     {
         res = res->next();
@@ -1239,7 +1241,7 @@ bool MIMoleculeBase::Contains(Residue *test)
     {
         return false;
     }
-    Residue *res = getResidues();
+    Residue *res = residuesBegin();
     while (Monomer::isValid(res))
     {
         if (test == res)
@@ -1273,7 +1275,7 @@ void MIMoleculeBase::DeleteAtom(MIAtom *a)
 
 void MIMoleculeBase::doDeleteAtom(MIAtom *a)
 {
-    Residue *res = residue_from_atom(getResidues(), a);
+    Residue *res = residue_from_atom(residuesBegin(), a);
     if (!Monomer::isValid(res))
     {
         return;
@@ -1294,7 +1296,7 @@ void MIMoleculeBase::doDeleteAtom(MIAtom *a)
 size_t MIMoleculeBase::LengthChain(unsigned short chain_id)
 {
     size_t n = 0;
-    Residue *res = getResidues();
+    Residue *res = residuesBegin();
     while (Monomer::isValid(res))
     {
         if (res->chain_id() == chain_id)
@@ -1434,7 +1436,7 @@ size_t MIMoleculeBase::SplitAtoms(MIAtomList &atoms, bool torsion_only)
             continue;
         }
         MIAtom *a = atoms[i];
-        res = residue_from_atom(getResidues(), a);
+        res = residue_from_atom(residuesBegin(), a);
         if (!res)
         {
             continue;

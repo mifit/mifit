@@ -1877,7 +1877,7 @@ long MIMolOpt::SetRefiRes(Residue *res1, Residue *res2, MIMoleculeBase *node, EM
     CurrentModel = node;
 
     CurrentMap = emap;
-    ResActiveModel = node->getResidues();
+    ResActiveModel = node->residuesBegin();
     dict.FindGeom(RefiRes, nRefiRes, ResActiveModel);
     if (dict.constrain_CA)
     {
@@ -1901,7 +1901,8 @@ void MIMolOpt::moleculeToBeDeleted(MIMoleculeBase *molecule)
     Purge(molecule);
 
     std::vector<Residue*> residues;
-    for (MIIter<Residue> res = molecule->GetResidues(); res; ++res)
+    ResidueListIterator res = molecule->residuesBegin();
+    for (; res != molecule->residuesEnd(); ++res)
     {
         residues.push_back(res);
     }
@@ -2263,7 +2264,7 @@ void MIMolOpt::Purge(MIAtom *atom)
     {
         //this will only get hit the for the first atom in the mol, after which
         // IsRefining will be false, so it's not too expensive to do this
-        Residue *res = residue_from_atom(CurrentModel->getResidues(), atom);
+        Residue *res = residue_from_atom(CurrentModel->residuesBegin(), atom);
         if (res)
         {
             clearRefineTarget();
@@ -3057,7 +3058,7 @@ void MIMolOpt::FullOptimize(MIAtomList &CurrentAtoms, MIMoleculeBase *fitmol, EM
 
     //find the residue associated with CurrentAtoms
     // ( might want to add ability to search for more than one residue in future)
-    res = residue_from_atom(fitmol->getResidues(), CurrentAtoms[0]);
+    res = residue_from_atom(fitmol->residuesBegin(), CurrentAtoms[0]);
     if (res != NULL && refine_level != Refine_Level::None)
     {
         // get the torsions associated with these atoms
@@ -3477,7 +3478,7 @@ void MIMolOpt::LigandOptimize(MIAtomList &CurrentAtoms, MIMoleculeBase *fitmol, 
 
     //find the residue associated with CurrentAtoms
     // ( might want to add ability to search for more than one residue in future)
-    res = residue_from_atom(fitmol->getResidues(), CurrentAtoms[0]);
+    res = residue_from_atom(fitmol->residuesBegin(), CurrentAtoms[0]);
     /*
         if(res !=NULL && refine_level != Refine_Level::None){
             // get the torsions associated with these atoms
@@ -4085,7 +4086,7 @@ int MIMolOpt::FindNeighbours(MIAtomList &CurrentAtoms, MIAtomList &Neighbours,
     Residue *res;
     MIAtom *a;
     unsigned int i, j;
-    for (res = fitmol->getResidues(); Monomer::isValid(res); res = res->next())
+    for (res = fitmol->residuesBegin(); Monomer::isValid(res); res = res->next())
     {
         for (i = 0; i < (unsigned int)res->atomCount(); i++)
         {
@@ -4112,7 +4113,7 @@ int MIMolOpt::FindNeighbours(MIAtomList &CurrentAtoms, MIAtomList &Neighbours,
         }
 nextresidue:;
     }
-    res = fitmol->getSymmResidues();
+    res = fitmol->symmResiduesBegin();
     while (Monomer::isValid(res))
     {
         for (i = 0; i < (unsigned int)res->atomCount(); i++)
@@ -4257,7 +4258,7 @@ static void molrep_score(trial &t, MIAtomList &atoms, EMapBase *emap)
     fz = (float)t.p[5];
     emap->mapheader->FtoC(&fx, &fy, &fz);
     TranslateAtomVec(fx, fy, fz, &atoms);
-    //emap->SFCalc(model->getResidues());
+    //emap->SFCalc(model->residuesBegin());
     t.score = emap->CorrScore(atoms);
 }
 
@@ -4284,7 +4285,7 @@ void MIMolOpt::MolecularReplace(MIMoleculeBase *model, EMapBase *emap)
         return;
     }
 
-    Residue *res = model->getResidues();
+    Residue *res = model->residuesBegin();
     while (Monomer::isValid(res))
     {
         for (int i = 0; i < res->atomCount(); i++)

@@ -57,7 +57,7 @@ unsigned long GeomRefiner::FindGeomErrors(Molecule *model, float error_threshold
     {
         return 0;
     }
-    if (model->getResidues() == NULL)
+    if (model->residuesBegin() == model->residuesEnd())
     {
         return 0;
     }
@@ -68,11 +68,15 @@ unsigned long GeomRefiner::FindGeomErrors(Molecule *model, float error_threshold
     bool found_geom = false;
     if (!IsRefining())
     {
-        MIIter<Residue> ri = model->GetResidues();
+        ResidueListIterator ri = model->residuesBegin();
         Residue *firstres = ri;
-        ri.Last();
-        Residue *last = ri;
-        if (!Monomer::isValid(firstres) || !Monomer::isValid(last))
+        Residue *last;
+        while (ri != model->residuesEnd())
+        {
+            last = ri;
+            ++ri;
+        }
+        if (!firstres || !last)
         {
             return 0;
         }
@@ -314,7 +318,7 @@ unsigned long GeomRefiner::FindGeomErrors(Molecule *model, float error_threshold
             }
             if (atom1->altloc() != ' ' || atom2->altloc() != ' ')
             {
-                MIIter<Residue> ri = model->GetResidues();
+                ResidueListIterator ri = model->residuesBegin();
                 Residue *res1 = residue_from_atom(ri, atom1);
                 Residue *res2 = residue_from_atom(ri, atom2);
                 if (res1 == res2)

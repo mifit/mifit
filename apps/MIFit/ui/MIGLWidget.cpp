@@ -544,7 +544,8 @@ void MIGLWidget::symmetryToBeCleared(MIMoleculeBase *mol)
 {
     // treat as if all symmetry residues are being deleted
     std::vector<Residue*> deaders;
-    for (MIIter<Residue> res = mol->GetSymmResidues(); Monomer::isValid(res); ++res)
+    for (ResidueListIterator res = mol->symmResiduesBegin();
+         res != mol->symmResiduesEnd(); ++res)
     {
         deaders.push_back(res);
     }
@@ -734,7 +735,7 @@ void MIGLWidget::CheckCenter()
     {
         if ((*node)->CheckCenter(viewpoint->getcenter(0), viewpoint->getcenter(1), viewpoint->getcenter(2)))
         {
-            if ((*node)->getSymmResidues())
+            if ((*node)->symmResiduesBegin() != (*node)->symmResiduesEnd())
             {
                 clearSymmAtoms();
             }
@@ -1332,8 +1333,8 @@ void MIGLWidget::OnLButtonUp(unsigned short /* nFlags */, CPoint point)
                                 atom2 = a;
                             }
                             {
-                                Residue *res1 = residue_from_atom(fitmol->getResidues(), atom1);
-                                Residue *res2 = residue_from_atom(fitmol->getResidues(), atom2);
+                                Residue *res1 = residue_from_atom(fitmol->residuesBegin(), atom1);
+                                Residue *res2 = residue_from_atom(fitmol->residuesBegin(), atom2);
                                 AtomStack->Push(atom2, res2, fitmol);
                                 AtomStack->Push(atom1, res1, fitmol);
                             }
@@ -3186,7 +3187,7 @@ unsigned int MIGLWidget::SetupFit(Residue *res1, Residue *res2, Molecule *model,
     {
         if (model)
         {
-            res = res1 = res2 = model->getResidues();
+            res = res1 = res2 = model->residuesBegin();
             while (res->next() != NULL)
             {
                 res = res2 = res->next();
@@ -4262,7 +4263,7 @@ void MIGLWidget::OnFitLsqsuperpose()
     if (!source || !target)
         return;
 
-    MIIter<Residue> res = source->GetResidues();
+    ResidueListIterator res = source->residuesBegin();
     char m_chain = res->getChainId();
     float tx, ty, tz, x, y, z;
     bool chain_only = data["applyToChain"].b;
@@ -4297,7 +4298,7 @@ void MIGLWidget::OnFitLsqsuperpose()
     {
         Logger::message("Warning: Unable to save model - will not be able to Undo");
     }
-    for (; res; ++res)
+    for (; res != source->residuesEnd(); ++res)
     {
         if (chain_only && res->getChainId() != m_chain)
         {
@@ -4576,7 +4577,7 @@ void MIGLWidget::addResidueWithPrompt()
     MIAtom *a = NULL;
     Residue *atres = NULL;
     std::string chainStr;
-    if (!AtomStack->empty() && model->getResidues() != NULL)
+    if (!AtomStack->empty() && model->residuesBegin() != model->residuesEnd())
     {
         AtomStack->Pop(a, atres, model);
         chainStr = std::string(1, (char)(atres->chain_id()&255));
@@ -5414,7 +5415,7 @@ static EMap *CreateMap(Displaylist *dl,
         Molecule *model = FindModel(fc, dl, false);
         if (model)
         {
-            map->SFCalc(model->getResidues());
+            map->SFCalc(model->residuesBegin());
         }
 
         if (map->FFTMap(maptype, gridlevel, resmin, resmax))
@@ -5878,8 +5879,8 @@ void MIGLWidget::OnMapSFCalc()
     {
         return;
     }
-    Residue *res = current->getResidues();
-    if (res == NULL)
+    Residue *res = current->residuesBegin();
+    if (res == current->residuesEnd())
     {
         return;
     }
@@ -5898,17 +5899,17 @@ void MIGLWidget::OnUpdateMapSFCalc(const MIUpdateEvent &pCmdUI)
 {
     EMap *map = GetDisplaylist()->GetCurrentMap();
     bool HasPhases = false;
-    Residue *res = NULL;
+    bool hasResidue = false;
     if (map != NULL)
     {
         Molecule *current = GetDisplaylist()->CurrentItem();
         if (current != NULL)
         {
-            res = current->getResidues();
+            hasResidue = current->residuesBegin() != current->residuesEnd();
         }
         HasPhases = map->HasPhases();
     }
-    pCmdUI.Enable(HasPhases && res != NULL && MIBusyManager::instance()->Busy() == false);
+    pCmdUI.Enable(HasPhases && hasResidue && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnMapContourLevels()
@@ -5972,7 +5973,7 @@ void MIGLWidget::OnRefiRegion()
         res2 = res;
     }
     res1 = res;
-    for (r = node->getResidues(); r != NULL; r = r->next())
+    for (r = node->residuesBegin(); r != NULL; r = r->next())
     {
         if (r->next() == res)
         {
@@ -6114,7 +6115,7 @@ void MIGLWidget::OnRefiMolecule()
     {
         return;
     }
-    res = node->getResidues();
+    res = node->residuesBegin();
     res1 = res;
     while (res != NULL)
     {
@@ -6244,7 +6245,7 @@ void MIGLWidget::Purge(Molecule *model)
 {
     savefits.Purge(model);
 
-    Residue *res = model->getResidues();
+    Residue *res = model->residuesBegin();
     while (res != NULL)
     {
         if (res==focusres)
@@ -6255,7 +6256,7 @@ void MIGLWidget::Purge(Molecule *model)
         res = res->next();
     }
 
-    res = model->getResidues();
+    res = model->residuesBegin();
     while (res != NULL)
     {
         Purge(res);
@@ -6263,7 +6264,7 @@ void MIGLWidget::Purge(Molecule *model)
     }
 
 
-    res = model->getSymmResidues();
+    res = model->symmResiduesBegin();
     while (res != NULL)
     {
         if (res==focusres)
@@ -6274,7 +6275,7 @@ void MIGLWidget::Purge(Molecule *model)
         res = res->next();
     }
 
-    res = model->getSymmResidues();
+    res = model->symmResiduesBegin();
     while (res != NULL)
     {
         Purge(res);
@@ -6446,7 +6447,7 @@ void MIGLWidget::UpdateCurrent()
         displaylist->SurfaceCurrent(CurrentAtoms, radius_mult);
         if (SurfaceCurrent == PROBE_SURFACE)
         {
-            displaylist->ProbeSurface(fitmol->getResidues(), CurrentAtoms);
+            displaylist->ProbeSurface(fitmol->residuesBegin(), CurrentAtoms);
         }
     }
     else if (SurfaceCurrent == NO_SURFACE)
@@ -6479,7 +6480,7 @@ void MIGLWidget::InsertMRK(Residue *where, Molecule *model, bool before)
         Logger::message("Error - nothing picked or residue not found in dictionary");
         return;
     }
-    Residue *res = model->getResidues();
+    Residue *res = model->residuesBegin();
     if (res == NULL)
     {
         Logger::message("No model found - Use New Model command to start a model");
@@ -6496,7 +6497,7 @@ void MIGLWidget::InsertMRK(Residue *where, Molecule *model, bool before)
     {
         CAnext = atom_from_name("CA", *where->next());
     }
-    for (res = model->getResidues(); res != NULL; res = res->next())
+    for (res = model->residuesBegin(); res != NULL; res = res->next())
     {
         if (res->next() == where)
         {
@@ -6690,7 +6691,7 @@ void MIGLWidget::generateSymmAtoms()
     if (!node)
         return;
     node->GetMapHeader().SetSymmOps();
-    if (node->getSymmResidues())
+    if (node->symmResiduesBegin())
     {
         clearSymmAtoms();
     }
@@ -6910,10 +6911,10 @@ void MIGLWidget::OnReplaceMiddle3()
     }
     try
     {
-        if (MIMoleculeBase::isValid(PentamerModel) && PentamerModel->getResidues())
+        if (MIMoleculeBase::isValid(PentamerModel) && PentamerModel->residuesBegin())
         {
             FitToken = savefits.Save(PentamerStart->next(), 3, PentamerFrom);
-            PentamerFrom->ReplaceMainChain(PentamerStart->next(), PentamerModel->getResidues()->next(), 3);
+            PentamerFrom->ReplaceMainChain(PentamerStart->next(), PentamerModel->residuesBegin()->next(), 3);
             PentamerFrom->SetCoordsChanged(true);
             Modify(true);
             clearPentamer();
@@ -6942,10 +6943,10 @@ void MIGLWidget::OnReplaceFirst4()
     }
     try
     {
-        if (MIMoleculeBase::isValid(PentamerModel) && Monomer::isValid(PentamerModel->getResidues()))
+        if (MIMoleculeBase::isValid(PentamerModel) && Monomer::isValid(PentamerModel->residuesBegin()))
         {
             FitToken = savefits.Save(PentamerStart, 4, PentamerFrom);
-            PentamerFrom->ReplaceMainChain(PentamerStart, PentamerModel->getResidues(), 4);
+            PentamerFrom->ReplaceMainChain(PentamerStart, PentamerModel->residuesBegin(), 4);
             Modify(true);
             PentamerFrom->SetModified();
             clearPentamer();
@@ -6974,10 +6975,10 @@ void MIGLWidget::OnReplaceLast4()
     }
     try
     {
-        if (MIMoleculeBase::isValid(PentamerModel) && Monomer::isValid(PentamerModel->getResidues()))
+        if (MIMoleculeBase::isValid(PentamerModel) && Monomer::isValid(PentamerModel->residuesBegin()))
         {
             FitToken = savefits.Save(PentamerStart->next(), 4, PentamerFrom);
-            PentamerFrom->ReplaceMainChain(PentamerStart->next(), PentamerModel->getResidues()->next(), 4);
+            PentamerFrom->ReplaceMainChain(PentamerStart->next(), PentamerModel->residuesBegin()->next(), 4);
             PentamerFrom->SetModified();
             Modify(true);
             clearPentamer();
@@ -7006,10 +7007,10 @@ void MIGLWidget::OnReplaceAll()
     }
     try
     {
-        if (MIMoleculeBase::isValid(PentamerModel) && Monomer::isValid(PentamerModel->getResidues()))
+        if (MIMoleculeBase::isValid(PentamerModel) && Monomer::isValid(PentamerModel->residuesBegin()))
         {
             FitToken = savefits.Save(PentamerStart, 5, PentamerFrom);
-            PentamerFrom->ReplaceMainChain(PentamerStart, PentamerModel->getResidues(), 5);
+            PentamerFrom->ReplaceMainChain(PentamerStart, PentamerModel->residuesBegin(), 5);
             PentamerFrom->SetModified();
             Modify(true);
             clearPentamer();
@@ -7277,7 +7278,7 @@ void MIGLWidget::polyAlaChain()
     AtomStack->Pop(a, res, model);
     if (Monomer::isValid(res) && MIMoleculeBase::isValid(model))
     {
-        getchain(res->chain_id(), model->getResidues(), res1, res2);
+        getchain(res->chain_id(), model->residuesBegin(), res1, res2);
         if (res1 && res2)
         {
             AtomStack->Push(res2->atom(0), res2, model);
@@ -7400,7 +7401,7 @@ void MIGLWidget::OnSequencePosition()
     // find the start and count
     start = res1;
     end = res2;
-    nres = order_ends(start, end, model->getResidues());
+    nres = order_ends(start, end, model->residuesBegin());
     if (!start)
     {
         Logger::message("Can't find the start");
@@ -7444,7 +7445,7 @@ void MIGLWidget::OnSequencePositionChain()
     MIAtom *a;
     Molecule *model;
     AtomStack->Pop(a, res, model);
-    getchain(res->chain_id(), model->getResidues(), res1, res2);
+    getchain(res->chain_id(), model->residuesBegin(), res1, res2);
     if (res1 && res2)
     {
         AtomStack->Push(res2->atom(0), res2, model);
@@ -7499,7 +7500,7 @@ void MIGLWidget::modelReplaceWithSequence()
     // find the start and count
     start = res1;
     end = res2;
-    nres = order_ends(start, end, model->getResidues());
+    nres = order_ends(start, end, model->residuesBegin());
     if (!start)
     {
         Logger::message("Can't find the start");
@@ -7676,7 +7677,7 @@ void MIGLWidget::OnBuildCBRange()
     // find the start and count
     start = res1;
     end = res2;
-    order_ends(start, end, model->getResidues());
+    order_ends(start, end, model->residuesBegin());
     if (end->next() != NULL)
     {
         Residue *r = end->next();
@@ -7741,7 +7742,7 @@ void MIGLWidget::OnBuildMainchainRange()
     // find the start and count
     start = res1;
     end = res2;
-    order_ends(start, end, model->getResidues());
+    order_ends(start, end, model->residuesBegin());
     if (!start)
     {
         Logger::message("Can't find the start");
@@ -7781,7 +7782,7 @@ void MIGLWidget::OnGotoNter()
     Molecule *model = Models->CurrentItem();
     if (!model)
         return;
-    getchain(focusres->chain_id(), model->getResidues(), res1, res2);
+    getchain(focusres->chain_id(), model->residuesBegin(), res1, res2);
     res = res1;
     setFocusResidue(res);
 }
@@ -7797,7 +7798,7 @@ void MIGLWidget::OnGotoCter()
     Molecule *model = Models->CurrentItem();
     if (!model)
         return;
-    getchain(focusres->chain_id(), model->getResidues(), res1, res2);
+    getchain(focusres->chain_id(), model->residuesBegin(), res1, res2);
     res = res2;
     setFocusResidue(res);
 }
@@ -7917,7 +7918,7 @@ void MIGLWidget::OnAddWater()
         zmax = dlg.value(9).toDouble();
 
         Residue *last;
-        Residue *first = model->getResidues();
+        Residue *first = model->residuesBegin();
         if (!Monomer::isValid(first))
         {
             Logger::message("Waters can't be added to an empty model.");
@@ -8039,7 +8040,7 @@ int MIGLWidget::ScriptCommand(const char *ubuf)
             {
                 return -1;
             }
-            if ((res = residue_from_name((*models)[m-1]->getResidues(), resid, chain[0]))
+            if ((res = residue_from_name((*models)[m-1]->residuesBegin(), resid, chain[0]))
                 != NULL)
             {
                 if ((atom = atom_from_name(atomid, *res)) != NULL)
@@ -8089,8 +8090,8 @@ int MIGLWidget::ScriptCommand(const char *ubuf)
             {
                 return -1;
             }
-            if ((res = residue_from_name((*models)[m-1]->getResidues(), resid, chain1[0])) != NULL
-                && (res2 = residue_from_name((*models)[m2-1]->getResidues(), resid2, chain2[0])) != NULL)
+            if ((res = residue_from_name((*models)[m-1]->residuesBegin(), resid, chain1[0])) != NULL
+                && (res2 = residue_from_name((*models)[m2-1]->residuesBegin(), resid2, chain2[0])) != NULL)
             {
                 if ((atom = atom_from_name(atomid, *res)) != NULL && (atom2 = atom_from_name(atomid2, *res2)) != NULL)
                 {
@@ -8809,7 +8810,7 @@ void MIGLWidget::findLigandFit()
             BoundingBox = new InterpBox(CurrentAtoms, currentmap);
         }
         fitmol->TranslateAtomsToCenter(CurrentAtoms, viewpoint);
-        BoundingBox->ZeroModel(fitmol->getResidues());
+        BoundingBox->ZeroModel(fitmol->residuesBegin());
         MyMIMolOptCheckPoint *ckpt = new MyMIMolOptCheckPoint(this, viewpoint);
         float screen_center[3];
         GetScreenCenter(screen_center, viewpoint);
@@ -9046,7 +9047,7 @@ void MIGLWidget::OnFindLigandDensity()
         return;
     }
     Residue *last;
-    Residue *end = model->getResidues();
+    Residue *end = model->residuesBegin();
     if (!Monomer::isValid(end))
     {
         return;
@@ -9156,7 +9157,8 @@ void MIGLWidget::ColorModel(Molecule *node)
             incrementallyColor = true;
         }
     }
-    for (MIIter<Residue> res = node->GetResidues(); res; ++res)
+    for (ResidueListIterator res = node->residuesBegin();
+         res != node->residuesEnd(); ++res)
     {
         for (int i = 0; i < res->atomCount(); i++)
         {
@@ -9387,7 +9389,7 @@ void MIGLWidget::ReadStack(const char *pathname, bool append)
                 if (node != NULL)
                 {
                     sscanf(buf, "%*s%s%s%c", aname, rname, &chainid);
-                    if ((res = residue_from_name(node->getResidues(), rname, chainid)) != NULL)
+                    if ((res = residue_from_name(node->residuesBegin(), rname, chainid)) != NULL)
                     {
                         if ((a = atom_from_name(aname, *res)) != NULL)
                         {
@@ -9938,7 +9940,8 @@ void MIGLWidget::OnShowColorallatoms()
     {
         node->Do();
     }
-    for (MIIter<Residue> res = node->GetResidues(); res; ++res)
+    for (ResidueListIterator res = node->residuesBegin();
+         res != node->residuesEnd(); ++res)
     {
         for (int i = 0; i < res->atomCount(); i++)
         {
@@ -10192,7 +10195,8 @@ void MIGLWidget::OnShowRadiusmodel()
     {
         node->Do();
     }
-    for (MIIter<Residue> res = node->GetResidues(); res; ++res)
+    for (ResidueListIterator res = node->residuesBegin();
+         res != node->residuesEnd(); ++res)
     {
         for (int i = 0; i < res->atomCount(); i++)
         {
@@ -10337,7 +10341,8 @@ void MIGLWidget::OnShowShowwithinsphere()
     cx = (double)viewpoint->getcenter(0);
     cy = (double)viewpoint->getcenter(1);
     cz = (double)viewpoint->getcenter(2);
-    for (MIIter<Residue> res = node->GetResidues(); res; ++res)
+    for (ResidueListIterator res = node->residuesBegin();
+         res != node->residuesEnd(); ++res)
     {
         within = 0;
         for (i = 0; i < res->atomCount(); i++)
@@ -10757,8 +10762,8 @@ void MIGLWidget::mouseReleaseEvent(QMouseEvent *e)
                                     atom2 = a;
                                 }
                                 {
-                                    Residue *res1 = residue_from_atom(fitmol->getResidues(), atom1);
-                                    Residue *res2 = residue_from_atom(fitmol->getResidues(), atom2);
+                                    Residue *res1 = residue_from_atom(fitmol->residuesBegin(), atom1);
+                                    Residue *res2 = residue_from_atom(fitmol->residuesBegin(), atom2);
                                     AtomStack->Push(atom2, res2, fitmol);
                                     AtomStack->Push(atom1, res1, fitmol);
                                 }
@@ -10981,13 +10986,13 @@ void MIGLWidget::findResidueAndMoleculeForAtom(MIAtom *atom, Residue* &res, Mole
     std::list<Molecule*>::iterator molIter = models->begin();
     while (molIter != models->end())
     {
-        res = residue_from_atom((*molIter)->getResidues(), atom);
+        res = residue_from_atom((*molIter)->residuesBegin(), atom);
         if (res != NULL)
         {
             mol = *molIter;
             break;
         }
-        res = residue_from_atom((*molIter)->getSymmResidues(), atom);
+        res = residue_from_atom((*molIter)->symmResiduesBegin(), atom);
         if (res != NULL)
         {
             mol = *molIter;
@@ -11851,7 +11856,7 @@ bool MIGLWidget::LoadXMLMolecule(const char *pathname, int nmodel)
     for (mi = molHandler.molecules.begin(); mi != molHandler.molecules.end(); ++mi)
     {
         // add molecule to displaylist
-        if ((*mi)->getResidues() != NULL)
+        if ((*mi)->residuesBegin() != (*mi)->residuesEnd())
         {
             Models->AddItem((*mi));
             (*mi)->modelnumber = nmodel;

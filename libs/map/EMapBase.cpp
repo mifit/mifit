@@ -4474,7 +4474,7 @@ int EMapBase::HydrateMap(int minlevel, int maxadd, int add_water, MIMoleculeBase
     float fx, fy, fz;
     float cx, cy, cz;
     Residue *res;
-    Residue *residues = model->getResidues();
+    Residue *residues = model->residuesBegin();
     CMapHeaderBase *mh = mapheader;
     //MINATOM * atoms=NULL;
     MINATOM atom, symatom;

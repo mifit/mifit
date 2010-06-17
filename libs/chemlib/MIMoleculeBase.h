@@ -7,7 +7,12 @@
 #include "model.h"
 #include "Bond.h"
 #include "Residue_fwd.h"
-#include "iterator.h"
+
+#if (__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1))
+#define MIFIT_DEPRECATED  __attribute__((__deprecated__))
+#else
+#define MIFIT_DEPRECATED
+#endif // __GNUC__
 
 namespace chemlib
 {
@@ -44,25 +49,11 @@ namespace chemlib
         MIMoleculeBase(Residue *reslist, const std::string &cmpd, Bond *conns, int nconns);
         virtual ~MIMoleculeBase();
 
-#ifndef USE_ONLY_RESIDUE_ITERATOR
-// Use of these functions should be replaced by the iterator versions.
-
-        Residue *getResidues()
-        {
-            return residues;
-        }
-
-        Residue *getSymmResidues()
-        {
-            return SymmResidues;
-        }
-
-#endif
-        MIIterBase<Residue> *GetResidues();
         ResidueListIterator residuesBegin();
         ResidueListIterator residuesEnd();
 
-        MIIterBase<Residue> *GetSymmResidues();
+        ResidueListIterator symmResiduesBegin();
+        ResidueListIterator symmResiduesEnd();
 
         virtual MIAtom *GetAtom(int natom);
 
@@ -260,10 +251,10 @@ namespace chemlib
         //
         //     void moleculeToBeDeleted(MIMoleculeBase* mol) {
         //       std::vector<RESIDUE*> residues;
-        //       for (MIIterBase<RESIDUE> *res=mol->GetResidues(); res; ++res) {
+        //       for (ResidueListIterator res=mol->residuesBegin(); res != mol->residuesEnd(); ++res) {
         //         residues.push_back(res);
         //       }
-        //       for (MIIterBase<RESIDUE> *res=mol->GetSymmResidues(); res; ++res) {
+        //       for (ResidueListIterator res=mol->symmResiduesBegin(); res != mol->symmResiduesEnd(); ++res) {
         //         residues.push_back(res);
         //       }
         //       residuesToBeDeleted(mol,residues);

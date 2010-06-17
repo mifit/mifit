@@ -132,7 +132,7 @@ void GLOverviewCanvas::createAlphaCarbonTrace()
     list<Molecule*>::iterator molIterEnd = displaylist->end();
     while (molIter != molIterEnd)
     {
-        BuildCALinks(bonds, (*molIter)->getResidues());
+        BuildCALinks(bonds, (*molIter)->residuesBegin());
         molIter++;
     }
 

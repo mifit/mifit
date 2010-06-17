@@ -357,7 +357,7 @@ bool MoleculeXmlHandler::startElement(const QString &namespaceURI,
         }
         if (residue == NULL)
         {
-            residue = residue_from_atom(molecule->getResidues(), atom);
+            residue = residue_from_atom(molecule->residuesBegin(), atom);
         }
         if (residue != NULL && atom != NULL)
         {

@@ -199,7 +199,8 @@ void GLRenderer::computeBounds(std::list<Molecule*> &molecules)
     {
         Molecule *molecule = *molIter;
         molIter++;
-        for (MIIter<Residue> res = molecule->GetResidues(); res; ++res)
+        for (ResidueListIterator res = molecule->residuesBegin();
+             res != molecule->residuesEnd(); ++res)
         {
             for (int i = 0; i < res->atomCount(); i++)
             {
@@ -1432,12 +1433,12 @@ void GLRenderer::drawBondLine(const Vector3<float> &pos1, int color1, const Vect
     glPopAttrib();
 }
 
-void GLRenderer::drawResidueAtoms(MIIter<Residue> &res)
+void GLRenderer::drawResidueAtoms(ResidueListIterator res, ResidueListIterator resEnd)
 {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     Vector3<float> pos;
-    for (; res; ++res)
+    for (; res != resEnd; ++res)
     {
         for (unsigned int i = 0; i < (unsigned int) res->atomCount(); i++)
         {
@@ -1491,8 +1492,7 @@ void GLRenderer::drawMolecule(Molecule *molecule)
         DrawContacts(molecule->hbondContacts);
         if (style.isAtomBall())
         {
-            MIIter<Residue> res = molecule->GetResidues();
-            drawResidueAtoms(res);
+            drawResidueAtoms(molecule->residuesBegin(), molecule->residuesEnd());
         }
         if (molecule->DotsVisible())
         {
@@ -1507,10 +1507,7 @@ void GLRenderer::drawSymmetryMolecule(Molecule *molecule, bool showSymmetryAsBac
     {
         drawBonds(molecule->getSymmetryBonds());
         if (!showSymmetryAsBackbone && style.isAtomBall())
-        {
-            MIIter<Residue> res = molecule->GetSymmResidues();
-            drawResidueAtoms(res);
-        }
+            drawResidueAtoms(molecule->symmResiduesBegin(), molecule->symmResiduesEnd());
     }
 }
 

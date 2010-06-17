@@ -28,14 +28,13 @@ void Stack::moleculeToBeDeleted(MIMoleculeBase *mol)
     // stack where mol and/or res was null, the stack might still have a ref
     // to it, so we have to try harder
     std::vector<Residue*> residues;
-    for (MIIter<Residue> res = mol->GetResidues(); res; ++res)
-    {
+    ResidueListIterator res = mol->residuesBegin();
+    for (; res != mol->residuesEnd(); ++res)
         residues.push_back(res);
-    }
-    for (MIIter<Residue> res = mol->GetSymmResidues(); res; ++res)
-    {
+
+    for (res = mol->symmResiduesBegin(); res != mol->symmResiduesEnd(); ++res)
         residues.push_back(res);
-    }
+
     residuesToBeDeleted(mol, residues);
 }
 
@@ -210,55 +209,37 @@ void Stack::ExpandTop2AllAtoms()
         return;
     }
 
-    int i = 0;
-    int i1 = -1;
-    int i2 = -1;
     if (r1 == r2)
     {
-        for (i = 0; i < r2->atomCount(); i++)
+        for (int i = 0; i < r2->atomCount(); i++)
         {
             Push(r2->atom(i), r2, m2);
         }
         return;
     }
-    MIIterBase<Residue> *rip = 0;
-    MIIter<Residue> res = rip, ri_beg = rip, ri_end = rip;
-    for (res = m1->GetResidues(); res; ++res)
+    std::vector<ResidueListIterator> marks;
+    ResidueListIterator res;
+    for (res = m1->residuesBegin(); res != m1->residuesBegin(); ++res)
     {
-        if (res == r1)
+        if (res == ResidueListIterator(r1)
+            || res == ResidueListIterator(r2))
         {
-            ri_beg = res;
-            i1 = i;
+            marks.push_back(res);
         }
-        if (res == r2)
-        {
-            ri_end = res;
-            i2 = i;
-        }
-        i++;
     }
-    if (i1==-1 || i2==-1)
+    if (marks.size() != 2)
     {
         Logger::message("Error expanding stack: residue not found in model");
         Push(a2, r2, m2);
         Push(a1, r1, m1);
     }
 
-    if (i2 < i1)
+    ++marks[1];
+    for (res = marks[0]; res != marks[1]; ++res)
     {
-        res = ri_beg;
-        ri_beg = ri_end;
-        ri_end = res;
-    }
-    for (res = ri_beg; res; ++res)
-    {
-        for (i = 0; i < res->atomCount(); i++)
+        for (int i = 0; i < res->atomCount(); i++)
         {
             Push(res->atom(i), res, m2);
-        }
-        if ((Residue*)res == (Residue*)ri_end)
-        {
-            break;
         }
     }
 }
@@ -287,7 +268,6 @@ void Stack::ExpandTop2Range()
         return;
     }
 
-    int i = 0, i1 = (-1), i2 = (-1);
     if (r1 == r2)
     {
         if ((a = atom_from_name("CA", *r2)) == NULL)
@@ -301,23 +281,16 @@ void Stack::ExpandTop2Range()
         return;
     }
 
-    MIIterBase<Residue> *rip = 0;
-    MIIter<Residue> res = rip, ri_beg = rip, ri_end = rip;
-    for (res = m1->GetResidues(); res; ++res)
+    ResidueListIterator res;
+    std::vector<ResidueListIterator> marks;
+    for (res = m1->residuesBegin(); res != m1->residuesEnd(); ++res)
     {
-        if (res == r1)
-        {
-            ri_beg = res;
-            i1 = i;
-        }
-        if (res == r2)
-        {
-            ri_end = res;
-            i2 = i;
-        }
-        i++;
+        if (res == ResidueListIterator(r1) || res == ResidueListIterator(r2))
+            marks.push_back(res);
+        if (marks.size() == 2)
+            break;
     }
-    if (i1==-1 || i2==-1)
+    if (marks.size() != 2)
     {
         Logger::message("Error expanding stack: residue not found in model");
         Push(a2, r2, m2);
@@ -325,13 +298,8 @@ void Stack::ExpandTop2Range()
         return;
     }
 
-    if (i2 < i1)
-    {
-        res = ri_beg;
-        ri_beg = ri_end;
-        ri_end = res;
-    }
-    for (res = ri_beg; res; ++res)
+    ++marks[1];
+    for (res = marks[0]; res != marks[1]; ++res)
     {
         if ((a = atom_from_name("CA", *res)) != NULL)
         {
@@ -340,10 +308,6 @@ void Stack::ExpandTop2Range()
         else
         {
             Push(res->atom(0), res, m2);
-        }
-        if ((Residue*)res == (Residue*)ri_end)
-        {
-            break;
         }
     }
 }

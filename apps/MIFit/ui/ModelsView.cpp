@@ -486,7 +486,8 @@ void AtomsTree::DeleteItem()
 unsigned int CountAtoms(Molecule *model)
 {
     unsigned int count = 0;
-    for (MIIter<Residue> currRes = model->GetResidues(); currRes; ++currRes)
+    ResidueListIterator currRes = model->residuesBegin();
+    for (; currRes != model->residuesEnd(); ++currRes)
     {
         count += currRes->atomCount();
     }
@@ -798,7 +799,7 @@ void ResiduesTree::atomChanged(MIMoleculeBase *model, MIAtomList &atoms)
     {
         MIAtom *atom = *iter;
         ++iter;
-        Residue *res = residue_from_atom(model->getResidues(), atom);
+        Residue *res = residue_from_atom(model->residuesBegin(), atom);
         residues.insert(res);
     }
     std::set<Residue*>::iterator iter2 = residues.begin();
@@ -1712,7 +1713,7 @@ void ModelsTree::goToResidue(const std::string &nameRef)
     if (residue == NULL && currentModel != NULL)
     {
         // Search model using full string
-        chain = currentModel->getResidues();
+        chain = currentModel->residuesBegin();
         chain_id = '*';
         residue = residue_from_name(chain, residueName.c_str(), chain_id);
     }
@@ -1733,7 +1734,7 @@ void ModelsTree::goToResidue(const std::string &nameRef)
         }
         if (currentModel != NULL)
         {
-            chain = currentModel->getResidues();
+            chain = currentModel->residuesBegin();
             residue = residue_from_name(chain, residueName.c_str(), chain_id);
         }
     }
@@ -2346,7 +2347,7 @@ void ModelsTree::InsertItem()
             }
             unsigned char c = chainId.toAscii().at(0);
             Residue *buffer = Application::instance()->GetResidueBuffer();
-            model->InsertResidues(model->getResidues(), buffer, 3, (c&255) + 1*256);
+            model->InsertResidues(model->residuesBegin(), buffer, 3, (c&255) + 1*256);
             model->Build();
             model->SortChains();
             addChains(model);
@@ -2494,7 +2495,7 @@ Residue*ModelsTree::findChain(Residue *residue)
         Molecule *model = *modelIter;
         ++modelIter;
         unsigned short chain_id = 0;
-        for (Residue *res = model->getResidues(); res != NULL; res = res->next())
+        for (Residue *res = model->residuesBegin(); res != NULL; res = res->next())
         {
             if ((res->chain_id()) != chain_id)
             {
@@ -2524,7 +2525,7 @@ Molecule*ModelsTree::findModel(Residue *residue)
     {
         model = *modelIter;
         ++modelIter;
-        for (Residue *res = model->getResidues(); res != NULL; res = res->next())
+        for (Residue *res = model->residuesBegin(); res != NULL; res = res->next())
         {
             if (res == residue)
             {
@@ -2782,7 +2783,7 @@ void ModelsTree::addChains(Molecule *model)
     std::set<TreeData*> currentChainDataSet;
     int chain_id = -9999;
     QTreeWidgetItem *previousChainItem;
-    for (Residue *res = model->getResidues(); res != NULL; res = res->next())
+    for (Residue *res = model->residuesBegin(); res != NULL; res = res->next())
     {
         if (res->chain_id() != chain_id)
         {
@@ -2851,7 +2852,7 @@ void ModelsTree::addChains(Molecule *model)
     }
     if (currentChain == NULL)
     {
-        setCurrentChain(model->getResidues());
+        setCurrentChain(model->residuesBegin());
     }
 }
 
@@ -3012,7 +3013,7 @@ void ModelsTree::atomChanged(MIMoleculeBase *model, MIAtomList &atoms)
     {
         MIAtom *atom = *iter;
         ++iter;
-        Residue *res = residue_from_atom(model->getResidues(), atom);
+        Residue *res = residue_from_atom(model->residuesBegin(), atom);
         if (res != NULL)
         {
             Residue *chain = findChain(res);
@@ -3228,7 +3229,7 @@ void ModelsTree::modelToBeDeleted(MIMoleculeBase *mol)
     {
         setCurrentChain(NULL);
     }
-    for (Residue *res = model->getResidues(); Residue::isValid(res); res = res->next())
+    for (Residue *res = model->residuesBegin(); Residue::isValid(res); res = res->next())
     {
         residueToChainData.erase(res);
     }

@@ -69,7 +69,7 @@ void LSQFitDialog::on_sourceListWidget_currentTextChanged(const QString &str)
     }
 
     std::string resstr = str.toStdString();
-    Residue *res = m_source->getResidues();
+    Residue *res = m_source->residuesBegin();
     while (res != NULL)
     {
         if (resid(res) == resstr)
@@ -91,7 +91,7 @@ void LSQFitDialog::on_targetListWidget_currentTextChanged(const QString &str)
     }
 
     std::string resstr = str.toStdString();
-    Residue *res = m_target->getResidues();
+    Residue *res = m_target->residuesBegin();
     while (res != NULL)
     {
         if (resid(res) == resstr)
@@ -111,7 +111,7 @@ void LSQFitDialog::on_targetComboBox_currentIndexChanged(const QString &text)
     if (mol)
     {
         m_target = mol;
-        targetres = m_target->getResidues();
+        targetres = m_target->residuesBegin();
         ListTarget();
     }
     Matches.clear();
@@ -125,7 +125,7 @@ void LSQFitDialog::on_sourceComboBox_currentIndexChanged(const QString &text)
     if (mol)
     {
         m_source = mol;
-        sourceres = m_source->getResidues();
+        sourceres = m_source->residuesBegin();
         ListSource();
     }
     Matches.clear();
@@ -297,11 +297,11 @@ void LSQFitDialog::on_addButton_clicked()
     MATCH m;
     if (targetres == NULL)
     {
-        targetres = m_target->getResidues();
+        targetres = m_target->residuesBegin();
     }
     if (sourceres == NULL)
     {
-        sourceres = m_source->getResidues();
+        sourceres = m_source->residuesBegin();
     }
     m.target = targetres;
     m.source = sourceres;
@@ -335,7 +335,7 @@ void LSQFitDialog::ListSource()
 {
     if (m_source)
     {
-        Residue *res = m_source->getResidues();
+        Residue *res = m_source->residuesBegin();
         QListWidget *list = sourceListWidget;
         QComboBox *chains = chainsChoice;
         list->clear();
@@ -359,7 +359,7 @@ void LSQFitDialog::ListTarget()
 {
     if (m_target)
     {
-        Residue *res = m_target->getResidues();
+        Residue *res = m_target->residuesBegin();
         QListWidget *list = targetListWidget;
         list->clear();
         while (res != NULL)

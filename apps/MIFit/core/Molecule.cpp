@@ -869,7 +869,7 @@ void Molecule::Select(int clear, int main, int sides, int nonprotein,
         }
     }
     atoms += ";";
-    for (MIIter<Residue> res = GetResidues(); Monomer::isValid(res); ++res)
+    for (ResidueListIterator res = residuesBegin(); res != residuesEnd(); ++res)
     {
         if (!start)
         {
@@ -896,7 +896,7 @@ void Molecule::Select(int clear, int main, int sides, int nonprotein,
     {
         end = last;
     }
-    for (MIIter<Residue> res = GetResidues(); Monomer::isValid(res); ++res)
+    for (ResidueListIterator res = residuesBegin(); res != residuesEnd(); ++res)
     {
         if (!inrange)
         {
@@ -1129,7 +1129,7 @@ void Molecule::GenSymmAtoms(ViewPoint *viewpoint)
     symm_center[2] = viewpoint->getcenter(2);
     ClearSymmList();
     symm_radius = (float)viewpoint->xmax/((float)viewpoint->getscale()/10.0F)*0.7F;
-    SymmResidues = SymmResidue(getResidues(), mapheader, symm_center, symm_radius);
+    SymmResidues = SymmResidue(residuesBegin(), mapheader, symm_center, symm_radius);
     if (SymmResidues != NULL)
     {
         Build(true);
@@ -1189,10 +1189,10 @@ Residue*Molecule::MatchPentamer(std::string &pentdir, Residue *start)
     }
 
     // check that start is in residue list
-    MIIter<Residue> res = GetResidues();
-    for (; Monomer::isValid(res); ++res)
+    ResidueListIterator res = residuesBegin();
+    for (; res != residuesEnd(); ++res)
     {
-        if (res == start)
+        if (res == ResidueListIterator(start))
         {
             break;
         }
@@ -1760,7 +1760,7 @@ void Molecule::Save(XMLArchive &ar)
             res->atom(i)->setAtomnumber(n++);
         }
     }
-    for (MIIter<Residue> res = GetSymmResidues(); Monomer::isValid(res); ++res)
+    for (ResidueListIterator res = symmResiduesBegin(); res != symmResiduesEnd(); ++res)
     {
         for (int i = 0; i < res->atomCount(); i++)
         {
@@ -1813,9 +1813,9 @@ void Molecule::Save(XMLArchive &ar)
     ar.WriteMapHeader(*mapheader);
     // write SymmResidues
     ar.BeginTag("SymmResidueList");
-    for (MIIter<Residue> res = GetSymmResidues(); Monomer::isValid(res); ++res)
+    for (ResidueListIterator res = symmResiduesBegin(); res != symmResiduesEnd(); ++res)
     {
-        ar.WriteField(res);
+        ar.WriteField(*res);
     }
     ar.EndTag();
     // write ribbonatoms
@@ -1874,7 +1874,7 @@ void Molecule::Save(XMLArchive &ar)
 void Molecule::Do()
 {
     short savec;
-    for (MIIter<Residue> res = GetResidues(); Monomer::isValid(res); ++res)
+    for (ResidueListIterator res = residuesBegin(); res != residuesEnd(); ++res)
     {
         for (int i = 0; i < res->atomCount(); i++)
         {
@@ -1893,7 +1893,7 @@ void Molecule::UnDo()
     {
         return;
     }
-    for (MIIter<Residue> res = GetResidues(); Monomer::isValid(res); ++res)
+    for (ResidueListIterator res = residuesBegin(); res != residuesEnd(); ++res)
     {
         for (int i = 0; i < res->atomCount(); i++)
         {
@@ -1934,7 +1934,7 @@ long Molecule::SolventSurface(ViewPoint*, float dotsper)
     }
     initspheres(radius);
 
-    for (MIIter<Residue> res = GetResidues(); Monomer::isValid(res) && SurfResult != 0; ++res)
+    for (ResidueListIterator res = residuesBegin(); res != residuesEnd() && SurfResult != 0; ++res)
     {
         if (!IsWater(res))
         {
@@ -1944,7 +1944,7 @@ long Molecule::SolventSurface(ViewPoint*, float dotsper)
                 atom = res->atom(k);
                 r1 = atom->getRadius() + radius_offset;
                 nb = 0;
-                for (MIIter<Residue> res2 = GetResidues(); Monomer::isValid(res2); ++res2)
+                for (ResidueListIterator res2 = residuesBegin(); res2 != residuesEnd(); ++res2)
                 {
                     if (!IsWater(res2))
                     {
@@ -1994,7 +1994,7 @@ long Molecule::SurfaceResidues(float dotsper, ViewPoint *vp, bool ignore_hidden)
     SurfResult = 1;
     srfdotsper = dotsper;
     //ndots = 0;
-    for (MIIter<Residue> res = GetResidues(); (bool)res && SurfResult != 0; ++res)
+    for (ResidueListIterator res = residuesBegin(); res != residuesEnd() && SurfResult != 0; ++res)
     {
         if (res->flags()&128)
         {
@@ -2118,7 +2118,7 @@ long Molecule::Surface(MIAtom *atom, bool ignore_hidden, bool send_signal)
     long maxadots = 0;
     void *hdots = NULL;
 
-    for (MIIter<Residue> res = GetResidues(); res; ++res)
+    for (ResidueListIterator res = residuesBegin(); res != residuesEnd(); ++res)
     {
         for (i = 0; i < res->atomCount(); i++)
         {
@@ -2155,7 +2155,7 @@ long Molecule::Surface(MIAtom *atom, bool ignore_hidden, bool send_signal)
 
 void Molecule::ShowHydrogens(bool Show)
 {
-    for (MIIter<Residue> res = GetResidues(); res; ++res)
+    for (ResidueListIterator res = residuesBegin(); res != residuesEnd(); ++res)
     {
         for (int i = 0; i < res->atomCount(); i++)
         {
@@ -2189,7 +2189,7 @@ long Molecule::SurfaceCenter(ViewPoint *viewpoint, float dotsper, float boxsize,
     boxsize *= (float)(CRS*CRS*boxsize);
     radius = (long)boxsize;
     std::vector<SURFDOT>().swap(dots); // was dots.clear();
-    for (MIIter<Residue> res = GetResidues(); (bool)res && SurfResult != 0; ++res)
+    for (ResidueListIterator res = residuesBegin(); res != residuesEnd() && SurfResult != 0; ++res)
     {
         for (i = 0; i < res->atomCount(); i++)
         {
@@ -2530,7 +2530,7 @@ void Molecule::labelAtomStyle(MIAtom *atom, int style)
 void Molecule::labelEveryNthResidue(int n)
 {
     int ir = 0;
-    for (MIIter<Residue> res = GetResidues(); res; ++res)
+    for (ResidueListIterator res = residuesBegin(); res != residuesEnd(); ++res)
     {
         ir++;
         if (ir%n == 0)
@@ -2787,7 +2787,7 @@ void Molecule::setChainColor(Residue *chain, int color, int colorMethod)
 void Molecule::setColor(int color, int colorMethod)
 {
     MIAtomList changed;
-    for (MIIter<Residue> res = GetResidues(); res; ++res)
+    for (ResidueListIterator res = residuesBegin(); res != residuesEnd(); ++res)
     {
         for (int i = 0; i < res->atomCount(); i++)
         {
@@ -2902,8 +2902,8 @@ void Molecule::FixHeaders(std::vector<std::string> &headers)
 int Molecule::SaveSymmMolecule(MIAtom *symatom, FILE *fp)
 {
     /* write a model at the symm position in atom to file fp */
-    MIIter<Residue> res = GetResidues();
-    if (!res)
+    ResidueListIterator res = residuesBegin();
+    if (res == residuesEnd())
     {
         return 0;
     }
@@ -2928,7 +2928,7 @@ int Molecule::SaveSymmMolecule(MIAtom *symatom, FILE *fp)
 
     fprintf(fp, "REM Symmetry molecule at %3.0f %3.0f %3.0f symmop # %d\n",
             tx, ty, tz, isym);
-    for (; res; ++res)
+    for (; res != residuesEnd(); ++res)
     {
         if (res->atomCount() > 0)
         {
@@ -2969,7 +2969,7 @@ void Molecule::Center(int &x, int &y, int &z)
     int zmax = INT_MIN;
     int ix, iy, iz, i;
 
-    for (MIIter<Residue> res = GetResidues(); res; ++res)
+    for (ResidueListIterator res = residuesBegin(); res != residuesEnd(); ++res)
     {
         for (i = 0; i < res->atomCount(); i++)
         {

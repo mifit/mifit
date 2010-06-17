@@ -401,7 +401,8 @@ void ViewPoint::Center(MIMoleculeBase *mol)
     {
         return;
     }
-    for (MIIter<Residue> res = mol->GetResidues(); res; ++res)
+    ResidueListIterator res = mol->residuesBegin();
+    for (; res != mol->residuesEnd(); ++res)
     {
         for (i = 0; i < res->atomCount(); i++)
         {
