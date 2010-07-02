@@ -28,12 +28,12 @@ bool PDB::Write(FILE *fp, MIMolInfo &mol)
     //TODO: obviously glue in the MIFit calls for writing a pdb
     bool ret = false;
 
-    if (!fprintf(fp, "COMPND    %3s\n", mol.res->type().c_str()))                   //Molecule/residue name
+    if (!fprintf(fp, "COMPND    %3s\n", mol.beginRes->type().c_str()))                   //Molecule/residue name
     {
         return false;
     }
 
-    ret = SavePDB(fp, mol.res, ((mol.bonds.size() == 0) ? NULL : &mol.bonds[0]), mol.bonds.size(), true, &mol.header, &mol.tail);
+    ret = SavePDB(fp, mol.beginRes, mol.endRes, ((mol.bonds.size() == 0) ? NULL : &mol.bonds[0]), mol.bonds.size(), true, &mol.header, &mol.tail);
     return ret;
 }
 
@@ -45,7 +45,7 @@ bool PDB::Read(FILE *fp, MIMolInfo &mol)
     // clear current mol
     MIMolInfo foo;
     mol = foo;
-    mol.res = 0;
+    mol.beginRes = 0;
 
     Residue *tmp_res = LoadPDB(fp, &connects);
     if (!Monomer::isValid(tmp_res))
@@ -76,10 +76,10 @@ bool PDB::Read(FILE *fp, MIMolInfo &mol)
     }
 
     tmp_res->setPrefBonds(tmp_bonds);
-    mol.res = new Residue(*tmp_res);
-    mol.bonds = mol.res->prefBonds();
-    mol.res->clearPrefBonds();
-    mol.res->clearPrefAngles();
+    mol.beginRes = new Residue(*tmp_res);
+    mol.bonds = mol.beginRes->prefBonds();
+    mol.beginRes->clearPrefBonds();
+    mol.beginRes->clearPrefAngles();
     FreeResidueList(tmp_res);
     return true;
 }
@@ -391,14 +391,13 @@ Residue *LoadPDB(FILE *f, std::vector<Bond> *connects)
     return (res1);
 }
 
-bool SavePDB(FILE *fp, Residue *res, Bond *Connects, int nConnects, bool mark_end, std::vector<std::string> *head, std::vector<std::string> *tail)
+bool SavePDB(FILE *fp, ResidueListIterator beginRes, ResidueListIterator endRes, Bond *Connects, int nConnects, bool mark_end, std::vector<std::string> *head, std::vector<std::string> *tail)
 {
     /* if nconnects negative then save only visible atoms
      */
     char buf[200];
     char chainid, recid[7];
     int n = 0, nchain = 0;
-    Residue *residue;
     //float occupancy = 1.0;
     //float Bvalue = 15.0;
     if (head != NULL)
@@ -412,10 +411,10 @@ bool SavePDB(FILE *fp, Residue *res, Bond *Connects, int nConnects, bool mark_en
         }
     }
     /* now write out the atoms... */
-    residue = res;
+    ResidueListIterator residue = beginRes;
     char residueName[6];
     residueName[5] = '\0';
-    while (residue != NULL)
+    while (residue != endRes)
     {
         strncpy(residueName, residue->name().c_str(), 4);
         if (strlen(residueName) == 0)
@@ -520,7 +519,7 @@ bool SavePDB(FILE *fp, Residue *res, Bond *Connects, int nConnects, bool mark_en
             //TER    1629      ARG A 106
         }
 
-        residue = residue->next();
+        ++residue;
     }
 
     if (nConnects > 0 && Connects != NULL)

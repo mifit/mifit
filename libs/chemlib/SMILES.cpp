@@ -31,13 +31,14 @@ bool SMILES::Read(const std::string &smiles, MIMolInfo &mol)
     // clear current mol
     MIMolInfo foo;
     mol = foo;
-    mol.res = SmilesToMol(smiles, mol.bonds, error);
-    if (mol.res)
+    Monomer *res = SmilesToMol(smiles, mol.bonds, error);
+    if (res)
     {
-        mol.res->setSecstr('X');
-        mol.res->set_chain_id(' ');
+        res->setSecstr('X');
+        res->set_chain_id(' ');
+        mol.beginRes = new Residue(*res);
     }
-    return mol.res != 0;
+    return res != 0;
 }
 
 }

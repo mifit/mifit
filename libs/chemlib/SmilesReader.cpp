@@ -8,7 +8,7 @@
 namespace chemlib
 {
 
-Residue *SmilesToMol(const std::string &smiles,
+Monomer *SmilesToMol(const std::string &smiles,
                      std::vector<Bond> &bonds,
                      std::string &error_message)
 {
@@ -42,7 +42,7 @@ Residue *SmilesToMol(const std::string &smiles,
     cg.AssignResidue();
 
 
-    std::vector<Residue*> residues;
+    std::vector<Monomer*> residues;
     lig.Export(residues, bonds);
     return residues.front();
 }

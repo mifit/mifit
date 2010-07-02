@@ -3,13 +3,14 @@
 
 #include <algorithm>
 #include <map>
+#include <QObject>
 #include "MIAtom_fwd.h"
 #include "Bond.h"
 
 namespace chemlib
 {
 
-    class Monomer
+    class Monomer : public QObject
     {
 
         typedef std::map<const Monomer*, size_t> MonomerRefCountMap;

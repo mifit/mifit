@@ -2480,7 +2480,7 @@ ATOMLABEL*Molecule::findLabelForAtom(MIAtom *atom)
     {
         ATOMLABEL *label = *iter;
         ++iter;
-        if (label->atom() == atom)
+        if (label->atom().data() == atom)
         {
             return label;
         }
@@ -2495,10 +2495,8 @@ bool Molecule::isAtomLabeled(MIAtom *atom)
 
 void Molecule::labelAtom(MIAtom *atom, Residue *res)
 {
-    if (!MIAtom::isValid(atom) || !Monomer::isValid(res))
-    {
+    if (!atom || !res)
         return;
-    }
 
     ATOMLABEL *label = findLabelForAtom(atom);
     if (label == NULL)
@@ -2948,7 +2946,7 @@ int Molecule::SaveSymmMolecule(MIAtom *symatom, FILE *fp)
                 sres->atom(j)->setPosition(x1, y1, z1);
             }
             /* now write it to disk */
-            SavePDB(fp, sres, NULL, 0, false);
+            SavePDB(fp, sres, 0, NULL, 0, false);
             delete sres;
         }
         nres++;

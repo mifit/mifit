@@ -33,7 +33,7 @@ namespace chemlib
 
     void MISetIgnoreDummyAtomsOnLoad(bool ignore);
     Residue *LoadPDB(FILE *f, std::vector<Bond> *connects);
-    bool SavePDB(FILE *fp, Residue *res, Bond *Connects, int nConnects, bool mark_end = true, std::vector<std::string> *head = 0, std::vector<std::string> *tail = 0);
+    bool SavePDB(FILE *fp, ResidueListIterator beginRes, ResidueListIterator endRes, Bond *Connects, int nConnects, bool mark_end = true, std::vector<std::string> *head = 0, std::vector<std::string> *tail = 0);
 }
 
 #endif // ifndef mifit_fios_PDB_h

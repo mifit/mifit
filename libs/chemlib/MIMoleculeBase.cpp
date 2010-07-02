@@ -2141,7 +2141,7 @@ bool MIMoleculeBase::SavePDBFile(const char *savepath)
         edges = &connects[0];
     }
 
-    bool ret = SavePDB(fp, residues, edges, connects.size(), true, &headers, &FileTail);
+    bool ret = SavePDB(fp, residuesBegin(), residuesEnd(), edges, connects.size(), true, &headers, &FileTail);
 
     if (fp)
     {
@@ -2279,7 +2279,7 @@ bool MIMoleculeBase::SavePDBFileVisible(const char *savepath)
         Logger::message("Save failed! Unable to open output file. Disk full?");
         return false;
     }
-    bool ret = SavePDB(fp, residues, NULL, -1);
+    bool ret = SavePDB(fp, residues, 0, NULL, -1);
     if (fp)
     {
         fclose(fp);

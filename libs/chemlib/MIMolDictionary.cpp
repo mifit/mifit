@@ -3220,7 +3220,7 @@ bool MIMolDictionary::SaveDictionary(const char *pathname, const char *res_type)
 
 bool MIMolDictionary::fwriteDictEntry(FILE *fp, const char *res_type)
 {
-    Residue *res = GetDictResidue(res_type);
+    ResidueListIterator res = GetDictResidue(res_type);
     size_t i;
     if (!res)
     {
@@ -3234,10 +3234,9 @@ bool MIMolDictionary::fwriteDictEntry(FILE *fp, const char *res_type)
         res = GetDictResidue(res_type, i);
         if (!res)
             return false;
-        Residue *tmp = res->next();
-        res->setNext(NULL);
-        bool result = SavePDB(fp, res, NULL, 0, false);
-        res->setNext(tmp);
+        ResidueListIterator tmp = res;
+        ++tmp;
+        bool result = SavePDB(fp, res, tmp, NULL, 0, false);
         if (!result)
             return false;
     }
@@ -3318,7 +3317,8 @@ bool MIMolDictionary::fwriteDictEntry_mmCIF(FILE *fp, const char *res_type)
     mmCIF fio;
     fio.WriteTorsions(false);
     MIMolInfo mi;
-    mi.res = reslist;
+    mi.beginRes = reslist;
+    mi.endRes = 0;
     mi.bonds = RefiBonds;
     mi.angles = RefiAngles;
     mi.torsions = RefiTorsions;

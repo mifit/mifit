@@ -2,7 +2,7 @@
 #define mifit_model_ATOMLABEL_H
 
 #include <string>
-
+#include <QWeakPointer>
 #include <chemlib/chemlib.h>
 
 /**
@@ -14,9 +14,9 @@ class ATOMLABEL
     /**
      * Pointer to atom labeled. If atom x,y,z is changed label follows.
      */
-    const chemlib::MIAtom *atom_;
+    QWeakPointer<const chemlib::MIAtom> atom_;
 
-    const chemlib::Residue *residue_;
+    QWeakPointer<const chemlib::Residue> residue_;
 
     bool useDefaultStyle_;
 
@@ -56,11 +56,11 @@ public:
 
     ATOMLABEL();
 
-    ATOMLABEL(const chemlib::Residue *residue, const chemlib::MIAtom *atom);
+    ATOMLABEL(QWeakPointer<const chemlib::Residue> residue, QWeakPointer<const chemlib::MIAtom> atom);
 
-    const chemlib::Residue *residue() const;
+    QWeakPointer<const chemlib::Residue> residue() const;
 
-    const chemlib::MIAtom *atom() const;
+    QWeakPointer<const chemlib::MIAtom> atom() const;
 
     bool useDefaultStyle() const;
 
@@ -112,7 +112,7 @@ public:
     static int defaultSize();
     static void defaultSize(int value);
 
-    static std::string labelString(const chemlib::Residue *res, const chemlib::MIAtom *atom, int style);
+    static std::string labelString(QWeakPointer<const chemlib::Residue> res, QWeakPointer<const chemlib::MIAtom> atom, int style);
 };
 
 #endif // ifndef mifit_model_ATOMLABEL_H

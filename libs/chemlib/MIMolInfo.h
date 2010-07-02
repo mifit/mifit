@@ -7,7 +7,7 @@
 
 #include "model.h"
 #include "MIAtom_fwd.h"
-#include "Residue_fwd.h"
+#include "Residue.h"
 #include "Bond.h"
 #include "ANGLE.h"
 #include "PLANE.h"
@@ -21,13 +21,14 @@ namespace chemlib
     {
     public:
         // readers and writers use these
-        MIMolInfo() : res(0)
+        MIMolInfo()
         {
         }
 
         // readers allocate and return a new residue for this,
         // writers expect this to be set to the residue to write
-        Residue *res;                   // could make a vector, prob not worth the trouble
+        ResidueListIterator beginRes;
+        ResidueListIterator endRes;
 
         std::vector<Bond> bonds;
         std::vector<ANGLE> angles;       // mmCIF only

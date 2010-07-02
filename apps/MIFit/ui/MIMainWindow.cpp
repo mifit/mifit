@@ -1132,7 +1132,7 @@ std::string MIMainWindow::OnLoadLigand(std::string wildcard, std::string filenam
     }
 
 
-    LigDictEntry entry(mi.res);
+    LigDictEntry entry(mi.beginRes);
     entry.bonds = mi.bonds;
     entry.angles = mi.angles;
     entry.torsions = mi.tordict;
@@ -1281,8 +1281,8 @@ bool MIMainWindow::LoadSmiles(std::string &smiles, std::string &tlcode, MIMolInf
     {
         return false;
     }
-    mi.res->setType(tlcode);
-    Residue::fixnames(mi.res);
+    mi.beginRes->setType(tlcode);
+    Residue::fixnames(mi.beginRes);
     return true;
 }
 
