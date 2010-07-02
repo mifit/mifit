@@ -55,6 +55,7 @@ GenericDataDialog::GenericDataDialog(QWidget *parent, Qt::WindowFlags f)
     QVBoxLayout *layout = new QVBoxLayout;
 
     formLayout_ = new QFormLayout;
+    formLayout_->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     layout->addLayout(formLayout_, 1);
 
     QDialogButtonBox *buttons = new QDialogButtonBox;
@@ -70,6 +71,7 @@ GenericDataDialog::GenericDataDialog(QWidget *parent, Qt::WindowFlags f)
 void GenericDataDialog::addBoolField(const QString &label, bool value)
 {
     QCheckBox *widget = new QCheckBox(this);
+    widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     widget->setChecked(value);
     fieldTypes_ += Bool;
     values_ += value;
@@ -79,6 +81,7 @@ void GenericDataDialog::addBoolField(const QString &label, bool value)
 void GenericDataDialog::addIntField(const QString &label, int value)
 {
     QLineEdit *widget = new QLineEdit(this);
+    widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     widget->setText(QString::number(value));
     fieldTypes_ += Int;
     values_ += value;
@@ -88,6 +91,7 @@ void GenericDataDialog::addIntField(const QString &label, int value)
 void GenericDataDialog::addUIntField(const QString &label, unsigned int value)
 {
     QLineEdit *widget = new QLineEdit(this);
+    widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     widget->setText(QString::number(value));
     fieldTypes_ += UInt;
     values_ += value;
@@ -97,6 +101,7 @@ void GenericDataDialog::addUIntField(const QString &label, unsigned int value)
 void GenericDataDialog::addDoubleField(const QString &label, double value)
 {
     QLineEdit *widget = new QLineEdit(this);
+    widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     widget->setText(QString::number(value, 'f'));
     fieldTypes_ += Double;
     values_ += value;
@@ -106,6 +111,7 @@ void GenericDataDialog::addDoubleField(const QString &label, double value)
 void GenericDataDialog::addStringField(const QString &label, const QString &value)
 {
     QLineEdit *widget = new QLineEdit(this);
+    widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     widget->setText(value);
     fieldTypes_ += String;
     values_ += value;
@@ -115,6 +121,7 @@ void GenericDataDialog::addStringField(const QString &label, const QString &valu
 void GenericDataDialog::addComboField(const QString &label, const QStringList &choices, int index)
 {
     QComboBox *widget = new QComboBox(this);
+    widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     widget->addItems(choices);
     widget->setCurrentIndex(index);
     fieldTypes_ += Combo;
@@ -141,6 +148,7 @@ void GenericDataDialog::addColorIndexField(const QString &label, int colorIndex)
                  palette->colors[ci].blue);
 
     ColorIndexButton *widget = new ColorIndexButton(this);
+    widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     widget->colorIndex = colorIndex;
     connect(widget, SIGNAL(clicked()), SLOT(colorIndexButtonPressed()));
     setButtonColor(widget, color);
