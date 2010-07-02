@@ -1,6 +1,6 @@
 #include "ATOMLABEL.h"
 #include "RESIDUE.h"
-#include <chemlib/Residue.h>
+#include <chemlib/Monomer.h>
 
 using namespace chemlib;
 
@@ -31,7 +31,7 @@ ATOMLABEL::ATOMLABEL()
     label_ = labelString(residue_, atom_, style_);
 }
 
-ATOMLABEL::ATOMLABEL(QWeakPointer<const Residue> residue, QWeakPointer<const MIAtom> atom)
+ATOMLABEL::ATOMLABEL(QWeakPointer<const Monomer> residue, QWeakPointer<const MIAtom> atom)
     : atom_(atom),
       residue_(residue),
       useDefaultStyle_(true),
@@ -51,7 +51,7 @@ ATOMLABEL::ATOMLABEL(QWeakPointer<const Residue> residue, QWeakPointer<const MIA
     label_ = labelString(residue_, atom_, style_);
 }
 
-QWeakPointer<const Residue> ATOMLABEL::residue() const
+QWeakPointer<const Monomer> ATOMLABEL::residue() const
 {
     return residue_;
 }
@@ -260,10 +260,10 @@ void ATOMLABEL::defaultSize(int value)
     defaultSize_ = value;
 }
 
-std::string ATOMLABEL::labelString(QWeakPointer<const Residue> resPtr, QWeakPointer<const MIAtom> atomPtr, int style)
+std::string ATOMLABEL::labelString(QWeakPointer<const Monomer> resPtr, QWeakPointer<const MIAtom> atomPtr, int style)
 {
 
-    const Residue* res = resPtr.data();
+    const Monomer* res = resPtr.data();
     const MIAtom* atom = atomPtr.data();
     static char id[128];
     if (!res || !atom)
