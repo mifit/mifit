@@ -107,7 +107,7 @@ Ligand::~Ligand()
     }
 }
 
-void Ligand::Export(std::vector<Monomer*> &rdues, std::vector<Bond> &bnds)
+void Ligand::Export(std::vector<Residue*> &rdues, std::vector<Bond> &bnds)
 {
     MIAtomList mifit_atms;
     MIAtomList orig_atms;
@@ -120,7 +120,7 @@ void Ligand::Export(std::vector<Monomer*> &rdues, std::vector<Bond> &bnds)
         {
             orig_atms.push_back(res->atom(i));
         }
-        Monomer *r = new Monomer(*res);
+        Residue *r = new Residue(*res);
         copy(r->atoms().begin(), r->atoms().end(), back_inserter(mifit_atms));
         rdues.push_back(r);
     }

@@ -1067,8 +1067,7 @@ void DictEditCanvas::OnExport(const char *optionalFilename)
 
     if (model)
     {
-        mi.beginRes = model->residuesBegin();
-        mi.endRes = model->residuesEnd();
+        mi.res = model->residuesBegin();
         mi.bonds = geomrefiner->dict.RefiBonds;
         mi.angles = geomrefiner->dict.RefiAngles;
         mi.torsions = geomrefiner->dict.RefiTorsions;

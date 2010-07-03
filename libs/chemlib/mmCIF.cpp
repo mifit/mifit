@@ -45,7 +45,7 @@ mmCIF::~mmCIF()
 bool mmCIF::Write(FILE *fp, MIMolInfo &mol)
 {
     int i;
-    Residue *res = mol.beginRes;
+    Residue *res = mol.res;
     std::string resname; // Used to convert residue type to proper format
     std::string line; // Used to setup the output for an individual line item
     std::string poly;
@@ -839,8 +839,7 @@ bool mmCIF::Read(FILE *fp, MIMolInfo &mol)
     // clear current mol
     MIMolInfo foo;
     mol = foo;
-    mol.beginRes = new Residue();
-    mol.endRes = 0;
+    mol.res = new Residue();
 
     map<std::string, TORSDICT> torsion_map;
     map<std::string, PLANEDICT> plane_map;
@@ -852,7 +851,7 @@ bool mmCIF::Read(FILE *fp, MIMolInfo &mol)
 
         if (block.FindLoop("chem_comp", loop))
         {
-            SlurpHeader(loop, mol.beginRes);
+            SlurpHeader(loop, mol.res);
         }
 
         if (!block.FindLoop("chem_comp_atom", loop))
@@ -860,16 +859,16 @@ bool mmCIF::Read(FILE *fp, MIMolInfo &mol)
             continue;
         }
         //Get atoms
-        if (!SlurpAtoms(loop, mol.beginRes))
+        if (!SlurpAtoms(loop, mol.res))
         {
             continue;
         }
 
         //Create atom map
         map<std::string, MIAtom*> atom_map;
-        for (int i = 0; i < mol.beginRes->atomCount(); ++i)
+        for (int i = 0; i < mol.res->atomCount(); ++i)
         {
-            atom_map[mol.beginRes->atom(i)->name()] = mol.beginRes->atom(i); // Add to the map
+            atom_map[mol.res->atom(i)->name()] = mol.res->atom(i); // Add to the map
         }
 
         //Get bonds
@@ -884,7 +883,7 @@ bool mmCIF::Read(FILE *fp, MIMolInfo &mol)
         //Get angles
         if (block.FindLoop("chemp_comp_angle", loop))
         {
-            SlurpAngles(loop, atom_map, mol.angles, mol.beginRes);
+            SlurpAngles(loop, atom_map, mol.angles, mol.res);
         }
 
         //Get torsions

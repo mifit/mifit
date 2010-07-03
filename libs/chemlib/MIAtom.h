@@ -8,15 +8,15 @@
 #include <map>
 #include <util/utillib.h>
 #include <math/mathlib.h>
-#include <QObject>
 
 #include "MIAtom_fwd.h"
 
 namespace chemlib
 {
 
-    class MIAtom : public QObject
+    class MIAtom
     {
+
         typedef std::map<const MIAtom*, size_t> AtomRefCountMap;
 
         /**

@@ -12,8 +12,8 @@ unsigned char ATOMLABEL::defaultGreen_ = 255;
 unsigned char ATOMLABEL::defaultBlue_ = 255;
 
 ATOMLABEL::ATOMLABEL()
-    : atom_(),
-      residue_(),
+    : atom_(NULL),
+      residue_(NULL),
       useDefaultStyle_(true),
       style_(defaultStyle_),
       customLabel(false),
@@ -31,7 +31,7 @@ ATOMLABEL::ATOMLABEL()
     label_ = labelString(residue_, atom_, style_);
 }
 
-ATOMLABEL::ATOMLABEL(QWeakPointer<const Monomer> residue, QWeakPointer<const MIAtom> atom)
+ATOMLABEL::ATOMLABEL(const Monomer *residue, const MIAtom *atom)
     : atom_(atom),
       residue_(residue),
       useDefaultStyle_(true),
@@ -51,12 +51,12 @@ ATOMLABEL::ATOMLABEL(QWeakPointer<const Monomer> residue, QWeakPointer<const MIA
     label_ = labelString(residue_, atom_, style_);
 }
 
-QWeakPointer<const Monomer> ATOMLABEL::residue() const
+const Monomer *ATOMLABEL::residue() const
 {
     return residue_;
 }
 
-QWeakPointer<const MIAtom> ATOMLABEL::atom() const
+const MIAtom*ATOMLABEL::atom() const
 {
     return atom_;
 }
@@ -260,13 +260,11 @@ void ATOMLABEL::defaultSize(int value)
     defaultSize_ = value;
 }
 
-std::string ATOMLABEL::labelString(QWeakPointer<const Monomer> resPtr, QWeakPointer<const MIAtom> atomPtr, int style)
+std::string ATOMLABEL::labelString(const Monomer *res, const MIAtom *atom, int style)
 {
 
-    const Monomer* res = resPtr.data();
-    const MIAtom* atom = atomPtr.data();
     static char id[128];
-    if (!res || !atom)
+    if (!Monomer::isValid(res) || !MIAtom::isValid(atom))
     {
         strcpy(id, "???");
         return (id);

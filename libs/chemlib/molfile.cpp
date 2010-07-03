@@ -260,13 +260,12 @@ bool molfile::Write(FILE *fp, MIMolInfo &mol)
     time(&t);
     struct tm *foo = localtime(&t);
 
-    ResidueListIterator res = mol.beginRes;
-    for (; res != mol.endRes; ++res)
+    while (Monomer::isValid(mol.res))
     {
         int ischiral = mol.chirals.empty() ?  0 : 1;
         //int nbonds = CountResBonds(*mol.res, mol.bonds);
 
-        if (!fprintf(fp, "%3s\n", res->type().c_str()))                                 //Molecule/residue name
+        if (!fprintf(fp, "%3s\n", mol.res->type().c_str()))                                 //Molecule/residue name
         {
             return false;
         }
@@ -280,17 +279,17 @@ bool molfile::Write(FILE *fp, MIMolInfo &mol)
             return false;
         }
         if (!fprintf(fp, "%3d%3d  0  0  %1d  0              1 V2000\n",
-                     res->atomCount(), mol.bonds.size(), ischiral))
+                     mol.res->atomCount(), mol.bonds.size(), ischiral))
         {
             return false;
         }
 
-        if (!SquirtAtoms(fp, *res, mol.bonds, mol.chirals))
+        if (!SquirtAtoms(fp, *mol.res, mol.bonds, mol.chirals))
         {
             return false;
         }
 
-        if (!SquirtBonds(fp, *res, mol.bonds))
+        if (!SquirtBonds(fp, *mol.res, mol.bonds))
         {
             return false;
         }
@@ -299,6 +298,7 @@ bool molfile::Write(FILE *fp, MIMolInfo &mol)
         {
             return false;
         }
+        mol.res = mol.res->next();
     }
     return true;
 }
@@ -402,8 +402,7 @@ bool molfile::Read(FILE *fp, MIMolInfo &mol)
     // clear current mol
     MIMolInfo foo;
     mol = foo;
-    mol.beginRes = new Residue();
-    mol.endRes = 0;
+    mol.res = new Residue();
 
     fgets(line, MAX_MOLFILE_LINE, fp);      //mol header lines
     fgets(line, MAX_MOLFILE_LINE, fp);
@@ -413,7 +412,7 @@ bool molfile::Read(FILE *fp, MIMolInfo &mol)
         type[0] = line[20];
         type[1] = line[21];
         type[2] = '\0';
-        mol.beginRes->setType(type);
+        mol.res->setType(type);
     }
 
     fgets(line, MAX_MOLFILE_LINE, fp);      //ctab header lines
@@ -421,9 +420,9 @@ bool molfile::Read(FILE *fp, MIMolInfo &mol)
     std::string natoms(line, 3);
     std::string nbonds(line + 3, 3);
 
-    SlurpAtoms(fp, mol.beginRes, atoi(natoms.c_str()));
-    SlurpBonds(fp, mol.bonds, mol.beginRes, atoi(nbonds.c_str()));
-    SlurpProperties(fp, mol.beginRes);
+    SlurpAtoms(fp, mol.res, atoi(natoms.c_str()));
+    SlurpBonds(fp, mol.bonds, mol.res, atoi(nbonds.c_str()));
+    SlurpProperties(fp, mol.res);
     return true;
 }
 

@@ -97,8 +97,8 @@ void Stack::Pop(MIAtom* &atom, Residue* &res)
     }
     StackItem item = data.back();
     dataPop();
-    atom = item.atom.data();
-    res = item.residue.data();
+    atom = item.atom;
+    res = item.residue;
 }
 
 void Stack::Pop(MIAtom* &atom, Residue* &res, Molecule* &m)
@@ -112,9 +112,9 @@ void Stack::Pop(MIAtom* &atom, Residue* &res, Molecule* &m)
     }
     StackItem item = data.back();
     dataPop();
-    atom = item.atom.data();
-    res = item.residue.data();
-    m = item.molecule.data();
+    atom = item.atom;
+    res = item.residue;
+    m = item.molecule;
 }
 
 MIAtom*Stack::Pop()
@@ -125,7 +125,7 @@ MIAtom*Stack::Pop()
     }
     StackItem item = data.back();
     dataPop();
-    return item.atom.data();
+    return item.atom;
 }
 
 void Stack::dataPop()
@@ -149,9 +149,9 @@ void Stack::Peek(MIAtom* &atom, Residue* &res, Molecule* &m)
         return;
     }
     StackItem item = data.back();
-    atom = item.atom.data();
-    res = item.residue.data();
-    m = item.molecule.data();
+    atom = item.atom;
+    res = item.residue;
+    m = item.molecule;
 }
 
 bool Stack::StackChanged()
@@ -318,7 +318,7 @@ bool Stack::InStack(Residue *res)
     while (iter != data.end())
     {
         StackItem item = *iter;
-        if (item.residue.data() == res)
+        if (item.residue == res)
         {
             return true;
         }
@@ -333,7 +333,7 @@ void Stack::Purge(MIMoleculeBase *model)
     while (iter != data.end())
     {
         StackItem item = *iter;
-        if (item.molecule.data() == model)
+        if (item.molecule == model)
         {
             changed = true;
             data.erase(iter);
@@ -350,7 +350,7 @@ void Stack::Purge(Residue *res)
     while (iter != data.end())
     {
         StackItem item = *iter;
-        if (item.residue.data() == res)
+        if (item.residue == res)
         {
             changed = true;
             data.erase(iter);
@@ -367,7 +367,7 @@ void Stack::Purge(MIAtom *atom)
     while (iter != data.end())
     {
         StackItem item = *iter;
-        if (item.atom.data() == atom)
+        if (item.atom == atom)
         {
             changed = true;
             data.erase(iter);

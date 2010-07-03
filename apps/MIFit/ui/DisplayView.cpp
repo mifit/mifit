@@ -184,7 +184,7 @@ void DisplayTree::OnItemActivated(QTreeWidgetItem *item, int)
     else if (data->atomLabel != NULL)
     {
         ATOMLABEL *label = data->atomLabel;
-        view->moveTo(label->atom().data()->x(), label->atom().data()->y(), label->atom().data()->z());
+        view->moveTo(label->atom()->x(), label->atom()->y(), label->atom()->z());
     }
 }
 

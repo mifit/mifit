@@ -11,9 +11,9 @@ class Stack;
 
 typedef struct
 {
-    QWeakPointer<chemlib::MIAtom> atom;
-    QWeakPointer<chemlib::Residue> residue;
-    QWeakPointer<Molecule> molecule;
+    chemlib::MIAtom *atom;
+    chemlib::Residue *residue;
+    Molecule *molecule;
 } StackItem;
 
 

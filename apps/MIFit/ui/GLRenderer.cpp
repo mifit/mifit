@@ -542,13 +542,10 @@ void GLRenderer::DrawLabels(std::list<Molecule*> &molecules)
                 ATOMLABEL *label = *mlIter;
                 if (label->isVisible())
                 {
-                    const MIAtom* atom = label->atom().data();
-                    if (atom)
-                    {
-                        Tuple4<float> vec(atom->x(), atom->y(), atom->z(), 1.0f);
-                        viewmat.transform(vec);
-                        order.insert(std::make_pair(vec.z, label));
-                    }
+                    const MIAtom &atom = *label->atom();
+                    Tuple4<float> vec(atom.x(), atom.y(), atom.z(), 1.0f);
+                    viewmat.transform(vec);
+                    order.insert(std::make_pair(vec.z, label));
                 }
             }
         }
@@ -687,7 +684,7 @@ void GLRenderer::drawLabels(Molecule::AtomLabelList &labels)
     for (iter = labels.begin(); iter != labels.end(); ++iter)
     {
         ATOMLABEL &label = **iter;
-        const MIAtom* atom = label.atom().data();
+        const MIAtom *atom = label.atom();
         if (hideHydrogens && MIAtom::MIIsHydrogen(atom))
         {
             continue;
@@ -785,8 +782,8 @@ void GLRenderer::circleStackAtoms(Stack *stack)
     {
         StackItem item = *iter;
         ++iter;
-        MIAtom* atom = item.atom.data();
-        if (atom)
+        MIAtom *atom = item.atom;
+        if (MIAtom::isValid(atom))
         {
             if (hideHydrogens && MIAtom::MIIsHydrogen(atom))
             {
@@ -800,8 +797,7 @@ void GLRenderer::circleStackAtoms(Stack *stack)
             {
                 glColor3f(0.7f, 0.7f, 1.0f);
             }
-            Molecule* molecule = item.molecule.data();
-            if (molecule && molecule->Visible())
+            if (item.molecule->Visible())
             {
 
                 glPushMatrix();
@@ -895,17 +891,14 @@ void GLRenderer::DrawStack(Stack *stack, int x, int y)
         {
             item = *iter;
             ++iter;
-            chemlib::MIAtom* atom = item.atom.data();
-            chemlib::Residue* residue = item.residue.data();
-            Molecule* molecule = item.molecule.data();
-            if (atom && residue && molecule && molecule->Visible())
+            if (MIAtom::isValid(item.atom) && Monomer::isValid(item.residue) && MIMoleculeBase::isValid(item.molecule) && item.molecule->Visible())
             {
                 s = "4: ";
-                s += residue->type().c_str();
+                s += item.residue->type().c_str();
                 s += " ";
-                s += residue->name().c_str();
+                s += item.residue->name().c_str();
                 s += " ";
-                s += atom->name();
+                s += item.atom->name();
                 drawStackText(x, y, s);
                 y += lineHeight;
             }
@@ -915,17 +908,14 @@ void GLRenderer::DrawStack(Stack *stack, int x, int y)
         {
             item = *iter;
             ++iter;
-            chemlib::MIAtom* atom = item.atom.data();
-            chemlib::Residue* residue = item.residue.data();
-            Molecule* molecule = item.molecule.data();
-            if (atom && residue && molecule && molecule->Visible())
+            if (MIAtom::isValid(item.atom) && Monomer::isValid(item.residue) && MIMoleculeBase::isValid(item.molecule) && item.molecule->Visible())
             {
                 s = "3: ";
-                s += residue->type().c_str();
+                s += item.residue->type().c_str();
                 s += " ";
-                s += residue->name().c_str();
+                s += item.residue->name().c_str();
                 s += " ";
-                s += atom->name();
+                s += item.atom->name();
                 drawStackText(x, y, s);
                 y += lineHeight;
             }
@@ -935,17 +925,14 @@ void GLRenderer::DrawStack(Stack *stack, int x, int y)
         {
             item = *iter;
             ++iter;
-            chemlib::MIAtom* atom = item.atom.data();
-            chemlib::Residue* residue = item.residue.data();
-            Molecule* molecule = item.molecule.data();
-            if (atom && residue && molecule && molecule->Visible())
+            if (MIAtom::isValid(item.atom) && Monomer::isValid(item.residue) && MIMoleculeBase::isValid(item.molecule) && item.molecule->Visible())
             {
                 s = "2: ";
-                s += residue->type().c_str();
+                s += item.residue->type().c_str();
                 s += " ";
-                s += residue->name().c_str();
+                s += item.residue->name().c_str();
                 s += " ";
-                s += atom->name();
+                s += item.atom->name();
                 drawStackText(x, y, s);
                 y += lineHeight;
             }
@@ -954,17 +941,14 @@ void GLRenderer::DrawStack(Stack *stack, int x, int y)
         glColor3f(1.0f, 1.0f, 1.0f);
         item = *iter;
         ++iter;
-        chemlib::MIAtom* atom = item.atom.data();
-        chemlib::Residue* residue = item.residue.data();
-        Molecule* molecule = item.molecule.data();
-        if (atom && residue && molecule && molecule->Visible())
+        if (MIAtom::isValid(item.atom) && Monomer::isValid(item.residue) && MIMoleculeBase::isValid(item.molecule) && item.molecule->Visible())
         {
             s = "1: ";
-            s += residue->type().c_str();
+            s += item.residue->type().c_str();
             s += " ";
-            s += residue->name().c_str();
+            s += item.residue->name().c_str();
             s += " ";
-            s += atom->name();
+            s += item.atom->name();
             drawStackText(x, y, s);
             y += lineHeight;
         }

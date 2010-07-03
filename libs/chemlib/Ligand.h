@@ -36,7 +36,7 @@ namespace chemlib
         char link_here[MAXNAME], link_next[MAXNAME]; //MAXNAME is in define.h
 
         // Export internal data to these vectors
-        void Export(std::vector<Monomer*> &rdues, std::vector<Bond> &bnds);
+        void Export(std::vector<Residue*> &rdues, std::vector<Bond> &bnds);
 
         void GetConstraints(const MIAtomList &mifit_atms,
                             const std::vector<Residue*> &mifit_residues,

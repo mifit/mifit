@@ -138,13 +138,10 @@ void XMLArchive::WriteColor(PaletteColor &c)
 
 void XMLArchive::WriteLabel(const ATOMLABEL &label)
 {
-    if (label.atom().isNull())
-        return;
-
     /* write a label */
     calc_indent();
     f = format("%s<Label atom=\"%d\" label=\"%s\" red=\"%d\" green=\"%d\" blue=\"%d\" visible=\"%d\" xo=\"%d\" yo=\"%d\" />\n",
-               indent, (int)label.atom().data()->atomnumber(), label.label().c_str(), (int)label.red(),
+               indent, (int)label.atom()->atomnumber(), label.label().c_str(), (int)label.red(),
                (int)label.green(), (int)label.blue(), (int)label.isVisible(), label.xOffset(), label.yOffset());
     Write(f);
 }

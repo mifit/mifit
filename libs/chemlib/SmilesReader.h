@@ -12,7 +12,7 @@
 namespace chemlib
 {
 
-    Monomer *SmilesToMol(const std::string &smiles,
+    Residue *SmilesToMol(const std::string &smiles,
                          std::vector<Bond> &bonds,
                          std::string &ErrorMessage);
 
