@@ -96,25 +96,10 @@ void MIMainWindow::initMenuHandlers()
     ActiveMIGLWidgetFtor *ftor = new ActiveMIGLWidgetFtor();
 
 //
-    EVT_MENU(ID_EDIT_CLEARLABELS, MIGLWidget::OnEditClearlabels)
     EVT_MENU(ID_EDIT_LABELS, MIGLWidget::OnEditLabels)
-
-    EVT_MENU(ID_OBJECT_ANNOTATION, MIGLWidget::OnAnnotation)
-    EVT_UPDATE_UI(ID_OBJECT_ANNOTATION, MIGLWidget::OnUpdateAnnotation)
-
-    EVT_MENU(ID_ANNOT_MOVETOATOM, MIGLWidget::OnMoveAnnotationAtom)
-    EVT_UPDATE_UI(ID_ANNOT_MOVETOATOM, MIGLWidget::OnUpdateMoveAnnotationAtom)
-
-    EVT_MENU(ID_ANNOT_MOVETOCENTER, MIGLWidget::OnMoveAnnotationCenter)
-    EVT_UPDATE_UI(ID_ANNOT_MOVETOCENTER, MIGLWidget::OnUpdateMoveAnnotationCenter)
-
-    EVT_MENU(ID_EDIT_ANNOTATION, MIGLWidget::OnEditAnnotation)
-    EVT_UPDATE_UI(ID_EDIT_ANNOTATION, MIGLWidget::OnUpdateEditAnnotation)
 
     EVT_MENU(ID_OBJECT_NEWMODEL, MIGLWidget::OnNewModel)
 
-    EVT_MENU(ID_MAP_ADDFREE, MIGLWidget::OnMapAddFree)
-    EVT_UPDATE_UI(ID_MAP_ADDFREE, MIGLWidget::OnUpdateMapAddFree)
 //geommenu
     EVT_MENU(ID_GEOMETRY_DISTANCE, MIGLWidget::OnGeometryDistance)
     EVT_UPDATE_UI(ID_GEOMETRY_DISTANCE, MIGLWidget::OnUpdateGeometryDistance)
@@ -2078,14 +2063,15 @@ void MIMainWindow::createMenus()
 
     MIMenu *labels_menu = new MIMenu(*this);
     labels_menu->Append(ID_VIEW_LABELS, "&Show/Hide Labels", "Toggle labels on and off", true);
-    labels_menu->Append(ID_EDIT_CLEARLABELS, "Cl&ear Labels", "Clear the labels permanently - use view/labels to hide them temporarily", false);
-    labels_menu->Append(ID_EDIT_LABELS, "La&bel Options...", "Edit labels and set label options", false);
-    labels_menu->Append(ID_SHOW_LABELEVERYNTH, "Label E&very nth...", "Label every nth residue", false);
+    new CurrentMIGLWidgetAction("Cl&ear Labels",
+                                "Clear the labels permanently - use view/labels to hide them temporarily",
+                                labels_menu, SLOT(OnEditClearlabels()));
 
-    MIMenu *annotation_menu = new MIMenu(*this);
-    annotation_menu->Append(ID_OBJECT_ANNOTATION, "A&dd annotation to model", "Adds an annotation to the current model at the screen center", false);
-    annotation_menu->Append(ID_ANNOT_MOVETOATOM, "Move annotation to &picked atom", "Move the last picked Annotation to the last picked atom ccords", false);
-    annotation_menu->Append(ID_ANNOT_MOVETOCENTER, "Move annotation to c&enter", "Move the last picked Annotation to the screen center", false);
+    new CurrentMIGLWidgetAction("La&bel Options...",
+                                "Edit labels and set label options",
+                                labels_menu, SLOT(OnEditLabels()));
+
+    labels_menu->Append(ID_SHOW_LABELEVERYNTH, "Label E&very nth...", "Label every nth residue", false);
 
     MIMenu *secstruct_menu = new MIMenu(*this);
     secstruct_menu->Append(ID_OBJECT_BACKBONERIBBON, "&Make Ribbon", "Make a backbone ribbon", false);
@@ -2124,7 +2110,26 @@ void MIMainWindow::createMenus()
     show_menu->Append(ID_SIDEMENU, "Sidechains", side_menu);
     show_menu->Append(ID_SECONDARYSTRUCTUREMENU, "Secondary Structure", secstruct_menu);
     show_menu->Append(ID_LABELSMENU, "Labels", labels_menu);
-    show_menu->Append(0, "Annotation", annotation_menu);
+
+    QMenu *annotation_menu = show_menu->addMenu("Annotation");
+    new CurrentMIGLWidgetAction("A&dd annotation to model",
+                                "Adds an annotation to the current model at the screen center",
+                                annotation_menu,
+                                SLOT(OnAnnotation()),
+                                SLOT(OnUpdateAnnotation(QAction*)));
+
+    new CurrentMIGLWidgetAction("Move annotation to &picked atom",
+                                "Move the last picked Annotation to the last picked atom ccords",
+                                annotation_menu,
+                                SLOT(OnMoveAnnotationAtom()),
+                                SLOT(OnUpdateMoveAnnotationAtom(QAction*)));
+
+    new CurrentMIGLWidgetAction("Move annotation to c&enter",
+                                "Move the last picked Annotation to the screen center",
+                                annotation_menu,
+                                SLOT(OnMoveAnnotationCenter()),
+                                SLOT(OnUpdateMoveAnnotationCenter(QAction*)));
+
     show_menu->Append(ID_SYMMATOMSMENU, "Symmetry Atoms", symmatoms_menu);
 
     QMenu *surf_menu = show_menu->addMenu("&Dot Surface");

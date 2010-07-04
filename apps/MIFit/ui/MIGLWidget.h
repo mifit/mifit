@@ -812,13 +812,12 @@ public slots:
     // Update menu callback for Object/Add Annotation to Model.
     //@}
     void OnAnnotation();
-    void OnUpdateMapAddFree(const MIUpdateEvent &pCmdUI);
     void OnMapAddFree();
 
     //@{
     // Update menu callback for Object/Move Annotation to Center.
     //@}
-    void OnUpdateMoveAnnotationCenter(const MIUpdateEvent &pCmdUI);
+    void OnUpdateMoveAnnotationCenter(QAction *action);
     //@{
     // Menu callback for Object/Move Annotation to Center.
     //@}
@@ -826,7 +825,7 @@ public slots:
     //@{
     // Update menu callback for Object/MoveAnnotation to Picked Atom.
     //@}
-    void OnUpdateMoveAnnotationAtom(const MIUpdateEvent &pCmdUI);
+    void OnUpdateMoveAnnotationAtom(QAction *action);
     //@{
     // Menu callback for Object/MoveAnnotation to Picked Atom.
     //@}
@@ -834,15 +833,7 @@ public slots:
 
     void OnUpdateExportModel(const MIUpdateEvent &pCmdUI);
     void OnExportModel();
-    //@{
-    // Update menu callback for Object/Edit Annotation
-    //@}
-    void OnUpdateEditAnnotation(const MIUpdateEvent &pCmdUI);
-    //@{
-    // Menu callback for Object/Edit Annotation
-    //@}
-    void OnEditAnnotation();
-    void OnUpdateAnnotation(const MIUpdateEvent &pCmdUI);
+    void OnUpdateAnnotation(QAction *action);
     //@{
     // Create a new, empty model.
     //@}

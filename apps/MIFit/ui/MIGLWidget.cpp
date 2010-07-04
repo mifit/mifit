@@ -11794,9 +11794,9 @@ void MIGLWidget::OnNewModel()
     ReDrawAll();
 }
 
-void MIGLWidget::OnUpdateAnnotation(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateAnnotation(QAction *action)
 {
-    pCmdUI.Enable(Models != NULL && Models->CurrentItem() != NULL && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(Models != NULL && Models->CurrentItem() != NULL && MIBusyManager::instance()->Busy() == false);
 }
 
 Residue*MIGLWidget::GetDictRes(const char *key, int confomer)
@@ -11917,30 +11917,6 @@ bool MIGLWidget::IsXMLDocument(const char *pathname)
     return (found_xmltag && found_doctag);
 }
 
-void MIGLWidget::OnEditAnnotation()
-{
-    GenericDataDialog dlg(this);
-    dlg.setWindowTitle("Edit Annotation");
-    dlg.addStringField("Text:", CurrentAnnotation->GetText());
-    dlg.addColorField("Color:", QColor(CurrentAnnotation->m_color.red, CurrentAnnotation->m_color.green, CurrentAnnotation->m_color.blue));
-    if (dlg.exec() == QDialog::Accepted)
-    {
-        CurrentAnnotation->m_text = dlg.value(0).toString().toStdString();
-        QColor color = dlg.value(1).value<QColor>();
-        CurrentAnnotation->m_color = PaletteColor(
-            (unsigned char)color.red(),
-            (unsigned char)color.green(),
-            (unsigned char)color.blue());
-        Modify(true);
-        ReDraw();
-    }
-}
-
-void MIGLWidget::OnUpdateEditAnnotation(const MIUpdateEvent &pCmdUI)
-{
-    pCmdUI.Enable(CurrentAnnotation != NULL && MIBusyManager::instance()->Busy() == false);
-}
-
 void MIGLWidget::OnExportModel()
 {
     exportCurrentModel();
@@ -11975,9 +11951,9 @@ void MIGLWidget::OnMoveAnnotationAtom()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateMoveAnnotationAtom(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateMoveAnnotationAtom(QAction *action)
 {
-    pCmdUI.Enable(CurrentAnnotation != NULL && !AtomStack->empty() && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(CurrentAnnotation != NULL && !AtomStack->empty() && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnMoveAnnotationCenter()
@@ -11989,9 +11965,9 @@ void MIGLWidget::OnMoveAnnotationCenter()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateMoveAnnotationCenter(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateMoveAnnotationCenter(QAction *action)
 {
-    pCmdUI.Enable(CurrentAnnotation != NULL && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(CurrentAnnotation != NULL && MIBusyManager::instance()->Busy() == false);
 }
 
 bool MIGLWidget::LoadMap(const char *buf, const char *pathname, const std::string &col_names)
@@ -12196,20 +12172,6 @@ void MIGLWidget::OnMapAddFree()
     //use_shells = data["use_shells"].b;
     long nadded = emap->AddFreeRFlag(f, use_shells);
     Logger::log("Added %ld R-Free flags", nadded);
-}
-
-void MIGLWidget::OnUpdateMapAddFree(const MIUpdateEvent &pCmdUI)
-{
-    EMap *emap = GetDisplaylist()->GetCurrentMap();
-    if (emap)
-    {
-        pCmdUI.Enable(emap->HasPhases() );
-    }
-    else
-    {
-        pCmdUI.Enable(false);
-    }
-
 }
 
 bool MIGLWidget::LoadScript(const char *path)
