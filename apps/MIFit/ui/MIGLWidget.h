@@ -12,8 +12,6 @@
 #include "macafxwin.h"
 #include "SaveModel.h"
 
-#include "MIEventHandler.h"
-
 #include "RamaPlot.h"
 
 #ifdef _WIN32
@@ -32,6 +30,7 @@ class CMolwViewSlabPickingRenderable;
 class CMolwViewScene;
 
 class GLRenderer;
+class QActionGroup;
 class QResizeEvent;
 class InterpBox;
 class NavigatorCanvas;
@@ -58,7 +57,7 @@ class MAP_POINT;
 #define sign(a) (a < 0 ? -1 : 1)
 
 
-class MIGLWidget : public QGLWidget, public MIEventHandler
+class MIGLWidget : public QGLWidget
 {
     Q_OBJECT
 
@@ -831,7 +830,7 @@ public slots:
     //@}
     void OnMoveAnnotationAtom();
 
-    void OnUpdateExportModel(const MIUpdateEvent &pCmdUI);
+    void OnUpdateExportModel(QAction *action);
     void OnExportModel();
     void OnUpdateAnnotation(QAction *action);
     //@{
@@ -839,26 +838,26 @@ public slots:
     //@}
     void OnNewModel();
 
-    void OnUpdateMapReindex(const MIUpdateEvent &pCmdUI);
+    void OnUpdateMapReindex(QAction *action);
     void OnMapReindex();
-    void OnUpdateFitSplitFit(const MIUpdateEvent &pCmdUI);
+    void OnUpdateFitSplitFit(QAction *action);
     void OnFitSplitFit();
-    void OnUpdateFitSplitTorsion(const MIUpdateEvent &pCdUI);
+    void OnUpdateFitSplitTorsion(QAction *action);
     void OnFitSplitTorsion();
-    void OnUpdateFitRange(const MIUpdateEvent &pCmdUI);
+    void OnUpdateFitRange(QAction *action);
     void OnFitRange();
     void OnUpdateRefiResidue(QAction *action);
     void OnRefiResidue();
-    void OnUpdateFullScreen(const MIUpdateEvent &pCmdUI);
+    void OnUpdateFullScreen(QAction *action);
     void OnFullScreen();
     void OnFindLigandDensity();
-    void OnUpdateFindLigandDensity(const MIUpdateEvent &pCmdUI);
-    void OnUpdateMapCenterVisibleDensity(const MIUpdateEvent &pCmdUI);
+    void OnUpdateFindLigandDensity(QAction *action);
+    void OnUpdateMapCenterVisibleDensity(QAction *action);
     void OnMapCenterVisibleDensity();
-    void OnUpdateLabelEveryNth(const MIUpdateEvent &pCmdUI);
+    void OnUpdateLabelEveryNth(QAction *action);
     void OnLabelEveryNth();
     void OnClearGeomAnnotations();
-    void OnUpdateFindGeomErrors(const MIUpdateEvent &pCmdUI);
+    void OnUpdateFindGeomErrors(QAction *action);
     void OnFindGeomErrors();
     /**
      * Handler for 'W' key which places an H2O at the poistion of the cursor
@@ -870,7 +869,7 @@ public slots:
     /**
      * Update menu function for hiding the model.
      */
-    void OnUpdateHideModel(const MIUpdateEvent &pCmdUI);
+    void OnUpdateHideModel(QAction *action);
 
     void OnRefiLigandFit();
     void OnUpdateRefiLigandFit(QAction *action);
@@ -878,7 +877,7 @@ public slots:
     /**
      * Update menu callback for Model/Add Waters.
      */
-    void OnUpdateAddWater(const MIUpdateEvent &pCmdUI);
+    void OnUpdateAddWater(QAction *action);
     /**
      * Menu callback for Model/Add Waters.
      */
@@ -890,7 +889,7 @@ public slots:
     /**
      * Update menu Handler to center of the last residue in the chain or fragment.
      */
-    void OnUpdateGotoCter(const MIUpdateEvent &pCmdUI);
+    void OnUpdateGotoCter(QAction *action);
     /**
      * Handler for the key '[' to center of the first residue in the chain or fragment.
      */
@@ -898,7 +897,7 @@ public slots:
     /**
      * Update menu Handler to center of the last residue in the chain or fragment.
      */
-    void OnUpdateGotoNter(const MIUpdateEvent &pCmdUI);
+    void OnUpdateGotoNter(QAction *action);
 
     /**
      * Menu callback for Model/Build CB Range.
@@ -907,17 +906,17 @@ public slots:
     /**
      * Update menu callback for Model/Checkpoint Model.
      */
-    void OnUpdateCheckpointModel(const MIUpdateEvent &pCmdUI);
+    void OnUpdateCheckpointModel(QAction *action);
     /**
      * Menu callback for Model/Checkpoint Model.
      */
     void OnCheckpointModel();
-    void OnUpdateAutoCheckpointModel(const MIUpdateEvent &pCmdUI);
+    void OnUpdateAutoCheckpointModel(QAction *action);
     void OnAutoCheckpointModel();
     /**
      * Update menu callback for Model/Revert Model.
      */
-    void OnUpdateRevertModel(const MIUpdateEvent &pCmdUI);
+    void OnUpdateRevertModel(QAction *action);
     /**
      * Menu callback for Model/Revert Model.
      */
@@ -925,7 +924,7 @@ public slots:
     /**
      * Update menu callback for Model/Replace with Sequence.
      */
-    void OnUpdateReplaceSequence(const MIUpdateEvent &pCmdUI);
+    void OnUpdateReplaceSequence(QAction *action);
     /**
      * Menu callback for Model/Replace with Sequence.
      */
@@ -933,11 +932,11 @@ public slots:
     /**
      * Update menu callback for Sequence/Set Sequence Chain.
      */
-    void OnUpdateSequencePositionChain(const MIUpdateEvent &pCmdUI);
+    void OnUpdateSequencePositionChain(QAction *action);
     /**
      * Update menu callback for Sequence/Set Sequence Range.
      */
-    void OnUpdateSequencePosition(const MIUpdateEvent &pCmdUI);
+    void OnUpdateSequencePosition(QAction *action);
     /**
      * Menu callback for Sequence/Set Sequence Chain.
      */
@@ -949,25 +948,25 @@ public slots:
     /**
      * Update menu callback for Sequence/Save Model Sequence.
      */
-    void OnUpdateSequenceSaveModel(const MIUpdateEvent &pCmdUI);
+    void OnUpdateSequenceSaveModel(QAction *action);
     /**
      * Menu callback for Sequence/Save Model Sequence.
      */
     void OnSequenceSaveModel();
     void OnBuildMainchainRange();
-    void OnUpdatePolyAlaChain(const MIUpdateEvent &pCmdUI);
+    void OnUpdatePolyAlaChain(QAction *action);
     void OnPolyAlaChain();
-    void OnUpdatePolyAla(const MIUpdateEvent &pCmdUI);
+    void OnUpdatePolyAla(QAction *action);
     void OnPolyAla();
     /**
      * Open a graph window with a phi-psi/Ramachandrn plot of the current model.
      */
     void OnRamachandranPlotShowAllowed();
-    void OnUpdateRamachandranPlotShowAllowed(const MIUpdateEvent &pCmdUI);
-    void OnUpdateFitSurfaceProbe(const MIUpdateEvent &pCmdUI);
-    void OnUpdateFitSurfaceExtended(const MIUpdateEvent &pCmdUI);
-    void OnUpdateFitSurfaceVdw(const MIUpdateEvent &pCmdUI);
-    void OnUpdateFitSurfaceNone(const MIUpdateEvent &pCmdUI);
+    void OnUpdateRamachandranPlotShowAllowed(QAction *action);
+    void OnUpdateFitSurfaceProbe(QAction *action);
+    void OnUpdateFitSurfaceExtended(QAction *action);
+    void OnUpdateFitSurfaceVdw(QAction *action);
+    void OnUpdateFitSurfaceNone(QAction *action);
     /**
      * Menu callback for Fit/Surface Fit Atoms/Extended Surface.
      */
@@ -984,12 +983,12 @@ public slots:
      * Menu callback for Fit/Surface Fit Atoms/No Surface.
      */
     void OnFitSurfaceNone();
-    void OnUpdateAddMarkBefore(const MIUpdateEvent &pCmdUI);
+    void OnUpdateAddMarkBefore(QAction *action);
     /**
      * Menu callback for Model/Add MRK Before.
      */
     void OnAddMarkBefore();
-    void OnUpdateAddMarkAfter(const MIUpdateEvent &pCmdUI);
+    void OnUpdateAddMarkAfter(QAction *action);
     /**
      * Menu callback for Model/Add MRK After.
      */
@@ -998,13 +997,13 @@ public slots:
      * Hide the model.
      */
     void OnHideModel();
-    void OnUpdateFlipPeptide(const MIUpdateEvent &pCmdUI);
+    void OnUpdateFlipPeptide(QAction *action);
     /**
      * Menu callback for Fit/Fix Backbone/Flip Peptide.
      */
     void OnFlipPeptide();
-    void OnUpdateMarkBeta(const MIUpdateEvent &pCmdUI);
-    void OnUpdateMarkAlpha(const MIUpdateEvent &pCmdUI);
+    void OnUpdateMarkBeta(QAction *action);
+    void OnUpdateMarkAlpha(QAction *action);
     /**
      * Set the refine target for this residue as beta sheet.
      */
@@ -1013,32 +1012,32 @@ public slots:
      * Set the refine target for this residue as alpha helix.
      */
     void OnMarkAlpha();
-    void OnUpdateReplaceAll(const MIUpdateEvent &pCmdUI);
+    void OnUpdateReplaceAll(QAction *action);
     /**
      * Menu callback for Fit/Fix Backbone/Replace All 5.
      */
     void OnReplaceAll();
-    void OnUpdateReplaceLast4(const MIUpdateEvent &pCmdUI);
+    void OnUpdateReplaceLast4(QAction *action);
     /**
      * Menu callback for Fit/Fix Backbone/Replace Last 4.
      */
     void OnReplaceLast4();
-    void OnUpdateReplaceFirst4(const MIUpdateEvent &pCmdUI);
+    void OnUpdateReplaceFirst4(QAction *action);
     /**
      * Menu callback for Fit/Fix Backbone/Replace First 4.
      */
     void OnReplaceFirst4();
-    void OnUpdateReplaceMiddle3(const MIUpdateEvent &pCmdUI);
+    void OnUpdateReplaceMiddle3(QAction *action);
     /**
      * Menu callback for Fit/Fix Backbone/Replace Middle 3.
      */
     void OnReplaceMiddle3();
-    void OnUpdateClearPentamer(const MIUpdateEvent &pCmdUI);
+    void OnUpdateClearPentamer(QAction *action);
     /**
      * Menu callback for Fit/Fix Backbone/Clear Backbone Match.
      */
     void OnClearPentamer();
-    void OnUpdateFindPentamer(const MIUpdateEvent &pCmdUI);
+    void OnUpdateFindPentamer(QAction *action);
     /**
      * Menu callback for Fit/Fix Backbone/Suggest Backbone Match.
      */
@@ -1047,7 +1046,7 @@ public slots:
      * Callback for Show/Ribbon Colors
      */
     void OnSetRibbonColors();
-    void OnUpdateFitReplaceAndFit(const MIUpdateEvent &pCmdUI);
+    void OnUpdateFitReplaceAndFit(QAction *action);
     /**
      * Callback for Model/Fit and Replace.
      */
@@ -1058,8 +1057,8 @@ public slots:
      * Callback for Refi/Rigid Body Refine Current Atoms.
      */
     void OnRefiRigidBody();
-    void OnUpdateFitRedo(const MIUpdateEvent &pCmdUI);
-    void OnUpdateFitUndo(const MIUpdateEvent &pCmdUI);
+    void OnUpdateFitRedo(QAction *action);
+    void OnUpdateFitUndo(QAction *action);
     /**
      * Callback for Fit/Redo.  Goes back up the Undo Stack.
      */
@@ -1118,22 +1117,22 @@ public slots:
     void OnUpdateRefiUndo(QAction *action);
     void OnUpdateRefiRange(QAction *action);
     void OnUpdateRefiRegion(QAction *action);
-    void OnUpdateMapSwitch(const MIUpdateEvent &pCmdUI);
+    void OnUpdateMapSwitch(QAction *action);
     /**
      * Callback for Map/Switch Map.  Cahnges teh current map to the one picked from a list.
      */
     void OnMapSwitch();
-    void OnUpdateMapContourLevels(const MIUpdateEvent &pCmdUI);
+    void OnUpdateMapContourLevels(QAction *action);
     /**
      * Callback for Map/Contour.
      */
     void OnMapContourLevels();
-    void OnUpdateMapFFT(const MIUpdateEvent &pCmdUI);
+    void OnUpdateMapFFT(QAction *action);
     /**
      * Callback for Map/FFT Phases.
      */
     void OnMapFFT();
-    void OnUpdateMapSFCalc(const MIUpdateEvent &pCmdUI);
+    void OnUpdateMapSFCalc(QAction *action);
     /**
      * Callback for Map/Calculate Structure Factors.
      */
@@ -1161,7 +1160,7 @@ public slots:
      * Callback for setting perspective to 0.
      */
     void OnViewOrthonormal();
-    void OnUpdateDecreasePersp(const MIUpdateEvent &pCmdUI);
+    void OnUpdateDecreasePersp(QAction *action);
     /**
      * Callback for Geom/Angle.
      */
@@ -1223,20 +1222,20 @@ public slots:
      */
     void OnEditSelectmodel();
 
-    void OnUpdateAnimateRock(const MIUpdateEvent &pCmdUI);
-    void OnUpdateAnimateRoll(const MIUpdateEvent &pCmdUI);
-    void OnUpdateLinethicknessFour(const MIUpdateEvent &pCmdUI);
-    void OnUpdateLinethicknessOne(const MIUpdateEvent &pCmdUI);
-    void OnUpdateLinethicknessThree(const MIUpdateEvent &pCmdUI);
-    void OnUpdateLinethicknessTwo(const MIUpdateEvent &pCmdUI);
+    void OnUpdateAnimateRock(QAction *action);
+    void OnUpdateAnimateRoll(QAction *action);
+    void OnUpdateLinethicknessFour(QAction *action);
+    void OnUpdateLinethicknessOne(QAction *action);
+    void OnUpdateLinethicknessThree(QAction *action);
+    void OnUpdateLinethicknessTwo(QAction *action);
     void OnUpdateRenderingDepthcuedcolors(QAction *action);
     void OnUpdateRenderingDepthcuedlinewidth(QAction *action);
-    void OnUpdateHardwareStereo(const MIUpdateEvent &pCmdUI);
-    void OnUpdateStereoToggle(const MIUpdateEvent &pCmdUI);
-    void OnUpdateViewAtomstack(const MIUpdateEvent &pCmdUI);
-    void OnUpdateViewGnomon(const MIUpdateEvent &pCmdUI);
-    void OnUpdateViewUnitCell(const MIUpdateEvent &pCmdUI);
-    void OnUpdateViewOrthonormal(const MIUpdateEvent &pCmdUI);
+    void OnUpdateHardwareStereo(QAction *action);
+    void OnUpdateStereoToggle(QAction *action);
+    void OnUpdateViewAtomstack(QAction *action);
+    void OnUpdateViewGnomon(QAction *action);
+    void OnUpdateViewUnitCell(QAction *action);
+    void OnUpdateViewOrthonormal(QAction *action);
     /**
      * Callback for Render/Ball-and-cylinder.
      */
@@ -1255,52 +1254,52 @@ public slots:
      * Callback for View/Edit Labels.  NEEDS IMPLEMENTING!
      */
     void OnViewLabels();
-    void OnUpdateViewLabels(const MIUpdateEvent &pCmdUI);
+    void OnUpdateViewLabels(QAction *action);
     void OnVdwDotSurface();
     void OnViewClearmessage();
     // void OnObjectsModels();
     void OnFitResidue();
     void OnFitResidues();
-    void OnUpdateFitResidues(const MIUpdateEvent &pCmdUI);
+    void OnUpdateFitResidues(QAction *action);
     void OnFitRotate();
     void OnFitTorsion();
-    void OnUpdateFitTorsion(const MIUpdateEvent &pCmdUI);
+    void OnUpdateFitTorsion(QAction *action);
     void OnFitTranslate();
-    void OnUpdateFitTranslate(const MIUpdateEvent &pCmdUI);
+    void OnUpdateFitTranslate(QAction *action);
     void OnFitCentermode();
-    void OnUpdateFitCentermode(const MIUpdateEvent &pCmdUI);
+    void OnUpdateFitCentermode(QAction *action);
     void OnFitCancel();
     void OnFitReset();
     void OnFitApply();
     void OnFitSingleatom();
     void OnFitAtoms();
-    void OnUpdateFitAtoms(const MIUpdateEvent &pCmdUI);
+    void OnUpdateFitAtoms(QAction *action);
     void OnFitSetuptorsion();
-    void OnUpdateFitSetuptorsion(const MIUpdateEvent &pCmdUI);
+    void OnUpdateFitSetuptorsion(QAction *action);
     void OnFitCleartorsion();
     void OnFitNextConfomer();
-    void OnUpdateFitNextConfomer(const MIUpdateEvent &pCmdUI);
-    void OnUpdateFitCleartorsion(const MIUpdateEvent &pCmdUI);
-    void OnUpdateFitApply(const MIUpdateEvent &pCmdUI);
-    void OnUpdateFitCancel(const MIUpdateEvent &pCmdUI);
-    void OnUpdateFitReset(const MIUpdateEvent &pCmdUI);
-    void OnUpdateFitRotate(const MIUpdateEvent &pCmdUI);
+    void OnUpdateFitNextConfomer(QAction *action);
+    void OnUpdateFitCleartorsion(QAction *action);
+    void OnUpdateFitApply(QAction *action);
+    void OnUpdateFitCancel(QAction *action);
+    void OnUpdateFitReset(QAction *action);
+    void OnUpdateFitRotate(QAction *action);
     void OnFitReplacewith();
-    void OnUpdateFitReplacewith(const MIUpdateEvent &pCmdUI);
+    void OnUpdateFitReplacewith(QAction *action);
     void OnObjectsAllatoms();
     void OnViewTopview();
-    void OnUpdateViewTopview(const MIUpdateEvent &pCmdUI);
+    void OnUpdateViewTopview(QAction *action);
     void OnRenderSpacefilling();
     void OnUpdateRenderSpacefilling(QAction *action);
     void OnRenderSticks();
     void OnUpdateRenderSticks(QAction *action);
     void OnGeomBond();
-    void OnUpdateGeomBond(const MIUpdateEvent &pCmdUI);
+    void OnUpdateGeomBond(QAction *action);
     void OnGeomUnbond();
-    void OnUpdateGeomUnbond(const MIUpdateEvent &pCmdUI);
-    void OnUpdateGeometryAngle(const MIUpdateEvent &pCmdUI);
-    void OnUpdateGeometryDistance(const MIUpdateEvent &pCmdUI);
-    void OnUpdateGeometryTorsion(const MIUpdateEvent &pCmdUI);
+    void OnUpdateGeomUnbond(QAction *action);
+    void OnUpdateGeometryAngle(QAction *action);
+    void OnUpdateGeometryDistance(QAction *action);
+    void OnUpdateGeometryTorsion(QAction *action);
     void OnRenderBallsize();
     void OnUpdateRenderBallsize(QAction *action);
     void OnRenderBallandcylinder();
@@ -1311,14 +1310,14 @@ public slots:
     void OnObjectClearstack();
     void OnEditCopy();
     void OnAnimateRockandrollparameters();
-    void OnUpdateFitResidue(const MIUpdateEvent &pCmdUI);
-    void OnUpdateFitSingleatom(const MIUpdateEvent &pCmdUI);
+    void OnUpdateFitResidue(QAction *action);
+    void OnUpdateFitSingleatom(QAction *action);
     void OnObjectShowresidue();
-    void OnUpdateObjectShowresidue(const MIUpdateEvent &pCmdUI);
+    void OnUpdateObjectShowresidue(QAction *action);
     void OnObjectShowsidechain();
-    void OnUpdateObjectShowsidechain(const MIUpdateEvent &pCmdUI);
+    void OnUpdateObjectShowsidechain(QAction *action);
     void OnGeomNeighbours();
-    void OnUpdateGeomNeighbours(const MIUpdateEvent &pCmdUI);
+    void OnUpdateGeomNeighbours(QAction *action);
     void OnGeomClearneighbours();
     void OnGeomHbonds();
     void OnGeomClearhbonds();
@@ -1333,23 +1332,23 @@ public slots:
     void OnSecondaryStructureOptionsRandom();
     void OnSecondaryStructureOptionsHelix();
     void OnGeomAddsinglehbond();
-    void OnUpdateGeomAddsinglehbond(const MIUpdateEvent &pCmdUI);
+    void OnUpdateGeomAddsinglehbond(QAction *action);
     void OnViewContacts();
-    void OnUpdateViewContacts(const MIUpdateEvent &pCmdUI);
+    void OnUpdateViewContacts(QAction *action);
     void OnFitLsqsuperpose();
     void OnFitFitmolecule();
-    void OnUpdateFitFitmolecule(const MIUpdateEvent &pCmdUI);
+    void OnUpdateFitFitmolecule(QAction *action);
     void OnFitDeleteresidue();
-    void OnUpdateFitDeleteresidue(const MIUpdateEvent &pCmdUI);
+    void OnUpdateFitDeleteresidue(QAction *action);
     void OnFitInsertresidue();
-    void OnUpdateFitInsertresidue(const MIUpdateEvent &pCmdUI);
+    void OnUpdateFitInsertresidue(QAction *action);
     void OnFitRenameresidue();
-    void OnUpdateFitRenameresidue(const MIUpdateEvent &pCmdUI);
+    void OnUpdateFitRenameresidue(QAction *action);
     void OnGotoFitalltoscreen();
     void OnShowBackboneAsCATrace();
     void OnShowBackboneAsAtoms();
     void OnAnimateBlink();
-    void OnUpdateAnimateBlink(const MIUpdateEvent &pCmdUI);
+    void OnUpdateAnimateBlink(QAction *action);
     void OnObjectSurfaceresidue();
     void OnUpdateObjectSurfaceresidue(QAction *action);
     void OnObjectSurfaceClearsurface();
@@ -1360,116 +1359,116 @@ public slots:
     void OnUpdateObjectSurfaceAtom(QAction *action);
     void OnObjectSurfaceAtoms();
     void OnObjectStackExpandtopallatomsinresidue();
-    void OnUpdateObjectStackExpandtopallatomsinresidue(const MIUpdateEvent &pCmdUI);
-    void OnUpdateObjectStackExpandtop2residues(const MIUpdateEvent &pCmdUI);
+    void OnUpdateObjectStackExpandtopallatomsinresidue(QAction *action);
+    void OnUpdateObjectStackExpandtop2residues(QAction *action);
     void OnObjectStackExpandtop2residues();
     void OnObjectStackExpandtop2allatomsinrange();
-    void OnUpdateObjectStackExpandtop2allatomsinrange(const MIUpdateEvent &pCmdUI);
+    void OnUpdateObjectStackExpandtop2allatomsinrange(QAction *action);
     void OnObjectShowresidues();
-    void OnUpdateObjectShowresidues(const MIUpdateEvent &pCmdUI);
+    void OnUpdateObjectShowresidues(QAction *action);
     void OnObjectShowresiduerange();
     void OnObjectShowsidechainrange();
-    void OnUpdateObjectShowresiduerange(const MIUpdateEvent &pCmdUI);
-    void OnUpdateObjectShowsidechainrange(const MIUpdateEvent &pCmdUI);
+    void OnUpdateObjectShowresiduerange(QAction *action);
+    void OnUpdateObjectShowsidechainrange(QAction *action);
     void OnObjectShowsidechains();
-    void OnUpdateObjectShowsidechains(const MIUpdateEvent &pCmdUI);
+    void OnUpdateObjectShowsidechains(QAction *action);
     void OnMapLoadfromphsfile();
     void OnMapLoadfromfile();
     void OnMapContour();
-    void OnUpdateMapContour(const MIUpdateEvent &pCmdUI);
+    void OnUpdateMapContour(QAction *action);
     void OnShowShowwithinsphere();
     void OnObjectWhenshowncolor();
     void OnObjectRadiusisBall();
     void OnObjectRadiusisCpk();
     void OnObjectRadiusisCylinder();
-    void OnUpdateObjectRadiusisBall(const MIUpdateEvent &pCmdUI);
-    void OnUpdateObjectRadiusisCpk(const MIUpdateEvent &pCmdUI);
-    void OnUpdateObjectRadiusisCylinder(const MIUpdateEvent &pCmdUI);
-    void OnUpdateObjectWhenshowncolor(const MIUpdateEvent &pCmdUI);
+    void OnUpdateObjectRadiusisBall(QAction *action);
+    void OnUpdateObjectRadiusisCpk(QAction *action);
+    void OnUpdateObjectRadiusisCylinder(QAction *action);
+    void OnUpdateObjectWhenshowncolor(QAction *action);
     void OnObjectResiduerangeColor();
-    void OnUpdateObjectResiduerangeColor(const MIUpdateEvent &pCmdUI);
+    void OnUpdateObjectResiduerangeColor(QAction *action);
     void OnObjectResiduerangeRadius();
     void OnObjectResidueColor();
     void OnObjectResidueRadius();
-    void OnUpdateObjectResiduerangeRadius(const MIUpdateEvent &pCmdUI);
+    void OnUpdateObjectResiduerangeRadius(QAction *action);
     void OnObjectResiduerangeTurnoff();
     void OnObjectResiduesColor();
-    void OnUpdateObjectResiduesColor(const MIUpdateEvent &pCmdUI);
+    void OnUpdateObjectResiduesColor(QAction *action);
     void OnObjectResidueTurnoff();
     void OnObjectResiduesRadius();
-    void OnUpdateObjectResiduerangeTurnoff(const MIUpdateEvent &pCmdUI);
-    void OnUpdateObjectResiduesRadius(const MIUpdateEvent &pCmdUI);
+    void OnUpdateObjectResiduerangeTurnoff(QAction *action);
+    void OnUpdateObjectResiduesRadius(QAction *action);
     void OnObjectResiduesTurnoff();
-    void OnUpdateObjectResiduesTurnoff(const MIUpdateEvent &pCmdUI);
+    void OnUpdateObjectResiduesTurnoff(QAction *action);
     void OnObjectAtomColor();
     void OnObjectAtomRadius();
-    void OnUpdateObjectAtomColor(const MIUpdateEvent &pCmdUI);
-    void OnUpdateObjectAtomRadius(const MIUpdateEvent &pCmdUI);
+    void OnUpdateObjectAtomColor(QAction *action);
+    void OnUpdateObjectAtomRadius(QAction *action);
     void OnObjectAtomsColor();
-    void OnUpdateObjectAtomsColor(const MIUpdateEvent &pCmdUI);
+    void OnUpdateObjectAtomsColor(QAction *action);
     void OnObjectAtomsRadius();
-    void OnUpdateObjectAtomsRadius(const MIUpdateEvent &pCmdUI);
+    void OnUpdateObjectAtomsRadius(QAction *action);
     void OnShowColorallatoms();
-    void OnUpdateObjectResidueColor(const MIUpdateEvent &pCmdUI);
-    void OnUpdateObjectResidueRadius(const MIUpdateEvent &pCmdUI);
-    void OnUpdateObjectResidueTurnoff(const MIUpdateEvent &pCmdUI);
+    void OnUpdateObjectResidueColor(QAction *action);
+    void OnUpdateObjectResidueRadius(QAction *action);
+    void OnUpdateObjectResidueTurnoff(QAction *action);
     void OnShowUndocolorradius();
-    void OnUpdateShowUndocolorradius(const MIUpdateEvent &pCmdUI);
+    void OnUpdateShowUndocolorradius(QAction *action);
     void OnObjectStackDeletetopitem();
     void OnViewUndo();
-    void OnUpdateViewUndo(const MIUpdateEvent &pCmdUI);
+    void OnUpdateViewUndo(QAction *action);
     void OnShowPickedatomTurnon();
-    void OnUpdateShowPickedatomTurnon(const MIUpdateEvent &pCmdUI);
+    void OnUpdateShowPickedatomTurnon(QAction *action);
     void OnShowPickedatomTurnoff();
-    void OnUpdateShowPickedatomTurnoff(const MIUpdateEvent &pCmdUI);
+    void OnUpdateShowPickedatomTurnoff(QAction *action);
     void OnShowAllpickedatomsTurnoff();
-    void OnUpdateShowAllpickedatomsTurnoff(const MIUpdateEvent &pCmdUI);
+    void OnUpdateShowAllpickedatomsTurnoff(QAction *action);
     void OnShowAllpickedatomsTurnon();
-    void OnUpdateShowAllpickedatomsTurnon(const MIUpdateEvent &pCmdUI);
+    void OnUpdateShowAllpickedatomsTurnon(QAction *action);
     void OnShowRadiusmodel();
-    void OnUpdateShowRadiusmodel(const MIUpdateEvent &pCmdUI);
-    void OnUpdateShowColorallatoms(const MIUpdateEvent &pCmdUI);
+    void OnUpdateShowRadiusmodel(QAction *action);
+    void OnUpdateShowColorallatoms(QAction *action);
     void OnUpdateSurfaceSolvent(QAction *action);
     void OnShowHideBackbone();
     void OnShowSidechainAtoms();
     void OnHideSidechainAtoms();
     void OnShowHidehydrogens();
-    void OnUpdateShowHidehydrogens(const MIUpdateEvent &pCmdUI);
+    void OnUpdateShowHidehydrogens(QAction *action);
     void OnUpdateObjectSurfaceSpherearoundatom(QAction *action);
     void OnSurfaceSolvent();
     void OnObjectSurfaceSpherearoundatom();
     void OnSequenceEnter();
-    void OnUpdateSequenceEnter(const MIUpdateEvent &pCmdUI);
+    void OnUpdateSequenceEnter(QAction *action);
     void OnSequenceRead();
-    void OnUpdateSequenceRead(const MIUpdateEvent &pCmdUI);
+    void OnUpdateSequenceRead(QAction *action);
     void OnSequenceSave();
-    void OnUpdateSequenceSave(const MIUpdateEvent &pCmdUI);
+    void OnUpdateSequenceSave(QAction *action);
     void OnSequenceInsertgap();
-    void OnUpdateSequenceInsertgap(const MIUpdateEvent &pCmdUI);
+    void OnUpdateSequenceInsertgap(QAction *action);
     void OnSequenceDeletegap();
-    void OnUpdateSequenceDeletegap(const MIUpdateEvent &pCmdUI);
+    void OnUpdateSequenceDeletegap(QAction *action);
     void OnSequenceInsertlowergap();
-    void OnUpdateSequenceInsertlowergap(const MIUpdateEvent &pCmdUI);
+    void OnUpdateSequenceInsertlowergap(QAction *action);
     void OnSequenceDeletelowergap();
-    void OnUpdateSequenceDeletelowergap(const MIUpdateEvent &pCmdUI);
+    void OnUpdateSequenceDeletelowergap(QAction *action);
 
     void OnInvertChiralCenter();
-    void OnUpdateInvertChiralCenter(const MIUpdateEvent &pCmdUI);
+    void OnUpdateInvertChiralCenter(QAction *action);
     void OnViewChiralCenters();
-    void OnUpdateViewChiralCenters(const MIUpdateEvent &pCmdUI);
+    void OnUpdateViewChiralCenters(QAction *action);
 
-    void OnSolidSurfaceCommand(const MIActionEvent &evt);
+    void OnSolidSurfaceCommand(QAction *action);
 
     void OnExportImage();
 
     void OnDeleteAtom();
-    void OnUpdateDeleteAtom(const MIUpdateEvent &evt);
+    void OnUpdateDeleteAtom(QAction *action);
 
     void OnShowSymmAtomsAsAtoms();
     void OnShowSymmAtomsAsCATrace();
     void OnShowHideSymmAtoms();
     void OnShowSaveSymmAtoms();
-    void OnUpdateShowSaveSymmAtoms(const MIUpdateEvent &event);
+    void OnUpdateShowSaveSymmAtoms(QAction *action);
 
 };
 

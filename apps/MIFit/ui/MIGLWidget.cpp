@@ -70,7 +70,6 @@
 #include "EMap.h"
 #include "GLOverviewCanvas.h"
 #include "GLRenderer.h"
-#include "MIMenu.h"
 #include "MIMainWindow.h"
 #include "MapSettings.h"
 #include "MoleculeXmlHandler.h"
@@ -265,7 +264,6 @@ static bool checkmappath(char *file)
 
 
 MIGLWidget::MIGLWidget()
-    : MIEventHandler(MIMainWindow::instance())
 {
     SetTitle(""); // so that Modify won't complain about missing [*]
 
@@ -2160,9 +2158,9 @@ void MIGLWidget::OnViewOrthonormal()
     doRefresh();
 }
 
-void MIGLWidget::OnUpdateDecreasePersp(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateDecreasePersp(QAction *action)
 {
-    pCmdUI.Enable( ( viewpoint->getperspective() > 0.001F));
+    action->setEnabled( ( viewpoint->getperspective() > 0.001F));
 }
 
 void MIGLWidget::OnGeometryAngle()
@@ -2338,42 +2336,42 @@ void MIGLWidget::OnViewRotateyminus()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateAnimateRock(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateAnimateRock(QAction *action)
 {
-    pCmdUI.Check(Rock != 0);
+    action->setChecked(Rock != 0);
 
 }
 
-void MIGLWidget::OnUpdateAnimateRoll(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateAnimateRoll(QAction *action)
 {
-    pCmdUI.Check(Roll != 0);
+    action->setChecked(Roll != 0);
 }
 
-void MIGLWidget::OnUpdateLinethicknessFour(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateLinethicknessFour(QAction *action)
 {
-    pCmdUI.Check(viewpoint->GetLineThickness() == 4);
-    pCmdUI.Enable((viewpoint->GetBallandStick() == ViewPoint::BALLANDSTICK
+    action->setChecked(viewpoint->GetLineThickness() == 4);
+    action->setEnabled((viewpoint->GetBallandStick() == ViewPoint::BALLANDSTICK
                    || viewpoint->GetBallandStick() == ViewPoint::STICKS));
 }
 
-void MIGLWidget::OnUpdateLinethicknessOne(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateLinethicknessOne(QAction *action)
 {
-    pCmdUI.Check(viewpoint->GetLineThickness() <= 1);
-    pCmdUI.Enable((viewpoint->GetBallandStick() == ViewPoint::BALLANDSTICK
+    action->setChecked(viewpoint->GetLineThickness() <= 1);
+    action->setEnabled((viewpoint->GetBallandStick() == ViewPoint::BALLANDSTICK
                    || viewpoint->GetBallandStick() == ViewPoint::STICKS));
 }
 
-void MIGLWidget::OnUpdateLinethicknessThree(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateLinethicknessThree(QAction *action)
 {
-    pCmdUI.Check(viewpoint->GetLineThickness() == 3);
-    pCmdUI.Enable((viewpoint->GetBallandStick() == ViewPoint::BALLANDSTICK
+    action->setChecked(viewpoint->GetLineThickness() == 3);
+    action->setEnabled((viewpoint->GetBallandStick() == ViewPoint::BALLANDSTICK
                    || viewpoint->GetBallandStick() == ViewPoint::STICKS));
 }
 
-void MIGLWidget::OnUpdateLinethicknessTwo(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateLinethicknessTwo(QAction *action)
 {
-    pCmdUI.Check(viewpoint->GetLineThickness() == 2);
-    pCmdUI.Enable((viewpoint->GetBallandStick() == ViewPoint::BALLANDSTICK
+    action->setChecked(viewpoint->GetLineThickness() == 2);
+    action->setEnabled((viewpoint->GetBallandStick() == ViewPoint::BALLANDSTICK
                    || viewpoint->GetBallandStick() == ViewPoint::STICKS));
 }
 
@@ -2389,37 +2387,37 @@ void MIGLWidget::OnUpdateRenderingDepthcuedlinewidth(QAction *action)
                    || viewpoint->GetBallandStick() == ViewPoint::STICKS));
 }
 
-void MIGLWidget::OnUpdateStereoToggle(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateStereoToggle(QAction *action)
 {
     bool stereo = MIConfig::Instance()->GetProfileInt("View Parameters", "stereo", 0) != 0;
-    pCmdUI.Check(stereo);
+    action->setChecked(stereo);
 }
 
-void MIGLWidget::OnUpdateHardwareStereo(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateHardwareStereo(QAction *action)
 {
     bool hardwareStereo = MIConfig::Instance()->GetProfileInt("View Parameters", "hardwareStereo", 0) != 0;
-    pCmdUI.Enable(Application::instance()->isHardwareStereoAvailable());
-    pCmdUI.Check(hardwareStereo);
+    action->setEnabled(Application::instance()->isHardwareStereoAvailable());
+    action->setChecked(hardwareStereo);
 }
 
-void MIGLWidget::OnUpdateViewAtomstack(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateViewAtomstack(QAction *action)
 {
-    pCmdUI.Check(ShowStack == 1);
+    action->setChecked(ShowStack == 1);
 }
 
-void MIGLWidget::OnUpdateViewGnomon(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateViewGnomon(QAction *action)
 {
-    pCmdUI.Check(ShowGnomon);
+    action->setChecked(ShowGnomon);
 }
 
-void MIGLWidget::OnUpdateViewUnitCell(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateViewUnitCell(QAction *action)
 {
-    pCmdUI.Check(showUnitCell);
+    action->setChecked(showUnitCell);
 }
 
-void MIGLWidget::OnUpdateViewOrthonormal(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateViewOrthonormal(QAction *action)
 {
-    pCmdUI.Check(viewpoint->getperspective() == 0.0);
+    action->setChecked(viewpoint->getperspective() == 0.0);
 }
 
 void MIGLWidget::OnRenderingBallandstick()
@@ -2492,9 +2490,9 @@ void MIGLWidget::OnViewLabels()
     doRefresh();
 }
 
-void MIGLWidget::OnUpdateViewLabels(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateViewLabels(QAction *action)
 {
-    pCmdUI.Check(ShowLabels == 1);
+    action->setChecked(ShowLabels == 1);
 }
 
 void MIGLWidget::OnVdwDotSurface()
@@ -2691,10 +2689,10 @@ void MIGLWidget::OnFitRotate()
     RightMouseMode = ROTATE;
 }
 
-void MIGLWidget::OnUpdateFitRotate(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFitRotate(QAction *action)
 {
-    pCmdUI.Check(RightMouseMode == ROTATE);
-    pCmdUI.Enable(IsFitting() == true && MIBusyManager::instance()->Busy() == false);
+    action->setChecked(RightMouseMode == ROTATE);
+    action->setEnabled(IsFitting() == true && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnFitTorsion()
@@ -2702,10 +2700,10 @@ void MIGLWidget::OnFitTorsion()
     RightMouseMode = BONDTWIST;
 }
 
-void MIGLWidget::OnUpdateFitTorsion(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFitTorsion(QAction *action)
 {
-    pCmdUI.Check(RightMouseMode == BONDTWIST);
-    pCmdUI.Enable(IsFitting() == true && Torsioning > 0 && MIBusyManager::instance()->Busy() == false);
+    action->setChecked(RightMouseMode == BONDTWIST);
+    action->setEnabled(IsFitting() == true && Torsioning > 0 && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnFitTranslate()
@@ -2713,10 +2711,10 @@ void MIGLWidget::OnFitTranslate()
     RightMouseMode = TRANSLATE;
 }
 
-void MIGLWidget::OnUpdateFitTranslate(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFitTranslate(QAction *action)
 {
-    pCmdUI.Check(RightMouseMode == TRANSLATE);
-    pCmdUI.Enable(IsFitting() == true && MIBusyManager::instance()->Busy() == false);
+    action->setChecked(RightMouseMode == TRANSLATE);
+    action->setEnabled(IsFitting() == true && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnFitCentermode()
@@ -2724,9 +2722,9 @@ void MIGLWidget::OnFitCentermode()
     RightMouseMode = CENTER;
 }
 
-void MIGLWidget::OnUpdateFitCentermode(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFitCentermode(QAction *action)
 {
-    pCmdUI.Check(RightMouseMode == CENTER);
+    action->setChecked(RightMouseMode == CENTER);
 }
 
 void MIGLWidget::OnFitCancel()
@@ -2836,10 +2834,10 @@ void MIGLWidget::fitResidueRange()
     }
 }
 
-void MIGLWidget::OnUpdateFitRange(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFitRange(QAction *action)
 {
-    pCmdUI.Enable(AtomStack->size() > 1  && MIBusyManager::instance()->Busy() == false);
-    //pCmdUI.Check(IsFitting()!=false && SelectType == RESIDUES);
+    action->setEnabled(AtomStack->size() > 1  && MIBusyManager::instance()->Busy() == false);
+    //action->setChecked(IsFitting()!=false && SelectType == RESIDUES);
 }
 
 void MIGLWidget::OnFitSingleatom()
@@ -3290,9 +3288,9 @@ unsigned int MIGLWidget::SetupFit(Residue *res1, Residue *res2, Molecule *model,
     return FitToken;
 }
 
-void MIGLWidget::OnUpdateFitSetuptorsion(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFitSetuptorsion(QAction *action)
 {
-    pCmdUI.Enable(IsFitting() == true && AtomStack->size() >= 2 && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(IsFitting() == true && AtomStack->size() >= 2 && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnFitCleartorsion()
@@ -3318,24 +3316,24 @@ void MIGLWidget::clearFitTorsion()
     }
 }
 
-void MIGLWidget::OnUpdateFitCleartorsion(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFitCleartorsion(QAction *action)
 {
-    pCmdUI.Enable(IsFitting() != false && IsTorsioning() != false && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(IsFitting() != false && IsTorsioning() != false && MIBusyManager::instance()->Busy() == false);
 }
 
-void MIGLWidget::OnUpdateFitApply(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFitApply(QAction *action)
 {
-    pCmdUI.Enable(IsFitting() != false && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(IsFitting() != false && MIBusyManager::instance()->Busy() == false);
 }
 
-void MIGLWidget::OnUpdateFitCancel(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFitCancel(QAction *action)
 {
-    pCmdUI.Enable(IsFitting() != false && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(IsFitting() != false && MIBusyManager::instance()->Busy() == false);
 }
 
-void MIGLWidget::OnUpdateFitReset(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFitReset(QAction *action)
 {
-    pCmdUI.Enable(IsFitting() != false && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(IsFitting() != false && MIBusyManager::instance()->Busy() == false);
 }
 
 bool MIGLWidget::promptForReplaceResidue(std::string &deft_str)
@@ -3418,9 +3416,9 @@ static bool NextConformer(Residue *fitres, MIGLWidget *win)
     return true;
 }
 
-void MIGLWidget::OnUpdateFitNextConfomer(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFitNextConfomer(QAction *action)
 {
-    pCmdUI.Enable(((focusres && focusnode && (IsFitting() == false))
+    action->setEnabled(((focusres && focusnode && (IsFitting() == false))
                    || ((IsFitting() != false) && fitres && fitmol && (SelectType == SINGLERESIDUE))) && MIBusyManager::instance()->Busy() == false);
 }
 
@@ -3546,9 +3544,9 @@ void MIGLWidget::replaceResidue(const char *residueType)
     }
 }
 
-void MIGLWidget::OnUpdateFitReplacewith(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFitReplacewith(QAction *action)
 {
-    pCmdUI.Enable(IsFitting() == false && !AtomStack->empty() && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(IsFitting() == false && !AtomStack->empty() && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnAddMarkAfter()
@@ -3560,9 +3558,9 @@ void MIGLWidget::OnAddMarkAfter()
     InsertMRK(focusres, focusnode, 0);
 }
 
-void MIGLWidget::OnUpdateAddMarkAfter(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateAddMarkAfter(QAction *action)
 {
-    pCmdUI.Enable(focusres && focusnode && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(focusres && focusnode && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnAddMarkBefore()
@@ -3574,9 +3572,9 @@ void MIGLWidget::OnAddMarkBefore()
     InsertMRK(focusres, focusnode, 1);
 }
 
-void MIGLWidget::OnUpdateAddMarkBefore(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateAddMarkBefore(QAction *action)
 {
-    pCmdUI.Enable(focusres && focusnode && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(focusres && focusnode && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnObjectsAllatoms()
@@ -3607,10 +3605,10 @@ void MIGLWidget::OnViewTopview()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateViewTopview(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateViewTopview(QAction *action)
 {
-    //pCmdUI.Enable(viewpoint->GetBallandStick()!=ViewPoint::CPK);
-    pCmdUI.Check(TopView);
+    //action->setEnabled(viewpoint->GetBallandStick()!=ViewPoint::CPK);
+    action->setChecked(TopView);
 }
 
 void MIGLWidget::OnRenderSpacefilling()
@@ -3658,9 +3656,9 @@ void MIGLWidget::OnGeomBond()
     doRefresh();
 }
 
-void MIGLWidget::OnUpdateGeomBond(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateGeomBond(QAction *action)
 {
-    pCmdUI.Enable(AtomStack->size() >= 2);
+    action->setEnabled(AtomStack->size() >= 2);
 }
 
 void MIGLWidget::OnGeomUnbond()
@@ -3690,24 +3688,24 @@ void MIGLWidget::OnGeomUnbond()
     doRefresh();
 }
 
-void MIGLWidget::OnUpdateGeomUnbond(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateGeomUnbond(QAction *action)
 {
-    pCmdUI.Enable(AtomStack->size() >= 2 && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(AtomStack->size() >= 2 && MIBusyManager::instance()->Busy() == false);
 }
 
-void MIGLWidget::OnUpdateGeometryAngle(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateGeometryAngle(QAction *action)
 {
-    pCmdUI.Enable(AtomStack->size() >= 3);
+    action->setEnabled(AtomStack->size() >= 3);
 }
 
-void MIGLWidget::OnUpdateGeometryDistance(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateGeometryDistance(QAction *action)
 {
-    pCmdUI.Enable(AtomStack->size() >= 2);
+    action->setEnabled(AtomStack->size() >= 2);
 }
 
-void MIGLWidget::OnUpdateGeometryTorsion(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateGeometryTorsion(QAction *action)
 {
-    pCmdUI.Enable(AtomStack->size() >= 4);
+    action->setEnabled(AtomStack->size() >= 4);
 }
 
 void MIGLWidget::OnRenderBallsize()
@@ -3733,7 +3731,7 @@ void MIGLWidget::OnRenderBallsize()
 void MIGLWidget::OnUpdateRenderBallsize(QAction *action)
 {
     action->setEnabled(true);
-    //pCmdUI.Enable(viewpoint->GetBallandStick()==ViewPoint::BALLANDCYLINDER);
+    //action->setEnabled(viewpoint->GetBallandStick()==ViewPoint::BALLANDCYLINDER);
 }
 
 void MIGLWidget::OnRenderBallandcylinder()
@@ -3824,33 +3822,33 @@ void MIGLWidget::OnAnimateRockandrollparameters()
     }
 }
 
-void MIGLWidget::OnUpdateFitResidue(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFitResidue(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty() && MIBusyManager::instance()->Busy() == false);
-    pCmdUI.Check(IsFitting() != false && SelectType == SINGLERESIDUE);
+    action->setEnabled(!AtomStack->empty() && MIBusyManager::instance()->Busy() == false);
+    action->setChecked(IsFitting() != false && SelectType == SINGLERESIDUE);
 }
 
-void MIGLWidget::OnUpdateFitResidues(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFitResidues(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty()  && MIBusyManager::instance()->Busy() == false);
-    pCmdUI.Check(IsFitting() != false && SelectType == RESIDUES);
+    action->setEnabled(!AtomStack->empty()  && MIBusyManager::instance()->Busy() == false);
+    action->setChecked(IsFitting() != false && SelectType == RESIDUES);
 }
 
-void MIGLWidget::OnUpdateFitSingleatom(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFitSingleatom(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty()  && MIBusyManager::instance()->Busy() == false);
-    pCmdUI.Check(IsFitting() != false && SelectType == SINGLEATOM);
+    action->setEnabled(!AtomStack->empty()  && MIBusyManager::instance()->Busy() == false);
+    action->setChecked(IsFitting() != false && SelectType == SINGLEATOM);
 }
 
-void MIGLWidget::OnUpdateFitAtoms(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFitAtoms(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty()  && MIBusyManager::instance()->Busy() == false);
-    pCmdUI.Check(IsFitting() != false && SelectType == ATOMS);
+    action->setEnabled(!AtomStack->empty()  && MIBusyManager::instance()->Busy() == false);
+    action->setChecked(IsFitting() != false && SelectType == ATOMS);
 }
 
-void MIGLWidget::OnUpdateObjectShowresidue(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectShowresidue(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty());
+    action->setEnabled(!AtomStack->empty());
 }
 
 void MIGLWidget::OnObjectShowsidechain()
@@ -3877,9 +3875,9 @@ void MIGLWidget::OnObjectShowsidechain()
     doRefresh();
 }
 
-void MIGLWidget::OnUpdateObjectShowsidechain(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectShowsidechain(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty());
+    action->setEnabled(!AtomStack->empty());
 }
 
 void MIGLWidget::OnGeomNeighbours()
@@ -3902,9 +3900,9 @@ void MIGLWidget::OnGeomNeighbours()
     doRefresh();
 }
 
-void MIGLWidget::OnUpdateGeomNeighbours(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateGeomNeighbours(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty());
+    action->setEnabled(!AtomStack->empty());
 }
 
 void MIGLWidget::OnGeomClearneighbours()
@@ -4205,9 +4203,9 @@ void MIGLWidget::OnGeomAddsinglehbond()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateGeomAddsinglehbond(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateGeomAddsinglehbond(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty());
+    action->setEnabled(!AtomStack->empty());
 }
 
 void MIGLWidget::OnViewContacts()
@@ -4218,9 +4216,9 @@ void MIGLWidget::OnViewContacts()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateViewContacts(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateViewContacts(QAction *action)
 {
-    pCmdUI.Check(ShowContacts != 0);
+    action->setChecked(ShowContacts != 0);
 }
 
 static Molecule *findMolecule(Displaylist *displaylist, const std::string &str)
@@ -4344,10 +4342,10 @@ void MIGLWidget::OnFitFitmolecule()
     }
 }
 
-void MIGLWidget::OnUpdateFitFitmolecule(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFitFitmolecule(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty()  && MIBusyManager::instance()->Busy() == false);
-    pCmdUI.Check(IsFitting() != false && SelectType == MOLECULE);
+    action->setEnabled(!AtomStack->empty()  && MIBusyManager::instance()->Busy() == false);
+    action->setChecked(IsFitting() != false && SelectType == MOLECULE);
 }
 
 void MIGLWidget::Purge(MIAtom *atom)
@@ -4466,9 +4464,9 @@ void MIGLWidget::OnInvertChiralCenter()
     }
 }
 
-void MIGLWidget::OnUpdateInvertChiralCenter(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateInvertChiralCenter(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty());
+    action->setEnabled(!AtomStack->empty());
 }
 
 void MIGLWidget::OnViewChiralCenters()
@@ -4502,9 +4500,9 @@ void MIGLWidget::OnViewChiralCenters()
     ReDrawAll();
 }
 
-void MIGLWidget::OnUpdateViewChiralCenters(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateViewChiralCenters(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty());
+    action->setEnabled(!AtomStack->empty());
 }
 
 //#endif
@@ -4549,9 +4547,9 @@ void MIGLWidget::deleteResidueOnTopOfStack()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateFitDeleteresidue(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFitDeleteresidue(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty() && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(!AtomStack->empty() && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnFitInsertresidue()
@@ -4888,9 +4886,9 @@ void MIGLWidget::addResidueWithPrompt()
 
 }
 
-void MIGLWidget::OnUpdateFitInsertresidue(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFitInsertresidue(QAction *action)
 {
-    pCmdUI.Enable( /*!AtomStack->empty()  &&*/ MIBusyManager::instance()->Busy() == false);
+    action->setEnabled( /*!AtomStack->empty()  &&*/ MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnFitRenameresidue()
@@ -4913,9 +4911,9 @@ void MIGLWidget::OnFitRenameresidue()
     ReDrawAll();
 }
 
-void MIGLWidget::OnUpdateFitRenameresidue(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFitRenameresidue(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty());
+    action->setEnabled(!AtomStack->empty());
 }
 
 void MIGLWidget::OnAnimateBlink()
@@ -4940,19 +4938,19 @@ void MIGLWidget::OnAnimateBlink()
        }*/
 }
 
-void MIGLWidget::OnUpdateAnimateBlink(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateAnimateBlink(QAction *action)
 {
-    pCmdUI.Enable(GetDisplaylist()->NumberItems() > 1);
-    pCmdUI.Check(Blink != 0);
+    action->setEnabled(GetDisplaylist()->NumberItems() > 1);
+    action->setChecked(Blink != 0);
 }
 
 
 
-void MIGLWidget::OnSolidSurfaceCommand(const MIActionEvent &evt)
+void MIGLWidget::OnSolidSurfaceCommand(QAction *action)
 {
     std::vector<Molecule*> mols;
     std::vector<unsigned int> selected;
-    solidSurfaceCommand(evt.GetId(), mols, selected);
+    solidSurfaceCommand(action->data().toInt(), mols, selected);
 }
 
 void MIGLWidget::solidSurfaceCommand(int id, std::vector<Molecule*> &mols, std::vector<unsigned int> &selected)
@@ -5609,9 +5607,9 @@ void MIGLWidget::doMapContour(EMapBase *emap)
     doRefresh();
 }
 
-void MIGLWidget::OnUpdateMapContour(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateMapContour(QAction *action)
 {
-    pCmdUI.Enable(GetDisplaylist()->GetCurrentMap() != NULL);
+    action->setEnabled(GetDisplaylist()->GetCurrentMap() != NULL);
 }
 
 void MIGLWidget::OnSequenceEnter()
@@ -5641,10 +5639,10 @@ void MIGLWidget::OnSequenceEnter()
     }
 }
 
-void MIGLWidget::OnUpdateSequenceEnter(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateSequenceEnter(QAction *action)
 {
     Displaylist *Models = GetDisplaylist();
-    pCmdUI.Enable(Models->CurrentItem() != NULL  && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(Models->CurrentItem() != NULL  && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnSequenceRead()
@@ -5676,10 +5674,10 @@ void MIGLWidget::readLowerSequence(const std::string &file)
     }
 }
 
-void MIGLWidget::OnUpdateSequenceRead(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateSequenceRead(QAction *action)
 {
     Displaylist *Models = GetDisplaylist();
-    pCmdUI.Enable(Models->CurrentItem() != NULL  && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(Models->CurrentItem() != NULL  && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnSequenceSave()
@@ -5695,10 +5693,10 @@ void MIGLWidget::OnSequenceSave()
     }
 }
 
-void MIGLWidget::OnUpdateSequenceSave(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateSequenceSave(QAction *action)
 {
     Displaylist *Models = GetDisplaylist();
-    pCmdUI.Enable(Models->CurrentItem() != NULL);
+    action->setEnabled(Models->CurrentItem() != NULL);
 }
 
 void MIGLWidget::OnSequenceInsertgap()
@@ -5732,9 +5730,9 @@ void MIGLWidget::OnSequenceInsertgap()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateSequenceInsertgap(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateSequenceInsertgap(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty() && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(!AtomStack->empty() && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnSequenceDeletegap()
@@ -5767,9 +5765,9 @@ void MIGLWidget::OnSequenceDeletegap()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateSequenceDeletegap(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateSequenceDeletegap(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty() && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(!AtomStack->empty() && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnSequenceInsertlowergap()
@@ -5802,9 +5800,9 @@ void MIGLWidget::OnSequenceInsertlowergap()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateSequenceInsertlowergap(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateSequenceInsertlowergap(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty() && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(!AtomStack->empty() && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnSequenceDeletelowergap()
@@ -5837,9 +5835,9 @@ void MIGLWidget::OnSequenceDeletelowergap()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateSequenceDeletelowergap(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateSequenceDeletelowergap(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty() && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(!AtomStack->empty() && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnMapFFT()
@@ -5857,10 +5855,10 @@ void MIGLWidget::OnMapFFT()
     OnMapContour();
 }
 
-void MIGLWidget::OnUpdateMapFFT(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateMapFFT(QAction *action)
 {
     EMap *map = GetDisplaylist()->GetCurrentMap();
-    pCmdUI.Enable(map != NULL && map->HasPhases() && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(map != NULL && map->HasPhases() && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnMapSFCalc()
@@ -5895,7 +5893,7 @@ void MIGLWidget::OnMapSFCalc()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateMapSFCalc(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateMapSFCalc(QAction *action)
 {
     EMap *map = GetDisplaylist()->GetCurrentMap();
     bool HasPhases = false;
@@ -5909,7 +5907,7 @@ void MIGLWidget::OnUpdateMapSFCalc(const MIUpdateEvent &pCmdUI)
         }
         HasPhases = map->HasPhases();
     }
-    pCmdUI.Enable(HasPhases && hasResidue && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(HasPhases && hasResidue && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnMapContourLevels()
@@ -5929,9 +5927,9 @@ void MIGLWidget::OnMapContourLevels()
     }
 }
 
-void MIGLWidget::OnUpdateMapContourLevels(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateMapContourLevels(QAction *action)
 {
-    pCmdUI.Enable(GetDisplaylist()->GetCurrentMap() != NULL && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(GetDisplaylist()->GetCurrentMap() != NULL && MIBusyManager::instance()->Busy() == false);
 }
 
 // this is now dead, as I've commented out the menu option for it
@@ -5945,9 +5943,9 @@ void MIGLWidget::OnMapSwitch()
     GetDisplaylist()->ChooseActiveMap();
 }
 
-void MIGLWidget::OnUpdateMapSwitch(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateMapSwitch(QAction *action)
 {
-    pCmdUI.Enable(GetDisplaylist()->MapCount() > 1 && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(GetDisplaylist()->MapCount() > 1 && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnRefiRegion()
@@ -6355,14 +6353,14 @@ void MIGLWidget::OnFitRedo()
     }
 }
 
-void MIGLWidget::OnUpdateFitUndo(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFitUndo(QAction *action)
 {
-    pCmdUI.Enable(!IsFitting() && savefits.NumberSets() > 1 && FitToken > 0 && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(!IsFitting() && savefits.NumberSets() > 1 && FitToken > 0 && MIBusyManager::instance()->Busy() == false);
 }
 
-void MIGLWidget::OnUpdateFitRedo(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFitRedo(QAction *action)
 {
-    pCmdUI.Enable(!IsFitting() && (int)FitToken < savefits.NumberSets()-1 && savefits.NumberSets() > 1 && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(!IsFitting() && (int)FitToken < savefits.NumberSets()-1 && savefits.NumberSets() > 1 && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnRefiRigidBody()
@@ -6757,9 +6755,9 @@ void MIGLWidget::replaceAndFitResidue(const char *residueType)
     refineConformer();
 }
 
-void MIGLWidget::OnUpdateFitReplaceAndFit(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFitReplaceAndFit(QAction *action)
 {
-    pCmdUI.Enable(IsFitting() == false && !AtomStack->empty() && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(IsFitting() == false && !AtomStack->empty() && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::saveSymmAtoms()
@@ -6862,9 +6860,9 @@ void MIGLWidget::OnFindPentamer()
     }
 }
 
-void MIGLWidget::OnUpdateFindPentamer(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFindPentamer(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty() && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(!AtomStack->empty() && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnClearPentamer()
@@ -6898,9 +6896,9 @@ void MIGLWidget::clearPentamer()
     ReDrawAll();
 }
 
-void MIGLWidget::OnUpdateClearPentamer(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateClearPentamer(QAction *action)
 {
-    pCmdUI.Enable(PentamerModel != NULL && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(PentamerModel != NULL && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnReplaceMiddle3()
@@ -6930,9 +6928,9 @@ void MIGLWidget::OnReplaceMiddle3()
     }
 }
 
-void MIGLWidget::OnUpdateReplaceMiddle3(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateReplaceMiddle3(QAction *action)
 {
-    pCmdUI.Enable(PentamerModel != NULL && PentamerFrom != NULL && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(PentamerModel != NULL && PentamerFrom != NULL && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnReplaceFirst4()
@@ -6962,9 +6960,9 @@ void MIGLWidget::OnReplaceFirst4()
     }
 }
 
-void MIGLWidget::OnUpdateReplaceFirst4(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateReplaceFirst4(QAction *action)
 {
-    pCmdUI.Enable(PentamerModel != NULL && PentamerFrom != NULL && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(PentamerModel != NULL && PentamerFrom != NULL && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnReplaceLast4()
@@ -6994,9 +6992,9 @@ void MIGLWidget::OnReplaceLast4()
     }
 }
 
-void MIGLWidget::OnUpdateReplaceLast4(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateReplaceLast4(QAction *action)
 {
-    pCmdUI.Enable(PentamerModel != NULL && PentamerFrom != NULL && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(PentamerModel != NULL && PentamerFrom != NULL && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnReplaceAll()
@@ -7026,9 +7024,9 @@ void MIGLWidget::OnReplaceAll()
     }
 }
 
-void MIGLWidget::OnUpdateReplaceAll(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateReplaceAll(QAction *action)
 {
-    pCmdUI.Enable(PentamerModel != NULL && PentamerFrom != NULL && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(PentamerModel != NULL && PentamerFrom != NULL && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnMarkAlpha()
@@ -7071,14 +7069,14 @@ void MIGLWidget::OnMarkBeta()
     ReDrawAll();
 }
 
-void MIGLWidget::OnUpdateMarkAlpha(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateMarkAlpha(QAction *action)
 {
-    pCmdUI.Enable(AtomStack->size() > 1 && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(AtomStack->size() > 1 && MIBusyManager::instance()->Busy() == false);
 }
 
-void MIGLWidget::OnUpdateMarkBeta(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateMarkBeta(QAction *action)
 {
-    pCmdUI.Enable(AtomStack->size() > 1 && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(AtomStack->size() > 1 && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnFlipPeptide()
@@ -7165,9 +7163,9 @@ void MIGLWidget::OnFlipPeptide()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateFlipPeptide(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFlipPeptide(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty() && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(!AtomStack->empty() && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnHideModel()
@@ -7210,24 +7208,24 @@ void MIGLWidget::OnFitSurfaceExtended()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateFitSurfaceNone(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFitSurfaceNone(QAction *action)
 {
-    pCmdUI.Check(SurfaceCurrent == NO_SURFACE);
+    action->setChecked(SurfaceCurrent == NO_SURFACE);
 }
 
-void MIGLWidget::OnUpdateFitSurfaceVdw(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFitSurfaceVdw(QAction *action)
 {
-    pCmdUI.Check(SurfaceCurrent == VDW_SURFACE);
+    action->setChecked(SurfaceCurrent == VDW_SURFACE);
 }
 
-void MIGLWidget::OnUpdateFitSurfaceExtended(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFitSurfaceExtended(QAction *action)
 {
-    pCmdUI.Check(SurfaceCurrent == EXTENDED_SURFACE);
+    action->setChecked(SurfaceCurrent == EXTENDED_SURFACE);
 }
 
-void MIGLWidget::OnUpdateFitSurfaceProbe(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFitSurfaceProbe(QAction *action)
 {
-    pCmdUI.Check(SurfaceCurrent == PROBE_SURFACE);
+    action->setChecked(SurfaceCurrent == PROBE_SURFACE);
 }
 
 void MIGLWidget::OnRamachandranPlotShowAllowed()
@@ -7235,9 +7233,9 @@ void MIGLWidget::OnRamachandranPlotShowAllowed()
     RamaPlotMgr::instance()->SetShowAllowed(!RamaPlotMgr::instance()->GetShowAllowed());
 }
 
-void MIGLWidget::OnUpdateRamachandranPlotShowAllowed(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateRamachandranPlotShowAllowed(QAction *action)
 {
-    pCmdUI.Check(RamaPlotMgr::instance()->GetShowAllowed());
+    action->setChecked(RamaPlotMgr::instance()->GetShowAllowed());
 }
 
 
@@ -7316,14 +7314,14 @@ void MIGLWidget::polyAla()
     }
 }
 
-void MIGLWidget::OnUpdatePolyAla(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdatePolyAla(QAction *action)
 {
-    pCmdUI.Enable(AtomStack->size() > 1 && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(AtomStack->size() > 1 && MIBusyManager::instance()->Busy() == false);
 }
 
-void MIGLWidget::OnUpdatePolyAlaChain(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdatePolyAlaChain(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty() && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(!AtomStack->empty() && MIBusyManager::instance()->Busy() == false);
 }
 
 static long save_id = 1;
@@ -7369,10 +7367,10 @@ void MIGLWidget::OnSequenceSaveModel()
     }
 }
 
-void MIGLWidget::OnUpdateSequenceSaveModel(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateSequenceSaveModel(QAction *action)
 {
     Displaylist *Models = GetDisplaylist();
-    pCmdUI.Enable(Models->CurrentItem() != NULL  && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(Models->CurrentItem() != NULL  && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnSequencePosition()
@@ -7454,14 +7452,14 @@ void MIGLWidget::OnSequencePositionChain()
     }
 }
 
-void MIGLWidget::OnUpdateSequencePosition(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateSequencePosition(QAction *action)
 {
-    pCmdUI.Enable(AtomStack->size() > 1 && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(AtomStack->size() > 1 && MIBusyManager::instance()->Busy() == false);
 }
 
-void MIGLWidget::OnUpdateSequencePositionChain(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateSequencePositionChain(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty() && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(!AtomStack->empty() && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnReplaceSequence()
@@ -7559,9 +7557,9 @@ void MIGLWidget::modelReplaceWithSequence()
     ReDrawAll();
 }
 
-void MIGLWidget::OnUpdateReplaceSequence(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateReplaceSequence(QAction *action)
 {
-    pCmdUI.Enable(AtomStack->size() > 1 && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(AtomStack->size() > 1 && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnRevertModel()
@@ -7619,9 +7617,9 @@ void MIGLWidget::revertToSavedModel(int choice)
     }
 }
 
-void MIGLWidget::OnUpdateRevertModel(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateRevertModel(QAction *action)
 {
-    pCmdUI.Enable(SaveModels.size() > 0 && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(SaveModels.size() > 0 && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnCheckpointModel()
@@ -7643,9 +7641,9 @@ void MIGLWidget::OnCheckpointModel()
     }
 }
 
-void MIGLWidget::OnUpdateCheckpointModel(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateCheckpointModel(QAction *action)
 {
-    pCmdUI.Enable(GetDisplaylist() != NULL && GetDisplaylist()->CurrentItem() != NULL  && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(GetDisplaylist() != NULL && GetDisplaylist()->CurrentItem() != NULL  && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnAutoCheckpointModel()
@@ -7653,9 +7651,9 @@ void MIGLWidget::OnAutoCheckpointModel()
     AutoSave = !AutoSave;
 }
 
-void MIGLWidget::OnUpdateAutoCheckpointModel(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateAutoCheckpointModel(QAction *action)
 {
-    pCmdUI.Check(AutoSave);
+    action->setChecked(AutoSave);
 }
 
 void MIGLWidget::OnBuildCBRange()
@@ -7803,14 +7801,14 @@ void MIGLWidget::OnGotoCter()
     setFocusResidue(res);
 }
 
-void MIGLWidget::OnUpdateGotoNter(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateGotoNter(QAction *action)
 {
-    pCmdUI.Enable(focusres != NULL && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(focusres != NULL && MIBusyManager::instance()->Busy() == false);
 }
 
-void MIGLWidget::OnUpdateGotoCter(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateGotoCter(QAction *action)
 {
-    pCmdUI.Enable(focusres != NULL && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(focusres != NULL && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnToolTip()
@@ -7948,9 +7946,9 @@ void MIGLWidget::OnAddWater()
     }
 }
 
-void MIGLWidget::OnUpdateAddWater(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateAddWater(QAction *action)
 {
-    pCmdUI.Enable(GetDisplaylist()->CurrentItem() != NULL && GetDisplaylist()->GetCurrentMap() != NULL && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(GetDisplaylist()->CurrentItem() != NULL && GetDisplaylist()->GetCurrentMap() != NULL && MIBusyManager::instance()->Busy() == false);
 }
 
 int MIGLWidget::ScriptCommand(const char *ubuf)
@@ -8831,9 +8829,9 @@ void MIGLWidget::findLigandFit()
     }
 }
 
-void MIGLWidget::OnUpdateHideModel(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateHideModel(QAction *action)
 {
-    pCmdUI.Enable(GetDisplaylist()->CurrentItem() != NULL && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(GetDisplaylist()->CurrentItem() != NULL && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnRenderLinesmooth()
@@ -8969,9 +8967,9 @@ void MIGLWidget::OnFindGeomErrors()
     }
 }
 
-void MIGLWidget::OnUpdateFindGeomErrors(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFindGeomErrors(QAction *action)
 {
-    pCmdUI.Enable(GetDisplaylist()->CurrentItem() != NULL && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(GetDisplaylist()->CurrentItem() != NULL && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnClearGeomAnnotations()
@@ -9003,9 +9001,9 @@ void MIGLWidget::OnLabelEveryNth()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateLabelEveryNth(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateLabelEveryNth(QAction *action)
 {
-    pCmdUI.Enable(GetDisplaylist()->CurrentItem() != NULL);
+    action->setEnabled(GetDisplaylist()->CurrentItem() != NULL);
 }
 
 void MIGLWidget::OnMapCenterVisibleDensity()
@@ -9020,14 +9018,14 @@ void MIGLWidget::OnMapCenterVisibleDensity()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateMapCenterVisibleDensity(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateMapCenterVisibleDensity(QAction *action)
 {
-    pCmdUI.Enable(GetDisplaylist()->GetCurrentMap() != NULL);
+    action->setEnabled(GetDisplaylist()->GetCurrentMap() != NULL);
 }
 
-void MIGLWidget::OnUpdateFindLigandDensity(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFindLigandDensity(QAction *action)
 {
-    pCmdUI.Enable((GetDisplaylist()->GetCurrentMap() != NULL)
+    action->setEnabled((GetDisplaylist()->GetCurrentMap() != NULL)
                   && (GetDisplaylist()->CurrentItem() != NULL)
                   && (MIBusyManager::instance()->Busy() == false));
 }
@@ -9100,9 +9098,9 @@ void MIGLWidget::OnFullScreen()
     FullScreen(IsFullScreen);
 }
 
-void MIGLWidget::OnUpdateFullScreen(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFullScreen(QAction *action)
 {
-    pCmdUI.Check(IsFullScreen == true);
+    action->setChecked(IsFullScreen == true);
 }
 
 void MIGLWidget::OnRefiResidue()
@@ -9195,9 +9193,9 @@ void MIGLWidget::OnFitSplitTorsion()
     }
 }
 
-void MIGLWidget::OnUpdateFitSplitTorsion(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFitSplitTorsion(QAction *action)
 {
-    pCmdUI.Enable(IsTorsioning() && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(IsTorsioning() && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnFitSplitFit()
@@ -9222,9 +9220,9 @@ void MIGLWidget::OnFitSplitFit()
     }
 }
 
-void MIGLWidget::OnUpdateFitSplitFit(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateFitSplitFit(QAction *action)
 {
-    pCmdUI.Enable(IsFitting() && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(IsFitting() && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnMapReindex()
@@ -9238,7 +9236,7 @@ void MIGLWidget::OnMapReindex()
     map->Reindex(reindex_mat);
 }
 
-void MIGLWidget::OnUpdateMapReindex(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateMapReindex(QAction *action)
 {
     EMap *map = GetDisplaylist()->GetCurrentMap();
     bool HasPhases = false;
@@ -9246,7 +9244,7 @@ void MIGLWidget::OnUpdateMapReindex(const MIUpdateEvent &pCmdUI)
     {
         HasPhases = map->HasPhases();
     }
-    pCmdUI.Enable(HasPhases && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(HasPhases && MIBusyManager::instance()->Busy() == false);
 }
 
 bool MIGLWidget::ViewChanged()
@@ -9416,14 +9414,14 @@ void MIGLWidget::OnObjectStackExpandtopallatomsinresidue()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateObjectStackExpandtopallatomsinresidue(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectStackExpandtopallatomsinresidue(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty() && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(!AtomStack->empty() && MIBusyManager::instance()->Busy() == false);
 }
 
-void MIGLWidget::OnUpdateObjectStackExpandtop2residues(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectStackExpandtop2residues(QAction *action)
 {
-    pCmdUI.Enable(AtomStack->size() > 1 && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(AtomStack->size() > 1 && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnObjectStackExpandtop2residues()
@@ -9438,9 +9436,9 @@ void MIGLWidget::OnObjectStackExpandtop2allatomsinrange()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateObjectStackExpandtop2allatomsinrange(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectStackExpandtop2allatomsinrange(QAction *action)
 {
-    pCmdUI.Enable(AtomStack->size() > 1 && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(AtomStack->size() > 1 && MIBusyManager::instance()->Busy() == false);
 }
 
 bool MIGLWidget::DoYouWantBallAndCylinder()
@@ -9476,14 +9474,14 @@ void MIGLWidget::OnObjectShowresiduerange()
     SaveColors = true;
 }
 
-void MIGLWidget::OnUpdateObjectShowresiduerange(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectShowresiduerange(QAction *action)
 {
-    pCmdUI.Enable(AtomStack->size() > 1 && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(AtomStack->size() > 1 && MIBusyManager::instance()->Busy() == false);
 }
 
-void MIGLWidget::OnUpdateObjectShowsidechainrange(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectShowsidechainrange(QAction *action)
 {
-    pCmdUI.Enable(AtomStack->size() > 1 && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(AtomStack->size() > 1 && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnObjectShowsidechainrange()
@@ -9588,24 +9586,24 @@ void MIGLWidget::OnObjectRadiusisCylinder()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateObjectRadiusisBall(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectRadiusisBall(QAction *action)
 {
-    pCmdUI.Check(WhenShownRadius == 2);
+    action->setChecked(WhenShownRadius == 2);
 }
 
-void MIGLWidget::OnUpdateObjectRadiusisCpk(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectRadiusisCpk(QAction *action)
 {
-    pCmdUI.Check(WhenShownRadius == 3);
+    action->setChecked(WhenShownRadius == 3);
 }
 
-void MIGLWidget::OnUpdateObjectRadiusisCylinder(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectRadiusisCylinder(QAction *action)
 {
-    pCmdUI.Check(WhenShownRadius == 1);
+    action->setChecked(WhenShownRadius == 1);
 }
 
-void MIGLWidget::OnUpdateObjectWhenshowncolor(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectWhenshowncolor(QAction *action)
 {
-    pCmdUI.Check(WhenShownColorMethod != Colors::COLORASIS && WhenShownColorMethod > 0);
+    action->setChecked(WhenShownColorMethod != Colors::COLORASIS && WhenShownColorMethod > 0);
 }
 
 void MIGLWidget::OnObjectResiduerangeColor()
@@ -9645,9 +9643,9 @@ void MIGLWidget::OnObjectResiduerangeColor()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateObjectResiduerangeColor(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectResiduerangeColor(QAction *action)
 {
-    pCmdUI.Enable(AtomStack->size() > 1);
+    action->setEnabled(AtomStack->size() > 1);
 }
 
 void MIGLWidget::OnObjectResiduerangeRadius()
@@ -9673,9 +9671,9 @@ void MIGLWidget::OnObjectResiduerangeRadius()
     }
 }
 
-void MIGLWidget::OnUpdateObjectResiduerangeRadius(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectResiduerangeRadius(QAction *action)
 {
-    pCmdUI.Enable(AtomStack->size() > 1);
+    action->setEnabled(AtomStack->size() > 1);
 }
 
 void MIGLWidget::OnObjectResiduerangeTurnoff()
@@ -9696,9 +9694,9 @@ void MIGLWidget::OnObjectResiduerangeTurnoff()
     SaveColors = true;
 }
 
-void MIGLWidget::OnUpdateObjectResiduerangeTurnoff(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectResiduerangeTurnoff(QAction *action)
 {
-    pCmdUI.Enable(AtomStack->size() > 1);
+    action->setEnabled(AtomStack->size() > 1);
 }
 
 void MIGLWidget::OnObjectResiduesColor()
@@ -9736,9 +9734,9 @@ void MIGLWidget::OnObjectResiduesColor()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateObjectResiduesColor(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectResiduesColor(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty());
+    action->setEnabled(!AtomStack->empty());
 }
 
 void MIGLWidget::OnObjectResiduesRadius()
@@ -9757,9 +9755,9 @@ void MIGLWidget::OnObjectResiduesRadius()
     SaveColors = true;
 }
 
-void MIGLWidget::OnUpdateObjectResiduesRadius(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectResiduesRadius(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty());
+    action->setEnabled(!AtomStack->empty());
 }
 
 void MIGLWidget::OnObjectResiduesTurnoff()
@@ -9778,9 +9776,9 @@ void MIGLWidget::OnObjectResiduesTurnoff()
     SaveColors = true;
 }
 
-void MIGLWidget::OnUpdateObjectResiduesTurnoff(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectResiduesTurnoff(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty() );
+    action->setEnabled(!AtomStack->empty() );
 }
 
 void MIGLWidget::OnObjectAtomColor()
@@ -9807,9 +9805,9 @@ void MIGLWidget::OnObjectAtomColor()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateObjectAtomColor(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectAtomColor(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty() );
+    action->setEnabled(!AtomStack->empty() );
 }
 
 void MIGLWidget::OnObjectAtomRadius()
@@ -9831,14 +9829,14 @@ void MIGLWidget::OnObjectAtomRadius()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateObjectAtomsColor(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectAtomsColor(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty() );
+    action->setEnabled(!AtomStack->empty() );
 }
 
-void MIGLWidget::OnUpdateObjectAtomRadius(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectAtomRadius(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty() );
+    action->setEnabled(!AtomStack->empty() );
 }
 
 void MIGLWidget::OnObjectAtomsColor()
@@ -9887,9 +9885,9 @@ void MIGLWidget::OnObjectAtomsRadius()
     Wait = false;
 }
 
-void MIGLWidget::OnUpdateObjectAtomsRadius(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectAtomsRadius(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty());
+    action->setEnabled(!AtomStack->empty());
 }
 
 void MIGLWidget::OnObjectResidueColor()
@@ -9954,9 +9952,9 @@ void MIGLWidget::OnShowColorallatoms()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateObjectResidueColor(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectResidueColor(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty() );
+    action->setEnabled(!AtomStack->empty() );
 }
 
 void MIGLWidget::OnObjectResidueRadius()
@@ -9987,9 +9985,9 @@ void MIGLWidget::OnObjectResidueRadius()
     }
 }
 
-void MIGLWidget::OnUpdateObjectResidueRadius(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectResidueRadius(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty() );
+    action->setEnabled(!AtomStack->empty() );
 }
 
 void MIGLWidget::OnObjectResidueTurnoff()
@@ -10036,9 +10034,9 @@ void MIGLWidget::OnObjectResidueTurnoff()
     }
 }
 
-void MIGLWidget::OnUpdateObjectResidueTurnoff(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectResidueTurnoff(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty() );
+    action->setEnabled(!AtomStack->empty() );
 }
 
 void MIGLWidget::OnShowUndocolorradius()
@@ -10053,13 +10051,13 @@ void MIGLWidget::OnShowUndocolorradius()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateShowUndocolorradius(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateShowUndocolorradius(QAction *action)
 {
     Displaylist *Models = GetDisplaylist();
     Molecule *node =  Models->CurrentItem();
     if (node)
     {
-        pCmdUI.Enable(node->UnDoable(node) != false);
+        action->setEnabled(node->UnDoable(node) != false);
     }
 }
 
@@ -10102,9 +10100,9 @@ void MIGLWidget::OnViewUndo()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateViewUndo(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateViewUndo(QAction *action)
 {
-    pCmdUI.Enable(viewpoint->UnDoable() != false);
+    action->setEnabled(viewpoint->UnDoable() != false);
 }
 
 void MIGLWidget::OnShowPickedatomTurnon()
@@ -10126,9 +10124,9 @@ void MIGLWidget::OnShowPickedatomTurnon()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateShowPickedatomTurnon(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateShowPickedatomTurnon(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty() );
+    action->setEnabled(!AtomStack->empty() );
 }
 
 void MIGLWidget::OnShowPickedatomTurnoff()
@@ -10150,9 +10148,9 @@ void MIGLWidget::OnShowPickedatomTurnoff()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateShowPickedatomTurnoff(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateShowPickedatomTurnoff(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty() );
+    action->setEnabled(!AtomStack->empty() );
 }
 
 void MIGLWidget::OnShowAllpickedatomsTurnoff()
@@ -10166,9 +10164,9 @@ void MIGLWidget::OnShowAllpickedatomsTurnoff()
     SaveColors = true;
 }
 
-void MIGLWidget::OnUpdateShowAllpickedatomsTurnoff(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateShowAllpickedatomsTurnoff(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty() );
+    action->setEnabled(!AtomStack->empty() );
 }
 
 void MIGLWidget::OnShowAllpickedatomsTurnon()
@@ -10223,9 +10221,9 @@ void MIGLWidget::OnObjectShowresidues()
     SaveColors = true;
 }
 
-void MIGLWidget::OnUpdateObjectShowresidues(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectShowresidues(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty() );
+    action->setEnabled(!AtomStack->empty() );
 }
 
 void MIGLWidget::OnObjectShowsidechains()
@@ -10239,24 +10237,24 @@ void MIGLWidget::OnObjectShowsidechains()
     SaveColors = true;
 }
 
-void MIGLWidget::OnUpdateObjectShowsidechains(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateObjectShowsidechains(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty() );
+    action->setEnabled(!AtomStack->empty() );
 }
 
-void MIGLWidget::OnUpdateShowRadiusmodel(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateShowRadiusmodel(QAction *action)
 {
-    pCmdUI.Enable(GetDisplaylist()->CurrentItem() != NULL);
+    action->setEnabled(GetDisplaylist()->CurrentItem() != NULL);
 }
 
-void MIGLWidget::OnUpdateShowColorallatoms(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateShowColorallatoms(QAction *action)
 {
-    pCmdUI.Enable(GetDisplaylist()->CurrentItem() != NULL);
+    action->setEnabled(GetDisplaylist()->CurrentItem() != NULL);
 }
 
-void MIGLWidget::OnUpdateShowAllpickedatomsTurnon(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateShowAllpickedatomsTurnon(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty() );
+    action->setEnabled(!AtomStack->empty() );
 }
 
 void MIGLWidget::OnUpdateSurfaceSolvent(QAction *action)
@@ -10275,13 +10273,13 @@ void MIGLWidget::OnShowHidehydrogens()
     ReDraw();
 }
 
-void MIGLWidget::OnUpdateShowHidehydrogens(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateShowHidehydrogens(QAction *action)
 {
     Displaylist *Models = GetDisplaylist();
     Molecule *node = Models->CurrentItem();
     if (node)
     {
-        pCmdUI.Check(node->HVisible == false);
+        action->setChecked(node->HVisible == false);
     }
 }
 
@@ -10469,7 +10467,7 @@ void MIGLWidget::OnShowSaveSymmAtoms()
     saveSymmAtoms();
 }
 
-void MIGLWidget::OnUpdateShowSaveSymmAtoms(const MIUpdateEvent &event)
+void MIGLWidget::OnUpdateShowSaveSymmAtoms(QAction *action)
 {
     bool enabled = false;
     MIAtom *a;
@@ -10480,7 +10478,7 @@ void MIGLWidget::OnUpdateShowSaveSymmAtoms(const MIUpdateEvent &event)
     {
         enabled = true;
     }
-    event.Enable(enabled);
+    action->setEnabled(enabled);
 }
 
 void MIGLWidget::OnShowSidechainAtoms()
@@ -11051,9 +11049,9 @@ void MIGLWidget::OnDeleteAtom()
     deleteAtom();
 }
 
-void MIGLWidget::OnUpdateDeleteAtom(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateDeleteAtom(QAction *action)
 {
-    pCmdUI.Enable(!AtomStack->empty());
+    action->setEnabled(!AtomStack->empty());
 }
 
 void MIGLWidget::deleteAtom()
@@ -11936,9 +11934,9 @@ void MIGLWidget::exportCurrentModel()
     }
 }
 
-void MIGLWidget::OnUpdateExportModel(const MIUpdateEvent &pCmdUI)
+void MIGLWidget::OnUpdateExportModel(QAction *action)
 {
-    pCmdUI.Enable(Models->CurrentItem() != NULL && MIBusyManager::instance()->Busy() == false);
+    action->setEnabled(Models->CurrentItem() != NULL && MIBusyManager::instance()->Busy() == false);
 }
 
 void MIGLWidget::OnMoveAnnotationAtom()

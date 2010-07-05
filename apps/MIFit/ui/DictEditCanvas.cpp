@@ -43,9 +43,6 @@
 
 #include "molw.h"
 #include "ui/DictEditDialog.h"
-#include "MIMenuBar.h"
-#include "MIMenu.h"
-#include "MIEventHandlerMacros.h"
 
 #include "ui_dicteditorform.h"
 
@@ -84,7 +81,6 @@ bool ordering(const Bond &e1, const Bond &e2)
 
 DictEditCanvas::DictEditCanvas(DictEditDialog *daddy)
     : QGLWidget(daddy),
-      MIEventHandler(this),
       popupMenu(NULL),
       geomrefiner(NULL),
       isRotating(false),

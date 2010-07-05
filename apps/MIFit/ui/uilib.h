@@ -34,8 +34,6 @@
 
 
 #include "MIMainWindow.h"
-#include "MIMenu.h"
-#include "MIEventHandler.h"
 #include "MIGLWidget.h"
 
 #endif // ifndef MI_ui_LIBRARY_H

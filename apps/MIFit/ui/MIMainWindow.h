@@ -15,9 +15,6 @@ class QDockWidget;
 class QLabel;
 class QCursor;
 
-class MIActionEvent;
-class MIMenuBar;
-class MIToolBar;
 class GLOverviewCanvas;
 class BatchJobManager;
 class RamaPlotMgr;
@@ -28,8 +25,6 @@ namespace chemlib
 {
     class MIMolInfo;
 }
-
-#include "MIEventHandler.h"
 
 //cursor constants
 const unsigned int imhCross = 0; // Cross cursor used to pick on canvas.
@@ -53,7 +48,7 @@ const unsigned int imhCount = 16; // Number of cursors
 
 class ViewSyncedPanel;
 
-class MIMainWindow : public QMainWindow, public MIEventHandler
+class MIMainWindow : public QMainWindow
 {
     Q_OBJECT
 
@@ -67,7 +62,7 @@ class MIMainWindow : public QMainWindow, public MIEventHandler
     QDockWidget *navigatorDock;
     QDockWidget *ramaDock;
 
-    MIMenu *canvas_menu;
+    QMenu *canvas_menu;
     DependantActions *refineDependantActions;
 
 public:
@@ -93,11 +88,6 @@ public:
     void setActiveMIGLWidget(MIGLWidget *w);
 
     QDockWidget *AddAsDockWidget(QWidget *w, const std::string &name, Qt::DockWidgetArea area);
-
-    MIMenuBar *getMenuBar()
-    {
-        return menu_bar;
-    }
 
     // if widget is 0, set on the whole app
     // if id < 0, restore default cursor
@@ -172,8 +162,6 @@ private slots:
     void OnManageCrystals();
     void OnPreferences();
 
-    void HasCurrentMIGLWidget(const MIUpdateEvent&);
-
     void fileOpen();
     void newWindow();
     void updateMenus();
@@ -215,31 +203,26 @@ private:
     void createToolBars();
     void createStatusBar();
     void createDockWindows();
-    void initMenuHandlers();
-
-    void fill_file_menu(QMenu *file_menu);
-    void fill_view_menu(MIMenu *view_menu);
 
     QMdiSubWindow *findMIGLWidget(const QString &fileName);
 
-    MIMenuBar *menu_bar;
-    MIToolBar *tool_bar;
+    QToolBar *tool_bar;
 
     QMdiArea *mdiArea;
     QSignalMapper *windowMapper;
 
     QTextEdit *logWindow;
 
-    MIMenu *side_menu;
-    MIMenu *hide_menu;
-    MIMenu *color_menu;
-    MIMenu *view_menu;
-    MIMenu *show_menu;
+    QMenu *side_menu;
+    QMenu *hide_menu;
+    QMenu *color_menu;
+    QMenu *view_menu;
+    QMenu *show_menu;
     QMenu *render_menu;
-    MIMenu *model_menu;
-    MIMenu *fit_menu;
+    QMenu *model_menu;
+    QMenu *fit_menu;
     QMenu *refi_menu;
-    MIMenu *analyze_menu;
+    QMenu *analyze_menu;
     QAction *solidSurfMenuAction;
     QMenu *windowMenu;
     QMenu *viewMenu;

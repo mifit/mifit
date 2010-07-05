@@ -29,9 +29,6 @@
 //#include "preferences/PreferencesDialog.h"
 #include "PreferencesDialog.h"
 #include "MIMainWindow.h"
-#include "MIMenu.h"
-#include "MIMenuBar.h"
-#include "MIToolBar.h"
 #include "MIGLWidget.h"
 #include "Application.h"
 #include "id.h"
@@ -41,7 +38,6 @@
 #include "GLOverviewCanvas.h"
 #include "RamaPlot.h"
 #include "DictEditDialog.h"
-#include "MIEventHandlerMacros.h"
 #include "GLFormatDialog.h"
 #include "tools.h"
 #include "GenericDataDialog.h"
@@ -57,6 +53,61 @@
 #include <images/mifit_icon.xpm>
 #endif
 
+#include <images/annotate.xpm>
+#include <images/apply.xpm>
+#include <images/cancel.xpm>
+#include <images/center.xpm>
+#include <images/chekpoin.xpm>
+#include <images/colortool.xpm>
+#include <images/copy.xpm>
+#include <images/decrper.xpm>
+#include <images/fit.xpm>
+#include <images/hidetool.xpm>
+#include <images/incrper.xpm>
+#include <images/new.xpm>
+#include <images/open.xpm>
+#include <images/print.xpm>
+#include <images/rotate.xpm>
+#include <images/roty90.xpm>
+#include <images/rotym90.xpm>
+#include <images/save.xpm>
+#include <images/showtool.xpm>
+#include <images/sidetool.xpm>
+#include <images/slabin.xpm>
+#include <images/slabout.xpm>
+#include <images/topview.xpm>
+#include <images/torsion.xpm>
+#include <images/translate.xpm>
+#include <images/zoomin.xpm>
+#include <images/zoomout.xpm>
+//#include <images/annotateDisabled.xpm>
+//#include <images/applyDisabled.xpm>
+//#include <images/cancelDisabled.xpm>
+//#include <images/centerDisabled.xpm>
+//#include <images/chekpoinDisabled.xpm>
+//#include <images/colortoolDisabled.xpm>
+//#include <images/copyDisabled.xpm>
+//#include <images/decrperDisabled.xpm>
+//#include <images/fitDisabled.xpm>
+//#include <images/hidetoolDisabled.xpm>
+//#include <images/incrperDisabled.xpm>
+//#include <images/newDisabled.xpm>
+//#include <images/openDisabled.xpm>
+//#include <images/printDisabled.xpm>
+//#include <images/rotateDisabled.xpm>
+//#include <images/roty90Disabled.xpm>
+//#include <images/rotym90Disabled.xpm>
+//#include <images/saveDisabled.xpm>
+//#include <images/showtoolDisabled.xpm>
+//#include <images/sidetoolDisabled.xpm>
+//#include <images/slabinDisabled.xpm>
+//#include <images/slaboutDisabled.xpm>
+//#include <images/topviewDisabled.xpm>
+//#include <images/torsionDisabled.xpm>
+//#include <images/translateDisabled.xpm>
+//#include <images/zoominDisabled.xpm>
+//#include <images/zoomoutDisabled.xpm>
+
 static bool GetOpenFilenames(std::vector<std::string> &fnames);
 static void SplitPath(const std::string &origPath,
                       std::string *dirname,
@@ -71,435 +122,10 @@ static T firstChildWithName(const QWidget *widget, const QString &name)
     return widget->findChildren<T>(name).first();
 }
 
-//  The sole purpose of this class is to allow us to dispatch menu/update
-//  events to whichever mdi child is currently active, while still only
-//  having one instance of each menu item, instead of a different copy of
-//  each menu item for each MdiChild.
-class ActiveMIGLWidgetFtor
-    : public MIChildEventHandlerFtor
-{
-public:
-    virtual MIChildEventHandlerFtor *CreateCopy()
-    {
-        return new ActiveMIGLWidgetFtor();
-    }
-
-    QObject*operator()()
-    {
-        return MIMainWindow::instance()->currentMIGLWidget();
-    }
-};
-
-void MIMainWindow::initMenuHandlers()
-{
-    MIEventHandler *_dispatcher = this;
-    ActiveMIGLWidgetFtor *ftor = new ActiveMIGLWidgetFtor();
-
-//
-    EVT_MENU(ID_EDIT_LABELS, MIGLWidget::OnEditLabels)
-
-    EVT_MENU(ID_OBJECT_NEWMODEL, MIGLWidget::OnNewModel)
-
-//geommenu
-    EVT_MENU(ID_GEOMETRY_DISTANCE, MIGLWidget::OnGeometryDistance)
-    EVT_UPDATE_UI(ID_GEOMETRY_DISTANCE, MIGLWidget::OnUpdateGeometryDistance)
-
-    EVT_MENU(ID_GEOMETRY_ANGLE, MIGLWidget::OnGeometryAngle)
-    EVT_UPDATE_UI(ID_GEOMETRY_ANGLE, MIGLWidget::OnUpdateGeometryAngle)
-
-    EVT_MENU(ID_GEOMETRY_TORSION, MIGLWidget::OnGeometryTorsion)
-    EVT_UPDATE_UI(ID_GEOMETRY_TORSION, MIGLWidget::OnUpdateGeometryTorsion)
-
-    EVT_MENU(ID_GEOM_BOND, MIGLWidget::OnGeomBond)
-    EVT_UPDATE_UI(ID_GEOM_BOND, MIGLWidget::OnUpdateGeomBond)
-
-    EVT_MENU(ID_GEOM_UNBOND, MIGLWidget::OnGeomUnbond)
-    EVT_UPDATE_UI(ID_GEOM_UNBOND, MIGLWidget::OnUpdateGeomUnbond)
-
-    EVT_MENU(ID_GEOM_NEIGHBOURS, MIGLWidget::OnGeomNeighbours)
-    EVT_UPDATE_UI(ID_GEOM_NEIGHBOURS, MIGLWidget::OnUpdateGeomNeighbours)
-
-    EVT_MENU(ID_GEOM_CLEARNEIGHBOURS, MIGLWidget::OnGeomClearneighbours)
-    EVT_MENU(ID_GEOM_HBONDS, MIGLWidget::OnGeomHbonds)
-    EVT_MENU(ID_GEOM_CLEARHBONDS, MIGLWidget::OnGeomClearhbonds)
-
-    EVT_MENU(ID_GEOM_ADDSINGLEHBOND, MIGLWidget::OnGeomAddsinglehbond)
-    EVT_UPDATE_UI(ID_GEOM_ADDSINGLEHBOND, MIGLWidget::OnUpdateGeomAddsinglehbond)
-
-    EVT_MENU(ID_GEOM_FINDGEOMERRORS, MIGLWidget::OnFindGeomErrors)
-    EVT_UPDATE_UI(ID_GEOM_FINDGEOMERRORS, MIGLWidget::OnUpdateFindGeomErrors)
-
-    EVT_MENU(ID_GEOM_CLEARGEOMERRORS, MIGLWidget::OnClearGeomAnnotations)
-
-    //showmenu
-    EVT_MENU(ID_OBJECTS_ALLATOMS, MIGLWidget::OnObjectsAllatoms)
-    EVT_MENU(ID_OBJECT_BACKBONERIBBON, MIGLWidget::OnObjectBackboneribbon)
-    EVT_MENU(ID_OBJECT_CLEARRIBBON, MIGLWidget::OnObjectClearribbon)
-
-    //
-    EVT_MENU(ID_RIBBONSECONDARYSTRUCTURE, MIGLWidget::OnRibbonSecondaryStructure)
-    EVT_MENU(ID_SCHEMATICSECONDARYSTRUCTURE, MIGLWidget::OnSchematicSecondaryStructure)
-    EVT_MENU(ID_DELETESECONDARYSTRUCTURE, MIGLWidget::OnDeleteSecondaryStructure)
-    EVT_MENU(ID_SECONDARYSTRUCTUREOPTIONS_TUBE, MIGLWidget::OnSecondaryStructureOptionsTube)
-    EVT_MENU(ID_SECONDARYSTRUCTUREOPTIONS_SHEET, MIGLWidget::OnSecondaryStructureOptionsSheet)
-    EVT_MENU(ID_SECONDARYSTRUCTUREOPTIONS_TURN, MIGLWidget::OnSecondaryStructureOptionsTurn)
-    EVT_MENU(ID_SECONDARYSTRUCTUREOPTIONS_RANDOM, MIGLWidget::OnSecondaryStructureOptionsRandom)
-    EVT_MENU(ID_SECONDARYSTRUCTUREOPTIONS_HELIX, MIGLWidget::OnSecondaryStructureOptionsHelix)
-
-//
-    EVT_MENU(ID_OBJECTS_SECONDARYSTRUCTURE, MIGLWidget::OnSetRibbonColors)
-    EVT_MENU(ID_SHOW_BACKBONECA, MIGLWidget::OnShowBackboneAsCATrace)
-    EVT_MENU(ID_SHOW_BACKBONEATOMS, MIGLWidget::OnShowBackboneAsAtoms)
-    EVT_MENU(ID_SHOW_HIDEBACKBONE, MIGLWidget::OnShowHideBackbone)
-    EVT_MENU(ID_SHOW_SYMMATOMSASATOMS, MIGLWidget::OnShowSymmAtomsAsAtoms)
-    EVT_MENU(ID_SHOW_SYMMATOMSASCA, MIGLWidget::OnShowSymmAtomsAsCATrace)
-
-    EVT_MENU(ID_SHOW_SAVESYMMATOMS, MIGLWidget::OnShowSaveSymmAtoms)
-    EVT_UPDATE_UI(ID_SHOW_SAVESYMMATOMS, MIGLWidget::OnUpdateShowSaveSymmAtoms)
-
-    EVT_MENU(ID_SHOW_HIDESYMMATOMS, MIGLWidget::OnShowHideSymmAtoms)
-    EVT_MENU(ID_SHOW_SIDECHAINATOMS, MIGLWidget::OnShowSidechainAtoms)
-    EVT_MENU(ID_SHOW_HIDESIDECHAINATOMS, MIGLWidget::OnHideSidechainAtoms)
-
-    EVT_MENU(ID_SHOW_HIDEHYDROGENS, MIGLWidget::OnShowHidehydrogens)
-    EVT_UPDATE_UI(ID_SHOW_HIDEHYDROGENS, MIGLWidget::OnUpdateShowHidehydrogens)
-
-    EVT_MENU(ID_SHOW_UNDOCOLORRADIUS, MIGLWidget::OnShowUndocolorradius)
-    EVT_UPDATE_UI(ID_SHOW_UNDOCOLORRADIUS, MIGLWidget::OnUpdateShowUndocolorradius)
-
-    EVT_MENU(ID_SHOW_LABELEVERYNTH, MIGLWidget::OnLabelEveryNth)
-    EVT_UPDATE_UI(ID_SHOW_LABELEVERYNTH, MIGLWidget::OnUpdateLabelEveryNth)
-
-    //viewmenu
-    EVT_MENU(ID_VIEW_SLABIN, MIGLWidget::OnViewSlabin)
-    EVT_MENU(ID_VIEW_SLABOUT, MIGLWidget::OnViewSlabout)
-
-    EVT_MENU(ID_VIEW_ATOMSTACK, MIGLWidget::OnViewAtomstack)
-    EVT_UPDATE_UI(ID_VIEW_ATOMSTACK, MIGLWidget::OnUpdateViewAtomstack)
-
-    EVT_MENU(ID_VIEW_GNOMON, MIGLWidget::OnViewGnomon)
-    EVT_UPDATE_UI(ID_VIEW_GNOMON, MIGLWidget::OnUpdateViewGnomon)
-
-    EVT_MENU(ID_VIEW_UNITCELL, MIGLWidget::OnViewUnitCell)
-    EVT_UPDATE_UI(ID_VIEW_UNITCELL, MIGLWidget::OnUpdateViewUnitCell)
-
-    EVT_MENU(ID_VIEW_ROTATEY90, MIGLWidget::OnViewRotatey90)
-    EVT_MENU(ID_VIEW_ROTATEYMINUS, MIGLWidget::OnViewRotateyminus)
-
-    EVT_MENU(ID_VIEW_LABELS, MIGLWidget::OnViewLabels)
-    EVT_UPDATE_UI(ID_VIEW_LABELS, MIGLWidget::OnUpdateViewLabels)
-
-    EVT_MENU(ID_VIEW_CLEARMESSAGE, MIGLWidget::OnViewClearmessage)
-    EVT_MENU(ID_GOTO_ZOOMIIN, MIGLWidget::OnGotoZoomiin)
-    EVT_MENU(ID_GOTO_ZOOMOUT, MIGLWidget::OnGotoZoomout)
-
-    EVT_MENU(ID_VIEW_TOPVIEW, MIGLWidget::OnViewTopview)
-    EVT_UPDATE_UI(ID_VIEW_TOPVIEW, MIGLWidget::OnUpdateViewTopview)
-
-    EVT_MENU(ID_GOTO_FITTOSCREEN, MIGLWidget::OnGotoFittoscreen)
-
-    EVT_MENU(ID_VIEW_CONTACTS, MIGLWidget::OnViewContacts)
-    EVT_UPDATE_UI(ID_VIEW_CONTACTS, MIGLWidget::OnUpdateViewContacts)
-
-    EVT_MENU(ID_GOTO_FITALLTOSCREEN, MIGLWidget::OnGotoFitalltoscreen)
-    EVT_MENU(ID_VIEW_UNDO, MIGLWidget::OnViewUndo)
-    EVT_UPDATE_UI(ID_VIEW_UNDO, MIGLWidget::OnUpdateViewUndo)
-
-    EVT_MENU(ID_INCREASE_PERSP, MIGLWidget::OnIncreasePersp)
-
-    EVT_MENU(ID_DECREASE_PERSP, MIGLWidget::OnDecreasePersp)
-    EVT_UPDATE_UI(ID_DECREASE_PERSP, MIGLWidget::OnUpdateDecreasePersp)
-
-    EVT_MENU(ID_VIEW_ORTHONORMAL, MIGLWidget::OnViewOrthonormal)
-    EVT_UPDATE_UI(ID_VIEW_ORTHONORMAL, MIGLWidget::OnUpdateViewOrthonormal)
-
-    EVT_MENU(ID_VIEW_CLIPPLANES, MIGLWidget::OnViewClipplanes)
-    EVT_MENU(ID_VIEW_SAVE, MIGLWidget::OnViewSave)
-    EVT_MENU(ID_VIEW_LOAD, MIGLWidget::OnViewLoad)
-
-    EVT_MENU(ID_VIEW_FULLSCREEN, MIGLWidget::OnFullScreen)
-    EVT_UPDATE_UI(ID_VIEW_FULLSCREEN, MIGLWidget::OnUpdateFullScreen)
-
-    //stackmenu
-    EVT_MENU(ID_OBJECT_STACK_DELETETOPITEM, MIGLWidget::OnObjectStackDeletetopitem)
-
-    EVT_MENU(ID_OBJECT_STACK_EXPANDTOPALLATOMSINRESIDUE, MIGLWidget::OnObjectStackExpandtopallatomsinresidue)
-    EVT_UPDATE_UI(ID_OBJECT_STACK_EXPANDTOPALLATOMSINRESIDUE, MIGLWidget::OnUpdateObjectStackExpandtopallatomsinresidue)
-
-    EVT_MENU(ID_OBJECT_CLEARSTACK, MIGLWidget::OnObjectClearstack)
-
-    EVT_MENU(ID_OBJECT_STACK_EXPANDTOP2RESIDUES, MIGLWidget::OnObjectStackExpandtop2residues)
-    EVT_UPDATE_UI(ID_OBJECT_STACK_EXPANDTOP2RESIDUES, MIGLWidget::OnUpdateObjectStackExpandtop2residues)
-
-    EVT_MENU(ID_OBJECT_STACK_EXPANDTOP2ALLATOMSINRANGE, MIGLWidget::OnObjectStackExpandtop2allatomsinrange)
-    EVT_UPDATE_UI(ID_OBJECT_STACK_EXPANDTOP2ALLATOMSINRANGE, MIGLWidget::OnUpdateObjectStackExpandtop2allatomsinrange)
-
-//mapmenu
-    EVT_MENU(ID_MAP_LOADMAP, MIGLWidget::OnMapLoadfromphsfile)
-    EVT_MENU(ID_MAP_LOADMAPFILE, MIGLWidget::OnMapLoadfromfile)
-
-    EVT_MENU(ID_MAP_CONTOUR, MIGLWidget::OnMapContour)
-    EVT_UPDATE_UI(ID_MAP_CONTOUR, MIGLWidget::OnUpdateMapContour)
-
-    EVT_MENU(ID_CONTOUR_LIST_FILE, MIGLWidget::OnContourListFile)
-
-    EVT_MENU(ID_MAP_FFT, MIGLWidget::OnMapFFT)
-    EVT_UPDATE_UI(ID_MAP_FFT, MIGLWidget::OnUpdateMapFFT)
-
-    EVT_MENU(ID_MAP_SFCALC, MIGLWidget::OnMapSFCalc)
-    EVT_UPDATE_UI(ID_MAP_SFCALC, MIGLWidget::OnUpdateMapSFCalc)
-
-    EVT_MENU(ID_MAP_SWITCH, MIGLWidget::OnMapSwitch)
-    EVT_UPDATE_UI(ID_MAP_SWITCH, MIGLWidget::OnUpdateMapSwitch)
-
-    EVT_MENU(ID_MAP_CONTOURLEVELS, MIGLWidget::OnMapContourLevels)
-    EVT_UPDATE_UI(ID_MAP_CONTOURLEVELS, MIGLWidget::OnUpdateMapContourLevels)
-
-    EVT_MENU(ID_MAP_CENTERDENSITY, MIGLWidget::OnMapCenterVisibleDensity)
-    EVT_UPDATE_UI(ID_MAP_CENTERDENSITY, MIGLWidget::OnUpdateMapCenterVisibleDensity)
-
-    EVT_MENU(ID_FIND_DENSITY, MIGLWidget::OnFindLigandDensity)
-    EVT_UPDATE_UI(ID_FIND_DENSITY, MIGLWidget::OnUpdateFindLigandDensity)
-
-    EVT_MENU(ID_MAP_REINDEX, MIGLWidget::OnMapReindex)
-    EVT_UPDATE_UI(ID_MAP_REINDEX, MIGLWidget::OnUpdateMapReindex)
-
-    //fitmenuandmodelmenu
-    EVT_MENU(ID_FIT_RESIDUE, MIGLWidget::OnFitResidue)
-    EVT_UPDATE_UI(ID_FIT_RESIDUE, MIGLWidget::OnUpdateFitResidue)
-    EVT_MENU(ID_FIT_RESIDUES, MIGLWidget::OnFitResidues)
-    EVT_UPDATE_UI(ID_FIT_RESIDUES, MIGLWidget::OnUpdateFitResidues)
-    EVT_MENU(ID_FIT_RANGE, MIGLWidget::OnFitRange)
-    EVT_UPDATE_UI(ID_FIT_RANGE, MIGLWidget::OnUpdateFitRange)
-    EVT_MENU(ID_FIT_SINGLEATOM, MIGLWidget::OnFitSingleatom)
-    EVT_UPDATE_UI(ID_FIT_SINGLEATOM, MIGLWidget::OnUpdateFitSingleatom)
-    EVT_MENU(ID_FIT_ATOMS, MIGLWidget::OnFitAtoms)
-    EVT_UPDATE_UI(ID_FIT_ATOMS, MIGLWidget::OnUpdateFitAtoms)
-    EVT_MENU(ID_FIT_FITMOLECULE, MIGLWidget::OnFitFitmolecule)
-    EVT_UPDATE_UI(ID_FIT_FITMOLECULE, MIGLWidget::OnUpdateFitFitmolecule)
-    EVT_MENU(ID_FIT_ROTATE, MIGLWidget::OnFitRotate)
-    EVT_UPDATE_UI(ID_FIT_ROTATE, MIGLWidget::OnUpdateFitRotate)
-    EVT_MENU(ID_FIT_TORSION, MIGLWidget::OnFitTorsion)
-    EVT_UPDATE_UI(ID_FIT_TORSION, MIGLWidget::OnUpdateFitTorsion)
-    EVT_MENU(ID_FIT_TRANSLATE, MIGLWidget::OnFitTranslate)
-    EVT_UPDATE_UI(ID_FIT_TRANSLATE, MIGLWidget::OnUpdateFitTranslate)
-    EVT_MENU(ID_FIT_CENTERMODE, MIGLWidget::OnFitCentermode)
-    EVT_UPDATE_UI(ID_FIT_CENTERMODE, MIGLWidget::OnUpdateFitCentermode)
-    EVT_MENU(ID_FIT_CANCEL, MIGLWidget::OnFitCancel)
-    EVT_UPDATE_UI(ID_FIT_CANCEL, MIGLWidget::OnUpdateFitCancel)
-    EVT_MENU(ID_FIT_RESET, MIGLWidget::OnFitReset)
-    EVT_UPDATE_UI(ID_FIT_RESET, MIGLWidget::OnUpdateFitReset)
-    EVT_MENU(ID_FIT_APPLY, MIGLWidget::OnFitApply)
-    EVT_UPDATE_UI(ID_FIT_APPLY, MIGLWidget::OnUpdateFitApply)
-    EVT_MENU(ID_FIT_UNDO, MIGLWidget::OnFitUndo)
-    EVT_UPDATE_UI(ID_FIT_UNDO, MIGLWidget::OnUpdateFitUndo)
-    EVT_MENU(ID_FIT_REDO, MIGLWidget::OnFitRedo)
-    EVT_UPDATE_UI(ID_FIT_REDO, MIGLWidget::OnUpdateFitRedo)
-    EVT_MENU(ID_FIT_SETUPTORSION, MIGLWidget::OnFitSetuptorsion)
-    EVT_UPDATE_UI(ID_FIT_SETUPTORSION, MIGLWidget::OnUpdateFitSetuptorsion)
-    EVT_MENU(ID_FIT_CLEARTORSION, MIGLWidget::OnFitCleartorsion)
-    EVT_UPDATE_UI(ID_FIT_CLEARTORSION, MIGLWidget::OnUpdateFitCleartorsion)
-    EVT_MENU(ID_FIT_REPLACEWITH, MIGLWidget::OnFitReplacewith)
-    EVT_UPDATE_UI(ID_FIT_REPLACEWITH, MIGLWidget::OnUpdateFitReplacewith)
-    EVT_MENU(ID_REPLACEANDFIT, MIGLWidget::OnFitReplaceAndFit)
-    EVT_UPDATE_UI(ID_REPLACEANDFIT, MIGLWidget::OnUpdateFitReplaceAndFit)
-    EVT_MENU(ID_FIT_DELETERESIDUE, MIGLWidget::OnFitDeleteresidue)
-    EVT_UPDATE_UI(ID_FIT_DELETERESIDUE, MIGLWidget::OnUpdateFitDeleteresidue)
-    EVT_MENU(ID_DELETEATOM, MIGLWidget::OnDeleteAtom)
-    EVT_UPDATE_UI(ID_DELETEATOM, MIGLWidget::OnUpdateDeleteAtom)
-    EVT_MENU(ID_FIT_RENAMERESIDUE, MIGLWidget::OnFitRenameresidue)
-    EVT_UPDATE_UI(ID_FIT_RENAMERESIDUE, MIGLWidget::OnUpdateFitRenameresidue)
-    EVT_MENU(ID_FIT_INSERTRESIDUE, MIGLWidget::OnFitInsertresidue)
-    EVT_UPDATE_UI(ID_FIT_INSERTRESIDUE, MIGLWidget::OnUpdateFitInsertresidue)
-    EVT_MENU(ID_FIT_LSQSUPERPOSE, MIGLWidget::OnFitLsqsuperpose)
-    EVT_MENU(ID_FIT_NEXTCONFOMER, MIGLWidget::OnFitNextConfomer)
-    EVT_UPDATE_UI(ID_FIT_NEXTCONFOMER, MIGLWidget::OnUpdateFitNextConfomer)
-
-    EVT_MENU(ID_FIT_SURFVDW, MIGLWidget::OnFitSurfaceVdw)
-    EVT_UPDATE_UI(ID_FIT_SURFVDW, MIGLWidget::OnUpdateFitSurfaceVdw)
-
-    EVT_MENU(ID_FIT_SURFEXT, MIGLWidget::OnFitSurfaceExtended)
-    EVT_UPDATE_UI(ID_FIT_SURFEXT, MIGLWidget::OnUpdateFitSurfaceExtended)
-
-    EVT_MENU(ID_FIT_SURFPROBE, MIGLWidget::OnFitSurfaceProbe)
-    EVT_UPDATE_UI(ID_FIT_SURFPROBE, MIGLWidget::OnUpdateFitSurfaceProbe)
-
-    EVT_MENU(ID_FIT_SURFNONE, MIGLWidget::OnFitSurfaceNone)
-    EVT_UPDATE_UI(ID_FIT_SURFNONE, MIGLWidget::OnUpdateFitSurfaceNone)
-
-    EVT_MENU(ID_FIT_SPLITTORSION, MIGLWidget::OnFitSplitTorsion)
-    EVT_UPDATE_UI(ID_FIT_SPLITTORSION, MIGLWidget::OnUpdateFitSplitTorsion)
-
-    EVT_MENU(ID_FIT_SPLITFIT, MIGLWidget::OnFitSplitFit)
-    EVT_UPDATE_UI(ID_FIT_SPLITFIT, MIGLWidget::OnUpdateFitSplitFit)
-
-    //
-    EVT_MENU(ID_FIT_POLYALA, MIGLWidget::OnPolyAla)
-    EVT_UPDATE_UI(ID_FIT_POLYALA, MIGLWidget::OnUpdatePolyAla)
-
-    EVT_MENU(ID_FIT_POLYALACHAIN, MIGLWidget::OnPolyAlaChain)
-    EVT_UPDATE_UI(ID_FIT_POLYALACHAIN, MIGLWidget::OnUpdatePolyAlaChain)
-
-    EVT_MENU(ID_FIT_MARKAFTER, MIGLWidget::OnAddMarkAfter)
-    EVT_UPDATE_UI(ID_FIT_MARKAFTER, MIGLWidget::OnUpdateAddMarkAfter)
-
-    EVT_MENU(ID_FIT_MARKBEFORE, MIGLWidget::OnAddMarkBefore)
-    EVT_UPDATE_UI(ID_FIT_MARKBEFORE, MIGLWidget::OnUpdateAddMarkBefore)
-
-    EVT_MENU(ID_FIT_MATCHPENTAMER, MIGLWidget::OnFindPentamer)
-    EVT_UPDATE_UI(ID_FIT_MATCHPENTAMER, MIGLWidget::OnUpdateFindPentamer)
-
-    EVT_MENU(ID_FIT_REPLACEFIRST4, MIGLWidget::OnReplaceFirst4)
-    EVT_UPDATE_UI(ID_FIT_REPLACEFIRST4, MIGLWidget::OnUpdateReplaceFirst4)
-
-    EVT_MENU(ID_FIT_REPLACEMIDDLE3, MIGLWidget::OnReplaceMiddle3)
-    EVT_UPDATE_UI(ID_FIT_REPLACEMIDDLE3, MIGLWidget::OnUpdateReplaceMiddle3)
-
-    EVT_MENU(ID_FIT_REPLACELAST4, MIGLWidget::OnReplaceLast4)
-    EVT_UPDATE_UI(ID_FIT_REPLACELAST4, MIGLWidget::OnUpdateReplaceLast4)
-
-    EVT_MENU(ID_FIT_REPLACEALL, MIGLWidget::OnReplaceAll)
-    EVT_UPDATE_UI(ID_FIT_REPLACEALL, MIGLWidget::OnUpdateReplaceAll)
-
-    EVT_MENU(ID_FIT_CLEARPENTAMER, MIGLWidget::OnClearPentamer)
-    EVT_UPDATE_UI(ID_FIT_CLEARPENTAMER, MIGLWidget::OnUpdateClearPentamer)
-
-    EVT_MENU(ID_FIT_MARK_ALPHA, MIGLWidget::OnMarkAlpha)
-    EVT_UPDATE_UI(ID_FIT_MARK_ALPHA, MIGLWidget::OnUpdateMarkAlpha)
-
-    EVT_MENU(ID_FIT_MARK_BETA, MIGLWidget::OnMarkBeta)
-    EVT_UPDATE_UI(ID_FIT_MARK_BETA, MIGLWidget::OnUpdateMarkBeta)
-    EVT_MENU(ID_FIT_FLIPPEPTIDE, MIGLWidget::OnFlipPeptide)
-    EVT_UPDATE_UI(ID_FIT_FLIPPEPTIDE, MIGLWidget::OnUpdateFlipPeptide)
-    EVT_MENU(ID_FIT_REPLACESEQUENCE, MIGLWidget::OnReplaceSequence)
-    EVT_UPDATE_UI(ID_FIT_REPLACESEQUENCE, MIGLWidget::OnUpdateReplaceSequence)
-    EVT_MENU(ID_MODEL_REVERT, MIGLWidget::OnRevertModel)
-    EVT_UPDATE_UI(ID_MODEL_REVERT, MIGLWidget::OnUpdateRevertModel)
-    EVT_MENU(ID_MODEL_AUTOCHECKPOINT, MIGLWidget::OnAutoCheckpointModel)
-    EVT_UPDATE_UI(ID_MODEL_AUTOCHECKPOINT, MIGLWidget::OnUpdateAutoCheckpointModel)
-    EVT_MENU(ID_MODEL_CHECKPOINT, MIGLWidget::OnCheckpointModel)
-    EVT_UPDATE_UI(ID_MODEL_CHECKPOINT, MIGLWidget::OnUpdateCheckpointModel)
-    EVT_MENU(ID_GOTO_NTER, MIGLWidget::OnGotoNter)
-    EVT_UPDATE_UI(ID_GOTO_NTER, MIGLWidget::OnUpdateGotoNter)
-    EVT_MENU(ID_GOTO_CTER, MIGLWidget::OnGotoCter)
-    EVT_UPDATE_UI(ID_GOTO_CTER, MIGLWidget::OnUpdateGotoCter)
-    EVT_MENU(ID_FIT_ADDWATER, MIGLWidget::OnAddWater)
-    EVT_UPDATE_UI(ID_FIT_ADDWATER, MIGLWidget::OnUpdateAddWater)
-
-//animemenu
-    EVT_MENU(ID_ANIMATE_ROLL, MIGLWidget::OnAnimateRoll)
-    EVT_UPDATE_UI(ID_ANIMATE_ROLL, MIGLWidget::OnUpdateAnimateRoll)
-    EVT_MENU(ID_ANIMATE_ROCK, MIGLWidget::OnAnimateRock)
-    EVT_UPDATE_UI(ID_ANIMATE_ROCK, MIGLWidget::OnUpdateAnimateRock)
-    EVT_MENU(ID_ANIMATE_ROCKANDROLLPARAMETERS, MIGLWidget::OnAnimateRockandrollparameters)
-    EVT_MENU(ID_ANIMATE_BLINK, MIGLWidget::OnAnimateBlink)
-    EVT_UPDATE_UI(ID_ANIMATE_BLINK, MIGLWidget::OnUpdateAnimateBlink)
-
-    EVT_MENU(ID_SEQU_SETCHAIN, MIGLWidget::OnSequencePositionChain)
-    EVT_UPDATE_UI(ID_SEQU_SETCHAIN, MIGLWidget::OnUpdateSequencePositionChain)
-    EVT_MENU(ID_SEQU_SETPOSITION, MIGLWidget::OnSequencePosition)
-    EVT_UPDATE_UI(ID_SEQU_SETPOSITION, MIGLWidget::OnUpdateSequencePosition)
-    EVT_MENU(ID_SEQUENCE_ENTER, MIGLWidget::OnSequenceEnter)
-    EVT_UPDATE_UI(ID_SEQUENCE_ENTER, MIGLWidget::OnUpdateSequenceEnter)
-    EVT_MENU(ID_SEQUENCE_READ, MIGLWidget::OnSequenceRead)
-    EVT_UPDATE_UI(ID_SEQUENCE_READ, MIGLWidget::OnUpdateSequenceRead)
-    EVT_MENU(ID_SEQUENCE_SAVE, MIGLWidget::OnSequenceSave)
-    EVT_UPDATE_UI(ID_SEQUENCE_SAVE, MIGLWidget::OnUpdateSequenceSave)
-    EVT_MENU(ID_SEQU_SAVEPROTEIN, MIGLWidget::OnSequenceSaveModel)
-    EVT_UPDATE_UI(ID_SEQU_SAVEPROTEIN, MIGLWidget::OnUpdateSequenceSaveModel)
-    EVT_MENU(ID_SEQUENCE_INSERTGAP, MIGLWidget::OnSequenceInsertgap)
-    EVT_UPDATE_UI(ID_SEQUENCE_INSERTGAP, MIGLWidget::OnUpdateSequenceInsertgap)
-    EVT_MENU(ID_SEQUENCE_DELETEGAP, MIGLWidget::OnSequenceDeletegap)
-    EVT_UPDATE_UI(ID_SEQUENCE_DELETEGAP, MIGLWidget::OnUpdateSequenceDeletegap)
-    EVT_MENU(ID_SEQUENCE_INSERTLOWERGAP, MIGLWidget::OnSequenceInsertlowergap)
-    EVT_UPDATE_UI(ID_SEQUENCE_INSERTLOWERGAP, MIGLWidget::OnUpdateSequenceInsertlowergap)
-    EVT_MENU(ID_SEQUENCE_DELETELOWERGAP, MIGLWidget::OnSequenceDeletelowergap)
-    EVT_UPDATE_UI(ID_SEQUENCE_DELETELOWERGAP, MIGLWidget::OnUpdateSequenceDeletelowergap)
-    EVT_MENU(ID_OBJECT_RADIUSIS_BALL, MIGLWidget::OnObjectRadiusisBall)
-    EVT_MENU(ID_OBJECT_RADIUSIS_CPK, MIGLWidget::OnObjectRadiusisCpk)
-    EVT_MENU(ID_OBJECT_RADIUSIS_CYLINDER, MIGLWidget::OnObjectRadiusisCylinder)
-    EVT_UPDATE_UI(ID_OBJECT_RADIUSIS_BALL, MIGLWidget::OnUpdateObjectRadiusisBall)
-    EVT_UPDATE_UI(ID_OBJECT_RADIUSIS_CPK, MIGLWidget::OnUpdateObjectRadiusisCpk)
-    EVT_UPDATE_UI(ID_OBJECT_RADIUSIS_CYLINDER, MIGLWidget::OnUpdateObjectRadiusisCylinder)
-//
-    EVT_MENU(ID_OBJECT_RESIDUERANGE_COLOR, MIGLWidget::OnObjectResiduerangeColor)
-    EVT_UPDATE_UI(ID_OBJECT_RESIDUERANGE_COLOR, MIGLWidget::OnUpdateObjectResiduerangeColor)
-    EVT_MENU(ID_OBJECT_RESIDUERANGE_RADIUS, MIGLWidget::OnObjectResiduerangeRadius)
-    EVT_UPDATE_UI(ID_OBJECT_RESIDUERANGE_RADIUS, MIGLWidget::OnUpdateObjectResiduerangeRadius)
-    EVT_MENU(ID_OBJECT_RESIDUERANGE_TURNOFF, MIGLWidget::OnObjectResiduerangeTurnoff)
-    EVT_UPDATE_UI(ID_OBJECT_RESIDUERANGE_TURNOFF, MIGLWidget::OnUpdateObjectResiduerangeTurnoff)
-    EVT_MENU(ID_OBJECT_RESIDUES_COLOR, MIGLWidget::OnObjectResiduesColor)
-    EVT_UPDATE_UI(ID_OBJECT_RESIDUES_COLOR, MIGLWidget::OnUpdateObjectResiduesColor)
-    EVT_MENU(ID_OBJECT_RESIDUES_RADIUS, MIGLWidget::OnObjectResiduesRadius)
-    EVT_UPDATE_UI(ID_OBJECT_RESIDUES_RADIUS, MIGLWidget::OnUpdateObjectResiduesRadius)
-    EVT_MENU(ID_OBJECT_RESIDUES_TURNOFF, MIGLWidget::OnObjectResiduesTurnoff)
-    EVT_UPDATE_UI(ID_OBJECT_RESIDUES_TURNOFF, MIGLWidget::OnUpdateObjectResiduesTurnoff)
-    EVT_MENU(ID_HIDEMODEL, MIGLWidget::OnHideModel)
-    EVT_UPDATE_UI(ID_HIDEMODEL, MIGLWidget::OnUpdateHideModel)
-    EVT_MENU(ID_OBJECT_ATOM_COLOR, MIGLWidget::OnObjectAtomColor)
-    EVT_UPDATE_UI(ID_OBJECT_ATOM_COLOR, MIGLWidget::OnUpdateObjectAtomColor)
-    EVT_MENU(ID_OBJECT_ATOM_RADIUS, MIGLWidget::OnObjectAtomRadius)
-    EVT_UPDATE_UI(ID_OBJECT_ATOMS_COLOR, MIGLWidget::OnUpdateObjectAtomsColor)
-    EVT_UPDATE_UI(ID_OBJECT_ATOM_RADIUS, MIGLWidget::OnUpdateObjectAtomRadius)
-    EVT_MENU(ID_OBJECT_ATOMS_COLOR, MIGLWidget::OnObjectAtomsColor)
-    EVT_MENU(ID_OBJECT_ATOMS_RADIUS, MIGLWidget::OnObjectAtomsRadius)
-    EVT_UPDATE_UI(ID_OBJECT_ATOMS_RADIUS, MIGLWidget::OnUpdateObjectAtomsRadius)
-    EVT_MENU(ID_OBJECT_SHOWRESIDUE, MIGLWidget::OnObjectShowresidue)
-    EVT_UPDATE_UI(ID_OBJECT_SHOWRESIDUE, MIGLWidget::OnUpdateObjectShowresidue)
-    EVT_MENU(ID_OBJECT_SHOWSIDECHAIN, MIGLWidget::OnObjectShowsidechain)
-    EVT_UPDATE_UI(ID_OBJECT_SHOWSIDECHAIN, MIGLWidget::OnUpdateObjectShowsidechain)
-    EVT_MENU(ID_OBJECT_SHOWRESIDUES, MIGLWidget::OnObjectShowresidues)
-    EVT_UPDATE_UI(ID_OBJECT_SHOWRESIDUES, MIGLWidget::OnUpdateObjectShowresidues)
-    EVT_MENU(ID_OBJECT_SHOWSIDECHAINS, MIGLWidget::OnObjectShowsidechains)
-    EVT_UPDATE_UI(ID_OBJECT_SHOWSIDECHAINS, MIGLWidget::OnUpdateObjectShowsidechains)
-    EVT_MENU(ID_OBJECT_SHOWRESIDUERANGE, MIGLWidget::OnObjectShowresiduerange)
-    EVT_UPDATE_UI(ID_OBJECT_SHOWRESIDUERANGE, MIGLWidget::OnUpdateObjectShowresiduerange)
-    EVT_UPDATE_UI(ID_OBJECT_SHOWSIDECHAINRANGE, MIGLWidget::OnUpdateObjectShowsidechainrange)
-    EVT_MENU(ID_OBJECT_SHOWSIDECHAINRANGE, MIGLWidget::OnObjectShowsidechainrange)
-//
-    EVT_MENU(ID_SHOW_UNDOCOLORRADIUS, MIGLWidget::OnShowUndocolorradius)
-    EVT_UPDATE_UI(ID_SHOW_UNDOCOLORRADIUS, MIGLWidget::OnUpdateShowUndocolorradius)
-//
-    EVT_MENU(ID_SHOW_PICKEDATOM_TURNON, MIGLWidget::OnShowPickedatomTurnon)
-    EVT_UPDATE_UI(ID_SHOW_PICKEDATOM_TURNON, MIGLWidget::OnUpdateShowPickedatomTurnon)
-    EVT_MENU(ID_SHOW_PICKEDATOM_TURNOFF, MIGLWidget::OnShowPickedatomTurnoff)
-    EVT_UPDATE_UI(ID_SHOW_PICKEDATOM_TURNOFF, MIGLWidget::OnUpdateShowPickedatomTurnoff)
-    EVT_MENU(ID_SHOW_ALLPICKEDATOMS_TURNOFF, MIGLWidget::OnShowAllpickedatomsTurnoff)
-    EVT_UPDATE_UI(ID_SHOW_ALLPICKEDATOMS_TURNOFF, MIGLWidget::OnUpdateShowAllpickedatomsTurnoff)
-    EVT_MENU(ID_SHOW_ALLPICKEDATOMS_TURNON, MIGLWidget::OnShowAllpickedatomsTurnon)
-    EVT_UPDATE_UI(ID_SHOW_ALLPICKEDATOMS_TURNON, MIGLWidget::OnUpdateShowAllpickedatomsTurnon)
-    EVT_MENU(ID_SHOW_COLORALLATOMS, MIGLWidget::OnShowColorallatoms)
-    EVT_UPDATE_UI(ID_SHOW_COLORALLATOMS, MIGLWidget::OnUpdateShowColorallatoms)
-    EVT_MENU(ID_SHOW_RADIUSMODEL, MIGLWidget::OnShowRadiusmodel)
-    EVT_UPDATE_UI(ID_SHOW_RADIUSMODEL, MIGLWidget::OnUpdateShowRadiusmodel)
-//
-    EVT_MENU(ID_OBJECT_RESIDUE_COLOR, MIGLWidget::OnObjectResidueColor)
-    EVT_UPDATE_UI(ID_OBJECT_RESIDUE_COLOR, MIGLWidget::OnUpdateObjectResidueColor)
-    EVT_MENU(ID_OBJECT_RESIDUE_RADIUS, MIGLWidget::OnObjectResidueRadius)
-    EVT_UPDATE_UI(ID_OBJECT_RESIDUE_RADIUS, MIGLWidget::OnUpdateObjectResidueRadius)
-    EVT_MENU(ID_OBJECT_RESIDUE_TURNOFF, MIGLWidget::OnObjectResidueTurnoff)
-    EVT_UPDATE_UI(ID_OBJECT_RESIDUE_TURNOFF, MIGLWidget::OnUpdateObjectResidueTurnoff)
-//
-    EVT_MENU(ID_RAMAPLOT_ALLOWED, MIGLWidget::OnRamachandranPlotShowAllowed)
-    EVT_UPDATE_UI(ID_RAMAPLOT_ALLOWED, MIGLWidget::OnUpdateRamachandranPlotShowAllowed)
-    EVT_MENU(ID_INVERTCHIRAL, MIGLWidget::OnInvertChiralCenter)
-    EVT_UPDATE_UI(ID_INVERTCHIRAL, MIGLWidget::OnUpdateInvertChiralCenter)
-    EVT_MENU(ID_VIEWCHIRAL, MIGLWidget::OnViewChiralCenters)
-    EVT_UPDATE_UI(ID_VIEWCHIRAL, MIGLWidget::OnUpdateViewChiralCenters)
-//
-    EVT_MENU(ID_SHOW_SHOWWITHINSPHERE, MIGLWidget::OnShowShowwithinsphere)
-    EVT_MENU(ID_GOTO_GOTOXYZ, MIGLWidget::OnGotoGotoxyz)
-//todo
-    EVT_MENU(ID_EDIT_SELECTMODEL, MIGLWidget::OnEditSelectmodel)
-
-    delete ftor;
-}
-
 MIMainWindow*MIMainWindow::_instance = NULL;
 
 MIMainWindow::MIMainWindow()
-    : MIEventHandler(this),
-      modelsDock(NULL),
+    : modelsDock(NULL),
       displayDock(NULL),
       jobsDock(NULL),
       logDock(NULL),
@@ -522,11 +148,13 @@ MIMainWindow::MIMainWindow()
     connect(windowMapper, SIGNAL(mapped(QWidget*)),
             this, SLOT(setActiveSubWindow(QWidget*)));
 
+    tool_bar = addToolBar("MIFit tools");
+    tool_bar->setObjectName("MIFit tools");
+    tool_bar->setIconSize(QSize(20, 20));
+
     createActions();
     createMenus();
     createDockWindows();
-
-    createToolBars();
     createStatusBar();
     updateMenus();
 
@@ -594,8 +222,6 @@ void MIMainWindow::childActivated(QMdiSubWindow *w)
         if (child==dying_widget)
             return;
         child->OnActivated();
-        if (tool_bar)
-            tool_bar->doUpdates();
     }
 }
 
@@ -1312,8 +938,12 @@ bool MIMainWindow::isJobLimit()
 
 void MIMainWindow::UpdateToolBar()
 {
-    if (tool_bar)
-        tool_bar->doUpdates();
+    foreach (QAction *action, tool_bar->actions())
+    {
+        CurrentMIGLWidgetAction *miAction = dynamic_cast<CurrentMIGLWidgetAction*>(action);
+        if (miAction)
+            miAction->update();
+    }
 }
 
 void MIMainWindow::OnUpdateStereoToggle()
@@ -1347,25 +977,25 @@ void MIMainWindow::OnScript()
 void MIMainWindow::OnSideChainTool()
 {
     QPoint pos = QCursor::pos();
-    side_menu->doExec(pos);
+    side_menu->exec(pos);
 }
 
 void MIMainWindow::OnHideTool()
 {
     QPoint pos = QCursor::pos();
-    hide_menu->doExec(pos);
+    hide_menu->exec(pos);
 }
 
 void MIMainWindow::OnColorTool()
 {
     QPoint pos = QCursor::pos();
-    color_menu->doExec(pos);
+    color_menu->exec(pos);
 }
 
 void MIMainWindow::OnShowTool()
 {
     QPoint pos = QCursor::pos();
-    show_menu->doExec(pos);
+    show_menu->exec(pos);
 }
 
 MIMainWindow*MIMainWindow::instance()
@@ -1542,7 +1172,7 @@ void MIMainWindow::AfterInit()
 
 void MIMainWindow::OnMenuValidate()
 {
-    menu_bar->validateActions();
+//    menu_bar->validateActions();
     //menu_bar->validateUpdates();
 }
 
@@ -1794,8 +1424,37 @@ void MIMainWindow::OnExportImage()
         currentMIGLWidget()->OnExportImage();
 }
 
-void MIMainWindow::fill_file_menu(QMenu *file_menu)
+
+void MIMainWindow::fill_surf_menu(QMenu *surf_menu)
 {
+    new CurrentMIGLWidgetAction("Surface Residue", "Calculate van der Waal dot surface around picked residue", surf_menu, SLOT(OnObjectSurfaceresidue()), SLOT(OnUpdateObjectSurfaceresidue(QAction*)));
+
+    new CurrentMIGLWidgetAction("Surface Residues", "Surface all the residues on the stack", surf_menu, SLOT(OnObjectSurfaceresidues()), SLOT(OnUpdateObjectSurfaceresidues(QAction*)));
+
+    new CurrentMIGLWidgetAction("Surface Atom", "Surface the last atom picked", surf_menu, SLOT(OnObjectSurfaceatom()), SLOT(OnUpdateObjectSurfaceAtom(QAction*)));
+
+    new CurrentMIGLWidgetAction("Surface Atoms", "Surface all the atoms on the stack", surf_menu, SLOT(OnObjectSurfaceAtoms()), SLOT(OnUpdateObjectSurfaceatoms(QAction*)));
+
+    new CurrentMIGLWidgetAction("van der Waal Surface", "Calculate van der Waal dot surface", surf_menu, SLOT(OnVdwDotSurface()));
+
+    new CurrentMIGLWidgetAction("Solvent Exposed Surface", "Surface through the center of the solvent atoms touching the molecule", surf_menu, SLOT(OnSurfaceSolvent()), SLOT(OnUpdateSurfaceSolvent(QAction*)));
+
+    new CurrentMIGLWidgetAction("Sphere around atom", "Calculate sphere around last picked atom", surf_menu, SLOT(OnObjectSurfaceSpherearoundatom()), SLOT(OnUpdateObjectSurfaceSpherearoundatom(QAction*)));
+
+    surf_menu->addSeparator();
+    new CurrentMIGLWidgetAction("Clear Surface", "Clears the surface dots", surf_menu, SLOT(OnObjectSurfaceClearsurface()));
+
+}
+
+
+void MIMainWindow::createMenus()
+{
+    CurrentMIGLWidgetAction *miGLWidgetAction;
+
+    //// Make a menubar
+    QMenu *file_menu = menuBar()->addMenu("&File");
+
+    QList<QAction *> toolBarActions;
     QAction *action;
 
     fileNewAction = file_menu->addAction(tr("New"), this, SLOT(OnNew()));
@@ -1858,112 +1517,74 @@ void MIMainWindow::fill_file_menu(QMenu *file_menu)
     action->setShortcut(tr("Alt+X"));
 
     connect(file_menu, SIGNAL(aboutToShow()), SLOT(updateFileMenu()));
-}
 
-
-
-void MIMainWindow::fill_view_menu(MIMenu *view_menu)
-{
-    view_menu->Append(ID_VIEW_UNDO, "&Undo Viewpoint", "Use this command to center objects", false);
-    view_menu->Append(ID_VIEW_SAVE, "&Save Viewpoint...", "Use this command to save the viewpoint to a file", false);
-    view_menu->Append(ID_VIEW_LOAD, "&Load Viewpoint...", "Use this command to load the viewpoint from a file", false);
-    view_menu->AppendSeparator();
-    view_menu->Append(ID_VIEW_TOPVIEW, "&Top view", "View from top and drag clipping planes", true);
-    view_menu->Append(ID_VIEW_FULLSCREEN, "&Fullscreen\tESC", "Canvas fills the entire screen", true);
-
-    _hardwareStereoAction = view_menu->addAction(tr("Use &Hardware Stereo"), this, SLOT(OnHardwareStereo()));
-    _hardwareStereoAction->setCheckable(true);
-    connect(view_menu, SIGNAL(aboutToShow()), this, SLOT(OnUpdateHardwareStereo()));
-
-    _stereoToggleAction = view_menu->addAction(tr("S&tereo\t|"), this, SLOT(OnStereoToggle()));
-    _stereoToggleAction->setCheckable(true);
-    connect(view_menu, SIGNAL(aboutToShow()), this, SLOT(OnUpdateStereoToggle()));
-
-    view_menu->AppendSeparator();
-    view_menu->Append(ID_VIEW_SLABIN, "Slab In\tShift+I", "Decrease the distance beteween the front and back clipping planes", false);
-    view_menu->Append(ID_VIEW_SLABOUT, "Slab Out\tShift+O", "Increase the distance beteween the front and back clipping planes", false);
-    view_menu->Append(ID_VIEW_CLIPPLANES, "Set s&lab...", "Set the values of the front and back clipping planes", false);
-    view_menu->Append(ID_GOTO_ZOOMIIN, "Zoom In\tI", "Zoom viewpoint in by 20%", false);
-    view_menu->Append(ID_GOTO_ZOOMOUT, "Zoom Out\tO", "Zoom viewpoint in by 20%", false);
-    view_menu->Append(ID_VIEW_ROTATEY90, "Rotate View &+90", "Use this command (and -90) to center objects", false);
-    view_menu->Append(ID_VIEW_ROTATEYMINUS, "Rotate View &-90", "Use this command to center objects", false);
-    view_menu->Append(ID_VIEW_ORTHONORMAL, "Orthonor&mal", "Set perspective to 0 (infinite viewpoint)", true);
-    view_menu->Append(ID_INCREASE_PERSP, "I&ncrease Perspective", "Increase perspective +20%", false);
-    view_menu->Append(ID_DECREASE_PERSP, "&Decrease Perspective", "Decrease perspective -20%", false);
-    view_menu->AppendSeparator();
-    view_menu->Append(ID_GOTO_FITTOSCREEN, "&Center model on screen", "Center molecule on screen", false);
-    view_menu->Append(ID_GOTO_FITALLTOSCREEN, "&Center All Models On Screen", "Center all the molecules on the screen", false);
-    view_menu->Append(ID_MAP_CENTERDENSITY, "Center Visible Density", "Center the density visible on the screen", false);
-    view_menu->Append(ID_GOTO_GOTOXYZ, "&Go to x,y,z...", "Center view at a coordinate in Angstroms", false);
-    view_menu->AppendSeparator();
-
-    MIMenu *anime_menu = new MIMenu(view_menu->GetReceiver());
-    anime_menu->Append(ID_ANIMATE_ROCK, "&Rock", "Rock the model back and forth", true);
-    anime_menu->Append(ID_ANIMATE_ROLL, "Ro&ll", "Roll the model around the vertical", true);
-    anime_menu->Append(ID_ANIMATE_BLINK, "&Blink", "Blink between two or more models", true);
-    anime_menu->Append(ID_ANIMATE_ROCKANDROLLPARAMETERS, "Rock/Roll Rates...", "Set the rates for rock and roll", false);
-    view_menu->Append(ID_ANIMEMENU, "&Animate", anime_menu);
-}
-
-void MIMainWindow::fill_surf_menu(QMenu *surf_menu)
-{
-    new CurrentMIGLWidgetAction("Surface Residue", "Calculate van der Waal dot surface around picked residue", surf_menu, SLOT(OnObjectSurfaceresidue()), SLOT(OnUpdateObjectSurfaceresidue(QAction*)));
-
-    new CurrentMIGLWidgetAction("Surface Residues", "Surface all the residues on the stack", surf_menu, SLOT(OnObjectSurfaceresidues()), SLOT(OnUpdateObjectSurfaceresidues(QAction*)));
-
-    new CurrentMIGLWidgetAction("Surface Atom", "Surface the last atom picked", surf_menu, SLOT(OnObjectSurfaceatom()), SLOT(OnUpdateObjectSurfaceAtom(QAction*)));
-
-    new CurrentMIGLWidgetAction("Surface Atoms", "Surface all the atoms on the stack", surf_menu, SLOT(OnObjectSurfaceAtoms()), SLOT(OnUpdateObjectSurfaceatoms(QAction*)));
-
-    new CurrentMIGLWidgetAction("van der Waal Surface", "Calculate van der Waal dot surface", surf_menu, SLOT(OnVdwDotSurface()));
-
-    new CurrentMIGLWidgetAction("Solvent Exposed Surface", "Surface through the center of the solvent atoms touching the molecule", surf_menu, SLOT(OnSurfaceSolvent()), SLOT(OnUpdateSurfaceSolvent(QAction*)));
-
-    new CurrentMIGLWidgetAction("Sphere around atom", "Calculate sphere around last picked atom", surf_menu, SLOT(OnObjectSurfaceSpherearoundatom()), SLOT(OnUpdateObjectSurfaceSpherearoundatom(QAction*)));
-
-    surf_menu->addSeparator();
-    new CurrentMIGLWidgetAction("Clear Surface", "Clears the surface dots", surf_menu, SLOT(OnObjectSurfaceClearsurface()));
-
-}
-
-
-void MIMainWindow::createMenus()
-{
-    menu_bar = new MIMenuBar(menuBar());
-
-    //// Make a menubar
-    MIMenu *file_menu = new MIMenu(*this);
-    fill_file_menu(file_menu);
     updateRecentFileActions();
 
+    //TODO: use disabled icon specialization for QIcons?
+    fileNewAction->setIcon(QIcon(new_xpm));
+    toolBarActions += fileNewAction;
+    fileOpenAction->setIcon(QIcon(open_xpm));
+    toolBarActions += fileOpenAction;
+    fileSaveAction->setIcon(QIcon(save_xpm));
+    toolBarActions += fileSaveAction;
+    filePrintAction->setIcon(QIcon(print_xpm));
+    toolBarActions += filePrintAction;
+    copyCanvasAction->setIcon(QIcon(copy_xpm));
+    toolBarActions += copyCanvasAction;
+    toolBarActions += 0;
 
+    QToolBar *toolBar = addToolBar("Display Tools");
+    toolBar->setObjectName("Display Tools");
+    toolBar->addAction(QIcon(colortool_xpm), tr("Color"), this, SLOT(OnColorTool()));
+    toolBar->addAction(QIcon(showtool_xpm), tr("Show"), this, SLOT(OnShowTool()));
+    toolBar->addAction(QIcon(sidetool_xpm), tr("Side Chain"), this, SLOT(OnSideChainTool()));
+    toolBar->addAction(QIcon(hidetool_xpm), tr("Hide"), this, SLOT(OnHideTool()));
 
-    MIMenu *stack_menu = new MIMenu(*this);
-    stack_menu->Append(ID_VIEW_ATOMSTACK, "Show/Hide Atom Stack", "Toggle the atom stack visibility", true);
-    stack_menu->AppendSeparator();
-    stack_menu->Append(ID_OBJECT_STACK_DELETETOPITEM, "Clear &top item", "Clear the top item on the stack", false);
-    stack_menu->Append(ID_OBJECT_CLEARSTACK, "&Clear stack", "Clear all items on the stack", false);
-    stack_menu->AppendSeparator();
-    stack_menu->Append(ID_OBJECT_STACK_EXPANDTOPALLATOMSINRESIDUE, "&Expand Top Residue", "Expand the top residue to put all of its atoms on the stack", false);
-    stack_menu->Append(ID_OBJECT_STACK_EXPANDTOP2RESIDUES, "Expand &range to All Residue", "Expand stack to include all residues between top two", false);
-    stack_menu->Append(ID_OBJECT_STACK_EXPANDTOP2ALLATOMSINRANGE, "Expand Range to All &Atoms", "Expand stack to include all atoms in all residues between top two", false);
+    QMenu *di_menu = menuBar()->addMenu(tr("&Dictionary"));
+    view_menu = menuBar()->addMenu(tr("&Viewpoint"));
+    show_menu = menuBar()->addMenu(tr("&Show"));
+    render_menu = menuBar()->addMenu(tr("Re&nder"));
+    model_menu = menuBar()->addMenu(tr("&Model"));
+    fit_menu = menuBar()->addMenu(tr("F&it"));
+    refi_menu = menuBar()->addMenu(tr("&Refine"));
+    analyze_menu = menuBar()->addMenu(tr("&Analyze"));
+    _jobMenu = menuBar()->addMenu(tr("&Job"));
 
-    color_menu = new MIMenu(*this);
-    color_menu->Append(ID_SHOW_COLORALLATOMS, "Color all atoms", "Colors the whole model with current color", false);
-    color_menu->Append(ID_OBJECT_ATOM_COLOR, "Color last picked atom", "Colors the last picked atom with current color", false);
-    color_menu->Append(ID_OBJECT_ATOMS_COLOR, "Color all picked atoms", "Colors all the atoms on the stack with current color", false);
-    color_menu->AppendSeparator();
-    color_menu->Append(ID_OBJECT_RESIDUE_COLOR, "Color last picked residue", "Colors the last picked residue with current color", false);
-    color_menu->Append(ID_OBJECT_RESIDUES_COLOR, "Color all picked Residues", "Colors all the residues on the stack with current color", false);
-    color_menu->Append(ID_OBJECT_RESIDUERANGE_COLOR, "Color residue range", "Colors the residue at the top of stack with current color", false);
-    color_menu->AppendSeparator();
-    color_menu->Append(ID_SHOW_UNDOCOLORRADIUS, "&Undo color", "Undo the last color or radius command", false);
+    connect(show_menu, SIGNAL(aboutToShow()), this, SLOT(updateShowMenu()));
 
-    render_menu = new QMenu(this);
+    canvas_menu = show_menu->addMenu("Canvas");
+
+    QMenu *stack_menu = canvas_menu->addMenu("S&tack");
+    miGLWidgetAction = new CurrentMIGLWidgetAction("Show/Hide Atom Stack", "Toggle the atom stack visibility", stack_menu, SLOT(OnViewAtomstack()), SLOT(OnUpdateViewAtomstack(QAction*)));
+    miGLWidgetAction->setCheckable(true);
+
+    stack_menu->addSeparator();
+    new CurrentMIGLWidgetAction("Clear &top item", "Clear the top item on the stack", stack_menu, SLOT(OnObjectStackDeletetopitem()));
+    new CurrentMIGLWidgetAction("&Clear stack", "Clear all items on the stack", stack_menu, SLOT(OnObjectClearstack()));
+    stack_menu->addSeparator();
+    new CurrentMIGLWidgetAction("&Expand Top Residue", "Expand the top residue to put all of its atoms on the stack", stack_menu, SLOT(OnObjectStackExpandtopallatomsinresidue()), SLOT(OnUpdateObjectStackExpandtopallatomsinresidue(QAction*)));
+    new CurrentMIGLWidgetAction("Expand &range to All Residue", "Expand stack to include all residues between top two", stack_menu, SLOT(OnObjectStackExpandtop2residues()), SLOT(OnUpdateObjectStackExpandtop2residues(QAction*)));
+    new CurrentMIGLWidgetAction("Expand Range to All &Atoms", "Expand stack to include all atoms in all residues between top two", stack_menu, SLOT(OnObjectStackExpandtop2allatomsinrange()), SLOT(OnUpdateObjectStackExpandtop2allatomsinrange(QAction*)));
+
+    color_menu = new QMenu(this);
+    new CurrentMIGLWidgetAction("Color all atoms", "Colors the whole model with current color", color_menu, SLOT(OnShowColorallatoms()), SLOT(OnUpdateShowColorallatoms(QAction*)));
+    new CurrentMIGLWidgetAction("Color last picked atom", "Colors the last picked atom with current color", color_menu, SLOT(OnObjectAtomColor()), SLOT(OnUpdateObjectAtomColor(QAction*)));
+
+    new CurrentMIGLWidgetAction("Color all picked atoms", "Colors all the atoms on the stack with current color", color_menu, SLOT(OnObjectAtomsColor()));
+
+    color_menu->addSeparator();
+    new CurrentMIGLWidgetAction("Color last picked residue", "Colors the last picked residue with current color", color_menu, SLOT(OnObjectResidueColor()), SLOT(OnUpdateObjectResidueColor(QAction*)));
+    new CurrentMIGLWidgetAction("Color all picked Residues", "Colors all the residues on the stack with current color", color_menu, SLOT(OnObjectResiduesColor()), SLOT(OnUpdateObjectResiduesColor(QAction*)));
+
+    new CurrentMIGLWidgetAction("Color residue range", "Colors the residue at the top of stack with current color", color_menu, SLOT(OnObjectResiduerangeColor()), SLOT(OnUpdateObjectResiduerangeColor(QAction*)));
+
+    color_menu->addSeparator();
+    new CurrentMIGLWidgetAction("&Undo color", "Undo the last color or radius command", color_menu, SLOT(OnShowUndocolorradius()), SLOT(OnUpdateShowUndocolorradius(QAction*)));
+
     connect(render_menu, SIGNAL(aboutToShow()), SLOT(updateRenderMenu()));
 
     QActionGroup *renderStyleActionGroup = new QActionGroup(render_menu);
-    QAction *action;
+
     action = new CurrentMIGLWidgetAction("&Sticks", "Draw bonds as sticks", render_menu, SLOT(OnRenderSticks()), SLOT(OnUpdateRenderSticks(QAction*)));
     action->setActionGroup(renderStyleActionGroup);
     action->setCheckable(true);
@@ -2024,45 +1645,93 @@ void MIMainWindow::createMenus()
     new CurrentMIGLWidgetAction("Set Amount to Dim Non-active Models", "Dim non-active models", render_menu, SLOT(OnAmountToDimNonactiveModels()));
 
 
-    MIMenu *showres_menu = new MIMenu(*this);
-    showres_menu->Append(ID_OBJECTS_ALLATOMS, "Show &all residues", "Show the whole model", false);
-    showres_menu->Append(ID_OBJECT_SHOWRESIDUE, "Show &last picked residue", "Show the last picked residue", false);
-    showres_menu->Append(ID_OBJECT_SHOWRESIDUES, "Show &all picked residues", "Show all the residues on the stack", false);
-    showres_menu->Append(ID_OBJECT_SHOWRESIDUERANGE, "Show &residue range", "Show the residue at the top of stack", false);
-    showres_menu->Append(ID_SHOW_SHOWWITHINSPHERE, "Show residues within &sphere...", "Show residue if it is witin a radius", false);
-    showres_menu->AppendSeparator();
-    showres_menu->Append(ID_HIDEMODEL, "&Hide all residues", "Hide the whole model", false);
-    showres_menu->Append(ID_OBJECT_RESIDUE_TURNOFF, "Hide last picked residue", "Hide the last picked residue", false);
-    showres_menu->Append(ID_OBJECT_RESIDUES_TURNOFF, "Hide all picked residues", "Hide all the residues on the stack", false);
-    showres_menu->Append(ID_OBJECT_RESIDUERANGE_TURNOFF, "Hide residue range", "Hide the residue at the top of stack", false);
+    QMenu *showres_menu = show_menu->addMenu("Residues");
 
-    side_menu = new MIMenu(*this);
-    side_menu->Append(ID_SHOW_SIDECHAINATOMS, "Show sidechain &atoms", "Show sidechain atoms", false);
-    side_menu->Append(ID_SHOW_HIDESIDECHAINATOMS, "&Hide sidechain atoms", "Hide sidechain atoms", false);
-    side_menu->Append(ID_OBJECT_SHOWSIDECHAIN, "&Show sidechain of last picked", "Show the sidechain of the last picked residue", false);
-    side_menu->Append(ID_OBJECT_SHOWSIDECHAINS, "S&how sidechains of all picked", "Show the sidechains of all the residues on the stack", false);
-    side_menu->Append(ID_OBJECT_SHOWSIDECHAINRANGE, "Sh&ow sidechains of range", "Show the sidechains of the residue range at the top of stack", false);
+    new CurrentMIGLWidgetAction("Show &all residues",
+                                "Show the whole model",
+                                showres_menu,
+                                SLOT(OnObjectsAllatoms()));
+    new CurrentMIGLWidgetAction("Show &last picked residue",
+                                "Show the last picked residue",
+                                showres_menu,
+                                SLOT(OnObjectShowresidue()),
+                                SLOT(OnUpdateObjectShowresidue(QAction*)));
+    new CurrentMIGLWidgetAction("Show &all picked residues",
+                                "Show all the residues on the stack",
+                                showres_menu,
+                                SLOT(OnObjectShowresidues()),
+                                SLOT(OnUpdateObjectShowresidues(QAction*)));
+    new CurrentMIGLWidgetAction("Show &residue range",
+                                "Show the residue at the top of stack",
+                                showres_menu,
+                                SLOT(OnObjectShowresiduerange()),
+                                SLOT(OnUpdateObjectShowresiduerange(QAction*)));
+    new CurrentMIGLWidgetAction("Show residues within &sphere...",
+                                "Show residue if it is witin a radius",
+                                showres_menu,
+                                SLOT(OnShowShowwithinsphere()));
+    showres_menu->addSeparator();
+    new CurrentMIGLWidgetAction("&Hide all residues",
+                                "Hide the whole model",
+                                showres_menu,
+                                SLOT(OnHideModel()),
+                                SLOT(OnUpdateHideModel(QAction*)));
+    new CurrentMIGLWidgetAction("Hide last picked residue",
+                                "Hide the last picked residue",
+                                showres_menu,
+                                SLOT(OnObjectResidueTurnoff()),
+                                SLOT(OnUpdateObjectResidueTurnoff(QAction*)));
+    new CurrentMIGLWidgetAction("Hide all picked residues",
+                                "Hide all the residues on the stack",
+                                showres_menu,
+                                SLOT(OnObjectResiduesTurnoff()),
+                                SLOT(OnUpdateObjectResiduesTurnoff(QAction*)));
+    new CurrentMIGLWidgetAction("Hide residue range",
+                                "Hide the residue at the top of stack",
+                                showres_menu,
+                                SLOT(OnObjectResiduerangeTurnoff()),
+                                SLOT(OnUpdateObjectResiduerangeTurnoff(QAction*)));
 
-    MIMenu *backbone_menu = new MIMenu(*this);
-    backbone_menu->Append(ID_SHOW_BACKBONEATOMS, "Show backbone as &atoms", "Show backbone as atoms", false);
-    backbone_menu->Append(ID_SHOW_BACKBONECA, "Show backbone as &CA trace", "Show backbone as CA trace", false);
-    backbone_menu->Append(ID_SHOW_HIDEBACKBONE, "&Hide backbone", "Hide backbone", false);
+    side_menu = show_menu->addMenu("Sidechains");
+    new CurrentMIGLWidgetAction("Show sidechain &atoms", "Show sidechain atoms", side_menu, SLOT(OnShowSidechainAtoms()));
 
-    MIMenu *symmatoms_menu = new MIMenu(*this);
-    symmatoms_menu->Append(ID_SHOW_SYMMATOMSASATOMS, "Show symmetry atoms as &atoms");
-    symmatoms_menu->Append(ID_SHOW_SYMMATOMSASCA, "Show symmetry atoms as &CA trace");
-    symmatoms_menu->Append(ID_SHOW_HIDESYMMATOMS, "&Hide symmetry atoms");
-    symmatoms_menu->Append(ID_SHOW_SAVESYMMATOMS, "&Save symmetry atoms");
+    new CurrentMIGLWidgetAction("&Hide sidechain atoms", "Hide sidechain atoms", side_menu, SLOT(OnHideSidechainAtoms()));
 
-    canvas_menu = new MIMenu(*this);
-    canvas_menu->Append(ID_OBJECT_STACKMENU, "S&tack", stack_menu);
-    canvas_menu->Append(ID_VIEW_UNITCELL, "&Unit cell", "Toggle the unit cell visibility", true);
-    canvas_menu->Append(ID_VIEW_CONTACTS, "&Contacts", "Toggle contacts on/off", true);
-    canvas_menu->Append(ID_VIEW_GNOMON, "&Gnomon", "Toggle the axes visibility", true);
-    canvas_menu->Append(ID_VIEW_CLEARMESSAGE, "Clea&r Message", "Use this command to clear the message at the screen bottom", false);
+    new CurrentMIGLWidgetAction("&Show sidechain of last picked", "Show the sidechain of the last picked residue", side_menu, SLOT(OnObjectShowsidechain()), SLOT(OnUpdateObjectShowsidechain(QAction*)));
+    new CurrentMIGLWidgetAction("S&how sidechains of all picked", "Show the sidechains of all the residues on the stack", side_menu, SLOT(OnObjectShowsidechains()), SLOT(OnUpdateObjectShowsidechains(QAction*)));
+    new CurrentMIGLWidgetAction("Sh&ow sidechains of range", "Show the sidechains of the residue range at the top of stack", side_menu, SLOT(OnObjectShowsidechainrange()), SLOT(OnUpdateObjectShowsidechainrange(QAction*)));
 
-    MIMenu *labels_menu = new MIMenu(*this);
-    labels_menu->Append(ID_VIEW_LABELS, "&Show/Hide Labels", "Toggle labels on and off", true);
+    QMenu *backbone_menu = show_menu->addMenu("Backbone");
+    new CurrentMIGLWidgetAction("Show backbone as &atoms", "Show backbone as atoms", backbone_menu, SLOT(OnShowBackboneAsAtoms()));
+
+    new CurrentMIGLWidgetAction("Show backbone as &CA trace", "Show backbone as CA trace", backbone_menu, SLOT(OnShowBackboneAsCATrace()));
+
+    new CurrentMIGLWidgetAction("&Hide backbone", "Hide backbone", backbone_menu, SLOT(OnShowHideBackbone()));
+
+    QMenu *symmatoms_menu = show_menu->addMenu("Symmetry Atoms");
+    new CurrentMIGLWidgetAction("Show symmetry atoms as &atoms", "", symmatoms_menu, SLOT(OnShowSymmAtomsAsAtoms()));
+
+    new CurrentMIGLWidgetAction("Show symmetry atoms as &CA trace", "", symmatoms_menu, SLOT(OnShowSymmAtomsAsCATrace()));
+
+    new CurrentMIGLWidgetAction("&Hide symmetry atoms", "", symmatoms_menu, SLOT(OnShowHideSymmAtoms()));
+
+    new CurrentMIGLWidgetAction("&Save symmetry atoms", "", symmatoms_menu, SLOT(OnShowSaveSymmAtoms()), SLOT(OnUpdateShowSaveSymmAtoms(QAction*)));
+
+
+    miGLWidgetAction = new CurrentMIGLWidgetAction("&Unit cell", "Toggle the unit cell visibility", canvas_menu, SLOT(OnViewUnitCell()), SLOT(OnUpdateViewUnitCell(QAction*)));
+    miGLWidgetAction->setCheckable(true);
+
+    miGLWidgetAction = new CurrentMIGLWidgetAction("&Contacts", "Toggle contacts on/off", canvas_menu, SLOT(OnViewContacts()), SLOT(OnUpdateViewContacts(QAction*)));
+    miGLWidgetAction->setCheckable(true);
+
+    miGLWidgetAction = new CurrentMIGLWidgetAction("&Gnomon", "Toggle the axes visibility", canvas_menu, SLOT(OnViewGnomon()), SLOT(OnUpdateViewGnomon(QAction*)));
+    miGLWidgetAction->setCheckable(true);
+    new CurrentMIGLWidgetAction("Clea&r Message", "Use this command to clear the message at the screen bottom", canvas_menu, SLOT(OnViewClearmessage()));
+
+    QMenu *labels_menu = show_menu->addMenu("Labels");
+    miGLWidgetAction = new CurrentMIGLWidgetAction("&Show/Hide Labels", "Toggle labels on and off", labels_menu, SLOT(OnViewLabels()), SLOT(OnUpdateViewLabels(QAction*)));
+    miGLWidgetAction->setCheckable(true);
+
     new CurrentMIGLWidgetAction("Cl&ear Labels",
                                 "Clear the labels permanently - use view/labels to hide them temporarily",
                                 labels_menu, SLOT(OnEditClearlabels()));
@@ -2071,52 +1740,56 @@ void MIMainWindow::createMenus()
                                 "Edit labels and set label options",
                                 labels_menu, SLOT(OnEditLabels()));
 
-    labels_menu->Append(ID_SHOW_LABELEVERYNTH, "Label E&very nth...", "Label every nth residue", false);
+    new CurrentMIGLWidgetAction("Label E&very nth...", "Label every nth residue", labels_menu, SLOT(OnLabelEveryNth()), SLOT(OnUpdateLabelEveryNth(QAction*)));
 
-    MIMenu *secstruct_menu = new MIMenu(*this);
-    secstruct_menu->Append(ID_OBJECT_BACKBONERIBBON, "&Make Ribbon", "Make a backbone ribbon", false);
-    secstruct_menu->Append(ID_OBJECT_CLEARRIBBON, "C&lear Ribbon", "Clear the backbone ribbon", false);
-    secstruct_menu->Append(ID_OBJECTS_SECONDARYSTRUCTURE, "Ri&bbon Colors...", "Set ribbon colours", false);
-    secstruct_menu->AppendSeparator();
-    secstruct_menu->Append(ID_RIBBONSECONDARYSTRUCTURE, "Show Tube Secondary Structure", "Display a solid tube for the secondary structure", false);
-    secstruct_menu->Append(ID_SCHEMATICSECONDARYSTRUCTURE, "Show Schematic Secondary Structure", "Display a Schematic representation for the secondary structure", false);
-    secstruct_menu->Append(ID_DELETESECONDARYSTRUCTURE, "Hide Secondary Structure", "Removes the display of the secondary structure", false);
-    MIMenu *secstruct_options_menu = new MIMenu(*this);
-    secstruct_menu->Append(0, "Options", secstruct_options_menu);
-    secstruct_options_menu->Append(ID_SECONDARYSTRUCTUREOPTIONS_TUBE, "Tube", "Set secondary structure options", false);
-    secstruct_options_menu->Append(ID_SECONDARYSTRUCTUREOPTIONS_SHEET, "Beta sheet", "Set secondary structure options", false);
-    secstruct_options_menu->Append(ID_SECONDARYSTRUCTUREOPTIONS_TURN, "Turn", "Set secondary structure options", false);
-    secstruct_options_menu->Append(ID_SECONDARYSTRUCTUREOPTIONS_RANDOM, "Random coil", "Set secondary structure options", false);
-    secstruct_options_menu->Append(ID_SECONDARYSTRUCTUREOPTIONS_HELIX, "Helix", "Set secondary structure options", false);
+    QMenu *secstruct_menu = show_menu->addMenu("Secondary Structure");
+    new CurrentMIGLWidgetAction("&Make Ribbon", "Make a backbone ribbon", secstruct_menu, SLOT(OnObjectBackboneribbon()));
 
+    new CurrentMIGLWidgetAction("C&lear Ribbon", "Clear the backbone ribbon", secstruct_menu, SLOT(OnObjectClearribbon()));
 
-    show_menu = new MIMenu(*this);
-    connect(show_menu, SIGNAL(aboutToShow()), this, SLOT(updateShowMenu()));
+    new CurrentMIGLWidgetAction("Ri&bbon Colors...", "Set ribbon colours", secstruct_menu, SLOT(OnSetRibbonColors()));
 
-    MIMenu *showatoms_menu = new MIMenu(*this);
-    show_menu->Append(ID_SHOWATOMSMENU, "Atoms", showatoms_menu);
-    showatoms_menu->Append(ID_OBJECTS_ALLATOMS, "Show &all atoms", "Show all the atoms in the model", false);
-    showatoms_menu->Append(ID_SHOW_PICKEDATOM_TURNON, "Show last &picked atom", "Show the last picked atom", false);
-    showatoms_menu->Append(ID_SHOW_ALLPICKEDATOMS_TURNON, "Show all p&icked atoms", "Show all the atoms on the stack", false);
-    showatoms_menu->AppendSeparator();
-    showatoms_menu->Append(ID_HIDEMODEL, "&Hide all atoms", "Hide the whole model", false);
-    showatoms_menu->Append(ID_SHOW_PICKEDATOM_TURNOFF, "Hide last picked a&tom", "Hide the last picked atom", false);
-    showatoms_menu->Append(ID_SHOW_ALLPICKEDATOMS_TURNOFF, "Hide all picked at&oms", "Hide all the atoms on the stack", false);
-    showatoms_menu->Append(ID_SHOW_HIDEHYDROGENS, "Toggle h&ydrogens", "Toggle hydrogens on/off", true);
+    secstruct_menu->addSeparator();
+    new CurrentMIGLWidgetAction("Show Tube Secondary Structure", "Display a solid tube for the secondary structure", secstruct_menu, SLOT(OnRibbonSecondaryStructure()));
+
+    new CurrentMIGLWidgetAction("Show Schematic Secondary Structure", "Display a Schematic representation for the secondary structure", secstruct_menu, SLOT(OnSchematicSecondaryStructure()));
+
+    new CurrentMIGLWidgetAction("Hide Secondary Structure", "Removes the display of the secondary structure", secstruct_menu, SLOT(OnDeleteSecondaryStructure()));
+
+    QMenu *secstruct_options_menu = secstruct_menu->addMenu("Options");
+    new CurrentMIGLWidgetAction("Tube", "Set secondary structure options", secstruct_options_menu, SLOT(OnSecondaryStructureOptionsTube()));
+
+    new CurrentMIGLWidgetAction("Beta sheet", "Set secondary structure options", secstruct_options_menu, SLOT(OnSecondaryStructureOptionsSheet()));
+
+    new CurrentMIGLWidgetAction("Turn", "Set secondary structure options", secstruct_options_menu, SLOT(OnSecondaryStructureOptionsTurn()));
+
+    new CurrentMIGLWidgetAction("Random coil", "Set secondary structure options", secstruct_options_menu, SLOT(OnSecondaryStructureOptionsRandom()));
+
+    new CurrentMIGLWidgetAction("Helix", "Set secondary structure options", secstruct_options_menu, SLOT(OnSecondaryStructureOptionsHelix()));
 
 
-    show_menu->Append(ID_SHOWRESMENU, "Residues", showres_menu);
-    show_menu->Append(ID_BACKBONEMENU, "Backbone", backbone_menu);
-    show_menu->Append(ID_SIDEMENU, "Sidechains", side_menu);
-    show_menu->Append(ID_SECONDARYSTRUCTUREMENU, "Secondary Structure", secstruct_menu);
-    show_menu->Append(ID_LABELSMENU, "Labels", labels_menu);
+
+    QMenu *showatoms_menu = show_menu->addMenu("Atoms");
+    new CurrentMIGLWidgetAction("Show &all atoms", "Show all the atoms in the model", showatoms_menu, SLOT(OnObjectsAllatoms()));
+    new CurrentMIGLWidgetAction("Show last &picked atom", "Show the last picked atom", showatoms_menu, SLOT(OnShowPickedatomTurnon()), SLOT(OnUpdateShowPickedatomTurnon(QAction*)));
+    new CurrentMIGLWidgetAction("Show all p&icked atoms", "Show all the atoms on the stack", showatoms_menu, SLOT(OnShowAllpickedatomsTurnon()), SLOT(OnUpdateShowAllpickedatomsTurnon(QAction*)));
+    showatoms_menu->addSeparator();
+    new CurrentMIGLWidgetAction("&Hide all atoms", "Hide the whole model", showatoms_menu, SLOT(OnHideModel()), SLOT(OnUpdateHideModel(QAction*)));
+
+    new CurrentMIGLWidgetAction("Hide last picked a&tom", "Hide the last picked atom", showatoms_menu, SLOT(OnShowPickedatomTurnoff()), SLOT(OnUpdateShowPickedatomTurnoff(QAction*)));
+    new CurrentMIGLWidgetAction("Hide all picked at&oms", "Hide all the atoms on the stack", showatoms_menu, SLOT(OnShowAllpickedatomsTurnoff()), SLOT(OnUpdateShowAllpickedatomsTurnoff(QAction*)));
+    miGLWidgetAction = new CurrentMIGLWidgetAction("Toggle h&ydrogens", "Toggle hydrogens on/off", showatoms_menu, SLOT(OnShowHidehydrogens()), SLOT(OnUpdateShowHidehydrogens(QAction*)));
+    miGLWidgetAction->setCheckable(true);
+
 
     QMenu *annotation_menu = show_menu->addMenu("Annotation");
-    new CurrentMIGLWidgetAction("A&dd annotation to model",
+    miGLWidgetAction = new CurrentMIGLWidgetAction("A&dd annotation to model",
                                 "Adds an annotation to the current model at the screen center",
                                 annotation_menu,
                                 SLOT(OnAnnotation()),
                                 SLOT(OnUpdateAnnotation(QAction*)));
+    miGLWidgetAction->setIcon(QIcon(annotate_xpm));
+    toolBarActions += miGLWidgetAction;
 
     new CurrentMIGLWidgetAction("Move annotation to &picked atom",
                                 "Move the last picked Annotation to the last picked atom ccords",
@@ -2130,37 +1803,143 @@ void MIMainWindow::createMenus()
                                 SLOT(OnMoveAnnotationCenter()),
                                 SLOT(OnUpdateMoveAnnotationCenter(QAction*)));
 
-    show_menu->Append(ID_SYMMATOMSMENU, "Symmetry Atoms", symmatoms_menu);
-
     QMenu *surf_menu = show_menu->addMenu("&Dot Surface");
     fill_surf_menu(surf_menu);
 
-    show_menu->Append(ID_CANVASMENU, "Canvas", canvas_menu);
+    new CurrentMIGLWidgetAction("&Undo Viewpoint", "Use this command to center objects", view_menu, SLOT(OnViewUndo()), SLOT(OnUpdateViewUndo(QAction*)));
+    new CurrentMIGLWidgetAction("&Save Viewpoint...", "Use this command to save the viewpoint to a file", view_menu, SLOT(OnViewSave()));
+    new CurrentMIGLWidgetAction("&Load Viewpoint...", "Use this command to load the viewpoint from a file", view_menu, SLOT(OnViewLoad()));
+    view_menu->addSeparator();
+    miGLWidgetAction = new CurrentMIGLWidgetAction("&Top view", "View from top and drag clipping planes", view_menu, SLOT(OnViewTopview()), SLOT(OnUpdateViewTopview(QAction*)));
+    miGLWidgetAction->setCheckable(true);
+    miGLWidgetAction->setIcon(QIcon(topview_xpm));
+    toolBarActions += miGLWidgetAction;
+    miGLWidgetAction = new CurrentMIGLWidgetAction("&Fullscreen\tESC", "Canvas fills the entire screen", view_menu, SLOT(OnFullScreen()), SLOT(OnUpdateFullScreen(QAction*)));
+    miGLWidgetAction->setCheckable(true);
 
-    view_menu = new MIMenu(*this);
-    fill_view_menu(view_menu);
+    _hardwareStereoAction = view_menu->addAction(tr("Use &Hardware Stereo"), this, SLOT(OnHardwareStereo()));
+    _hardwareStereoAction->setCheckable(true);
+    connect(view_menu, SIGNAL(aboutToShow()), this, SLOT(OnUpdateHardwareStereo()));
 
-    analyze_menu = new MIMenu(*this);
-    analyze_menu->Append(ID_GEOMETRY_DISTANCE, "Measure &Distance", "Measure the distance between last two picked atoms", false);
-    analyze_menu->Append(ID_GEOMETRY_ANGLE, "Measure &Angle", "Measure the angle of last three picked atoms", false);
-    analyze_menu->Append(ID_GEOMETRY_TORSION, "Measure D&ihedral", "Measure the dihedral/torsion of last four picked atoms", false);
-    analyze_menu->AppendSeparator();
-    analyze_menu->AppendCheckItem(ID_RAMAPLOT_ALLOWED, "Detailed Ramachandran plot", "Show allowed regions in Ramachandran plot, too");
-    analyze_menu->AppendSeparator();
-    analyze_menu->Append(ID_GEOM_FINDGEOMERRORS, "A&nalyze Geometry Errors", "Find all the geometry errors above a threshold in the model", false);
-    analyze_menu->Append(ID_GEOM_CLEARGEOMERRORS, "Clear &Geometry Errors", "Clear all the Annotation of geometry errors in the model", false);
-    analyze_menu->AppendSeparator();
-    analyze_menu->Append(ID_GEOM_ADDSINGLEHBOND, "Add &H-bond", "Build an H-bond between the last two picked atoms", false);
-    analyze_menu->Append(ID_GEOM_HBONDS, "B&uild H-Bonds", "Build all the H-bonds in the model", false);
-    analyze_menu->Append(ID_GEOM_CLEARHBONDS, "&Clear H-bonds", "Clear all the H-bonds in the model", false);
-    analyze_menu->AppendSeparator();
-    analyze_menu->Append(ID_GEOM_NEIGHBOURS, "Bui&ld Contacts", "Build all the Contacts in the model", false);
-    analyze_menu->Append(ID_GEOM_CLEARNEIGHBOURS, "Cl&ear Contacts", "Clear all the Contacts in the model", false);
+    _stereoToggleAction = view_menu->addAction(tr("S&tereo\t|"), this, SLOT(OnStereoToggle()));
+    _stereoToggleAction->setCheckable(true);
+    connect(view_menu, SIGNAL(aboutToShow()), this, SLOT(OnUpdateStereoToggle()));
+
+    view_menu->addSeparator();
+    miGLWidgetAction = new CurrentMIGLWidgetAction("Slab In\tShift+I", "Decrease the distance beteween the front and back clipping planes", view_menu, SLOT(OnViewSlabin()));
+    miGLWidgetAction->setIcon(QIcon(slabin_xpm));
+    toolBarActions.insert(toolBarActions.size()-1, miGLWidgetAction);
+
+    miGLWidgetAction = new CurrentMIGLWidgetAction("Slab Out\tShift+O", "Increase the distance beteween the front and back clipping planes", view_menu, SLOT(OnViewSlabout()));
+    miGLWidgetAction->setIcon(QIcon(slabout_xpm));
+    toolBarActions.insert(toolBarActions.size()-1, miGLWidgetAction);
+
+    new CurrentMIGLWidgetAction("Set s&lab...", "Set the values of the front and back clipping planes", view_menu, SLOT(OnViewClipplanes()));
+    miGLWidgetAction = new CurrentMIGLWidgetAction("Zoom In\tI", "Zoom viewpoint in by 20%", view_menu, SLOT(OnGotoZoomiin()));
+    miGLWidgetAction->setIcon(QIcon(zoomin_xpm));
+    toolBarActions.insert(toolBarActions.size()-1, miGLWidgetAction);
+    miGLWidgetAction = new CurrentMIGLWidgetAction("Zoom Out\tO", "Zoom viewpoint in by 20%", view_menu, SLOT(OnGotoZoomout()));
+    miGLWidgetAction->setIcon(QIcon(zoomout_xpm));
+    toolBarActions.insert(toolBarActions.size()-1, miGLWidgetAction);
+    miGLWidgetAction = new CurrentMIGLWidgetAction("Rotate View &+90", "Use this command (and -90) to center objects", view_menu, SLOT(OnViewRotatey90()));
+    miGLWidgetAction->setIcon(QIcon(roty90_xpm));
+    toolBarActions += miGLWidgetAction;
+
+    miGLWidgetAction = new CurrentMIGLWidgetAction("Rotate View &-90", "Use this command to center objects", view_menu, SLOT(OnViewRotateyminus()));
+    miGLWidgetAction->setIcon(QIcon(rotym90_xpm));
+    toolBarActions += miGLWidgetAction;
+    miGLWidgetAction = new CurrentMIGLWidgetAction("Orthonor&mal", "Set perspective to 0 (infinite viewpoint)", view_menu, SLOT(OnViewOrthonormal()), SLOT(OnUpdateViewOrthonormal(QAction*)));
+    miGLWidgetAction->setCheckable(true);
+    miGLWidgetAction = new CurrentMIGLWidgetAction("I&ncrease Perspective", "Increase perspective +20%", view_menu, SLOT(OnIncreasePersp()));
+    miGLWidgetAction->setIcon(QIcon(incrper_xpm));
+    toolBarActions += miGLWidgetAction;
+    miGLWidgetAction = new CurrentMIGLWidgetAction("&Decrease Perspective", "Decrease perspective -20%", view_menu, SLOT(OnDecreasePersp()), SLOT(OnUpdateDecreasePersp(QAction*)));
+    miGLWidgetAction->setIcon(QIcon(decrper_xpm));
+    toolBarActions.insert(toolBarActions.size()-1, miGLWidgetAction);
+    toolBarActions += 0;
+
+    view_menu->addSeparator();
+    new CurrentMIGLWidgetAction("&Center model on screen", "Center molecule on screen", view_menu, SLOT(OnGotoFittoscreen()));
+    new CurrentMIGLWidgetAction("&Center All Models On Screen", "Center all the molecules on the screen", view_menu, SLOT(OnGotoFitalltoscreen()));
+    new CurrentMIGLWidgetAction("Center Visible Density", "Center the density visible on the screen", view_menu, SLOT(OnMapCenterVisibleDensity()), SLOT(OnUpdateMapCenterVisibleDensity(QAction*)));
+
+    new CurrentMIGLWidgetAction("&Go to x,y,z...", "Center view at a coordinate in Angstroms", view_menu, SLOT(OnGotoGotoxyz()));
+    view_menu->addSeparator();
+
+    QMenu *anime_menu = view_menu->addMenu("&Animate");
+    miGLWidgetAction = new CurrentMIGLWidgetAction("&Rock", "Rock the model back and forth", anime_menu, SLOT(OnAnimateRock()), SLOT(OnUpdateAnimateRock(QAction*)));
+    miGLWidgetAction->setCheckable(true);
+    miGLWidgetAction = new CurrentMIGLWidgetAction("Ro&ll", "Roll the model around the vertical", anime_menu, SLOT(OnAnimateRoll()), SLOT(OnUpdateAnimateRoll(QAction*)));
+    miGLWidgetAction->setCheckable(true);
+    miGLWidgetAction = new CurrentMIGLWidgetAction("&Blink", "Blink between two or more models", anime_menu, SLOT(OnAnimateBlink()), SLOT(OnUpdateAnimateBlink(QAction*)));
+    miGLWidgetAction->setCheckable(true);
+    new CurrentMIGLWidgetAction("Rock/Roll Rates...", "Set the rates for rock and roll", anime_menu, SLOT(OnAnimateRockandrollparameters()));
+
+    new CurrentMIGLWidgetAction("Measure &Distance",
+                                "Measure the distance between last two picked atoms",
+                                analyze_menu,
+                                SLOT(OnGeometryDistance()),
+                                SLOT(OnUpdateGeometryDistance(QAction*)));
+
+    new CurrentMIGLWidgetAction("Measure &Angle",
+                                "Measure the angle of last three picked atoms",
+                                analyze_menu,
+                                SLOT(OnGeometryAngle()),
+                                SLOT(OnUpdateGeometryAngle(QAction*)));
+
+    new CurrentMIGLWidgetAction("Measure D&ihedral",
+                                "Measure the dihedral/torsion of last four picked atoms",
+                                analyze_menu,
+                                SLOT(OnGeometryTorsion()),
+                                SLOT(OnUpdateGeometryTorsion(QAction*)));
+    analyze_menu->addSeparator();
+    miGLWidgetAction = new CurrentMIGLWidgetAction("Detailed Ramachandran plot", "Show allowed regions in Ramachandran plot, too", analyze_menu, SLOT(OnRamachandranPlotShowAllowed()), SLOT(OnUpdateRamachandranPlotShowAllowed(QAction*)));
+    miGLWidgetAction->setCheckable(true);
+    analyze_menu->addSeparator();
+    new CurrentMIGLWidgetAction("A&nalyze Geometry Errors",
+                                "Find all the geometry errors above a threshold in the model",
+                                analyze_menu,
+                                SLOT(OnFindGeomErrors()),
+                                SLOT(OnUpdateFindGeomErrors(QAction*)));
+
+    new CurrentMIGLWidgetAction("Clear &Geometry Errors",
+                                "Clear all the Annotation of geometry errors in the model",
+                                analyze_menu,
+                                SLOT(OnClearGeomAnnotations()));
+
+    analyze_menu->addSeparator();
+    new CurrentMIGLWidgetAction("Add &H-bond",
+                                "Build an H-bond between the last two picked atoms",
+                                analyze_menu,
+                                SLOT(OnGeomAddsinglehbond()),
+                                SLOT(OnUpdateGeomAddsinglehbond(QAction*)));
+
+    new CurrentMIGLWidgetAction("B&uild H-Bonds",
+                                "Build all the H-bonds in the model",
+                                analyze_menu,
+                                SLOT(OnGeomHbonds()));
+
+    new CurrentMIGLWidgetAction("&Clear H-bonds",
+                                "Clear all the H-bonds in the model",
+                                analyze_menu,
+                                SLOT(OnGeomClearhbonds()));
+
+    analyze_menu->addSeparator();
+
+    new CurrentMIGLWidgetAction("Bui&ld Contacts",
+                                "Build all the Contacts in the model",
+                                analyze_menu,
+                                SLOT(OnGeomNeighbours()),
+                                SLOT(OnUpdateGeomNeighbours(QAction*)));
+
+    new CurrentMIGLWidgetAction("Cl&ear Contacts",
+                                "Clear all the Contacts in the model",
+                                analyze_menu,
+                                SLOT(OnGeomClearneighbours()));
 
     // Refine menu actions which have shortcuts must be immediately updated
     // when refinement state changes. They can't wait for the update which occurs
     // when the menu displays.
-    refi_menu = new QMenu(this);
     refineResidueAction = new CurrentMIGLWidgetAction("R&efine Residue\tCtrl+R", "Real-space refine the last picked residue", refi_menu, SLOT(OnRefiResidue()), SLOT(OnUpdateRefiResidue(QAction*)));
 
     connect(MIFitGeomRefiner(), SIGNAL(isRefiningChanged(bool)),
@@ -2191,89 +1970,141 @@ void MIMainWindow::createMenus()
     refi_menu->addSeparator();
     new CurrentMIGLWidgetAction("Refine &Options", "Real-space refine options", refi_menu, SLOT(OnRefiOptions()));
 
-    MIMenu *disorder_menu = new MIMenu(*this);
-    disorder_menu->Append(ID_FIT_SPLITTORSION, "Split at &Torsion", "Adds disorder (A and B parts) at a torsion angle", false);
-    disorder_menu->Append(ID_FIT_SPLITFIT, "Split &Fit", "duplicates residues being fit making an A and B part", false);
 
-    MIMenu *pentamer_menu = new MIMenu(*this);
-    pentamer_menu->Append(ID_FIT_MATCHPENTAMER, "&Suggest Backbone Match", "Find a pentamer that best matches the CA and CB atoms (if present)", false);
-    pentamer_menu->Append(ID_FIT_REPLACEMIDDLE3, "&Replace Middle 3", "Replace the backbone atoms of the middle 3 residues", false);
-    pentamer_menu->Append(ID_FIT_REPLACEFIRST4, "R&eplace First 4", "Replace the backbone atoms of the first 4 residues", false);
-    pentamer_menu->Append(ID_FIT_REPLACELAST4, "Re&place Last 4", "Replace the backbone atoms of the last 4 residues", false);
-    pentamer_menu->Append(ID_FIT_REPLACEALL, "Rep&lace All 5", "Replace the backbone atoms of all 5 residues", false);
+    miGLWidgetAction = new CurrentMIGLWidgetAction("Fit R&esidue\tF", "Set the last picked residue for fitting", fit_menu, SLOT(OnFitResidue()), SLOT(OnUpdateFitResidue(QAction*)));
+    miGLWidgetAction->setCheckable(true);
+    miGLWidgetAction->setIcon(QIcon(fit_xpm));
+    toolBarActions += miGLWidgetAction;
+
+    miGLWidgetAction = new CurrentMIGLWidgetAction("Fit A&tom", "Set the last picked atom for fitting", fit_menu, SLOT(OnFitSingleatom()), SLOT(OnUpdateFitSingleatom(QAction*)));
+    miGLWidgetAction->setCheckable(true);
+
+    miGLWidgetAction = new CurrentMIGLWidgetAction("Fit Re&sidues", "Set all the picked residues for fitting", fit_menu, SLOT(OnFitResidues()), SLOT(OnUpdateFitResidues(QAction*)));
+    miGLWidgetAction->setCheckable(true);
+
+    miGLWidgetAction = new CurrentMIGLWidgetAction("Fit Res&idue Range", "Fit the range marked by the top two residues on the stack", fit_menu, SLOT(OnFitRange()), SLOT(OnUpdateFitRange(QAction*)));
+    miGLWidgetAction->setCheckable(true);
+
+    miGLWidgetAction = new CurrentMIGLWidgetAction("Fit At&oms", "Set all the picked atoms for fitting", fit_menu, SLOT(OnFitAtoms()), SLOT(OnUpdateFitAtoms(QAction*)));
+    miGLWidgetAction->setCheckable(true);
+
+    miGLWidgetAction = new CurrentMIGLWidgetAction("Fit &Molecule", "Set the selected molecule for fitting", fit_menu, SLOT(OnFitFitmolecule()), SLOT(OnUpdateFitFitmolecule(QAction*)));
+    miGLWidgetAction->setCheckable(true);
+
+    fit_menu->addSeparator();
+    miGLWidgetAction = new CurrentMIGLWidgetAction("&Accept Fit\t;", "Accept fitting, leave atoms at new positions", fit_menu, SLOT(OnFitApply()), SLOT(OnUpdateFitApply(QAction*)));
+    miGLWidgetAction->setIcon(QIcon(apply_xpm));
+    toolBarActions += miGLWidgetAction;
+
+    new CurrentMIGLWidgetAction("&Reset Fit", "Put atoms back to start and continue fitting", fit_menu, SLOT(OnFitReset()), SLOT(OnUpdateFitReset(QAction*)));
+
+    miGLWidgetAction = new CurrentMIGLWidgetAction("&Cancel Fit", "Stop fitting and put atoms back to starting positions", fit_menu, SLOT(OnFitCancel()), SLOT(OnUpdateFitCancel(QAction*)));
+    miGLWidgetAction->setIcon(QIcon(cancel_xpm));
+    toolBarActions += miGLWidgetAction;
+
+    fit_menu->addSeparator();
+    miGLWidgetAction = new CurrentMIGLWidgetAction("&Rotate", "Set right mouse to rotate mode", fit_menu, SLOT(OnFitRotate()), SLOT(OnUpdateFitRotate(QAction*)));
+    miGLWidgetAction->setCheckable(true);
+    miGLWidgetAction->setIcon(QIcon(rotate_xpm));
+    toolBarActions += miGLWidgetAction;
+    miGLWidgetAction = new CurrentMIGLWidgetAction("&Translate", "Set right mouse to translate mode", fit_menu, SLOT(OnFitTranslate()), SLOT(OnUpdateFitTranslate(QAction*)));
+    miGLWidgetAction->setCheckable(true);
+    miGLWidgetAction->setIcon(QIcon(translate_xpm));
+    toolBarActions += miGLWidgetAction;
+    miGLWidgetAction = new CurrentMIGLWidgetAction("&Torsion", "Set right mouse to torsion mode", fit_menu, SLOT(OnFitTorsion()), SLOT(OnUpdateFitTorsion(QAction*)));
+    miGLWidgetAction->setCheckable(true);
+    miGLWidgetAction->setIcon(QIcon(torsion_xpm));
+    toolBarActions += miGLWidgetAction;
+    miGLWidgetAction = new CurrentMIGLWidgetAction("C&enter", "Set right mouse to move screen center (default mode)", fit_menu, SLOT(OnFitCentermode()), SLOT(OnUpdateFitCentermode(QAction*)));
+    miGLWidgetAction->setCheckable(true);
+    miGLWidgetAction->setIcon(QIcon(center_xpm));
+    toolBarActions += miGLWidgetAction;
+    fit_menu->addSeparator();
+    new CurrentMIGLWidgetAction("&Set Up Torsion", "Torsion about last two atoms picked, second end moves", fit_menu, SLOT(OnFitSetuptorsion()), SLOT(OnUpdateFitSetuptorsion(QAction*)));
+    new CurrentMIGLWidgetAction("C&lear Torsion", "Clear Torsion, leave in fitting mode", fit_menu, SLOT(OnFitCleartorsion()), SLOT(OnUpdateFitCleartorsion(QAction*)));
+    fit_menu->addSeparator();
+    QMenu *fitsurf_menu = fit_menu->addMenu("Surface &Fit Atoms");
+    miGLWidgetAction = new CurrentMIGLWidgetAction("&Van Der Waal Surface", "Surface the current atoms (fit) with a van der Waal surface", fitsurf_menu, SLOT(OnFitSurfaceVdw()), SLOT(OnUpdateFitSurfaceVdw(QAction*)));
+    miGLWidgetAction->setCheckable(true);
+
+    miGLWidgetAction = new CurrentMIGLWidgetAction("&Extended Surface", "Surface the current atoms (fit) with an extended (2x) surface", fitsurf_menu, SLOT(OnFitSurfaceExtended()), SLOT(OnUpdateFitSurfaceExtended(QAction*)));
+    miGLWidgetAction->setCheckable(true);
+
+    miGLWidgetAction = new CurrentMIGLWidgetAction("&Contact Surface", "Surface the current atoms (fit) wherever there is a contact", fitsurf_menu, SLOT(OnFitSurfaceProbe()), SLOT(OnUpdateFitSurfaceProbe(QAction*)));
+    miGLWidgetAction->setCheckable(true);
+
+    miGLWidgetAction = new CurrentMIGLWidgetAction("&No Surface", "Turn off the surface for the current atoms", fitsurf_menu, SLOT(OnFitSurfaceNone()), SLOT(OnUpdateFitSurfaceNone(QAction*)));
+    miGLWidgetAction->setCheckable(true);
+
+    QMenu *pentamer_menu = fit_menu->addMenu("Fix &Backbone");
+    new CurrentMIGLWidgetAction("&Suggest Backbone Match", "Find a pentamer that best matches the CA and CB atoms (if present)", pentamer_menu, SLOT(OnFindPentamer()), SLOT(OnUpdateFindPentamer(QAction*)));
+
+    new CurrentMIGLWidgetAction("&Replace Middle 3", "Replace the backbone atoms of the middle 3 residues", pentamer_menu, SLOT(OnReplaceMiddle3()), SLOT(OnUpdateReplaceMiddle3(QAction*)));
+
+    new CurrentMIGLWidgetAction("R&eplace First 4", "Replace the backbone atoms of the first 4 residues", pentamer_menu, SLOT(OnReplaceFirst4()), SLOT(OnUpdateReplaceFirst4(QAction*)));
+
+    new CurrentMIGLWidgetAction("Re&place Last 4", "Replace the backbone atoms of the last 4 residues", pentamer_menu, SLOT(OnReplaceLast4()), SLOT(OnUpdateReplaceLast4(QAction*)));
+
+    new CurrentMIGLWidgetAction("Rep&lace All 5", "Replace the backbone atoms of all 5 residues", pentamer_menu, SLOT(OnReplaceAll()), SLOT(OnUpdateReplaceAll(QAction*)));
+
     //  Removed the Clear backbone match menu entry because it failed to update the tree properly, leading to a crash
-    pentamer_menu->Append(ID_FIT_CLEARPENTAMER, "&Clear Backbone Match", "Clear the backbone pentamer from the screen (and memory)", false);
-    pentamer_menu->Append(ID_FIT_FLIPPEPTIDE, "&Flip Peptide", "Flip petide bond to put carbonyl on opposite side", false);
+    new CurrentMIGLWidgetAction("&Clear Backbone Match", "Clear the backbone pentamer from the screen (and memory)", pentamer_menu, SLOT(OnClearPentamer()), SLOT(OnUpdateClearPentamer(QAction*)));
 
-    MIMenu *fitsurf_menu = new MIMenu(*this);
-    fitsurf_menu->Append(ID_FIT_SURFVDW, "&Van Der Waal Surface", "Surface the current atoms (fit) with a van der Waal surface", true);
-    fitsurf_menu->Append(ID_FIT_SURFEXT, "&Extended Surface", "Surface the current atoms (fit) with an extended (2x) surface", true);
-    fitsurf_menu->Append(ID_FIT_SURFPROBE, "&Contact Surface", "Surface the current atoms (fit) wherever there is a contact", true);
-    fitsurf_menu->Append(ID_FIT_SURFNONE, "&No Surface", "Turn off the surface for the current atoms", true);
-
-    fit_menu = new MIMenu(*this);
-    fit_menu->Append(ID_FIT_RESIDUE, "Fit R&esidue\tF", "Set the last picked residue for fitting", true);
-    fit_menu->Append(ID_FIT_SINGLEATOM, "Fit A&tom", "Set the last picked atom for fitting", true);
-    fit_menu->Append(ID_FIT_RESIDUES, "Fit Re&sidues", "Set all the picked residues for fitting", true);
-    fit_menu->Append(ID_FIT_RANGE, "Fit Res&idue Range", "Fit the range marked by the top two residues on the stack", true);
-    fit_menu->Append(ID_FIT_ATOMS, "Fit At&oms", "Set all the picked atoms for fitting", true);
-    fit_menu->Append(ID_FIT_FITMOLECULE, "Fit &Molecule", "Set the selected molecule for fitting", true);
-    fit_menu->AppendSeparator();
-    fit_menu->Append(ID_FIT_APPLY, "&Accept Fit\t;", "Accept fitting, leave atoms at new positions");
-    fit_menu->Append(ID_FIT_RESET, "&Reset Fit", "Put atoms back to start and continue fitting");
-    fit_menu->Append(ID_FIT_CANCEL, "&Cancel Fit", "Stop fitting and put atoms back to starting positions");
-    fit_menu->AppendSeparator();
-    fit_menu->Append(ID_FIT_ROTATE, "&Rotate", "Set right mouse to rotate mode", true);
-    fit_menu->Append(ID_FIT_TRANSLATE, "&Translate", "Set right mouse to translate mode", true);
-    fit_menu->Append(ID_FIT_TORSION, "&Torsion", "Set right mouse to torsion mode", true);
-    fit_menu->Append(ID_FIT_CENTERMODE, "C&enter", "Set right mouse to move screen center (default mode)", true);
-    fit_menu->AppendSeparator();
-    fit_menu->Append(ID_FIT_SETUPTORSION, "&Set Up Torsion", "Torsion about last two atoms picked, second end moves");
-    fit_menu->Append(ID_FIT_CLEARTORSION, "C&lear Torsion", "Clear Torsion, leave in fitting mode");
-    fit_menu->AppendSeparator();
-    fit_menu->Append(ID_FIT_SURFMENU, "Surface &Fit Atoms", fitsurf_menu);
-    //fit_menu->AppendSeparator();
-    fit_menu->Append(ID_FIT_BACKBONE_MENU, "Fix &Backbone", pentamer_menu);
-    //fit_menu->AppendSeparator();
-    fit_menu->Append(ID_FIT_BACKBONE_MENU, "&Disorder", disorder_menu);
-    fit_menu->AppendSeparator();
-    fit_menu->Append(ID_FIT_UNDO, "&Undo Fit", "Undo Last fit");
-    fit_menu->Append(ID_FIT_REDO, "&Redo Fit", "Undo the Undo Last fit");
-    fit_menu->AppendSeparator();
-    fit_menu->Append(ID_FIT_LSQSUPERPOSE, "S&uperimpose...", "Superimpose models by LSQ fitting");
-
-    model_menu = new MIMenu(*this);
-    model_menu->Append(ID_OBJECT_NEWMODEL, "&New Model...", "Adds a new blank model", false);
-    model_menu->AppendSeparator();
-    model_menu->Append(ID_FIT_INSERTRESIDUE, "&Add residue", "Add or insert a new residue after the last pick", false);
-    model_menu->Append(ID_FIT_REPLACEWITH, "&Replace residue", "Replace a residue with another type", false);
-    model_menu->Append(ID_REPLACEANDFIT, "Replace and &Fit\tR", "Replace a residue with another type and search confomers", false);
-    model_menu->Append(ID_FIT_REPLACESEQUENCE, "Replace with &Sequence", "Replace a residue with the lower sequence", false);
-    model_menu->Append(ID_FIT_NEXTCONFOMER, "Next &Conformer", "Replace a residue with another type", false);
-    model_menu->Append(ID_FIT_DELETERESIDUE, "&Delete residue\tD", "Delete the last picked residue", false);
-    model_menu->Append(ID_FIT_RENAMERESIDUE, "R&ename residue", "Rename(renumber) the last picked residue", false);
-    model_menu->Append(ID_DELETEATOM, "&Delete atom\tDelete", "Delete the last picked atom", false);
-    model_menu->Append(ID_FIT_ADDWATER, "Add &Waters...", "Sprinkle water throughout map", false);
-    model_menu->AppendSeparator();
-    model_menu->Append(ID_GEOM_BOND, "&Bond", "Force a bond between the last two picked atoms", false);
-    model_menu->Append(ID_GEOM_UNBOND, "B&reak Bond", "Break the bond between the last two picked atoms", false);
-    model_menu->AppendSeparator();
-    model_menu->Append(ID_FIT_MARKBEFORE, "Add MRK &Before\t<", "Adds a MRK (C-alpha) before the focus residue for tracing the chain", false);
-    model_menu->Append(ID_FIT_MARKAFTER, "Add MRK &After\t>", "Adds a MRK (C-alpha) after the focus residue for tracing the chain", false);
-    model_menu->Append(ID_FIT_POLYALA, "Poly-Ala &Range", "Turns the model into poly-alanine between the two picks", false);
-    model_menu->Append(ID_FIT_POLYALACHAIN, "Poly-Ala &Chain", "Turns the chain containing the last pick into poly-alinine", false);
-
-    model_menu->Append(ID_GOTO_NTER, "Go To &N-terminus\t[", "Follows the current chain to its N-terminal end", false);
-    model_menu->Append(ID_GOTO_CTER, "Go To &C-terminus\t]", "Follows the current chain to its C-terminal end", false);
-    model_menu->AppendSeparator();
-    model_menu->Append(ID_MODEL_CHECKPOINT, "&Checkpoint Model", "Checkpoints the model - use to save before", false);
-    model_menu->Append(ID_MODEL_REVERT, "&Revert Model...", "Reverts the model to an earlier version saved", false);
-    model_menu->Append(ID_MODEL_AUTOCHECKPOINT, "Auto-checkpoint Model", "Automatically checkpoints the model every few minutes", true);
+    new CurrentMIGLWidgetAction("&Flip Peptide", "Flip petide bond to put carbonyl on opposite side", pentamer_menu, SLOT(OnFlipPeptide()), SLOT(OnUpdateFlipPeptide(QAction*)));
 
 
-    menu_bar->Append(file_menu, "&File");
 
-    QMenu *di_menu = menuBar()->addMenu(tr("&Dictionary"));
+    QMenu *disorder_menu = fit_menu->addMenu("&Disorder");
+    new CurrentMIGLWidgetAction("Split at &Torsion", "Adds disorder (A and B parts) at a torsion angle", disorder_menu, SLOT(OnFitSplitTorsion()), SLOT(OnUpdateFitSplitTorsion(QAction*)));
+
+    new CurrentMIGLWidgetAction("Split &Fit", "duplicates residues being fit making an A and B part", disorder_menu, SLOT(OnFitSplitFit()), SLOT(OnUpdateFitSplitFit(QAction*)));
+
+    fit_menu->addSeparator();
+    new CurrentMIGLWidgetAction("&Undo Fit", "Undo Last fit", fit_menu, SLOT(OnFitUndo()), SLOT(OnUpdateFitUndo(QAction*)));
+    new CurrentMIGLWidgetAction("&Redo Fit", "Undo the Undo Last fit", fit_menu, SLOT(OnFitRedo()), SLOT(OnUpdateFitRedo(QAction*)));
+    fit_menu->addSeparator();
+    new CurrentMIGLWidgetAction("S&uperimpose...", "Superimpose models by LSQ fitting", fit_menu, SLOT(OnFitLsqsuperpose()));
+
+    new CurrentMIGLWidgetAction("&New Model...", "Adds a new blank model", model_menu, SLOT(OnNewModel()));
+    model_menu->addSeparator();
+    new CurrentMIGLWidgetAction("&Add residue", "Add or insert a new residue after the last pick", model_menu, SLOT(OnFitInsertresidue()), SLOT(OnUpdateFitInsertresidue(QAction*)));
+    new CurrentMIGLWidgetAction("&Replace residue", "Replace a residue with another type", model_menu, SLOT(OnFitReplacewith()), SLOT(OnUpdateFitReplacewith(QAction*)));
+    new CurrentMIGLWidgetAction("Replace and &Fit\tR", "Replace a residue with another type and search confomers", model_menu, SLOT(OnFitReplaceAndFit()), SLOT(OnUpdateFitReplaceAndFit(QAction*)));
+    new CurrentMIGLWidgetAction("Replace with &Sequence", "Replace a residue with the lower sequence", model_menu, SLOT(OnReplaceSequence()), SLOT(OnUpdateReplaceSequence(QAction*)));
+    new CurrentMIGLWidgetAction("Next &Conformer", "Replace a residue with another type", model_menu, SLOT(OnFitNextConfomer()), SLOT(OnUpdateFitNextConfomer(QAction*)));
+    new CurrentMIGLWidgetAction("&Delete residue\tD", "Delete the last picked residue", model_menu, SLOT(OnFitDeleteresidue()), SLOT(OnUpdateFitDeleteresidue(QAction*)));
+    new CurrentMIGLWidgetAction("R&ename residue", "Rename(renumber) the last picked residue", model_menu, SLOT(OnFitRenameresidue()), SLOT(OnUpdateFitRenameresidue(QAction*)));
+    new CurrentMIGLWidgetAction("&Delete atom\tDelete", "Delete the last picked atom", model_menu, SLOT(OnDeleteAtom()), SLOT(OnUpdateDeleteAtom(QAction*)));
+    new CurrentMIGLWidgetAction("Add &Waters...", "Sprinkle water throughout map", model_menu, SLOT(OnAddWater()), SLOT(OnUpdateAddWater(QAction*)));
+    model_menu->addSeparator();
+    new CurrentMIGLWidgetAction("&Bond",
+                                "Force a bond between the last two picked atoms",
+                                model_menu,
+                                SLOT(OnGeomBond()),
+                                SLOT(OnUpdateGeomBond(QAction*)));
+    new CurrentMIGLWidgetAction("B&reak Bond",
+                                "Break the bond between the last two picked atoms",
+                                model_menu,
+                                SLOT(OnGeomUnbond()),
+                                SLOT(OnUpdateGeomUnbond(QAction*)));
+    model_menu->addSeparator();
+    new CurrentMIGLWidgetAction("Add MRK &Before\t<", "Adds a MRK (C-alpha) before the focus residue for tracing the chain", model_menu, SLOT(OnAddMarkBefore()), SLOT(OnUpdateAddMarkBefore(QAction*)));
+    new CurrentMIGLWidgetAction("Add MRK &After\t>", "Adds a MRK (C-alpha) after the focus residue for tracing the chain", model_menu, SLOT(OnAddMarkAfter()), SLOT(OnUpdateAddMarkAfter(QAction*)));
+    new CurrentMIGLWidgetAction("Poly-Ala &Range", "Turns the model into poly-alanine between the two picks", model_menu, SLOT(OnPolyAla()), SLOT(OnUpdatePolyAla(QAction*)));
+    new CurrentMIGLWidgetAction("Poly-Ala &Chain", "Turns the chain containing the last pick into poly-alinine", model_menu, SLOT(OnPolyAlaChain()), SLOT(OnUpdatePolyAlaChain(QAction*)));
+
+    new CurrentMIGLWidgetAction("Go To &N-terminus\t[", "Follows the current chain to its N-terminal end", model_menu, SLOT(OnGotoNter()), SLOT(OnUpdateGotoNter(QAction*)));
+    new CurrentMIGLWidgetAction("Go To &C-terminus\t]", "Follows the current chain to its C-terminal end", model_menu, SLOT(OnGotoCter()), SLOT(OnUpdateGotoCter(QAction*)));
+    model_menu->addSeparator();
+    miGLWidgetAction = new CurrentMIGLWidgetAction("&Checkpoint Model", "Checkpoints the model - use to save before", model_menu, SLOT(OnCheckpointModel()), SLOT(OnUpdateCheckpointModel(QAction*)));
+    miGLWidgetAction->setIcon(QIcon(chekpoin_xpm));
+    toolBarActions.insert(7, miGLWidgetAction);
+
+    new CurrentMIGLWidgetAction("&Revert Model...", "Reverts the model to an earlier version saved", model_menu, SLOT(OnRevertModel()), SLOT(OnUpdateRevertModel(QAction*)));
+    miGLWidgetAction = new CurrentMIGLWidgetAction("Auto-checkpoint Model", "Automatically checkpoints the model every few minutes", model_menu, SLOT(OnAutoCheckpointModel()), SLOT(OnUpdateAutoCheckpointModel(QAction*)));
+    miGLWidgetAction->setCheckable(true);
+
+
     di_menu->addAction(tr("Load &New Dictionary..."), this, SLOT(OnLoadDictReplace()));
     di_menu->addAction(tr("Load & &Append Dictionary..."), this, SLOT(OnLoadDictAppend()));
 
@@ -2286,28 +2117,43 @@ void MIMainWindow::createMenus()
     di_menu->addAction(tr("&Save Dictionary..."), this, SLOT(OnSaveDict()));
     di_menu->addAction(tr("&Edit Residue..."), this, SLOT(OnEditDictResidue()));
 
-    menu_bar->Append(view_menu, "&Viewpoint");
-    menu_bar->Append(show_menu, "&Show");
-    render_menu->setTitle("Re&nder");
-    menu_bar->Append(render_menu);
-    menu_bar->Append(model_menu, "&Model");
-    menu_bar->Append(fit_menu, "F&it");
-    refi_menu->setTitle("&Refine");
-    menu_bar->Append(refi_menu);
-    menu_bar->Append(analyze_menu, "&Analyze");
 
     JobManager = new BatchJobManager();
-    _jobMenu = menuBar()->addMenu("&Job");
     QTimer::singleShot(0, this, SLOT(fillJobMenu()));
 
 
-    hide_menu = new MIMenu(*this);
-    hide_menu->Append(ID_HIDEMODEL, "Whole Model", "Hide the whole model", false);
-    hide_menu->Append(ID_OBJECT_RESIDUE_TURNOFF, "Hide Last picked Residue", "Hide the last picked residue", false);
-    hide_menu->Append(ID_OBJECT_RESIDUES_TURNOFF, "Hide All Picked Residues", "Hide all the residues on the stack", false);
-    hide_menu->Append(ID_OBJECT_RESIDUERANGE_TURNOFF, "Hide Residue Range", "Hide the residue at the top of stack", false);
-    hide_menu->Append(ID_SHOW_PICKEDATOM_TURNOFF, "Hide Last Picked Atom", "Hide the last picked atom", false);
-    hide_menu->Append(ID_SHOW_ALLPICKEDATOMS_TURNOFF, "Hide All Picked Atoms", "Hide all the atoms on the stack", false);
+    hide_menu = new QMenu(this);
+    new CurrentMIGLWidgetAction("Whole Model",
+                                "Hide the whole model",
+                                hide_menu,
+                                SLOT(OnHideModel()),
+                                SLOT(OnUpdateHideModel(QAction*)));
+    new CurrentMIGLWidgetAction("Hide last picked residue",
+                                "Hide the last picked residue",
+                                hide_menu,
+                                SLOT(OnObjectResidueTurnoff()),
+                                SLOT(OnUpdateObjectResidueTurnoff(QAction*)));
+    new CurrentMIGLWidgetAction("Hide all picked residues",
+                                "Hide all the residues on the stack",
+                                hide_menu,
+                                SLOT(OnObjectResiduesTurnoff()),
+                                SLOT(OnUpdateObjectResiduesTurnoff(QAction*)));
+    new CurrentMIGLWidgetAction("Hide residue range",
+                                "Hide the residue at the top of stack",
+                                hide_menu,
+                                SLOT(OnObjectResiduerangeTurnoff()),
+                                SLOT(OnUpdateObjectResiduerangeTurnoff(QAction*)));
+
+    new CurrentMIGLWidgetAction("Hide Last Picked Atom",
+                                "Hide last the atom on the stack",
+                                hide_menu,
+                                SLOT(OnShowPickedatomTurnoff()),
+                                SLOT(OnUpdateShowPickedatomTurnoff(QAction*)));
+    new CurrentMIGLWidgetAction("Hide All Picked Atoms",
+                                "Hide all the atoms on the stack",
+                                hide_menu,
+                                SLOT(OnShowAllpickedatomsTurnoff()),
+                                SLOT(OnUpdateShowAllpickedatomsTurnoff(QAction*)));
 
 
 
@@ -2323,110 +2169,18 @@ void MIMainWindow::createMenus()
     help_menu->addAction(tr("&About..."), this, SLOT(OnAbout()));
     help_menu->addAction(tr("&OpenGL format..."), this, SLOT(OnGLFormat()));
 
-    initMenuHandlers();
+    foreach (QAction *action, toolBarActions)
+    {
+        if (action)
+            tool_bar->addAction(action);
+        else
+            tool_bar->addSeparator();
+    }
 }
 
 
-#include <images/annotate.xpm>
-#include <images/apply.xpm>
-#include <images/cancel.xpm>
-#include <images/center.xpm>
-#include <images/chekpoin.xpm>
-#include <images/colortool.xpm>
-#include <images/copy.xpm>
-#include <images/decrper.xpm>
-#include <images/fit.xpm>
-#include <images/hidetool.xpm>
-#include <images/incrper.xpm>
-#include <images/new.xpm>
-#include <images/open.xpm>
-#include <images/print.xpm>
-#include <images/rotate.xpm>
-#include <images/roty90.xpm>
-#include <images/rotym90.xpm>
-#include <images/save.xpm>
-#include <images/showtool.xpm>
-#include <images/sidetool.xpm>
-#include <images/slabin.xpm>
-#include <images/slabout.xpm>
-#include <images/topview.xpm>
-#include <images/torsion.xpm>
-#include <images/translate.xpm>
-#include <images/zoomin.xpm>
-#include <images/zoomout.xpm>
-//#include <images/annotateDisabled.xpm>
-//#include <images/applyDisabled.xpm>
-//#include <images/cancelDisabled.xpm>
-//#include <images/centerDisabled.xpm>
-//#include <images/chekpoinDisabled.xpm>
-//#include <images/colortoolDisabled.xpm>
-//#include <images/copyDisabled.xpm>
-//#include <images/decrperDisabled.xpm>
-//#include <images/fitDisabled.xpm>
-//#include <images/hidetoolDisabled.xpm>
-//#include <images/incrperDisabled.xpm>
-//#include <images/newDisabled.xpm>
-//#include <images/openDisabled.xpm>
-//#include <images/printDisabled.xpm>
-//#include <images/rotateDisabled.xpm>
-//#include <images/roty90Disabled.xpm>
-//#include <images/rotym90Disabled.xpm>
-//#include <images/saveDisabled.xpm>
-//#include <images/showtoolDisabled.xpm>
-//#include <images/sidetoolDisabled.xpm>
-//#include <images/slabinDisabled.xpm>
-//#include <images/slaboutDisabled.xpm>
-//#include <images/topviewDisabled.xpm>
-//#include <images/torsionDisabled.xpm>
-//#include <images/translateDisabled.xpm>
-//#include <images/zoominDisabled.xpm>
-//#include <images/zoomoutDisabled.xpm>
 void MIMainWindow::createToolBars()
 {
-    tool_bar = new MIToolBar(menu_bar, this);
-
-    //TODO: use disabled icon specialization for QIcons?
-    fileNewAction->setIcon(QIcon(QPixmap(new_xpm)));
-    tool_bar->toolBar()->addAction(fileNewAction);
-    fileOpenAction->setIcon(QIcon(QPixmap(open_xpm)));
-    tool_bar->toolBar()->addAction(fileOpenAction);
-    fileSaveAction->setIcon(QIcon(QPixmap(save_xpm)));
-    tool_bar->toolBar()->addAction(fileSaveAction);
-    filePrintAction->setIcon(QIcon(QPixmap(print_xpm)));
-    tool_bar->toolBar()->addAction(filePrintAction);
-    copyCanvasAction->setIcon(QIcon(QPixmap(copy_xpm)));
-    tool_bar->toolBar()->addAction(copyCanvasAction);
-
-    tool_bar->AddSeparator();
-    tool_bar->AddTool(ID_OBJECT_ANNOTATION, annotate_xpm);
-    tool_bar->AddTool(ID_MODEL_CHECKPOINT, chekpoin_xpm);
-    tool_bar->AddTool(ID_VIEW_SLABIN, slabin_xpm);
-    tool_bar->AddTool(ID_VIEW_SLABOUT, slabout_xpm);
-    tool_bar->AddTool(ID_GOTO_ZOOMIIN, zoomin_xpm);
-    tool_bar->AddTool(ID_GOTO_ZOOMOUT, zoomout_xpm);
-    tool_bar->AddTool(ID_VIEW_TOPVIEW, topview_xpm);
-    tool_bar->AddTool(ID_VIEW_ROTATEY90, roty90_xpm);
-    tool_bar->AddTool(ID_VIEW_ROTATEYMINUS, rotym90_xpm);
-    tool_bar->AddTool(ID_DECREASE_PERSP, decrper_xpm);
-    tool_bar->AddTool(ID_INCREASE_PERSP, incrper_xpm);
-
-    tool_bar->AddSeparator();
-    tool_bar->AddTool(ID_FIT_RESIDUE, fit_xpm);
-    tool_bar->AddTool(ID_FIT_APPLY, apply_xpm);
-    tool_bar->AddTool(ID_FIT_CANCEL, cancel_xpm);
-    tool_bar->AddTool(ID_FIT_TRANSLATE, translate_xpm);
-    tool_bar->AddTool(ID_FIT_ROTATE, rotate_xpm);
-    tool_bar->AddTool(ID_FIT_TORSION, torsion_xpm);
-    tool_bar->AddTool(ID_FIT_CENTERMODE, center_xpm);
-
-    QToolBar *toolBar = addToolBar("Display Tools");
-    toolBar->setObjectName("Display Tools");
-    toolBar->addAction(QIcon(colortool_xpm), tr("Color"), this, SLOT(OnColorTool()));
-    toolBar->addAction(QIcon(showtool_xpm), tr("Show"), this, SLOT(OnShowTool()));
-    toolBar->addAction(QIcon(sidetool_xpm), tr("Side Chain"), this, SLOT(OnSideChainTool()));
-    toolBar->addAction(QIcon(hidetool_xpm), tr("Hide"), this, SLOT(OnHideTool()));
-
-    tool_bar->show();
 }
 
 
@@ -2548,11 +2302,6 @@ void MIMainWindow::updateRecentFileActions()
 RamaPlotMgr*MIMainWindow::RamaPlotManager()
 {
     return ramaPlotMgr;
-}
-
-void MIMainWindow::HasCurrentMIGLWidget(const MIUpdateEvent &pCmdUI)
-{
-    pCmdUI.Enable(currentMIGLWidget() != 0);
 }
 
 //some shortcuts for MIMainWindow::instance()->Log, etc

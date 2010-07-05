@@ -10,6 +10,7 @@
 #include <QSettings>
 #include <QActionGroup>
 #include <QStackedLayout>
+#include <QMenu>
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QFileDialog>
@@ -27,7 +28,6 @@
 #include "TreeData.h"
 #include "Application.h"
 
-#include "MIMenu.h"
 #include "MIGLWidget.h"
 #include "MIMainWindow.h"
 #include "MIQTreeWidget.h"

@@ -1,6 +1,7 @@
 #include <QApplication>
-#include <QVBoxLayout>
 #include <QFileDialog>
+#include <QMenu>
+#include <QVBoxLayout>
 #include <set>
 
 #include "core/corelib.h"
@@ -12,10 +13,7 @@
 #include "GenericDataDialog.h"
 #include "MIQTreeWidget.h"
 #include "TreeData.h"
-#include "MIEventHandler.h"
-#include "MIEventHandlerMacros.h"
 #include "MIGLWidget.h"
-#include "MIMenu.h"
 #include "ui/MIColorPickerDlg.h"
 
 #include <images/model.xpm>
@@ -35,8 +33,7 @@
 using namespace chemlib;
 
 class DisplayTree
-    : public MIQTreeWidget,
-      public MIEventHandler
+    : public MIQTreeWidget
 {
     Q_OBJECT
 
@@ -108,7 +105,6 @@ private:
 
 DisplayTree::DisplayTree(QWidget *parent)
     : MIQTreeWidget(parent),
-      MIEventHandler(this),
       view(NULL)
 {
 

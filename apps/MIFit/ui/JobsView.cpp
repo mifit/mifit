@@ -1,6 +1,7 @@
 #include "JobsView.h"
 
 #include <QApplication>
+#include <QMenu>
 #include <QMessageBox>
 #include <QVBoxLayout>
 
@@ -11,10 +12,7 @@
 #include "jobs/jobslib.h"
 #include "core/MIData.h"
 
-#include "MIEventHandler.h"
-#include "MIEventHandlerMacros.h"
 #include "MIMainWindow.h"
-#include "MIMenu.h"
 #include "MIQTreeWidget.h"
 
 #include <images/jobsList.xpm>
@@ -27,8 +25,7 @@
 
 
 class JobsTree
-    : public MIQTreeWidget,
-      public MIEventHandler
+    : public MIQTreeWidget
 {
     Q_OBJECT
 
@@ -58,8 +55,7 @@ public:
 
 
 JobsTree::JobsTree(QWidget *parent)
-    : MIQTreeWidget(parent),
-      MIEventHandler(this)
+    : MIQTreeWidget(parent)
 {
 
     std::vector<QIcon> imageList;

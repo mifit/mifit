@@ -36,11 +36,10 @@ class DictEditScene;
 class GeomRefiner;
 
 class QKeyEvent;
+class QMenu;
 class QMenuBar;
 
 #include <QGLWidget>
-#include "MIMenu.h"
-#include "MIEventHandler.h"
 
 namespace Ui
 {
@@ -51,7 +50,7 @@ namespace Ui
  * Canvas for editing a dictionary entry.
  */
 class DictEditDialog;
-class DictEditCanvas : public QGLWidget, public MIEventHandler
+class DictEditCanvas : public QGLWidget
 {
     Q_OBJECT
 
