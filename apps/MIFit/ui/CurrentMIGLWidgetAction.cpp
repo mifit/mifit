@@ -16,7 +16,17 @@ namespace
 
     void invokeSlot(QObject *object, const char *slot, QAction *arg = 0)
     {
+        if (!object)
+        {
+            qWarning("CurrentMIGLWidgetAction: Invalid object (null object)");
+            return;
+        }
         const QMetaObject *meta = object->metaObject();
+        if (!meta)
+        {
+            qWarning("CurrentMIGLWidgetAction: Invalid object (no meta object)");
+            return;
+        }
         int index = meta->indexOfSlot(slot);
         if (index < 0)
             qWarning("CurrentMIGLWidgetAction: Unable to find slot %s on %s", slot, meta->className());
@@ -73,6 +83,9 @@ void CurrentMIGLWidgetAction::on_triggered()
 
 void CurrentMIGLWidgetAction::update()
 {
-    if (_updateSlot && MIMainWindow::instance()->currentMIGLWidget())
-        invokeSlot(MIMainWindow::instance()->currentMIGLWidget(), _updateSlot, this);
+    MIGLWidget *currentMIGLWidget = MIMainWindow::instance()->currentMIGLWidget();
+    if (_updateSlot && currentMIGLWidget)
+        invokeSlot(currentMIGLWidget, _updateSlot, this);
+    else
+        setEnabled(currentMIGLWidget != 0);
 }

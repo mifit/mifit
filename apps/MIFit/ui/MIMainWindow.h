@@ -75,7 +75,7 @@ public slots:
     void RightFooter(const std::string &str);
     void MiddleFooter(const std::string &str);
     void LeftFooter(const std::string &str, int timeout = 0);
-    void UpdateToolBar();
+    void updateToolBar();
     void addJob(const QString &menuName, const QString &jobName,
                 const QString &executable, const QStringList &arguments,
                 const QString &workingDirectory);
@@ -207,6 +207,7 @@ private:
     QMdiSubWindow *findMIGLWidget(const QString &fileName);
 
     QToolBar *tool_bar;
+    QToolBar *displayToolBar;
 
     QMdiArea *mdiArea;
     QSignalMapper *windowMapper;

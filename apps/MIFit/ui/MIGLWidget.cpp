@@ -602,7 +602,7 @@ void MIGLWidget::moleculeToBeDeleted(MIMoleculeBase *model)
 void MIGLWidget::doRefresh()
 {
     updateGL();
-    MIMainWindow::instance()->UpdateToolBar();
+    MIMainWindow::instance()->updateToolBar();
     MIMainWindow::instance()->updateNavigator();
 
     if (RamaPlotMgr::instance()->IsShown())
@@ -8990,7 +8990,7 @@ void MIGLWidget::OnLabelEveryNth()
     }
 
     bool ok = false;
-    unsigned int nth = static_cast<unsigned int>(QInputDialog::getInt(this, "Label every nth", "Every nth residue will be labeled", 10, 0, INT_MAX, 1 &ok));
+    unsigned int nth = static_cast<unsigned int>(QInputDialog::getInt(this, "Label every nth", "Every nth residue will be labeled", 10, 0, INT_MAX, 1, &ok));
     if (!ok)
     {
         return;
@@ -10622,7 +10622,7 @@ void MIGLWidget::keyPressEvent(QKeyEvent *e)
     {
         ReDraw();
     }
-    MIMainWindow::instance()->UpdateToolBar();
+    MIMainWindow::instance()->updateToolBar();
 }
 
 

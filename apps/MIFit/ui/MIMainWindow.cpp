@@ -116,6 +116,18 @@ static void SplitPath(const std::string &origPath,
 
 using namespace chemlib;
 
+namespace
+{
+    void addToolMenuButton(QToolBar *toolBar, QMenu *menu, QIcon icon)
+    {
+        QToolButton *button = new QToolButton(toolBar);
+        button->setPopupMode(QToolButton::InstantPopup);
+        button->setMenu(menu);
+        button->setIcon(icon);
+        toolBar->addWidget(button);
+    }
+}
+
 template <typename T>
 static T firstChildWithName(const QWidget *widget, const QString &name)
 {
@@ -157,6 +169,7 @@ MIMainWindow::MIMainWindow()
     createDockWindows();
     createStatusBar();
     updateMenus();
+    updateToolBar();
 
     setWindowTitle(tr("MIFit"));
 
@@ -936,13 +949,18 @@ bool MIMainWindow::isJobLimit()
     return JobManager->numberOfRunningJobs() >= Application::instance()->concurrentJobLimit;
 }
 
-void MIMainWindow::UpdateToolBar()
+void MIMainWindow::updateToolBar()
 {
     foreach (QAction *action, tool_bar->actions())
     {
         CurrentMIGLWidgetAction *miAction = dynamic_cast<CurrentMIGLWidgetAction*>(action);
         if (miAction)
             miAction->update();
+    }
+    bool hasCurrentMIGLWidget = currentMIGLWidget() != 0;
+    foreach (QAction *action, displayToolBar->actions())
+    {
+        action->setEnabled(hasCurrentMIGLWidget);
     }
 }
 
@@ -1275,6 +1293,8 @@ void MIMainWindow::updateMenus()
     fit_menu->setEnabled(hasMIGLWidget);
     refi_menu->setEnabled(hasMIGLWidget);
     analyze_menu->setEnabled(hasMIGLWidget);
+
+    updateToolBar();
 }
 
 void MIMainWindow::updateWindowMenu()
@@ -1532,13 +1552,6 @@ void MIMainWindow::createMenus()
     copyCanvasAction->setIcon(QIcon(copy_xpm));
     toolBarActions += copyCanvasAction;
     toolBarActions += 0;
-
-    QToolBar *toolBar = addToolBar("Display Tools");
-    toolBar->setObjectName("Display Tools");
-    toolBar->addAction(QIcon(colortool_xpm), tr("Color"), this, SLOT(OnColorTool()));
-    toolBar->addAction(QIcon(showtool_xpm), tr("Show"), this, SLOT(OnShowTool()));
-    toolBar->addAction(QIcon(sidetool_xpm), tr("Side Chain"), this, SLOT(OnSideChainTool()));
-    toolBar->addAction(QIcon(hidetool_xpm), tr("Hide"), this, SLOT(OnHideTool()));
 
     QMenu *di_menu = menuBar()->addMenu(tr("&Dictionary"));
     view_menu = menuBar()->addMenu(tr("&Viewpoint"));
@@ -2176,6 +2189,15 @@ void MIMainWindow::createMenus()
         else
             tool_bar->addSeparator();
     }
+
+    displayToolBar = addToolBar("Display Tools");
+    displayToolBar->setObjectName("Display Tools");
+    displayToolBar->setIconSize(QSize(20, 20));
+
+    addToolMenuButton(displayToolBar, color_menu, QIcon(colortool_xpm));
+    addToolMenuButton(displayToolBar, show_menu, QIcon(showtool_xpm));
+    addToolMenuButton(displayToolBar, side_menu, QIcon(sidetool_xpm));
+    addToolMenuButton(displayToolBar, hide_menu, QIcon(hidetool_xpm));
 }
 
 
