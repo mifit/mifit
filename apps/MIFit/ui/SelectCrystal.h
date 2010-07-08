@@ -3,7 +3,6 @@
 
 #include <string>
 
-#include "core/MIData.h"
 #include "ui_SelectCrystal.h"
 
 class SelectCrystal : public QDialog, public Ui::SelectCrystal
@@ -14,7 +13,7 @@ public:
     SelectCrystal(const std::string &info, QWidget *parent = 0);
     const std::string getLabel();
 
-    static bool doSelectCrystal(MIData& data);
+    static bool doSelectCrystal(std::string& data);
 
 private:
     void scanCrystalsDirectory();

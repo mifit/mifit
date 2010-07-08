@@ -10,27 +10,10 @@
 class QWidget;
 class QDialog;
 
-class MIDialog
-{
-public:
-    MIDialog(QWidget *parent, const std::string &name);
-    virtual ~MIDialog();
-
-    bool GetResults(MIData &data);
-
-protected:
-    QWidget *_qparent;
-    std::string _name;
-
-private:
-    virtual bool PromptForResults(MIData &data) = 0;
-};
-
-
 const unsigned int MI_OPEN_MODE = 0;
 const unsigned int MI_SAVE_MODE = 2;
 
-class MIFileDialog : public MIDialog
+class MIFileDialog
 {
 public:
     MIFileDialog(QWidget *parent, const std::string &message,
@@ -39,11 +22,20 @@ public:
                  const std::string &filter = "",
                  unsigned int mode = MI_OPEN_MODE);
 
+    struct Data
+    {
+        std::string path;
+        std::vector<std::string> pathlist;
+        int filterIndex;
+    };
+
+    bool GetResults(Data &data);
+
 private:
-    bool PromptForResults(MIData &data);
+    QWidget *_qparent;
+    std::string _name;
     std::string _deftDir, _deftFile, _filter;
     unsigned int _mode;
-    //variables: filterIndex.i path.str pathList.strlist
 };
 
 std::string MIFileSelector(const std::string &message, const std::string &default_path = "",

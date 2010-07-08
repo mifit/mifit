@@ -15,7 +15,6 @@
 #include "GeomRefiner.h"
 #include "MouseFlags.h"
 #include "MIConfig.h"
-#include "MIData.h"
 #include "mifit_algorithm.h"
 #include "Molecule.h"
 #include "MoleculeType.h"

@@ -130,7 +130,7 @@ static bool GetHardcodedDefaults(MapSettingsBase &settings, int styleno)
 
 
 
-void MapSettings::saveStyle(int i)
+void MapSettings::saveStyle(int i, const MapSettingsBase& settings)
 {
     std::string key;
     std::string stylestr("");
@@ -139,40 +139,40 @@ void MapSettings::saveStyle(int i)
     const char *sty = stylestr.c_str();
 
     key = format("MapSettings%s/m_radiusmax", sty);
-    MIConfig::Instance()->Write(key, (long)m_radiusmax);
+    MIConfig::Instance()->Write(key, (long)settings.m_radiusmax);
     key = format("MapSettings%s/Radius", sty);
-    MIConfig::Instance()->Write(key, Radius);
+    MIConfig::Instance()->Write(key, settings.Radius);
     key = format("MapSettings%s/ContourMethod", sty);
-    MIConfig::Instance()->Write(key, (long)ContourMethod);
+    MIConfig::Instance()->Write(key, (long)settings.ContourMethod);
     key = format("MapSettings%s/BlobRadius", sty);
-    MIConfig::Instance()->Write(key, BlobRadius);
+    MIConfig::Instance()->Write(key, settings.BlobRadius);
     key = format("MapSettings%s/maplinewidth", sty);
-    MIConfig::Instance()->Write(key, maplinewidth);
+    MIConfig::Instance()->Write(key, settings.maplinewidth);
 
     for (int i = 0; i < 5; ++i)
     {
         key = format("MapSettings%s/MapLevelColor%d", sty, i);
-        MIConfig::Instance()->Write(key, (long)MapLevelColor[i]);
+        MIConfig::Instance()->Write(key, (long)settings.MapLevelColor[i]);
     }
 
     for (int i = 0; i < 5; ++i)
     {
         key = format("MapSettings%s/MapLevelOn%d", sty, i);
-        MIConfig::Instance()->Write(key, MapLevelOn[i]);
+        MIConfig::Instance()->Write(key, settings.MapLevelOn[i]);
     }
 
     for (int i = 0; i < 5; ++i)
     {
         key = format("MapSettings%s/MapLevel%d", sty, i);
-        MIConfig::Instance()->Write(key, (double)MapLevel[i]);
+        MIConfig::Instance()->Write(key, (double)settings.MapLevel[i]);
     }
 }
 
-void MapSettings::loadStyle(int i)
+void MapSettings::loadStyle(int i, MapSettingsBase& settings)
 {
 
     // first get the hard-coded defaults
-    GetHardcodedDefaults(*this, i);
+    GetHardcodedDefaults(settings, i);
 
     // now try in the user prefs file, using the hardcoded values as defaults
     // in case they're not in the settings file
@@ -186,111 +186,48 @@ void MapSettings::loadStyle(int i)
     double d;
 
     key = format("MapSettings%s/m_radiusmax", sty);
-    MIConfig::Instance()->Read(key, &longValue, (long)m_radiusmax);
-    m_radiusmax = longValue;
+    MIConfig::Instance()->Read(key, &longValue, (long)settings.m_radiusmax);
+    settings.m_radiusmax = longValue;
     key = format("MapSettings%s/Radius", sty);
-    MIConfig::Instance()->Read(key, &d, Radius);
-    Radius = (float) d;
+    MIConfig::Instance()->Read(key, &d, settings.Radius);
+    settings.Radius = (float) d;
     key = format("MapSettings%s/ContourMethod", sty);
-    MIConfig::Instance()->Read(key, &longValue, (long)ContourMethod);
-    ContourMethod = longValue;
+    MIConfig::Instance()->Read(key, &longValue, (long)settings.ContourMethod);
+    settings.ContourMethod = longValue;
     key = format("MapSettings%s/BlobRadius", sty);
-    MIConfig::Instance()->Read(key, &d, BlobRadius);
-    BlobRadius = (float) d;
+    MIConfig::Instance()->Read(key, &d, settings.BlobRadius);
+    settings.BlobRadius = (float) d;
     key = format("MapSettings%s/maplinewidth", sty);
-    MIConfig::Instance()->Read(key, &d, maplinewidth);
-    maplinewidth = d;
+    MIConfig::Instance()->Read(key, &d, settings.maplinewidth);
+    settings.maplinewidth = d;
 
     for (int i = 0; i < 5; ++i)
     {
         key = format("MapSettings%s/MapLevelColor%d", sty, i);
-        MIConfig::Instance()->Read(key, &longValue, (long)MapLevelColor[i]);
-        MapLevelColor[i] = longValue;
+        MIConfig::Instance()->Read(key, &longValue, (long)settings.MapLevelColor[i]);
+        settings.MapLevelColor[i] = longValue;
     }
     for (int i = 0; i < 5; ++i)
     {
         key = format("MapSettings%s/MapLevelOn%d", sty, i);
-        MIConfig::Instance()->Read(key, &MapLevelOn[i], MapLevelOn[i]);
+        MIConfig::Instance()->Read(key, &settings.MapLevelOn[i], settings.MapLevelOn[i]);
     }
     for (int i = 0; i < 5; ++i)
     {
         key = format("MapSettings%s/MapLevel%d", sty, i);
-        MIConfig::Instance()->Read(key, &d, MapLevel[i]);
-        MapLevel[i] = d;
+        MIConfig::Instance()->Read(key, &d, settings.MapLevel[i]);
+        settings.MapLevel[i] = d;
     }
 }
 
-void MapSettings::save()
+void MapSettings::save(const MapSettingsBase& settings)
 {
-    saveStyle(-1);
+    saveStyle(-1, settings);
 }
 
-void MapSettings::load()
+void MapSettings::load(MapSettingsBase& settings)
 {
-    loadStyle(-1);
-}
-
-// copy every value in settings to MIData structure, *and* add mapmin, mapmax to data structure
-void MapSettingsToData(const MapSettingsBase &settings, MIData &data, float mapmin, float mapmax)
-{
-    data["mapmin"].f = mapmin;
-    data["mapmax"].f = mapmax;
-
-    data["radiusMax"].i = settings.m_radiusmax;
-    data["radius"].f = settings.Radius;
-    data["contourMethod"].radio = settings.ContourMethod;
-    data["contourMethod"].radio_count = 3; // box, sphere, blob
-    data["blobRadius"].f = settings.BlobRadius;
-    data["lineWidth"].f = settings.maplinewidth;
-
-    data["MapLevelColor0"].i = settings.MapLevelColor[0];
-    data["MapLevelColor1"].i = settings.MapLevelColor[1];
-    data["MapLevelColor2"].i = settings.MapLevelColor[2];
-    data["MapLevelColor3"].i = settings.MapLevelColor[3];
-    data["MapLevelColor4"].i = settings.MapLevelColor[4];
-
-    data["MapLevelOn0"].b = settings.MapLevelOn[0];
-    data["MapLevelOn1"].b = settings.MapLevelOn[1];
-    data["MapLevelOn2"].b = settings.MapLevelOn[2];
-    data["MapLevelOn3"].b = settings.MapLevelOn[3];
-    data["MapLevelOn4"].b = settings.MapLevelOn[4];
-
-    data["MapLevel0"].f = settings.MapLevel[0];
-    data["MapLevel1"].f = settings.MapLevel[1];
-    data["MapLevel2"].f = settings.MapLevel[2];
-    data["MapLevel3"].f = settings.MapLevel[3];
-    data["MapLevel4"].f = settings.MapLevel[4];
-}
-
-// copy every value in MIData structure to settings  *and* set mapmin, mapmax
-void DataToMapSettings(/* const */ MIData &data, MapSettingsBase &settings, float &mapmin, float &mapmax)
-{
-    mapmin = data["mapmin"].f;
-    mapmax = data["mapmax"].f;
-
-    settings.m_radiusmax = data["radiusMax"].i;
-    settings.Radius = data["radius"].f;
-    settings.ContourMethod = data["contourMethod"].radio;
-    settings.BlobRadius = data["blobRadius"].f;
-    settings.maplinewidth = data["lineWidth"].f;
-
-    settings.MapLevelColor[0] = data["MapLevelColor0"].i;
-    settings.MapLevelColor[1] = data["MapLevelColor1"].i;
-    settings.MapLevelColor[2] = data["MapLevelColor2"].i;
-    settings.MapLevelColor[3] = data["MapLevelColor3"].i;
-    settings.MapLevelColor[4] = data["MapLevelColor4"].i;
-
-    settings.MapLevelOn[0] = data["MapLevelOn0"].b;
-    settings.MapLevelOn[1] = data["MapLevelOn1"].b;
-    settings.MapLevelOn[2] = data["MapLevelOn2"].b;
-    settings.MapLevelOn[3] = data["MapLevelOn3"].b;
-    settings.MapLevelOn[4] = data["MapLevelOn4"].b;
-
-    settings.MapLevel[0] = data["MapLevel0"].f;
-    settings.MapLevel[1] = data["MapLevel1"].f;
-    settings.MapLevel[2] = data["MapLevel2"].f;
-    settings.MapLevel[3] = data["MapLevel3"].f;
-    settings.MapLevel[4] = data["MapLevel4"].f;
+    loadStyle(-1, settings);
 }
 
 bool GetMapSettingsForStyle(int styleno, MapSettingsBase &settings, bool hardcodedOnly)
@@ -300,9 +237,6 @@ bool GetMapSettingsForStyle(int styleno, MapSettingsBase &settings, bool hardcod
         return GetHardcodedDefaults(settings, styleno);
     }
 
-    MapSettings *p = dynamic_cast<MapSettings*>(&settings);
-    if (!p)
-        return false;
-    p->loadStyle(styleno);
+    MapSettings::loadStyle(styleno, settings);
     return true;
 }

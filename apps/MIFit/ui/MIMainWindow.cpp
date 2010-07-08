@@ -433,21 +433,14 @@ void MIMainWindow::showPreferences(int page)
 
 void MIMainWindow::OnDefineAtomColors()
 {
-    MIData data;
     AtomColors dlg(this);
     dlg.setWindowTitle("Define Atom Coloring Scheme");
-    dlg.InitializeFromData(data);
     if (dlg.exec() != QDialog::Accepted)
     {
         return;
     }
-    dlg.GetData(data);
-    //  input: atomNames.strList, atomColors.strList
-    data["atomNames"].strList = Colors::atomnames;
-    data["atomColors"].strList = Colors::atomcolors;
-
-    Colors::atomnames = data["atomNames"].strList;
-    Colors::atomcolors = data["atomColors"].strList;
+    bool save;
+    dlg.GetData(Colors::atomnames, Colors::atomcolors, save);
 
     MIGLWidget *mdoc = currentMIGLWidget();
     if (mdoc)
@@ -461,28 +454,28 @@ void MIMainWindow::OnDefineAtomColors()
 void MIMainWindow::OnDefineBValueColors()
 {
 
-    MIData data;
-    data["color1"].i = Colors::BValueColors[0];
-    data["color2"].i = Colors::BValueColors[1];
-    data["color3"].i = Colors::BValueColors[2];
-    data["color4"].i = Colors::BValueColors[3];
-    data["color5"].i = Colors::BValueColors[4];
-    data["color6"].i = Colors::BValueColors[5];
-    data["color7"].i = Colors::BValueColors[6];
-    data["color8"].i = Colors::BValueColors[7];
-    data["color9"].i = Colors::BValueColors[8];
-    data["color10"].i = Colors::BValueColors[9];
+    BValueColors::ColorValues data;
+    data.BValueColors[0] = Colors::BValueColors[0];
+    data.BValueColors[1] = Colors::BValueColors[1];
+    data.BValueColors[2] = Colors::BValueColors[2];
+    data.BValueColors[3] = Colors::BValueColors[3];
+    data.BValueColors[4] = Colors::BValueColors[4];
+    data.BValueColors[5] = Colors::BValueColors[5];
+    data.BValueColors[6] = Colors::BValueColors[6];
+    data.BValueColors[7] = Colors::BValueColors[7];
+    data.BValueColors[8] = Colors::BValueColors[8];
+    data.BValueColors[9] = Colors::BValueColors[9];
 
-    data["level1"].f = Colors::BValueRanges[0]/100.0f;
-    data["level2"].f = Colors::BValueRanges[1]/100.0f;
-    data["level3"].f = Colors::BValueRanges[2]/100.0f;
-    data["level4"].f = Colors::BValueRanges[3]/100.0f;
-    data["level5"].f = Colors::BValueRanges[4]/100.0f;
-    data["level6"].f = Colors::BValueRanges[5]/100.0f;
-    data["level7"].f = Colors::BValueRanges[6]/100.0f;
-    data["level8"].f = Colors::BValueRanges[7]/100.0f;
-    data["level9"].f = Colors::BValueRanges[8]/100.0f;
-    data["level10"].f = Colors::BValueRanges[9]/100.0f;
+    data.BValueRanges[0] = Colors::BValueRanges[0]/100.0f;
+    data.BValueRanges[1] = Colors::BValueRanges[1]/100.0f;
+    data.BValueRanges[2] = Colors::BValueRanges[2]/100.0f;
+    data.BValueRanges[3] = Colors::BValueRanges[3]/100.0f;
+    data.BValueRanges[4] = Colors::BValueRanges[4]/100.0f;
+    data.BValueRanges[5] = Colors::BValueRanges[5]/100.0f;
+    data.BValueRanges[6] = Colors::BValueRanges[6]/100.0f;
+    data.BValueRanges[7] = Colors::BValueRanges[7]/100.0f;
+    data.BValueRanges[8] = Colors::BValueRanges[8]/100.0f;
+    data.BValueRanges[9] = Colors::BValueRanges[9]/100.0f;
 
     BValueColors dlg(this);
     dlg.setWindowTitle("Define Atom Coloring Scheme");
@@ -493,29 +486,29 @@ void MIMainWindow::OnDefineBValueColors()
     }
     dlg.GetData(data);
 
-    Colors::BValueColors[0] = data["color1"].i;
-    Colors::BValueColors[1] = data["color2"].i;
-    Colors::BValueColors[2] = data["color3"].i;
-    Colors::BValueColors[3] = data["color4"].i;
-    Colors::BValueColors[4] = data["color5"].i;
-    Colors::BValueColors[5] = data["color6"].i;
-    Colors::BValueColors[6] = data["color7"].i;
-    Colors::BValueColors[7] = data["color8"].i;
-    Colors::BValueColors[8] = data["color9"].i;
-    Colors::BValueColors[9] = data["color10"].i;
+    Colors::BValueColors[0] = data.BValueColors[0];
+    Colors::BValueColors[1] = data.BValueColors[1];
+    Colors::BValueColors[2] = data.BValueColors[2];
+    Colors::BValueColors[3] = data.BValueColors[3];
+    Colors::BValueColors[4] = data.BValueColors[4];
+    Colors::BValueColors[5] = data.BValueColors[5];
+    Colors::BValueColors[6] = data.BValueColors[6];
+    Colors::BValueColors[7] = data.BValueColors[7];
+    Colors::BValueColors[8] = data.BValueColors[8];
+    Colors::BValueColors[9] = data.BValueColors[9];
 
-    Colors::BValueRanges[0] = static_cast<int>(data["level1"].f*100.0f);
-    Colors::BValueRanges[1] = static_cast<int>(data["level2"].f*100.0f);
-    Colors::BValueRanges[2] = static_cast<int>(data["level3"].f*100.0f);
-    Colors::BValueRanges[3] = static_cast<int>(data["level4"].f*100.0f);
-    Colors::BValueRanges[4] = static_cast<int>(data["level5"].f*100.0f);
-    Colors::BValueRanges[5] = static_cast<int>(data["level6"].f*100.0f);
-    Colors::BValueRanges[6] = static_cast<int>(data["level7"].f*100.0f);
-    Colors::BValueRanges[7] = static_cast<int>(data["level8"].f*100.0f);
-    Colors::BValueRanges[8] = static_cast<int>(data["level9"].f*100.0f);
-    Colors::BValueRanges[9] = static_cast<int>(data["level10"].f*100.0f);
+    Colors::BValueRanges[0] = static_cast<int>(data.BValueRanges[0]*100.0f);
+    Colors::BValueRanges[1] = static_cast<int>(data.BValueRanges[1]*100.0f);
+    Colors::BValueRanges[2] = static_cast<int>(data.BValueRanges[2]*100.0f);
+    Colors::BValueRanges[3] = static_cast<int>(data.BValueRanges[3]*100.0f);
+    Colors::BValueRanges[4] = static_cast<int>(data.BValueRanges[4]*100.0f);
+    Colors::BValueRanges[5] = static_cast<int>(data.BValueRanges[5]*100.0f);
+    Colors::BValueRanges[6] = static_cast<int>(data.BValueRanges[6]*100.0f);
+    Colors::BValueRanges[7] = static_cast<int>(data.BValueRanges[7]*100.0f);
+    Colors::BValueRanges[8] = static_cast<int>(data.BValueRanges[8]*100.0f);
+    Colors::BValueRanges[9] = static_cast<int>(data.BValueRanges[9]*100.0f);
 
-    if (data["save"].b)
+    if (data.save)
     {
         Application::instance()->Write();
     }
@@ -648,13 +641,12 @@ void MIMainWindow::OnLoadLigPdb()
 
 void MIMainWindow::OnLoadLigSmi()
 {
-    MIData data;
-    data["mode"].radio = 0;
-    data["mode"].radio_count = 3;
-    data["filename"].str = "";
-    data["code"].str = "LIG";
-    data["smiles"].str = "";
-    data["dbquery"].str = "";
+    SmilesDialog::Data data;
+    data.mode = 0;
+    data.filename = "";
+    data.code = "LIG";
+    data.smiles = "";
+    data.dbquery = "";
 
     SmilesDialog dlg(this);
     dlg.setWindowTitle("Import Smiles String");
@@ -665,13 +657,13 @@ void MIMainWindow::OnLoadLigSmi()
     dlg.GetResults(data);
 
     std::string res;
-    switch (data["mode"].radio)
+    switch (data.mode)
     {
     case 0:  // From File
-        res = OnLoadLigand("*.smi", data["filename"].str.c_str(), "", data["code"].str.c_str());
+        res = OnLoadLigand("*.smi", data.filename.c_str(), "", data.code.c_str());
         break;
     case 1:  // From String
-        res = OnLoadLigand("*.smi", "", data["smiles"].str.c_str(), data["code"].str.c_str());
+        res = OnLoadLigand("*.smi", "", data.smiles.c_str(), data.code.c_str());
         break;
     case 2:  // From Db
     {
@@ -679,7 +671,7 @@ void MIMainWindow::OnLoadLigSmi()
         {
             QStringList args;
             QString cmd(Application::instance()->SmilesDbCommand.c_str());
-            args.append(data["dbquery"].str.c_str());
+            args.append(data.dbquery.c_str());
 
             QProcess proc(this);
             proc.start(cmd, args);
@@ -687,7 +679,7 @@ void MIMainWindow::OnLoadLigSmi()
             {
                 QByteArray qba = proc.readAll();
                 std::string str(qba.constData());
-                res = OnLoadLigand("*.smi", "", str, data["code"].str.c_str());
+                res = OnLoadLigand("*.smi", "", str, data.code.c_str());
             }
             else
             {
@@ -708,7 +700,7 @@ void MIMainWindow::OnLoadLigSmi()
     if (res==std::string(""))
         return;
 
-    ShowDictEditor(data["code"].str.c_str());
+    ShowDictEditor(data.code.c_str());
 }
 
 void MIMainWindow::OnLoadLigCif()

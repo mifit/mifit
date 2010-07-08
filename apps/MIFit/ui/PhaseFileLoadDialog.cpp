@@ -718,45 +718,45 @@ bool PhaseFileLoadDialog::SetFile(const std::string &fname,
 }
 
 
-void PhaseFileLoadDialog::GetData(MIData &data)
+void PhaseFileLoadDialog::GetData(Data &data)
 {
-    data["grid"].radio = gridChoice->currentIndex();
+    data.grid = gridChoice->currentIndex();
     // Note map header uses the numerical min/max for resmin/resmax
     // rather than the crystallography resolution min/max
-    data["resmin"].f = resmax->value();
-    data["resmax"].f = resmin->value();
+    data.resmin = resmax->value();
+    data.resmax = resmin->value();
 
-    data["enabled1"].b = map1Check->isChecked();
-    data["type1"].str = map1Type->currentText().toStdString();
-    data["fo1"].str = map1FoChoice->currentText().toStdString();
-    data["fc1"].str = modelStringToModelName(map1FcChoice->currentText().toStdString().c_str());
-    data["phi1"].str = modelStringToModelName(map1PhiChoice->currentText().toStdString().c_str());
-    data["fom1"].str = map1FomChoice->currentText().toStdString();
+    data.enabled1 = map1Check->isChecked();
+    data.type1 = map1Type->currentText().toStdString();
+    data.fo1 = map1FoChoice->currentText().toStdString();
+    data.fc1 = modelStringToModelName(map1FcChoice->currentText().toStdString().c_str());
+    data.phi1 = modelStringToModelName(map1PhiChoice->currentText().toStdString().c_str());
+    data.fom1 = map1FomChoice->currentText().toStdString();
 
-    data["enabled2"].b = map2Check->isChecked();
-    data["type2"].str = map2Type->currentText().toStdString();
-    data["fo2"].str = map2FoChoice->currentText().toStdString();
-    data["fc2"].str = modelStringToModelName(map2FcChoice->currentText().toStdString().c_str());
-    data["phi2"].str = modelStringToModelName(map2PhiChoice->currentText().toStdString().c_str());
-    data["fom2"].str = map2FomChoice->currentText().toStdString();
+    data.enabled2 = map2Check->isChecked();
+    data.type2 = map2Type->currentText().toStdString();
+    data.fo2 = map2FoChoice->currentText().toStdString();
+    data.fc2 = modelStringToModelName(map2FcChoice->currentText().toStdString().c_str());
+    data.phi2 = modelStringToModelName(map2PhiChoice->currentText().toStdString().c_str());
+    data.fom2 = map2FomChoice->currentText().toStdString();
 
 #if 1
     Logger::debug("Dialog returning grid type %d, resmin %f resmax %f\n"
                   "map1: enabled=%d type=%s fc=%s fo=%s fom=%s phi=%s\n"
                   "map2: enabled=%d type=%s fc=%s fo=%s fom=%s phi=%s\n",
-                  data["grid"].radio, data["resmin"].f, data["resmax"].f,
-                  data["enabled1"].b,
-                  data["type1"].str.c_str(),
-                  data["fc1"].str.c_str(),
-                  data["fo1"].str.c_str(),
-                  data["fom1"].str.c_str(),
-                  data["phi1"].str.c_str(),
-                  data["enabled2"].b,
-                  data["type2"].str.c_str(),
-                  data["fc2"].str.c_str(),
-                  data["fo2"].str.c_str(),
-                  data["fom2"].str.c_str(),
-                  data["phi2"].str.c_str());
+                  data.grid, data.resmin, data.resmax,
+                  data.enabled1,
+                  data.type1.c_str(),
+                  data.fc1.c_str(),
+                  data.fo1.c_str(),
+                  data.fom1.c_str(),
+                  data.phi1.c_str(),
+                  data.enabled2,
+                  data.type2.c_str(),
+                  data.fc2.c_str(),
+                  data.fo2.c_str(),
+                  data.fom2.c_str(),
+                  data.phi2.c_str());
 #endif // if 1
 }
 

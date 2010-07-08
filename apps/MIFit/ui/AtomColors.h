@@ -3,16 +3,17 @@
 
 #include "core/corelib.h"
 #include "ui_AtomColors.h"
+#include <string>
+#include <vector>
 
-// variables: atomNames.strList, atomColors.strList,
 class AtomColors : public QDialog, public Ui::AtomColors
 {
     Q_OBJECT
 
 public:
     AtomColors(QWidget *parent = 0);
-    void InitializeFromData(const MIData &dat);
-    void GetData(MIData &dat);
+    void GetData(std::vector<std::string> &atomNames,
+                 std::vector<std::string> &atomColors, bool &save);
 
 private slots:
     void on_deleteTypePushButton_clicked();
@@ -26,7 +27,11 @@ private:
     void populateList(const std::vector<std::string> &atomNames,
                       const std::vector<std::string> &atomColors);
     void setColor(int i);
-    MIData data;
+
+    std::vector<std::string> atomNames;
+    std::vector<std::string> atomColors;
+    std::vector<std::string> currentAtomNames;
+    std::vector<std::string> currentAtomColors;
 };
 
 #endif // ifndef __AtomColors_H__

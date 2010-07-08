@@ -35,6 +35,9 @@ public:
 
     int m_radiusmax;
 
+    float mapmin;
+    float mapmax;
+
     virtual void save()
     {
     }

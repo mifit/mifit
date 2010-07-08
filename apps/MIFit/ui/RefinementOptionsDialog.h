@@ -1,8 +1,6 @@
 #ifndef REFINEMENTOPTIONSDIALOG_H
 #define REFINEMENTOPTIONSDIALOG_H
 
-#include "core/corelib.h" // for MIData
-
 #include "ui_RefinementOptionsDialog.h"
 
 class RefinementOptionsDialog : public QDialog, public Ui::RefinementOptionsDialog
@@ -10,8 +8,31 @@ class RefinementOptionsDialog : public QDialog, public Ui::RefinementOptionsDial
     Q_OBJECT
 
 public:
-    RefinementOptionsDialog(const MIData &dat, QWidget *parent = 0);
-    void GetResults(MIData &data);
+
+    struct Data
+    {
+        int bondWeight;
+        int angleWeight;
+        int planeWeight;
+        int torsionWeight;
+        int bumpWeight;
+        int mapWeight;
+
+        bool constrainCA;
+        bool constrainEnds;
+        bool verbose;
+        bool refineWhileFit;
+
+        float sigmaBond;
+        float sigmaAngle;
+        float sigmaPlane;
+        float sigmaTorsion;
+        float sigmaBump;
+
+    };
+
+    RefinementOptionsDialog(const Data &dat, QWidget *parent = 0);
+    void GetResults(Data &data);
 };
 
 #endif

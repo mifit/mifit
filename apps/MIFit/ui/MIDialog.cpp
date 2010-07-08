@@ -26,56 +26,6 @@
 #include "CustomJobDialog.h"
 #include "GenericDataDialog.h"
 
-MIDialog::MIDialog(QWidget *parent, const std::string &name)
-    : _qparent(parent),
-      _name(name)
-{
-    // Note:
-    //
-    // we can't use MIMainWindow directly as a dialog parent, b/c if it is,
-    // the active window changes to the dialog instead of the MIGLWidget,
-    // (MIMainWindow gets subWindowActivated(0) signal), and that can bork
-    // up handling of dialog results.  It appears to be safe to use the
-    // MdiArea as the parent. FMH.
-
-    if (!_qparent || _qparent == MIMainWindow::instance())
-        _qparent = MIMainWindow::instance()->currentMIGLWidget();
-    if (!_qparent)
-        _qparent = MIMainWindow::instance()->getMdiArea();
-}
-
-MIDialog::~MIDialog()
-{
-}
-
-void ValidateData(const MIData &data)
-{
-    std::map<std::string, MIDatum>::const_iterator i = data.begin();
-    for (; i!= data.end(); ++i)
-    {
-        MIDatum datum = i->second;
-        if (datum.radio!=UINT_MAX && datum.radio_count==UINT_MAX)
-        {
-#ifdef DEBUG
-            Logger::message("Programmer error: radio set, but radio_count not set!");
-#endif
-        }
-    }
-}
-
-bool MIDialog::GetResults(MIData &data)
-{
-
-    bool ret;
-
-    ValidateData(data);
-    ret = PromptForResults(data);
-
-    return ret;
-}
-
-
-
 //
 // File
 //
@@ -84,7 +34,8 @@ MIFileDialog::MIFileDialog(QWidget *parent, const std::string &message,
                            const std::string &deftFile,
                            const std::string &filter,
                            unsigned int mode)
-    : MIDialog(parent, message),
+    : _qparent(parent),
+      _name(message),
       _deftDir(deftDir),
       _deftFile(deftFile),
       _filter(filter),
@@ -112,16 +63,16 @@ static void stringSplit(std::string str,
 }
 
 
-bool MIFileDialog::PromptForResults(MIData &data)
+bool MIFileDialog::GetResults(Data &data)
 {
     std::string path = _deftDir;
     if (_deftFile.size())
     {
         path = path+ "/" + _deftFile;
     }
-    if (data["path"].str.size() && data["path"].str != MIDatum::INVALID_STRING)
+    if (data.path.size() && data.path != MIDatum::INVALID_STRING)
     {
-        path = data["path"].str;
+        path = data.path;
     }
 
     // build filter string/ vector;
@@ -145,7 +96,7 @@ bool MIFileDialog::PromptForResults(MIData &data)
     QString response;
     QStringList responseList;
 
-    std::vector<std::string> &pathlist = data["pathList"].strList;
+    std::vector<std::string> &pathlist = data.pathlist;
     pathlist.clear();
 
     path = Application::instance()->latestFileBrowseDirectory(path.c_str()).toStdString();
@@ -155,7 +106,7 @@ bool MIFileDialog::PromptForResults(MIData &data)
         response = QFileDialog::getSaveFileName(_qparent, _name.c_str(), path.c_str(), filter, &selectedFilter);
         if (response.isEmpty())
             return false;
-        data["path"].str = response.toStdString();
+        data.path = response.toStdString();
         pathlist.push_back(response.toStdString());
     }
     else if (_mode==MI_OPEN_MODE)
@@ -163,11 +114,11 @@ bool MIFileDialog::PromptForResults(MIData &data)
         response = QFileDialog::getOpenFileName(_qparent, _name.c_str(), path.c_str(), filter, &selectedFilter);
         if (response.isEmpty())
             return false;
-        data["path"].str = response.toStdString();
+        data.path = response.toStdString();
         pathlist.push_back(response.toStdString());
     }
 
-    QFileInfo fileInfo(data["path"].str.c_str());
+    QFileInfo fileInfo(data.path.c_str());
     Application::instance()->latestFileBrowseDirectory(fileInfo.absolutePath());
 
     // set selected filter index
@@ -176,7 +127,7 @@ bool MIFileDialog::PromptForResults(MIData &data)
     {
         if (filterList[i] == selFilter)
         {
-            data["filterIndex"].radio = i;
+            data.filterIndex = i;
             break;
         }
     }
@@ -209,14 +160,11 @@ std::string MIFileSelector(const std::string &title,
                             defaultFileNameString, filter2,
                             flags);
 
-    MIData data;
-    data["path"].str = "";
-    data["pathList"].strList = std::vector<std::string>();
-
+    MIFileDialog::Data data;
     std::string filename;
     if (fileDialog.GetResults(data))
     {
-        filename = data["path"].str;
+        filename = data.path;
     }
     QFileInfo fileInfo(filename.c_str());
     Application::instance()->latestFileBrowseDirectory(fileInfo.absolutePath());

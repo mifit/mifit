@@ -100,8 +100,9 @@ void EMap::Save(CArchive &ar, int i)
 
 bool EMap::ContourLevels()
 {
-    MIData data;
-    MapSettingsToData(*settings, data, mapmin, mapmax);
+    MapSettingsBase data(*settings);
+    data.mapmin = mapmin;
+    data.mapmax = mapmax;
 
     QDialog dlg(0);
 
@@ -126,8 +127,6 @@ bool EMap::ContourLevels()
     }
     co->GetData(data);
 
-    float mapmin, mapmax;
-    DataToMapSettings(data, *settings, mapmin, mapmax);
     SetMapLinewidth(settings->maplinewidth);
     //settings->save(); // No longer relevant.  only the preferences are saved
     mapContourLevelsChanged(this);
@@ -164,10 +163,9 @@ long EMap::LoadCIFMap(const char *pathname, int datablock)
 
 bool EMap::PromptForCrystal()
 {
-    MIData data;
-    data["info"].str = CMapHeaderBase().Label();
+    std::string data = CMapHeaderBase().Label();
     SelectCrystal::doSelectCrystal(data);
-    CMapHeaderBase mh(data["info"].str);
+    CMapHeaderBase mh(data);
     mapheader->updateSymmetryAndCell(mh);
     RecalcResolution();
     return true;
@@ -188,8 +186,8 @@ EMap::EMap()
     // replace MapSettingsBase with MapSettings (which has GUI load & save support)
     // this will be deleted by EMapBase dtor
     delete settings;
-    settings = new MapSettings();
-    settings->load();
+    settings = new MapSettingsBase;
+    MapSettings::load(*settings);
 
     // replace CMapHeaderBase with CMapHeader (which has GUI load & save support)
     // this will be deleted by EMapBase dtor

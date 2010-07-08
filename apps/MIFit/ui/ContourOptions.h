@@ -2,6 +2,7 @@
 #define CONTOUR_OPTIONS_H
 
 #include "core/corelib.h"
+#include "MapSettings.h"
 
 #include "ui_ContourOptions.h"
 
@@ -13,8 +14,8 @@ class ContourOptions : public QWidget, public Ui::ContourOptions
 
 public:
     ContourOptions(QWidget *parent = 0, bool prefsMode = false);
-    void InitializeFromData(const MIData &dat);
-    void GetData(MIData &dat);
+    void InitializeFromData(const MapSettingsBase &dat);
+    void GetData(MapSettingsBase &dat);
     void savePreferences();
 
 public slots:
@@ -26,7 +27,7 @@ public slots:
 private:
     void setColor(QToolButton *valueControl, int c);
     std::map<QWidget*, int> colors;
-    MIData _styleSettings[NUM_DEFINED_STYLES];
+    MapSettingsBase _styleSettings[NUM_DEFINED_STYLES];
     bool _preferencesMode;
     int _currentStyle;
 };

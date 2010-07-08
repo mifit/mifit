@@ -40,57 +40,55 @@ void BValueColors::colorButtonPressed(QToolButton *control)
 }
 
 
-void BValueColors::GetData(MIData &data)
+void BValueColors::GetData(ColorValues &data)
 {
-    data["level1"].f = (float)levelSpinBox_1->value();
-    data["level2"].f = (float)levelSpinBox_2->value();
-    data["level3"].f = (float)levelSpinBox_3->value();
-    data["level4"].f = (float)levelSpinBox_4->value();
-    data["level5"].f = (float)levelSpinBox_5->value();
-    data["level6"].f = (float)levelSpinBox_6->value();
-    data["level7"].f = (float)levelSpinBox_7->value();
-    data["level8"].f = (float)levelSpinBox_8->value();
-    data["level9"].f = (float)levelSpinBox_9->value();
-    data["level10"].f = (float)levelSpinBox_10->value();
+    data.BValueRanges[0] = (float)levelSpinBox_1->value();
+    data.BValueRanges[1] = (float)levelSpinBox_2->value();
+    data.BValueRanges[2] = (float)levelSpinBox_3->value();
+    data.BValueRanges[3] = (float)levelSpinBox_4->value();
+    data.BValueRanges[4] = (float)levelSpinBox_5->value();
+    data.BValueRanges[5] = (float)levelSpinBox_6->value();
+    data.BValueRanges[6] = (float)levelSpinBox_7->value();
+    data.BValueRanges[7] = (float)levelSpinBox_8->value();
+    data.BValueRanges[8] = (float)levelSpinBox_9->value();
+    data.BValueRanges[9] = (float)levelSpinBox_10->value();
 
-    data["color1"].i = colors[colorToolButton1];
-    data["color2"].i = colors[colorToolButton2];
-    data["color3"].i = colors[colorToolButton3];
-    data["color4"].i = colors[colorToolButton4];
-    data["color5"].i = colors[colorToolButton5];
-    data["color6"].i = colors[colorToolButton6];
-    data["color7"].i = colors[colorToolButton7];
-    data["color8"].i = colors[colorToolButton8];
-    data["color9"].i = colors[colorToolButton9];
-    data["color10"].i = colors[colorToolButton10];
+    data.BValueColors[0] = colors[colorToolButton1];
+    data.BValueColors[1] = colors[colorToolButton2];
+    data.BValueColors[2] = colors[colorToolButton3];
+    data.BValueColors[3] = colors[colorToolButton4];
+    data.BValueColors[4] = colors[colorToolButton5];
+    data.BValueColors[5] = colors[colorToolButton6];
+    data.BValueColors[6] = colors[colorToolButton7];
+    data.BValueColors[7] = colors[colorToolButton8];
+    data.BValueColors[8] = colors[colorToolButton9];
+    data.BValueColors[9] = colors[colorToolButton10];
 
-    data["save"].b = saveCheckBox->isChecked();
+    data.save = saveCheckBox->isChecked();
 }
 
-void BValueColors::InitializeFromData(const MIData &dat)
+void BValueColors::InitializeFromData(const ColorValues &dat)
 {
-    MIData data = dat;
+    levelSpinBox_1->setValue(dat.BValueRanges[0]);
+    levelSpinBox_2->setValue(dat.BValueRanges[1]);
+    levelSpinBox_3->setValue(dat.BValueRanges[2]);
+    levelSpinBox_4->setValue(dat.BValueRanges[3]);
+    levelSpinBox_5->setValue(dat.BValueRanges[4]);
+    levelSpinBox_6->setValue(dat.BValueRanges[5]);
+    levelSpinBox_7->setValue(dat.BValueRanges[6]);
+    levelSpinBox_8->setValue(dat.BValueRanges[7]);
+    levelSpinBox_9->setValue(dat.BValueRanges[8]);
+    levelSpinBox_10->setValue(dat.BValueRanges[9]);
 
-    levelSpinBox_1->setValue(data["level1"].f);
-    levelSpinBox_2->setValue(data["level2"].f);
-    levelSpinBox_3->setValue(data["level3"].f);
-    levelSpinBox_4->setValue(data["level4"].f);
-    levelSpinBox_5->setValue(data["level5"].f);
-    levelSpinBox_6->setValue(data["level6"].f);
-    levelSpinBox_7->setValue(data["level7"].f);
-    levelSpinBox_8->setValue(data["level8"].f);
-    levelSpinBox_9->setValue(data["level9"].f);
-    levelSpinBox_10->setValue(data["level10"].f);
-
-    setColor(colorToolButton1, data["color1"].i);
-    setColor(colorToolButton2, data["color2"].i);
-    setColor(colorToolButton3, data["color3"].i);
-    setColor(colorToolButton4, data["color4"].i);
-    setColor(colorToolButton5, data["color5"].i);
-    setColor(colorToolButton6, data["color6"].i);
-    setColor(colorToolButton7, data["color7"].i);
-    setColor(colorToolButton8, data["color8"].i);
-    setColor(colorToolButton9, data["color9"].i);
-    setColor(colorToolButton10, data["color10"].i);
+    setColor(colorToolButton1, dat.BValueColors[0]);
+    setColor(colorToolButton2, dat.BValueColors[1]);
+    setColor(colorToolButton3, dat.BValueColors[2]);
+    setColor(colorToolButton4, dat.BValueColors[3]);
+    setColor(colorToolButton5, dat.BValueColors[4]);
+    setColor(colorToolButton6, dat.BValueColors[5]);
+    setColor(colorToolButton7, dat.BValueColors[6]);
+    setColor(colorToolButton8, dat.BValueColors[7]);
+    setColor(colorToolButton9, dat.BValueColors[8]);
+    setColor(colorToolButton10, dat.BValueColors[9]);
 }
 

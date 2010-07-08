@@ -483,7 +483,7 @@ void LSQFitDialog::on_importButton_clicked()
 }
 
 
-void LSQFitDialog::InitializeFromData(const MIData&)
+void LSQFitDialog::InitializeFromData()
 {
     MIGLWidget *glw = MIMainWindow::instance()->currentMIGLWidget();
     if (!glw)
@@ -502,28 +502,30 @@ void LSQFitDialog::InitializeFromData(const MIData&)
     SetAtomType("CA");
 }
 
-void LSQFitDialog::GetData(MIData &dat)
+LSQFitDialog::Data LSQFitDialog::GetData()
 {
-    dat["sourceModel"].str = sourceComboBox->currentText().toStdString();
-    dat["targetModel"].str = targetComboBox->currentText().toStdString();
-    dat["applyToChain"].b = chainOnlyCheckBox->isChecked();
-    dat["chainId"].str = chainsChoice->currentText().toStdString();
+    Data dat;
+    dat.sourceModel = sourceComboBox->currentText().toStdString();
+    dat.targetModel = targetComboBox->currentText().toStdString();
+    dat.applyToChain = chainOnlyCheckBox->isChecked();
+    dat.chainId = chainsChoice->currentText().toStdString();
 
-    dat["r00"].f = r[0][0];
-    dat["r01"].f = r[0][1];
-    dat["r02"].f = r[0][2];
+    dat.r00 = r[0][0];
+    dat.r01 = r[0][1];
+    dat.r02 = r[0][2];
 
-    dat["r10"].f = r[1][0];
-    dat["r11"].f = r[1][1];
-    dat["r12"].f = r[1][2];
+    dat.r10 = r[1][0];
+    dat.r11 = r[1][1];
+    dat.r12 = r[1][2];
 
-    dat["r20"].f = r[2][0];
-    dat["r21"].f = r[2][1];
-    dat["r22"].f = r[2][2];
+    dat.r20 = r[2][0];
+    dat.r21 = r[2][1];
+    dat.r22 = r[2][2];
 
-    dat["v0"].f = v[0];
-    dat["v1"].f = v[1];
-    dat["v2"].f = v[2];
+    dat.v0 = v[0];
+    dat.v1 = v[1];
+    dat.v2 = v[2];
+    return dat;
 }
 
 Molecule*LSQFitDialog::findMolecule(const std::string &str)

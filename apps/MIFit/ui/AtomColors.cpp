@@ -45,23 +45,19 @@ void AtomColors::populateList(const std::vector<std::string> &atomNames,
         listWidget->addItem(foo.c_str());
     }
 
-    data["currentAtomNames"].strList = atomNames;
-    data["currentAtomColors"].strList = atomColors;
+    this->atomNames = atomNames;
+    this->atomColors = atomColors;
+    currentAtomNames = atomNames;
+    currentAtomColors = atomColors;
 }
 
 
-void AtomColors::GetData(MIData &dat)
+void AtomColors::GetData(std::vector<std::string> &atomNames,
+                         std::vector<std::string> &atomColors, bool &save)
 {
-    dat["atomNames"].strList = data["currentAtomNames"].strList;
-    dat["atomColors"].strList = data["currentAtomColors"].strList;
-    dat["save"].b = saveCheckBox->isChecked();
-}
-
-void AtomColors::InitializeFromData(const MIData &dat)
-{
-    data = dat;
-    populateList(data["atomNames"].strList,
-                 data["atomColors"].strList);
+    atomNames = currentAtomNames;
+    atomColors = currentAtomColors;
+    save = saveCheckBox->isChecked();
 }
 
 void AtomColors::on_deleteTypePushButton_clicked()
@@ -69,9 +65,9 @@ void AtomColors::on_deleteTypePushButton_clicked()
     if (listWidget->currentItem())
     {
         listWidget->currentRow();
-        data["currentAtomNames"].strList.erase(data["currentAtomNames"].strList.begin()
+        currentAtomNames.erase(currentAtomNames.begin()
                                                +listWidget->currentRow());
-        data["currentAtomColors"].strList.erase(data["currentAtomColors"].strList.begin()
+        currentAtomColors.erase(currentAtomColors.begin()
                                                 +listWidget->currentRow());
         delete listWidget->takeItem(listWidget->currentRow());
     }
@@ -88,15 +84,14 @@ void AtomColors::on_addTypePushButton_clicked()
     foo += Colors::colornames[ci];
     listWidget->addItem(foo);
 
-    data["currentAtomNames"].strList.push_back(foo.toStdString());
-    data["currentAtomColors"].strList.push_back(Colors::colornames[ci]);
+    currentAtomNames.push_back(foo.toStdString());
+    currentAtomColors.push_back(Colors::colornames[ci]);
 }
 
 
 void AtomColors::on_resetPushButton_clicked()
 {
-    populateList(data["atomNames"].strList,
-                 data["atomColors"].strList);
+    populateList(atomNames, atomColors);
 }
 
 void AtomColors::on_editNamePushButton_clicked()
@@ -105,13 +100,13 @@ void AtomColors::on_editNamePushButton_clicked()
         return;
     bool ok;
     QString foo = QInputDialog::getText(this, "Atom Type Name", "Enter atom type name", QLineEdit::Normal,
-                                        data["currentAtomNames"].strList[listWidget->currentRow()].c_str(), &ok);
+                                        currentAtomNames[listWidget->currentRow()].c_str(), &ok);
     if (!ok)
         return;
 
-    data["currentAtomNames"].strList[listWidget->currentRow()] = foo.toStdString();
+    currentAtomNames[listWidget->currentRow()] = foo.toStdString();
     foo += "* ";
-    foo += data["currentAtomNames"].strList[listWidget->currentRow()].c_str();
+    foo += currentAtomNames[listWidget->currentRow()].c_str();
     listWidget->currentItem()->setText(foo);
 }
 
@@ -120,11 +115,11 @@ void AtomColors::on_colorToolButton_clicked()
     if (!listWidget->currentItem())
         return;
 
-    int ci = MIColorPickerDlg::getColor(0, Colors::findColorNumber(data["currentAtomColors"].strList[listWidget->currentRow()]), "Choose atom color");
-    std::string foo = data["currentAtomNames"].strList[listWidget->currentRow()];
+    int ci = MIColorPickerDlg::getColor(0, Colors::findColorNumber(currentAtomColors[listWidget->currentRow()]), "Choose atom color");
+    std::string foo = currentAtomNames[listWidget->currentRow()];
     foo += "* ";
     foo += Colors::colornames[ci];
-    data["currentAtomColors"].strList[listWidget->currentRow()] = Colors::colornames[ci];
+    currentAtomColors[listWidget->currentRow()] = Colors::colornames[ci];
     listWidget->currentItem()->setText(foo.c_str());
 
     setColor(ci);
@@ -132,9 +127,9 @@ void AtomColors::on_colorToolButton_clicked()
 
 void AtomColors::on_listWidget_currentRowChanged(int idx)
 {
-    if (idx < 0 || idx > (int)data["currentAtomColors"].strList.size())
+    if (idx < 0 || idx > (int)currentAtomColors.size())
         return;
-    std::string name = data["currentAtomColors"].strList[idx];
+    std::string name = currentAtomColors[idx];
     int i = Colors::findColorNumber(name);
     if (i!=-1)
     {

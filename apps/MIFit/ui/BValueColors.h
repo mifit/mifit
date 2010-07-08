@@ -12,9 +12,17 @@ class BValueColors : public QDialog, public Ui::BValueColors
     Q_OBJECT
 
 public:
+
+    struct ColorValues
+    {
+        int BValueColors[Colors_NumBValueColors];
+        float BValueRanges[Colors_NumBValueColors];
+        bool save;
+    };
+
     BValueColors(QWidget *parent = 0);
-    void InitializeFromData(const MIData &dat);
-    void GetData(MIData &dat);
+    void InitializeFromData(const ColorValues &dat);
+    void GetData(ColorValues &dat);
 
 private slots:
     void on_colorToolButton1_clicked()

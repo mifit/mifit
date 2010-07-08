@@ -4,8 +4,6 @@
 #include <QWidget>
 #include <map>
 
-#include "core/MIData.h"
-
 class MIGLWidget;
 class QStackedLayout;
 

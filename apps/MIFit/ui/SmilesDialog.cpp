@@ -15,25 +15,25 @@ SmilesDialog::SmilesDialog(QWidget *parent)
 }
 
 
-void SmilesDialog::GetResults(MIData &data)
+void SmilesDialog::GetResults(Data &data)
 {
-    data["mode"].radio = 0;
+    data.mode = 0;
     if (fileRadioButton->isChecked())
     {
-        data["mode"].radio = 0;
+        data.mode = 0;
     }
     else if (smilesRadioButton->isChecked())
     {
-        data["mode"].radio = 1;
+        data.mode = 1;
     }
     else if (databaseRadioButton->isChecked())
     {
-        data["mode"].radio = 2;
+        data.mode = 2;
     }
 
 
-    data["filename"].str = fileLineEdit->text().toStdString();
-    data["smiles"].str = smilesLineEdit->text().toStdString();
-    data["dbquery"].str = databaseLineEdit->text().toStdString();
-    data["code"].str = idLineEdit->text().toStdString();
+    data.filename = fileLineEdit->text().toStdString();
+    data.smiles = smilesLineEdit->text().toStdString();
+    data.dbquery = databaseLineEdit->text().toStdString();
+    data.code = idLineEdit->text().toStdString();
 }

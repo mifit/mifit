@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 
-#include "core/MIData.h"
 #include "ui/uilib.h"
 
 #include "ui_PhaseFileLoadDialog.h"
@@ -55,13 +54,38 @@ private slots:
     void on_map2FomChoice_activated(int);
 
 public:
+
+    struct Data
+    {
+        int grid;
+
+        // Note map header uses the numerical min/max for resmin/resmax
+        // rather than the crystallography resolution min/max
+        float resmin;
+        float resmax;
+
+        bool enabled1;
+        std::string type1;
+        std::string fo1;
+        std::string fc1;
+        std::string phi1;
+        std::string fom1;
+
+        bool enabled2;
+        std::string type2;
+        std::string fo2;
+        std::string fc2;
+        std::string phi2;
+        std::string fom2;
+    };
+
     PhaseFileLoadDialog(QWidget *parent);
     ~PhaseFileLoadDialog();
 
     bool SetFile(const std::string &fname,
                  const std::vector<std::string> &models,
                  const std::vector<std::string> &cells);
-    void GetData(MIData &data);
+    void GetData(Data &data);
 };
 
 

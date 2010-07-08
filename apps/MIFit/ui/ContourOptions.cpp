@@ -22,9 +22,7 @@ ContourOptions::ContourOptions(QWidget *parent, bool prefsMode)
     {
         for (unsigned int i = 0; i<NUM_DEFINED_STYLES; ++i)
         {
-            MapSettings s;
-            GetMapSettingsForStyle(i, s);
-            MapSettingsToData(s, _styleSettings[i]);
+            GetMapSettingsForStyle(i, _styleSettings[i]);
         }
         InitializeFromData(_styleSettings[0]);
     }
@@ -56,25 +54,17 @@ void ContourOptions::setColor(QToolButton *valueControl, int c)
 }
 
 
-void ContourOptions::InitializeFromData(const MIData &dat)
+void ContourOptions::InitializeFromData(const MapSettingsBase &data)
 {
-    MIData data = dat;
+    maxRadiusSpinBox->setValue(data.m_radiusmax);
+    radiusSlider->setMaximum(data.m_radiusmax);
 
-    if (data.find("radiusMax") != data.end())
-    {
-        maxRadiusSpinBox->setValue(data["radiusMax"].i);
-        radiusSlider->setMaximum(data["radiusMax"].i);
-    }
+    radiusSpinBox->setValue((int)data.Radius);
+    radiusSlider->setValue((int)data.Radius);
 
-    if (data.find("radius") != data.end())
+    if (data.mapmin != 0.0f)
     {
-        radiusSpinBox->setValue((int)data["radius"].f);
-        radiusSlider->setValue((int)data["radius"].f);
-    }
-
-    if (data.find("mapmin") != data.end())
-    {
-        int imin = (int)data["mapmin"].f;
+        int imin = (int)data.mapmin;
 
         contourSpinBox_0->setMinimum(imin);
         contourSlider_0->setMinimum(imin);
@@ -97,9 +87,9 @@ void ContourOptions::InitializeFromData(const MIData &dat)
         minLabel_4->setNum(imin);
     }
 
-    if (data.find("mapmax") != data.end())
+    if (data.mapmax != 0.0f)
     {
-        int imax = (int)data["mapmax"].f;
+        int imax = (int)data.mapmax;
 
         contourSpinBox_0->setMaximum(imax);
         contourSlider_0->setMaximum(imax);
@@ -122,151 +112,97 @@ void ContourOptions::InitializeFromData(const MIData &dat)
         maxLabel_4->setNum(imax);
     }
 
-    if (data.find("contourMethod") != data.end())
+    switch (data.ContourMethod)
     {
-        switch (data["contourMethod"].radio)
-        {
-        case 0:
-            boxMethodRadioButton->setChecked(true);
-            break;
-        case 1:
-            sphereMethodRadioButton->setChecked(true);
-            break;
-        case 2:
-            blobMethodRadioButton->setChecked(true);
-            break;
-        }
+    case 0:
+        boxMethodRadioButton->setChecked(true);
+        break;
+    case 1:
+        sphereMethodRadioButton->setChecked(true);
+        break;
+    case 2:
+        blobMethodRadioButton->setChecked(true);
+        break;
     }
 
-    if (data.find("blobRadius") != data.end())
-    {
-        blobDistanceSpinBox->setValue(data["blobRadius"].f);
-    }
+    blobDistanceSpinBox->setValue(data.BlobRadius);
 
-    if (data.find("lineWidth") != data.end())
-    {
-        lineWidthSpinBox->setValue(data["lineWidth"].f);
-    }
+    lineWidthSpinBox->setValue(data.maplinewidth);
 
     // contour 1
-    if (data.find("MapLevel0") != data.end())
-    {
-        contourSpinBox_0->setValue(data["MapLevel0"].f);
-        contourSlider_0->setValue(data["MapLevel0"].f);
-    }
-    if (data.find("MapLevelOn0") != data.end())
-    {
-        showBox_0->setChecked(data["MapLevelOn0"].b);
-    }
-    if (data.find("MapLevelColor0") != data.end())
-    {
-        setColor(colorButton_0, data["MapLevelColor0"].i);
-    }
+    contourSpinBox_0->setValue(data.MapLevel[0]);
+    contourSlider_0->setValue(data.MapLevel[0]);
+    showBox_0->setChecked(data.MapLevelOn[0]);
+    setColor(colorButton_0, data.MapLevelColor[0]);
 
     // contour 2
-    if (data.find("MapLevel1") != data.end())
-    {
-        contourSpinBox_1->setValue(data["MapLevel1"].f);
-        contourSlider_1->setValue(data["MapLevel1"].f);
-    }
-    if (data.find("MapLevelOn1") != data.end())
-    {
-        showBox_1->setChecked(data["MapLevelOn1"].b);
-    }
-    if (data.find("MapLevelColor1") != data.end())
-    {
-        setColor(colorButton_1, data["MapLevelColor1"].i);
-    }
+    contourSpinBox_1->setValue(data.MapLevel[1]);
+    contourSlider_1->setValue(data.MapLevel[1]);
+    showBox_1->setChecked(data.MapLevelOn[1]);
+    setColor(colorButton_1, data.MapLevelColor[1]);
 
     // contour 3
-    if (data.find("MapLevel2") != data.end())
-    {
-        contourSpinBox_2->setValue(data["MapLevel2"].f);
-        contourSlider_2->setValue(data["MapLevel2"].f);
-    }
-    if (data.find("MapLevelOn2") != data.end())
-    {
-        showBox_2->setChecked(data["MapLevelOn2"].b);
-    }
-    if (data.find("MapLevelColor2") != data.end())
-    {
-        setColor(colorButton_2, data["MapLevelColor2"].i);
-    }
+    contourSpinBox_2->setValue(data.MapLevel[2]);
+    contourSlider_2->setValue(data.MapLevel[2]);
+    showBox_2->setChecked(data.MapLevelOn[2]);
+    setColor(colorButton_2, data.MapLevelColor[2]);
 
     // contour 4
-    if (data.find("MapLevel3") != data.end())
-    {
-        contourSpinBox_3->setValue(data["MapLevel3"].f);
-        contourSlider_3->setValue(data["MapLevel3"].f);
-    }
-    if (data.find("MapLevelOn3") != data.end())
-    {
-        showBox_3->setChecked(data["MapLevelOn3"].b);
-    }
-    if (data.find("MapLevelColor3") != data.end())
-    {
-        setColor(colorButton_3, data["MapLevelColor3"].i);
-    }
+    contourSpinBox_3->setValue(data.MapLevel[3]);
+    contourSlider_3->setValue(data.MapLevel[3]);
+    showBox_3->setChecked(data.MapLevelOn[3]);
+    setColor(colorButton_3, data.MapLevelColor[3]);
 
     // contour 5
-    if (data.find("MapLevel4") != data.end())
-    {
-        contourSpinBox_4->setValue(data["MapLevel4"].f);
-        contourSlider_4->setValue(data["MapLevel4"].f);
-    }
-    if (data.find("MapLevelOn4") != data.end())
-    {
-        showBox_4->setChecked(data["MapLevelOn4"].b);
-    }
-    if (data.find("MapLevelColor4") != data.end())
-    {
-        setColor(colorButton_4, data["MapLevelColor4"].i);
-    }
+    contourSpinBox_4->setValue(data.MapLevel[4]);
+    contourSlider_4->setValue(data.MapLevel[4]);
+    showBox_4->setChecked(data.MapLevelOn[4]);
+    setColor(colorButton_4, data.MapLevelColor[4]);
 }
 
-void ContourOptions::GetData(MIData &data)
+void ContourOptions::GetData(MapSettingsBase &data)
 {
-    data["radiusMax"].i = maxRadiusSpinBox->value();
+    data.m_radiusmax = maxRadiusSpinBox->value();
 
-    data["radius"].f = (float)radiusSpinBox->value();
+    data.Radius = (float)radiusSpinBox->value();
 
-    data["mapmin"].f = (float)contourSlider_0->minimum();
-    data["mapmax"].f = (float)contourSlider_0->maximum();
+    data.mapmin = (float)contourSlider_0->minimum();
+    data.mapmax = (float)contourSlider_0->maximum();
 
     if (boxMethodRadioButton->isChecked())
-        data["contourMethod"].radio = 0;
+        data.ContourMethod = 0;
     if (sphereMethodRadioButton->isChecked())
-        data["contourMethod"].radio = 1;
+        data.ContourMethod = 1;
     if (blobMethodRadioButton->isChecked())
-        data["contourMethod"].radio = 2;
+        data.ContourMethod = 2;
 
-    data["blobRadius"].f = blobDistanceSpinBox->value();
-    data["lineWidth"].f = lineWidthSpinBox->value();
+    data.BlobRadius = blobDistanceSpinBox->value();
+    data.maplinewidth = lineWidthSpinBox->value();
 
     // contour 1
-    data["MapLevel0"].f = (float)contourSlider_0->value();
-    data["MapLevelOn0"].b = showBox_0->isChecked();
-    data["MapLevelColor0"].i = colors[colorButton_0];
+    data.MapLevel[0] = (float)contourSlider_0->value();
+    data.MapLevelOn[0] = showBox_0->isChecked();
+    data.MapLevelColor[0] = colors[colorButton_0];
 
     // contour 2
-    data["MapLevel1"].f = (float)contourSlider_1->value();
-    data["MapLevelOn1"].b = showBox_1->isChecked();
-    data["MapLevelColor1"].i = colors[colorButton_1];
+    data.MapLevel[1] = (float)contourSlider_1->value();
+    data.MapLevelOn[1] = showBox_1->isChecked();
+    data.MapLevelColor[1] = colors[colorButton_1];
 
     // contour 3
-    data["MapLevel2"].f = (float)contourSlider_2->value();
-    data["MapLevelOn2"].b = showBox_2->isChecked();
-    data["MapLevelColor2"].i = colors[colorButton_2];
+    data.MapLevel[2] = (float)contourSlider_2->value();
+    data.MapLevelOn[2] = showBox_2->isChecked();
+    data.MapLevelColor[2] = colors[colorButton_2];
 
     // contour 4
-    data["MapLevel3"].f = (float)contourSlider_3->value();
-    data["MapLevelOn3"].b = showBox_3->isChecked();
-    data["MapLevelColor3"].i = colors[colorButton_3];
+    data.MapLevel[3] = (float)contourSlider_3->value();
+    data.MapLevelOn[3] = showBox_3->isChecked();
+    data.MapLevelColor[3] = colors[colorButton_3];
 
     // contour 5
-    data["MapLevel4"].f = (float)contourSlider_4->value();
-    data["MapLevelOn4"].b = showBox_4->isChecked();
-    data["MapLevelColor4"].i = colors[colorButton_4];
+    data.MapLevel[4] = (float)contourSlider_4->value();
+    data.MapLevelOn[4] = showBox_4->isChecked();
+    data.MapLevelColor[4] = colors[colorButton_4];
 }
 
 void ContourOptions::on_maxRadiusSpinBox_valueChanged(int i)
@@ -279,9 +215,9 @@ void ContourOptions::on_revertPushButton_clicked()
 {
     for (unsigned int i = 0; i<NUM_DEFINED_STYLES; ++i)
     {
-        MapSettings s;
+        MapSettingsBase s;
         GetMapSettingsForStyle(i, s, true);
-        MapSettingsToData(s, _styleSettings[i]);
+        _styleSettings[i] = s;
     }
 
     InitializeFromData(_styleSettings[_currentStyle]);
@@ -299,12 +235,10 @@ void ContourOptions::colorButtonPressed()
 
 void ContourOptions::on_mapStylesComboBox_currentIndexChanged(int styleNum)
 {
-    MIData data;
+    MapSettingsBase data;
     if (!_preferencesMode)
     {
-        MapSettings s;
-        GetMapSettingsForStyle(styleNum, s);
-        MapSettingsToData(s, data);
+        GetMapSettingsForStyle(styleNum, data);
     }
     else
     {
@@ -325,9 +259,6 @@ void ContourOptions::savePreferences()
 
     for (unsigned int i = 0; i < NUM_DEFINED_STYLES; ++i)
     {
-        MapSettings s;
-        float mapmin, mapmax;
-        DataToMapSettings(_styleSettings[i], s, mapmin, mapmax);
-        s.saveStyle(i);
+        MapSettings::saveStyle(i, _styleSettings[i]);
     }
 }

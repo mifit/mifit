@@ -10,7 +10,6 @@
 
 #include <nongui/nonguilib.h>
 #include "jobs/jobslib.h"
-#include "core/MIData.h"
 
 #include "MIMainWindow.h"
 #include "MIQTreeWidget.h"

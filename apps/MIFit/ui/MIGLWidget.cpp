@@ -4246,47 +4246,46 @@ void MIGLWidget::OnFitLsqsuperpose()
         return;
     }
 
-    MIData data;
     static LSQFitDialog dlg(this);
     dlg.setWindowTitle("Least-Squares Superposition");
-    dlg.InitializeFromData(data);
+    dlg.InitializeFromData();
     if (dlg.exec() != QDialog::Accepted)
     {
         return;
     }
-    dlg.GetData(data);
+    LSQFitDialog::Data data =  dlg.GetData();
 
-    Molecule *source = findMolecule(GetDisplaylist(), data["sourceModel"].str);
-    Molecule *target = findMolecule(GetDisplaylist(), data["targetModel"].str);
+    Molecule *source = findMolecule(GetDisplaylist(), data.sourceModel);
+    Molecule *target = findMolecule(GetDisplaylist(), data.targetModel);
     if (!source || !target)
         return;
 
     ResidueListIterator res = source->residuesBegin();
     char m_chain = res->getChainId();
     float tx, ty, tz, x, y, z;
-    bool chain_only = data["applyToChain"].b;
+    bool chain_only = data.applyToChain;
     if (chain_only)
     {
-        m_chain = data["chainId"].str[0];
+        m_chain = data.chainId[0];
     }
     // save matrix for later
     LSQMatrix lsq_matrix;
     float r[3][3], v[3];
-    r[0][0] = data["r00"].f;
-    r[0][1] = data["r01"].f;
-    r[0][2] = data["r02"].f;
+    r[0][0] = data.r00;
+    r[0][1] = data.r01;
+    r[0][2] = data.r02;
 
-    r[1][0] = data["r10"].f;
-    r[1][1] = data["r11"].f;
-    r[1][2] = data["r12"].f;
+    r[1][0] = data.r10;
+    r[1][1] = data.r11;
+    r[1][2] = data.r12;
 
-    r[2][0] = data["r20"].f;
-    r[2][1] = data["r21"].f;
-    r[2][2] = data["r22"].f;
+    r[2][0] = data.r20;
+    r[2][1] = data.r21;
+    r[2][2] = data.r22;
 
-    v[0] = data["v0"].f;
-    v[1] = data["v1"].f;
-    v[2] = data["v2"].f;
+    v[0] = data.v0;
+    v[1] = data.v1;
+    v[2] = data.v2;
 
 
     lsq_matrix.SetMatrix(r, v);
@@ -5394,10 +5393,9 @@ static EMap *CreateMap(Displaylist *dl,
         }
         else
         {
-            MIData data;
-            data["info"].str = CMapHeaderBase().Label();
+            std::string data = CMapHeaderBase().Label();
             SelectCrystal::doSelectCrystal(data);
-            CMapHeaderBase mh(data["info"].str);
+            CMapHeaderBase mh(data);
             map->mapheader->updateSymmetryAndCell(mh);
             map->RecalcResolution();
         }
@@ -5468,14 +5466,9 @@ void MIGLWidget::mapLoadfromphsfile(const std::string &file)
     }
 
     // pass control off to dialog
-    MIData data;
-    data["filename"].str = file;
-    data["models"].strList = modelNames;
-    data["cells"].strList = cellList;
-
     PhaseFileLoadDialog dlg(this);
     dlg.setWindowTitle("Phase file import");
-    if (!dlg.SetFile(data["filename"].str, data["models"].strList, data["cells"].strList))
+    if (!dlg.SetFile(file, modelNames, cellList))
     {
         return;
     }
@@ -5483,22 +5476,23 @@ void MIGLWidget::mapLoadfromphsfile(const std::string &file)
     {
         return;
     }
+    PhaseFileLoadDialog::Data data;
     dlg.GetData(data);
 
-    int gridlevel = data["grid"].radio;
-    float resmin = data["resmin"].f;
+    int gridlevel = data.grid;
+    float resmin = data.resmin;
     if (resmin==0.0)
         resmin = -1.0f;
-    float resmax = data["resmax"].f;
+    float resmax = data.resmax;
     if (resmax==0.0)
         resmax = -1.0f;
 
-    if (data["enabled1"].b)
+    if (data.enabled1)
     {
         EMap *map = CreateMap(GetDisplaylist(),
-                              file, data["type1"].str,
-                              data["fo1"].str.c_str(),  data["fc1"].str.c_str(),
-                              data["fom1"].str.c_str(), data["phi1"].str.c_str(),
+                              file, data.type1,
+                              data.fo1.c_str(),  data.fc1.c_str(),
+                              data.fom1.c_str(), data.phi1.c_str(),
                               gridlevel, resmin, resmax, true);
         if (map)
         {
@@ -5507,12 +5501,12 @@ void MIGLWidget::mapLoadfromphsfile(const std::string &file)
         }
     }
 
-    if (data["enabled2"].b)
+    if (data.enabled2)
     {
         EMap *map = CreateMap(GetDisplaylist(),
-                              file, data["type2"].str,
-                              data["fo2"].str.c_str(),  data["fc2"].str.c_str(),
-                              data["fom2"].str.c_str(), data["phi2"].str.c_str(),
+                              file, data.type2,
+                              data.fo2.c_str(),  data.fc2.c_str(),
+                              data.fom2.c_str(), data.phi2.c_str(),
                               gridlevel, resmin, resmax, true);
         if (map)
         {
@@ -5547,10 +5541,9 @@ void MIGLWidget::mapLoadfromfile(const std::string &file)
         }
         else
         {
-            MIData data;
-            data["info"].str = CMapHeaderBase().Label();
+            std::string data = CMapHeaderBase().Label();
             SelectCrystal::doSelectCrystal(data);
-            CMapHeaderBase mh(data["info"].str);
+            CMapHeaderBase mh(data);
             map->mapheader->updateSymmetryAndCell(mh);
         }
 
@@ -6052,25 +6045,25 @@ void MIGLWidget::OnRefiOptions()
     }
     GeomRefiner *g = MIFitGeomRefiner();
 
-    MIData data;
+    RefinementOptionsDialog::Data data;
 
-    data["BondWeight"].i = g->GetBondWeightI();
-    data["AngleWeight"].i = g->GetAngleWeightI();
-    data["PlaneWeight"].i = g->GetPlaneWeightI();
-    data["TorsionWeight"].i = g->GetTorsionWeightI();
-    data["BumpWeight"].i = g->GetBumpWeightI();
-    data["MapWeight"].i = g->GetMapWeightI();
+    data.bondWeight = g->GetBondWeightI();
+    data.angleWeight = g->GetAngleWeightI();
+    data.planeWeight = g->GetPlaneWeightI();
+    data.torsionWeight = g->GetTorsionWeightI();
+    data.bumpWeight = g->GetBumpWeightI();
+    data.mapWeight = g->GetMapWeightI();
 
-    data["ConstrainCA"].b = g->dict.GetConstrainCA();
-    data["ConstrainEnds"].b = g->dict.GetConstrainEnds();
-    data["Verbose"].b = g->GetVerbose();
-    data["RefineWhileFit"].b = g->GetRefineWhileFit();
+    data.constrainCA = g->dict.GetConstrainCA();
+    data.constrainEnds = g->dict.GetConstrainEnds();
+    data.verbose = g->GetVerbose();
+    data.refineWhileFit = g->GetRefineWhileFit();
 
-    data["SigmaBond"].f = g->dict.GetSigmaBond();
-    data["SigmaAngle"].f = g->dict.GetSigmaAngle();
-    data["SigmaPlane"].f = g->dict.GetSigmaPlane();
-    data["SigmaTorsion"].f = g->dict.GetSigmaTorsion();
-    data["SigmaBump"].f = g->dict.GetSigmaBump();
+    data.sigmaBond = g->dict.GetSigmaBond();
+    data.sigmaAngle = g->dict.GetSigmaAngle();
+    data.sigmaPlane = g->dict.GetSigmaPlane();
+    data.sigmaTorsion = g->dict.GetSigmaTorsion();
+    data.sigmaBump = g->dict.GetSigmaBump();
 
     RefinementOptionsDialog dlg(data, this);
     dlg.setWindowTitle("Refinement Options");
@@ -6080,23 +6073,23 @@ void MIGLWidget::OnRefiOptions()
     }
     dlg.GetResults(data);
 
-    g->SetBondWeightI(data["BondWeight"].i);
-    g->SetAngleWeightI(data["AngleWeight"].i);
-    g->SetPlaneWeightI(data["PlaneWeight"].i);
-    g->SetTorsionWeightI(data["TorsionWeight"].i);
-    g->SetBumpWeightI(data["BumpWeight"].i);
-    g->SetMapWeightI(data["MapWeight"].i);
+    g->SetBondWeightI(data.bondWeight);
+    g->SetAngleWeightI(data.angleWeight);
+    g->SetPlaneWeightI(data.planeWeight);
+    g->SetTorsionWeightI(data.torsionWeight);
+    g->SetBumpWeightI(data.bumpWeight);
+    g->SetMapWeightI(data.mapWeight);
 
-    g->dict.SetConstrainCA(data["ConstrainCA"].b);
-    g->dict.SetConstrainEnds(data["ConstrainEnds"].b);
-    g->SetVerbose(data["Verbose"].b);
-    g->SetRefineWhileFit(data["RefineWhileFit"].b);
+    g->dict.SetConstrainCA(data.constrainCA);
+    g->dict.SetConstrainEnds(data.constrainEnds);
+    g->SetVerbose(data.verbose);
+    g->SetRefineWhileFit(data.refineWhileFit);
 
-    g->dict.SetSigmaBond(data["SigmaBond"].f);
-    g->dict.SetSigmaAngle(data["SigmaAngle"].f);
-    g->dict.SetSigmaTorsion(data["SigmaTorsion"].f);
-    g->dict.SetSigmaPlane(data["SigmaPlane"].f);
-    g->dict.SetSigmaBump(data["SigmaBump"].f);
+    g->dict.SetSigmaBond(data.sigmaBond);
+    g->dict.SetSigmaAngle(data.sigmaAngle);
+    g->dict.SetSigmaTorsion(data.sigmaTorsion);
+    g->dict.SetSigmaPlane(data.sigmaPlane);
+    g->dict.SetSigmaBump(data.sigmaBump);
 }
 
 void MIGLWidget::OnRefiMolecule()
@@ -10970,11 +10963,6 @@ void MIGLWidget::doSlabDrag(int x, int y, int /* dx */, int dy)
         {
             viewpoint->setbackclip(viewpoint->getbackclip()+dc);
         }
-        MIData values;
-        values["command"].str = "mouse";
-        values["type"].str = "slab";
-        values["frontclip"].f = viewpoint->getfrontclip();
-        values["backclip"].f = viewpoint->getbackclip();
     }
 }
 
@@ -11008,10 +10996,9 @@ void MIGLWidget::OnExportImage()
 
     MIFileDialog dlg(this, "Export Image As",
                      QDir::currentPath().toStdString(), "export", filter, MI_SAVE_MODE);
-    MIData data;
-    data["path"].str = "./export";
-    data["filterIndex"].radio = 0;
-    data["filterIndex"].radio_count = 5;
+    MIFileDialog::Data data;
+    data.path = "./export";
+    data.filterIndex = 0;
 
     if (!dlg.GetResults(data))
     {
@@ -11019,8 +11006,8 @@ void MIGLWidget::OnExportImage()
     }
 
     std::string defaultExt = "";
-    std::string ext(file_extension(data["path"].str.c_str()));
-    switch (data["filterIndex"].radio)
+    std::string ext(file_extension(data.path.c_str()));
+    switch (data.filterIndex)
     {
     default:
     case 0:
@@ -11035,11 +11022,11 @@ void MIGLWidget::OnExportImage()
     }
     if (ext.size()==0)
     {
-        data["path"].str += defaultExt;
+        data.path += defaultExt;
     }
 
     QPixmap image = renderPixmap(); //TODO: could alter canvas size here
-    image.save(data["path"].str.c_str());
+    image.save(data.path.c_str());
 }
 
 

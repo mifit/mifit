@@ -2214,14 +2214,13 @@ void ModelsTree::EditItem()
     }
     if (crystals.size() > 0)
     {
-        MIData data;
-        data["info"].str = crystals[0]->Label();
+        std::string data = crystals[0]->Label();
         SelectCrystal::doSelectCrystal(data);
         std::vector<CMapHeaderBase*>::iterator crystalIter = crystals.begin();
         for (; crystalIter != crystals.end(); ++crystalIter)
         {
             CMapHeaderBase *mapHeader = *crystalIter;
-            CMapHeaderBase mh(data["info"].str);
+            CMapHeaderBase mh(data);
             mapHeader->updateSymmetryAndCell(mh);
 
             for (int i = 0; i < displaylist()->MapCount(); ++i)

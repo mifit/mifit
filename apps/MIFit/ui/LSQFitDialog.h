@@ -37,10 +37,35 @@ class LSQFitDialog : public QDialog, public Ui::LSQFitDialog
     Q_OBJECT
 
 public:
+    struct Data
+    {
+        std::string sourceModel;
+        std::string targetModel;
+        bool applyToChain;
+        std::string chainId;
+
+        float r00;
+        float r01;
+        float r02;
+
+        float r10;
+        float r11;
+        float r12;
+
+        float r20;
+        float r21;
+        float r22;
+
+        float v0;
+        float v1;
+        float v2;
+
+    };
+
     LSQFitDialog(QWidget *parent);
 
-    void InitializeFromData(const MIData &dat);
-    void GetData(MIData &dat);
+    void InitializeFromData();
+    Data GetData();
 
     void SetAtomType(const char*);
     void ListTargetChoices();
