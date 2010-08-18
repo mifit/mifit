@@ -50,6 +50,7 @@ def exec_script(script):
             if stream.atEnd():
                 break
             if sock.bytesAvailable() < dataSize:
+                QtGui.qApp.processEvents()
                 continue
             waitForData = False
             result = QtCore.QString()
