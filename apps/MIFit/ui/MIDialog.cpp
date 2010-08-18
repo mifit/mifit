@@ -70,7 +70,7 @@ bool MIFileDialog::GetResults(Data &data)
     {
         path = path+ "/" + _deftFile;
     }
-    if (data.path.size() && data.path != MIDatum::INVALID_STRING)
+    if (!data.path.empty())
     {
         path = data.path;
     }
