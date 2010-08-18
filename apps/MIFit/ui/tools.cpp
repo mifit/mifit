@@ -38,7 +38,7 @@ using namespace chemlib;
 
 void Tools::OnCustom()
 {
-    static CustomJobDialog dlg(MIMainWindow::instance());
+    static CustomJobDialog *dlg = new CustomJobDialog(MIMainWindow::instance());
 
     static int customJobNumber = 1;
 
@@ -76,26 +76,26 @@ void Tools::OnCustom()
         workingDirectory = QDir::currentPath();
     }
 
-    dlg.setJobName(jobName);
-    dlg.setProgram(program);
-    dlg.setArguments(arguments);
-    dlg.setModelMode(useCurrentModel ? CustomJobDialog::CURRENT : CustomJobDialog::FILE);
-    dlg.setWorkingDirectory(workingDirectory);
-    dlg.setModelFile(modelFile);
-    dlg.setDataFile(dataFile);
+    dlg->setJobName(jobName);
+    dlg->setProgram(program);
+    dlg->setArguments(arguments);
+    dlg->setModelMode(useCurrentModel ? CustomJobDialog::CURRENT : CustomJobDialog::FILE);
+    dlg->setWorkingDirectory(workingDirectory);
+    dlg->setModelFile(modelFile);
+    dlg->setDataFile(dataFile);
 
-    if (dlg.exec() != QDialog::Accepted)
+    if (dlg->exec() != QDialog::Accepted)
     {
         return;
     }
 
-    jobName = dlg.jobName();
-    program = dlg.program();
-    arguments = dlg.arguments();
-    useCurrentModel = dlg.modelMode() == CustomJobDialog::CURRENT;
-    workingDirectory = dlg.workingDirectory();
-    modelFile = dlg.modelFile();
-    dataFile = dlg.dataFile();
+    jobName = dlg->jobName();
+    program = dlg->program();
+    arguments = dlg->arguments();
+    useCurrentModel = dlg->modelMode() == CustomJobDialog::CURRENT;
+    workingDirectory = dlg->workingDirectory();
+    modelFile = dlg->modelFile();
+    dataFile = dlg->dataFile();
 
     BatchJob *job = MIMainWindow::instance()->GetJobManager()->CreateJob();
 
