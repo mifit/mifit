@@ -42,6 +42,8 @@
 #include <QMessageBox>
 #include <QLabel>
 #include <QInputDialog>
+#include <QSettings>
+#include <QFileDialog>
 
 #include <nongui/nonguilib.h>
 #include <math/mathlib.h>
@@ -10990,43 +10992,40 @@ void MIGLWidget::findResidueAndMoleculeForAtom(MIAtom *atom, Residue* &res, Mole
 
 void MIGLWidget::OnExportImage()
 {
-    std::string filter = "JPEG Image format (*.jpg)|*.jpg"
-                         "|PNG Image format (*.png)|*.png"
-                         "|TIFF Image format (*.tif)|*.tif";
+    const QString filter = "JPEG Image format (*.jpg);;"
+                           "PNG Image format (*.png);;"
+                           "TIFF Image format (*.tif)";
 
-    MIFileDialog dlg(this, "Export Image As",
-                     QDir::currentPath().toStdString(), "export", filter, MI_SAVE_MODE);
-    MIFileDialog::Data data;
-    data.path = "./export";
-    data.filterIndex = 0;
+    const QString ExportImageDirKey = "exportImageDir";
+    const QString ExportImageSelectedFilterKey = "exportImageSelectedFilter";
+    QSettings settings("MIFit", "MIFit");
+    const QString exportImageDir = settings.value(ExportImageDirKey, QDir::currentPath()).toString();
+    QString selectedFilter = settings.value(ExportImageSelectedFilterKey, "JPEG Image format (*.jpg)").toString();
 
-    if (!dlg.GetResults(data))
-    {
+    QString path = QFileDialog::getSaveFileName(this, "Export Image", exportImageDir, filter, &selectedFilter);
+    if (path.isEmpty())
         return;
-    }
 
-    std::string defaultExt = "";
-    std::string ext(file_extension(data.path.c_str()));
-    switch (data.filterIndex)
-    {
-    default:
-    case 0:
+    QString defaultExt;
+    if (selectedFilter.startsWith("JPEG"))
         defaultExt = ".jpg";
-        break;
-    case 1:
+    else if (selectedFilter.startsWith("PNG"))
         defaultExt = ".png";
-        break;
-    case 2:
+    else if (selectedFilter.startsWith("TIFF"))
         defaultExt = ".tif";
-        break;
-    }
-    if (ext.size()==0)
+
+    std::string ext(file_extension(path.toAscii().constData()));
+    if (ext.empty())
     {
-        data.path += defaultExt;
+        path += defaultExt;
     }
 
     QPixmap image = renderPixmap(); //TODO: could alter canvas size here
-    image.save(data.path.c_str());
+    image.save(path);
+
+    QFileInfo imagePath(path);
+    settings.setValue(ExportImageDirKey, imagePath.absoluteDir().canonicalPath());
+    settings.setValue(ExportImageSelectedFilterKey, selectedFilter);
 }
 
 
