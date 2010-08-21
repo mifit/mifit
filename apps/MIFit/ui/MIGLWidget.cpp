@@ -58,6 +58,7 @@
 
 #include "jobs/jobslib.h"
 #include "GenericDataDialog.h"
+#include "AddResidueDialog.h"
 
 #include "CMolwViewScene.h"
 #include "CMolwViewAnnotationPickingRenderable.h"
@@ -4582,34 +4583,14 @@ void MIGLWidget::addResidueWithPrompt()
         chainStr = std::string(1, (char)(atres->chain_id()&255));
     }
 
-
-    std::vector<std::string> resList = MIFitDictionary()->GetDictResList();
-    QStringList resNames;
-    foreach (const std::string &res, resList)
-    {
-        resNames += res.c_str();
-    }
-
-    GenericDataDialog dlg(this);
-    dlg.setWindowTitle("Insert Residue");
-    dlg.addComboField("Residue Type:", resNames, 0);
-    QStringList whereList;
-    whereList << "After Selected" << "Before Selected" << "Start of Model" << "End of Model";
-    dlg.addComboField("Insert Position:", whereList, 0);
-    dlg.addStringField("Chain Id:", chainStr.c_str());
-    QStringList putAt;
-    putAt << "Screen Center" << "Best Fit" << "Alpha Helix" << "Beta Sheet";
-    dlg.addComboField("Put At:", putAt, 0);
-
-    if (dlg.exec() != QDialog::Accepted)
-    {
+    AddResidueDialog addResidueDialog(MIFitDictionary()->GetDictResList());
+    if (addResidueDialog.exec() != QDialog::Accepted)
         return;
-    }
 
-    unsigned short chainId = (unsigned short)(dlg.value(2).toString().toAscii().at(0));
-    unsigned int where = dlg.value(1).toInt();
-    unsigned int m_phipsi = dlg.value(3).toInt();
-    Residue *m_res = GetDictRes(resNames.at(dlg.value(0).toInt()).toAscii().constData());
+    unsigned short chainId = static_cast<unsigned short>(addResidueDialog.chainId());
+    unsigned int where = static_cast<unsigned int>(addResidueDialog.modelLocation());
+    unsigned int m_phipsi = static_cast<unsigned int>(addResidueDialog.residueOffset());
+    Residue *m_res = GetDictRes(addResidueDialog.residueType().toAscii().constData());
 
     if (m_res == NULL)
     {
@@ -10998,7 +10979,7 @@ void MIGLWidget::OnExportImage()
 
     const QString ExportImageDirKey = "exportImageDir";
     const QString ExportImageSelectedFilterKey = "exportImageSelectedFilter";
-    QSettings settings("MIFit", "MIFit");
+    QSettings settings;
     const QString exportImageDir = settings.value(ExportImageDirKey, QDir::currentPath()).toString();
     QString selectedFilter = settings.value(ExportImageSelectedFilterKey, "JPEG Image format (*.jpg)").toString();
 

@@ -299,9 +299,12 @@ Application::Application(int &argc, char **argv)
     : QApplication(argc, argv)
 {
 
+    static const char *name = "MIFit";
+    setOrganizationName(name);
+    setApplicationName(name);
+
     FileIo::setAsDefaultIo();
 
-    static const char *name = "MIFit";
     config = new MIConfigImpl(name);
 
     appname = std::string(name);
