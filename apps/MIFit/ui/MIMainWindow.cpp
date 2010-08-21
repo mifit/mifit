@@ -173,8 +173,6 @@ MIMainWindow::MIMainWindow()
 
     setWindowTitle(tr("MIFit"));
 
-    LeftFooter("MIFit: Ok", 2500);
-
     middleFooter = new QLabel(statusBar());
     statusBar()->addPermanentWidget(middleFooter, 0);
 
