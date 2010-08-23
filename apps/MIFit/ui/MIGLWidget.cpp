@@ -186,28 +186,30 @@ class ViewPointUI
 public:
     ViewPointUI()
     {
-        perspective = (float)MIConfig::Instance()->GetProfileInt("View Parameters", "perspective", 0)/100.0F;
-        depthcue_color = MIConfig::Instance()->GetProfileInt("View Parameters", "depthcue_colors", 1) != 0;
-        depthcue_width = MIConfig::Instance()->GetProfileInt("View Parameters", "depthcue_width", 1) != 0;
-        dimNonactiveModels = MIConfig::Instance()->GetProfileInt("View Parameters", "dimNonactiveModels", 1) != 0;
-        amountToDimNonactiveModels = (MIConfig::Instance()->GetProfileInt("View Parameters", "amountToDimNonactiveModels", 50) / 100.0f);
-        ballandstick = MIConfig::Instance()->GetProfileInt("View Parameters", "ballandstick", 0);
-        lineThickness = MIConfig::Instance()->GetProfileInt("View Parameters", "lineThickness", 1);
-        ballsize = MIConfig::Instance()->GetProfileInt("View Parameters", "ballsize", 10);
-        cylindersize = MIConfig::Instance()->GetProfileInt("View Parameters", "cylindersize", 33);
+        QSettings settings;
+        perspective = settings.value("View Parameters/perspective", 0).toInt() / 100.0f;
+        depthcue_color = settings.value("View Parameters/depthcue_colors", 1).toInt() != 0;
+        depthcue_width = settings.value("View Parameters/depthcue_width", 1).toInt() != 0;
+        dimNonactiveModels = settings.value("View Parameters/dimNonactiveModels", 1).toInt() != 0;
+        amountToDimNonactiveModels = settings.value("View Parameters/amountToDimNonactiveModels", 50).toInt() / 100.0f;
+        ballandstick = settings.value("View Parameters/ballandstick", 0).toInt();
+        lineThickness = settings.value("View Parameters/lineThickness", 1).toInt();
+        ballsize = settings.value("View Parameters/ballsize", 10).toInt();
+        cylindersize = settings.value("View Parameters/cylindersize", 33).toInt();
     }
 
     virtual ~ViewPointUI()
     {
-        MIConfig::Instance()->WriteProfileInt("View Parameters", "perspective", (int)(perspective*100.0F));
-        MIConfig::Instance()->WriteProfileInt("View Parameters", "depthcue_colors", depthcue_color);
-        MIConfig::Instance()->WriteProfileInt("View Parameters", "depthcue_width", depthcue_width);
-        MIConfig::Instance()->WriteProfileInt("View Parameters", "dimNonactiveModels", dimNonactiveModels);
-        MIConfig::Instance()->WriteProfileInt("View Parameters", "amountToDimNonactiveModels", (int)(amountToDimNonactiveModels*100.0f));
-        MIConfig::Instance()->WriteProfileInt("View Parameters", "ballandstick", ballandstick);
-        MIConfig::Instance()->WriteProfileInt("View Parameters", "ballsize", ballsize);
-        MIConfig::Instance()->WriteProfileInt("View Parameters", "cylindersize", cylindersize);
-        MIConfig::Instance()->WriteProfileInt("View Parameters", "lineThickness", lineThickness);
+        QSettings settings;
+        settings.setValue("View Parameters/perspective", static_cast<int>(perspective*100.0f));
+        settings.setValue("View Parameters/depthcue_colors", depthcue_color ? 1 : 0);
+        settings.setValue("View Parameters/depthcue_width", depthcue_width ? 1 : 0);
+        settings.setValue("View Parameters/dimNonactiveModels", dimNonactiveModels ? 1 : 0);
+        settings.setValue("View Parameters/amountToDimNonactiveModels", static_cast<int>(amountToDimNonactiveModels*100.0f));
+        settings.setValue("View Parameters/ballandstick", ballandstick);
+        settings.setValue("View Parameters/ballsize", ballsize);
+        settings.setValue("View Parameters/cylindersize", cylindersize);
+        settings.setValue("View Parameters/lineThickness", lineThickness);
     }
 
 };
@@ -279,9 +281,10 @@ MIGLWidget::MIGLWidget()
     frustum = new Frustum();
     camera = new Camera();
     stereoView = new StereoView(frustum, camera);
-    stereoView->setStereo(MIConfig::Instance()->GetProfileInt("View Parameters", "stereo", 0) != 0);
+    QSettings settings;
+    stereoView->setStereo(settings.value("View Parameters/stereo", 0).toInt() != 0);
     frustum->setPerspective(stereoView->isStereo());
-    stereoView->setHardwareStereo(MIConfig::Instance()->GetProfileInt("View Parameters", "hardwareStereo", 1) != 0);
+    stereoView->setHardwareStereo(settings.value("View Parameters/hardwareStereo", 1).toInt() != 0);
 
     scene = new CMolwViewScene();
     scene->frustum = frustum;
@@ -310,7 +313,7 @@ MIGLWidget::MIGLWidget()
     DragStart = false;
     MouseStillTime = 0;
     MouseInWindow = false;
-    ToolTipInterval = MIConfig::Instance()->GetProfileInt("View Parameters", "ToolTipInterval", 190);
+    ToolTipInterval = settings.value("View Parameters/ToolTipInterval", 190).toInt();
     PentamerModel = PentamerFrom = NULL;
     PentamerStart = NULL;
     AutoFit = false;
@@ -338,23 +341,23 @@ MIGLWidget::MIGLWidget()
     doubleclicked = false;
     MouseCaptured = false;
     viewpoint->Yup = 0;
-    ShowLabels = MIConfig::Instance()->GetProfileInt("View Parameters", "ShowLabels", 1) != 0;
-    ShowContacts = MIConfig::Instance()->GetProfileInt("View Parameters", "ShowContacts", 1) != 0;
-    ShowStack = MIConfig::Instance()->GetProfileInt("View Parameters", "ShowStack", 1) != 0;
-    ShowGnomon = MIConfig::Instance()->GetProfileInt("View Parameters", "ShowGnomon", 1) != 0;
-    showUnitCell = MIConfig::Instance()->GetProfileInt("View Parameters", "ShowUnitCell", 0) != 0;
+    ShowLabels = settings.value("View Parameters/ShowLabels", 1).toInt() != 0;
+    ShowContacts = settings.value("View Parameters/ShowContacts", 1).toInt() != 0;
+    ShowStack = settings.value("View Parameters/ShowStack", 1).toInt() != 0;
+    ShowGnomon = settings.value("View Parameters/ShowGnomon", 1).toInt() != 0;
+    showUnitCell = settings.value("View Parameters/ShowUnitCell", 0).toInt() != 0;
     scene->ShowLabels = ShowLabels;
     scene->ShowContacts = ShowContacts;
     scene->ShowStack = ShowStack;
     scene->ShowGnomon = ShowGnomon;
     scene->showUnitCell = showUnitCell;
-    RockRange = (float)MIConfig::Instance()->GetProfileInt("View Parameters", "RockRange", 800)/100.0F;
-    RockIncrement = (float)MIConfig::Instance()->GetProfileInt("View Parameters", "RockIncrement", 150)/100.0F;
-    RollIncrement = (float)MIConfig::Instance()->GetProfileInt("View Parameters", "RollIncrement", 150)/100.0F;
+    RockRange = settings.value("View Parameters/RockRange", 800).toInt()/100.0F;
+    RockIncrement = settings.value("View Parameters/RockIncrement", 150).toInt()/100.0F;
+    RollIncrement = settings.value("View Parameters/RollIncrement", 150).toInt()/100.0F;
     ClusterSize = 10;
-    DontConfirmWater = MIConfig::Instance()->GetProfileInt("View Parameters", "DontConfirmWater", 1) != 0;
+    DontConfirmWater = settings.value("View Parameters/DontConfirmWater", 1).toInt() != 0;
     Blink = false;
-    BlinkTime = MIConfig::Instance()->GetProfileInt("View Parameters", "BlinkTime", 20);
+    BlinkTime = settings.value("View Parameters/BlinkTime", 20).toInt();
     BlinkCounter = 0;
     WhenShownColor = Colors::YELLOW;
     WhenShownColorMethod = Colors::COLORC;
@@ -815,7 +818,8 @@ void MIGLWidget::paintGL()
     //float maxDistance = 10.0f;
     float focalLength = 50.0f;
 
-    bool stereo = MIConfig::Instance()->GetProfileInt("View Parameters", "stereo", 0) != 0;
+    QSettings settings;
+    bool stereo = settings.value("View Parameters/stereo", 0).toInt() != 0;
     if (!stereo && equals(viewpoint->getperspective(), 0.0f))
     {
         frustum->setPerspective(false);
@@ -2087,8 +2091,9 @@ void MIGLWidget::resizeEvent(QResizeEvent *evt)
     int sy = evt->size().height();
 
 #ifdef __APPLE__
-    MIConfig::Instance()->WriteProfileInt("ThreeDView", "width", sx);
-    MIConfig::Instance()->WriteProfileInt("ThreeDView", "height", sy);
+    QSettings settings;
+    settings.setValue("ThreeDView/width", sx);
+    settings.setValue("ThreeDView/height", sy);
 #endif
 
     if (sx == 0 || sy == 0)
@@ -2113,7 +2118,8 @@ void MIGLWidget::OnStereoToggle()
     Logger::debug("gl stereo %d", (b == GL_TRUE));
 
     Application::instance()->toggleStereo();
-    bool stereo = MIConfig::Instance()->GetProfileInt("View Parameters", "stereo", 0) != 0;
+    QSettings settings;
+    bool stereo = settings.value("View Parameters/stereo", 0).toInt() != 0;
     stereoView->setStereo(stereo);
     if (stereoView->isStereo())
     {
@@ -2241,7 +2247,8 @@ void MIGLWidget::OnViewSlabout()
 void MIGLWidget::OnViewAtomstack()
 {
     ShowStack = !ShowStack;
-    MIConfig::Instance()->WriteProfileInt("View Parameters", "ShowStack", ShowStack);
+    QSettings settings;
+    settings.setValue("View Parameters/ShowStack", ShowStack ? 1 : 0);
     scene->ShowStack = ShowStack;
     doRefresh();
 }
@@ -2249,7 +2256,8 @@ void MIGLWidget::OnViewAtomstack()
 void MIGLWidget::OnViewGnomon()
 {
     ShowGnomon = !ShowGnomon;
-    MIConfig::Instance()->WriteProfileInt("View Parameters", "ShowGnomon", ShowGnomon);
+    QSettings settings;
+    settings.setValue("View Parameters/ShowGnomon", ShowGnomon ? 1 : 0);
     scene->ShowGnomon = ShowGnomon;
     doRefresh();
 }
@@ -2257,7 +2265,8 @@ void MIGLWidget::OnViewGnomon()
 void MIGLWidget::OnViewUnitCell()
 {
     showUnitCell = !showUnitCell;
-    MIConfig::Instance()->WriteProfileInt("View Parameters", "ShowInitCell", showUnitCell);
+    QSettings settings;
+    settings.setValue("View Parameters/ShowInitCell", showUnitCell ? 1 : 0);
     scene->showUnitCell = showUnitCell;
     doRefresh();
 }
@@ -2392,13 +2401,13 @@ void MIGLWidget::OnUpdateRenderingDepthcuedlinewidth(QAction *action)
 
 void MIGLWidget::OnUpdateStereoToggle(QAction *action)
 {
-    bool stereo = MIConfig::Instance()->GetProfileInt("View Parameters", "stereo", 0) != 0;
+    bool stereo = QSettings().value("View Parameters/stereo", 0).toInt() != 0;
     action->setChecked(stereo);
 }
 
 void MIGLWidget::OnUpdateHardwareStereo(QAction *action)
 {
-    bool hardwareStereo = MIConfig::Instance()->GetProfileInt("View Parameters", "hardwareStereo", 0) != 0;
+    bool hardwareStereo = QSettings().value("View Parameters/hardwareStereo", 0).toInt() != 0;
     action->setEnabled(Application::instance()->isHardwareStereoAvailable());
     action->setChecked(hardwareStereo);
 }
@@ -2488,7 +2497,7 @@ void MIGLWidget::OnViewClipplanes()
 void MIGLWidget::OnViewLabels()
 {
     ShowLabels = !ShowLabels;
-    MIConfig::Instance()->WriteProfileInt("View Parameters", "ShowLabels", ShowLabels);
+    QSettings().setValue("View Parameters/ShowLabels", ShowLabels ? 1 : 0);
     scene->ShowLabels = ShowLabels;
     doRefresh();
 }
@@ -3819,9 +3828,10 @@ void MIGLWidget::OnAnimateRockandrollparameters()
         RockAngle = 0.0F;
         BlinkCounter = 0;
         PaletteChanged = true;
-        MIConfig::Instance()->WriteProfileInt("View Parameters", "RockIncrement", (int)(RockIncrement*100.0F));
-        MIConfig::Instance()->WriteProfileInt("View Parameters", "RollIncrement", (int)(RollIncrement*100.0F));
-        MIConfig::Instance()->WriteProfileInt("View Parameters", "RockRange", (int)(RockRange*100.0F));
+        QSettings settings;
+        settings.setValue("View Parameters/RockIncrement", static_cast<int>(RockIncrement*100.0f));
+        settings.setValue("View Parameters/RollIncrement", static_cast<int>(RollIncrement*100.0f));
+        settings.setValue("View Parameters/RockRange", static_cast<int>(RockRange*100.0f));
     }
 }
 
@@ -4032,9 +4042,10 @@ void MIGLWidget::promptSecondaryStructureOptions(const std::string &type)
     long red;
     long green;
     long blue;
+    QSettings settings;
     if (type == "helix")
     {
-        MIConfig::Instance()->Read((prefix + "radius").c_str(), &radius, 2.5);
+        radius = settings.value((prefix + "radius").c_str(), 2.5).toDouble();
         dlg.addDoubleField("Helix radius:", radius);
     }
     else
@@ -4081,12 +4092,12 @@ void MIGLWidget::promptSecondaryStructureOptions(const std::string &type)
             defaultGreen = 255;
             defaultBlue = 0;
         }
-        MIConfig::Instance()->Read((prefix + "width").c_str(), &width, defaultWidth);
-        MIConfig::Instance()->Read((prefix + "thickness").c_str(), &thickness, defaultThickness);
-        MIConfig::Instance()->Read((prefix + "square").c_str(), &square, defaultSquare);
-        MIConfig::Instance()->Read((prefix + "red").c_str(), &red, defaultRed);
-        MIConfig::Instance()->Read((prefix + "green").c_str(), &green, defaultGreen);
-        MIConfig::Instance()->Read((prefix + "blue").c_str(), &blue, defaultBlue);
+        width = settings.value((prefix + "width").c_str(), defaultWidth).toDouble();
+        thickness = settings.value((prefix + "thickness").c_str(), defaultThickness).toDouble();
+        square = settings.value((prefix + "square").c_str(), defaultSquare).toBool();
+        red = settings.value((prefix + "red").c_str(), static_cast<int>(defaultRed)).toInt();
+        green = settings.value((prefix + "green").c_str(), static_cast<int>(defaultGreen)).toInt();
+        blue = settings.value((prefix + "blue").c_str(), static_cast<int>(defaultBlue)).toInt();
         dlg.addDoubleField("Width:", width);
         dlg.addDoubleField("Thickness:", thickness);
         dlg.addBoolField("Square:", square);
@@ -4098,7 +4109,7 @@ void MIGLWidget::promptSecondaryStructureOptions(const std::string &type)
         if (type == "helix")
         {
             radius = dlg.value(0).toDouble();
-            MIConfig::Instance()->Write((prefix + "radius").c_str(), radius);
+            settings.setValue((prefix + "radius").c_str(), radius);
         }
         else
         {
@@ -4106,12 +4117,12 @@ void MIGLWidget::promptSecondaryStructureOptions(const std::string &type)
             thickness = dlg.value(1).toDouble();
             square = dlg.value(2).toBool();
             QColor color = dlg.value(3).value<QColor>();
-            MIConfig::Instance()->Write((prefix + "width").c_str(), width);
-            MIConfig::Instance()->Write((prefix + "thickness").c_str(), thickness);
-            MIConfig::Instance()->Write((prefix + "square").c_str(), square);
-            MIConfig::Instance()->Write((prefix + "red").c_str(), (long)color.red());
-            MIConfig::Instance()->Write((prefix + "green").c_str(), (long)color.green());
-            MIConfig::Instance()->Write((prefix + "blue").c_str(), (long)color.blue());
+            settings.setValue((prefix + "width").c_str(), width);
+            settings.setValue((prefix + "thickness").c_str(), thickness);
+            settings.setValue((prefix + "square").c_str(), square);
+            settings.setValue((prefix + "red").c_str(), color.red());
+            settings.setValue((prefix + "green").c_str(), color.green());
+            settings.setValue((prefix + "blue").c_str(), color.blue());
         }
         Molecule *node = GetDisplaylist()->CurrentItem();
         if (node != NULL)
@@ -4214,7 +4225,7 @@ void MIGLWidget::OnUpdateGeomAddsinglehbond(QAction *action)
 void MIGLWidget::OnViewContacts()
 {
     ShowContacts = !ShowContacts;
-    MIConfig::Instance()->WriteProfileInt("View Parameters", "ShowContacts", ShowContacts);
+    QSettings().setValue("View Parameters/ShowContacts", ShowContacts ? 1 : 0);
     scene->ShowContacts = ShowContacts;
     ReDraw();
 }
@@ -11687,13 +11698,14 @@ void MIGLWidget::OnEditLabels()
     Application::instance()->LabelToggle = dlg.value(4).toBool();
     if (dlg.value(5).toBool())
     {
-        MIConfig::Instance()->WriteProfileInt("View Parameters", "LabelStyle", ATOMLABEL::defaultStyle());
-        MIConfig::Instance()->WriteProfileInt("View Parameters", "LabelSize", ATOMLABEL::defaultSize());
-        MIConfig::Instance()->WriteProfileInt("View Parameters", "LabelColorRed", ATOMLABEL::defaultRed());
-        MIConfig::Instance()->WriteProfileInt("View Parameters", "LabelColorGreen", ATOMLABEL::defaultGreen());
-        MIConfig::Instance()->WriteProfileInt("View Parameters", "LabelColorBlue", ATOMLABEL::defaultBlue());
-        MIConfig::Instance()->WriteProfileInt("View Parameters", "LabelPicks", Application::instance()->LabelPicks);
-        MIConfig::Instance()->WriteProfileInt("View Parameters", "LabelToggle", Application::instance()->LabelToggle);
+        QSettings settings;
+        settings.setValue("View Parameters/LabelStyle", ATOMLABEL::defaultStyle());
+        settings.setValue("View Parameters/LabelSize", ATOMLABEL::defaultSize());
+        settings.setValue("View Parameters/LabelColorRed", ATOMLABEL::defaultRed());
+        settings.setValue("View Parameters/LabelColorGreen", ATOMLABEL::defaultGreen());
+        settings.setValue("View Parameters/LabelColorBlue", ATOMLABEL::defaultBlue());
+        settings.setValue("View Parameters/LabelPicks", Application::instance()->LabelPicks);
+        settings.setValue("View Parameters/LabelToggle", Application::instance()->LabelToggle);
     }
     if (doAtomLabelUpdate)
     {

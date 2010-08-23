@@ -134,156 +134,6 @@ std::string findMIFitBin()
     return fi.canonicalFilePath().toStdString();
 }
 
-class MIConfigImpl
-    : public MIConfig
-{
-public:
-    MIConfigImpl(const std::string &name, bool read_enabled = true)
-    {
-        _instance = this;
-        _settings = new QSettings("MIFit", name.c_str());
-        QSettings oldSettings("Rigaku", name.c_str());
-        foreach (QString key, oldSettings.allKeys())
-        _settings->setValue(key, oldSettings.value(key));
-        _read_enabled = read_enabled;
-    }
-
-    QSettings *GetQSettings()
-    {
-        return _settings;
-    }
-
-    void SetReadEnabled(bool state)
-    {
-        _read_enabled = state;
-    }
-
-
-    ~MIConfigImpl()
-    {
-        delete _settings;
-    }
-
-    bool Read(const std::string &key, std::string &value, const std::string &defaultValue, bool assignDefaultValue = true)
-    {
-        if (_read_enabled && _settings->contains(key.c_str()))
-        {
-            QByteArray ba = _settings->value(key.c_str(), QByteArray(defaultValue.c_str(), defaultValue.size())).toByteArray();
-            value = std::string(ba.constData(), ba.size());
-            return true;
-        }
-
-        if (assignDefaultValue)
-        {
-            value = defaultValue;
-        }
-        return false;
-    }
-
-    bool Read(const std::string &key, long *value, long defaultValue, bool assignDefaultValue = true)
-    {
-        if (_read_enabled && _settings->contains(key.c_str()))
-        {
-            qlonglong l = (_settings->value(key.c_str(), (qlonglong)defaultValue).toLongLong());
-            *value = (long)l;
-            return true;
-        }
-        if (assignDefaultValue)
-        {
-            *value = defaultValue;
-        }
-        return false;
-    }
-
-    bool Read(const std::string &key, bool *value, bool defaultValue, bool assignDefaultValue = true)
-    {
-        if (_read_enabled && _settings->contains(key.c_str()))
-        {
-            *value = _settings->value(key.c_str(), defaultValue).toBool();
-            return true;
-        }
-        if (assignDefaultValue)
-        {
-            *value = defaultValue;
-        }
-        return false;
-    }
-
-    bool Read(const std::string &key, double *value, double defaultValue, bool assignDefaultValue = true)
-    {
-        if (_read_enabled && _settings->contains(key.c_str()))
-        {
-            *value = _settings->value(key.c_str(), defaultValue).toDouble();
-            return true;
-        }
-        if (assignDefaultValue)
-        {
-            *value = defaultValue;
-        }
-        return false;
-    }
-
-    bool Read(const std::string &key, std::string &value)
-    {
-        return MIConfig::Read(key, value);
-    }
-
-    bool Read(const std::string &key, long *value)
-    {
-        return MIConfig::Read(key, value);
-    }
-
-    bool Read(const std::string &key, bool *value)
-    {
-        return MIConfig::Read(key, value);
-    }
-
-    bool Read(const std::string &key, double *value)
-    {
-        return MIConfig::Read(key, value);
-    }
-
-    bool Write(const std::string &key, const std::string &value)
-    {
-        _settings->setValue(key.c_str(), QByteArray(value.c_str(), value.size()));
-        return true;
-    }
-
-    bool Write(const std::string &key, long value)
-    {
-        _settings->setValue(key.c_str(), (qlonglong)value);
-        return true;
-    }
-
-    bool Write(const std::string &key, bool value)
-    {
-        _settings->setValue(key.c_str(), value);
-        return true;
-    }
-
-    bool Write(const std::string &key, double value)
-    {
-        _settings->setValue(key.c_str(), value);
-        return true;
-    }
-
-    bool HasKey(const std::string &key)
-    {
-        return _settings->contains(key.c_str());
-    }
-
-
-    void Flush()
-    {
-        _settings->sync();
-    }
-
-
-private:
-    QSettings *_settings;
-    bool _read_enabled;
-};
-
 Application *Application::instance()
 {
     return static_cast<Application*>(qApp);
@@ -304,8 +154,6 @@ Application::Application(int &argc, char **argv)
     setApplicationName(name);
 
     FileIo::setAsDefaultIo();
-
-    config = new MIConfigImpl(name);
 
     appname = std::string(name);
     MIbin = "";
@@ -330,18 +178,18 @@ Application::Application(int &argc, char **argv)
         jobLogsDir.mkpath(".");
     }
 
-    QSettings *settings = MIGetQSettings();
-    if (settings->childGroups().contains(GL_FORMAT_GROUP))
+    QSettings settings;
+    if (settings.childGroups().contains(GL_FORMAT_GROUP))
     {
-        settings->beginGroup(GL_FORMAT_GROUP);
-        if (settings->childGroups().contains(GL_FORMAT_DEFAULT))
+        settings.beginGroup(GL_FORMAT_GROUP);
+        if (settings.childGroups().contains(GL_FORMAT_DEFAULT))
         {
-            settings->beginGroup(GL_FORMAT_DEFAULT);
-            QGLFormat glformat = GLFormatEdit::readSettings(*settings);
+            settings.beginGroup(GL_FORMAT_DEFAULT);
+            QGLFormat glformat = GLFormatEdit::readSettings(settings);
             QGLFormat::setDefaultFormat(glformat);
-            settings->endGroup();
+            settings.endGroup();
         }
-        settings->endGroup();
+        settings.endGroup();
     }
 
     Init();
@@ -349,23 +197,21 @@ Application::Application(int &argc, char **argv)
 
 Application::~Application()
 {
-    config->WriteProfileInt("Options", "MouseMode", xfitMouseMode);
-    config->WriteProfileInt("Options", "IncrementallyColorModels", incrementallyColorModels);
-    config->WriteProfileInt("Options", "DimNonactiveModels", dimNonactiveModels);
-    config->WriteProfileInt("Options", "ConcurrentJobLimit", concurrentJobLimit);
+    QSettings settings;
+    settings.setValue("Options/MouseMode", xfitMouseMode);
+    settings.setValue("Options/IncrementallyColorModels", incrementallyColorModels);
+    settings.setValue("Options/DimNonactiveModels", dimNonactiveModels);
+    settings.setValue("Options/ConcurrentJobLimit", concurrentJobLimit);
 
     Write();
 
-    QSettings *settings = MIGetQSettings();
-
-    settings->beginGroup(GL_FORMAT_GROUP);
-    settings->beginGroup(GL_FORMAT_DEFAULT);
+    settings.beginGroup(GL_FORMAT_GROUP);
+    settings.beginGroup(GL_FORMAT_DEFAULT);
     QGLFormat glformat = QGLFormat::defaultFormat();
-    GLFormatEdit::writeSettings(*settings, glformat);
-    settings->endGroup();
-    settings->endGroup();
+    GLFormatEdit::writeSettings(settings, glformat);
+    settings.endGroup();
+    settings.endGroup();
 
-    delete config;
     delete lpal;
     ClearResidueBuffer();
 
@@ -411,163 +257,164 @@ int Application::ApplyGammaCorrection(const int color)
 
 void Application::BuildPalette()
 {
+    QSettings settings;
     lpal = new MIPalette;
     lpal->colors.resize(Colors_NUMBERPALETTE);
-    lpal->colors[Colors::PBLACK].red = config->GetProfileInt("Palette", "Black.red", 0);
-    lpal->colors[Colors::PBLACK].green = config->GetProfileInt("Palette", "Black.green", 0);
-    lpal->colors[Colors::PBLACK].blue = config->GetProfileInt("Palette", "Black.blue", 0);
-    lpal->colors[Colors::PRED].red = config->GetProfileInt("Palette", "Red.red", 255);
-    lpal->colors[Colors::PRED].green = config->GetProfileInt("Palette", "Red.green", 20);
-    lpal->colors[Colors::PRED].blue = config->GetProfileInt("Palette", "Red.blue", 20);
-    lpal->colors[Colors::PBLUE].red = config->GetProfileInt("Palette", "Blue.red", 20);
-    lpal->colors[Colors::PBLUE].green = config->GetProfileInt("Palette", "Blue.green", 20);
-    lpal->colors[Colors::PBLUE].blue = config->GetProfileInt("Palette", "Blue.blue", 255);
-    lpal->colors[Colors::PGREEN].red = config->GetProfileInt("Palette", "Green.red", 20);
-    lpal->colors[Colors::PGREEN].green = config->GetProfileInt("Palette", "Green.green", 255);
-    lpal->colors[Colors::PGREEN].blue = config->GetProfileInt("Palette", "Green.blue", 20);
-    lpal->colors[Colors::PCYAN].red = config->GetProfileInt("Palette", "Cyan.red", 20);
-    lpal->colors[Colors::PCYAN].green = config->GetProfileInt("Palette", "Cyan.green", 255);
-    lpal->colors[Colors::PCYAN].blue = config->GetProfileInt("Palette", "Cyan.blue", 255);
-    lpal->colors[Colors::PMAGENTA].red = config->GetProfileInt("Palette", "Magenta.red", 255);
-    lpal->colors[Colors::PMAGENTA].green = config->GetProfileInt("Palette", "Magenta.green", 20);
-    lpal->colors[Colors::PMAGENTA].blue = config->GetProfileInt("Palette", "Magenta.blue", 255);
-    lpal->colors[Colors::PYELLOW].red = config->GetProfileInt("Palette", "Yellow.red", 255);
-    lpal->colors[Colors::PYELLOW].green = config->GetProfileInt("Palette", "Yellow.green", 255);
-    lpal->colors[Colors::PYELLOW].blue = config->GetProfileInt("Palette", "Yellow.blue", 20);
-    lpal->colors[Colors::PWHITE].red = config->GetProfileInt("Palette", "White.red", 253);
-    lpal->colors[Colors::PWHITE].green = config->GetProfileInt("Palette", "White.green", 253);
-    lpal->colors[Colors::PWHITE].blue = config->GetProfileInt("Palette", "White.blue", 253);
-    lpal->colors[Colors::PPINK].red = config->GetProfileInt("Palette", "Pink.red", 255);
-    lpal->colors[Colors::PPINK].green = config->GetProfileInt("Palette", "Pink.green", 128);
-    lpal->colors[Colors::PPINK].blue = config->GetProfileInt("Palette", "Pink.blue", 128);
-    lpal->colors[Colors::PORANGE].red = config->GetProfileInt("Palette", "Orange.red", 255);
-    lpal->colors[Colors::PORANGE].green = config->GetProfileInt("Palette", "Orange.green", 128);
-    lpal->colors[Colors::PORANGE].blue = config->GetProfileInt("Palette", "Orange.blue", 0);
-    lpal->colors[Colors::PBROWN].red = config->GetProfileInt("Palette", "Brown.red", 0);
-    lpal->colors[Colors::PBROWN].green = config->GetProfileInt("Palette", "Brown.green", 0);
-    lpal->colors[Colors::PBROWN].blue = config->GetProfileInt("Palette", "Brown.blue", 0);
+    lpal->colors[Colors::PBLACK].red = settings.value("Palette/Black.red", 0).toInt();
+    lpal->colors[Colors::PBLACK].green = settings.value("Palette/Black.green", 0).toInt();
+    lpal->colors[Colors::PBLACK].blue = settings.value("Palette/Black.blue", 0).toInt();
+    lpal->colors[Colors::PRED].red = settings.value("Palette/Red.red", 255).toInt();
+    lpal->colors[Colors::PRED].green = settings.value("Palette/Red.green", 20).toInt();
+    lpal->colors[Colors::PRED].blue = settings.value("Palette/Red.blue", 20).toInt();
+    lpal->colors[Colors::PBLUE].red = settings.value("Palette/Blue.red", 20).toInt();
+    lpal->colors[Colors::PBLUE].green = settings.value("Palette/Blue.green", 20).toInt();
+    lpal->colors[Colors::PBLUE].blue = settings.value("Palette/Blue.blue", 255).toInt();
+    lpal->colors[Colors::PGREEN].red = settings.value("Palette/Green.red", 20).toInt();
+    lpal->colors[Colors::PGREEN].green = settings.value("Palette/Green.green", 255).toInt();
+    lpal->colors[Colors::PGREEN].blue = settings.value("Palette/Green.blue", 20).toInt();
+    lpal->colors[Colors::PCYAN].red = settings.value("Palette/Cyan.red", 20).toInt();
+    lpal->colors[Colors::PCYAN].green = settings.value("Palette/Cyan.green", 255).toInt();
+    lpal->colors[Colors::PCYAN].blue = settings.value("Palette/Cyan.blue", 255).toInt();
+    lpal->colors[Colors::PMAGENTA].red = settings.value("Palette/Magenta.red", 255).toInt();
+    lpal->colors[Colors::PMAGENTA].green = settings.value("Palette/Magenta.green", 20).toInt();
+    lpal->colors[Colors::PMAGENTA].blue = settings.value("Palette/Magenta.blue", 255).toInt();
+    lpal->colors[Colors::PYELLOW].red = settings.value("Palette/Yellow.red", 255).toInt();
+    lpal->colors[Colors::PYELLOW].green = settings.value("Palette/Yellow.green", 255).toInt();
+    lpal->colors[Colors::PYELLOW].blue = settings.value("Palette/Yellow.blue", 20).toInt();
+    lpal->colors[Colors::PWHITE].red = settings.value("Palette/White.red", 253).toInt();
+    lpal->colors[Colors::PWHITE].green = settings.value("Palette/White.green", 253).toInt();
+    lpal->colors[Colors::PWHITE].blue = settings.value("Palette/White.blue", 253).toInt();
+    lpal->colors[Colors::PPINK].red = settings.value("Palette/Pink.red", 255).toInt();
+    lpal->colors[Colors::PPINK].green = settings.value("Palette/Pink.green", 128).toInt();
+    lpal->colors[Colors::PPINK].blue = settings.value("Palette/Pink.blue", 128).toInt();
+    lpal->colors[Colors::PORANGE].red = settings.value("Palette/Orange.red", 255).toInt();
+    lpal->colors[Colors::PORANGE].green = settings.value("Palette/Orange.green", 128).toInt();
+    lpal->colors[Colors::PORANGE].blue = settings.value("Palette/Orange.blue", 0).toInt();
+    lpal->colors[Colors::PBROWN].red = settings.value("Palette/Brown.red", 0).toInt();
+    lpal->colors[Colors::PBROWN].green = settings.value("Palette/Brown.green", 0).toInt();
+    lpal->colors[Colors::PBROWN].blue = settings.value("Palette/Brown.blue", 0).toInt();
 
-    lpal->colors[Colors::PCUSTOM1].red = config->GetProfileInt("User Colors", "User1.red", 255);
-    lpal->colors[Colors::PCUSTOM1].green = config->GetProfileInt("User Colors", "User1.green", 72);
-    lpal->colors[Colors::PCUSTOM1].blue = config->GetProfileInt("User Colors", "User1.blue", 96);
-    lpal->colors[Colors::PCUSTOM2].red = config->GetProfileInt("User Colors", "User2.red", 90);
-    lpal->colors[Colors::PCUSTOM2].green = config->GetProfileInt("User Colors", "User2.green", 255);
-    lpal->colors[Colors::PCUSTOM2].blue = config->GetProfileInt("User Colors", "User2.blue", 90);
-    lpal->colors[Colors::PCUSTOM3].red = config->GetProfileInt("User Colors", "User3.red", 102);
-    lpal->colors[Colors::PCUSTOM3].green = config->GetProfileInt("User Colors", "User3.green", 164);
-    lpal->colors[Colors::PCUSTOM3].blue = config->GetProfileInt("User Colors", "User3.blue", 255);
-    lpal->colors[Colors::PCUSTOM4].red = config->GetProfileInt("User Colors", "User4.red", 162);
-    lpal->colors[Colors::PCUSTOM4].green = config->GetProfileInt("User Colors", "User4.green", 115);
-    lpal->colors[Colors::PCUSTOM4].blue = config->GetProfileInt("User Colors", "User4.blue", 20);
-    lpal->colors[Colors::PCUSTOM5].red = config->GetProfileInt("User Colors", "User5.red", 255);
-    lpal->colors[Colors::PCUSTOM5].green = config->GetProfileInt("User Colors", "User5.green", 143);
-    lpal->colors[Colors::PCUSTOM5].blue = config->GetProfileInt("User Colors", "User5.blue", 32);
-    lpal->colors[Colors::PCUSTOM6].red = config->GetProfileInt("User Colors", "User6.red", 255);
-    lpal->colors[Colors::PCUSTOM6].green = config->GetProfileInt("User Colors", "User6.green", 143);
-    lpal->colors[Colors::PCUSTOM6].blue = config->GetProfileInt("User Colors", "User6.blue", 190);
-    lpal->colors[Colors::PCUSTOM7].red = config->GetProfileInt("User Colors", "User7.red", 150);
-    lpal->colors[Colors::PCUSTOM7].green = config->GetProfileInt("User Colors", "User7.green", 0);
-    lpal->colors[Colors::PCUSTOM7].blue = config->GetProfileInt("User Colors", "User7.blue", 0);
-    lpal->colors[Colors::PCUSTOM8].red = config->GetProfileInt("User Colors", "User8.red", 0);
-    lpal->colors[Colors::PCUSTOM8].green = config->GetProfileInt("User Colors", "User8.green", 150);
-    lpal->colors[Colors::PCUSTOM8].blue = config->GetProfileInt("User Colors", "User8.blue", 0);
-    lpal->colors[Colors::PCUSTOM9].red = config->GetProfileInt("User Colors", "User9.red", 0);
-    lpal->colors[Colors::PCUSTOM9].green = config->GetProfileInt("User Colors", "User9.green", 0);
-    lpal->colors[Colors::PCUSTOM9].blue = config->GetProfileInt("User Colors", "User9.blue", 150);
-    lpal->colors[Colors::PCUSTOM10].red = config->GetProfileInt("User Colors", "User10.red", 150);
-    lpal->colors[Colors::PCUSTOM10].green = config->GetProfileInt("User Colors", "User10.green", 150);
+    lpal->colors[Colors::PCUSTOM1].red = settings.value("User Colors/User1.red", 255).toInt();
+    lpal->colors[Colors::PCUSTOM1].green = settings.value("User Colors/User1.green", 72).toInt();
+    lpal->colors[Colors::PCUSTOM1].blue = settings.value("User Colors/User1.blue", 96).toInt();
+    lpal->colors[Colors::PCUSTOM2].red = settings.value("User Colors/User2.red", 90).toInt();
+    lpal->colors[Colors::PCUSTOM2].green = settings.value("User Colors/User2.green", 255).toInt();
+    lpal->colors[Colors::PCUSTOM2].blue = settings.value("User Colors/User2.blue", 90).toInt();
+    lpal->colors[Colors::PCUSTOM3].red = settings.value("User Colors/User3.red", 102).toInt();
+    lpal->colors[Colors::PCUSTOM3].green = settings.value("User Colors/User3.green", 164).toInt();
+    lpal->colors[Colors::PCUSTOM3].blue = settings.value("User Colors/User3.blue", 255).toInt();
+    lpal->colors[Colors::PCUSTOM4].red = settings.value("User Colors/User4.red", 162).toInt();
+    lpal->colors[Colors::PCUSTOM4].green = settings.value("User Colors/User4.green", 115).toInt();
+    lpal->colors[Colors::PCUSTOM4].blue = settings.value("User Colors/User4.blue", 20).toInt();
+    lpal->colors[Colors::PCUSTOM5].red = settings.value("User Colors/User5.red", 255).toInt();
+    lpal->colors[Colors::PCUSTOM5].green = settings.value("User Colors/User5.green", 143).toInt();
+    lpal->colors[Colors::PCUSTOM5].blue = settings.value("User Colors/User5.blue", 32).toInt();
+    lpal->colors[Colors::PCUSTOM6].red = settings.value("User Colors/User6.red", 255).toInt();
+    lpal->colors[Colors::PCUSTOM6].green = settings.value("User Colors/User6.green", 143).toInt();
+    lpal->colors[Colors::PCUSTOM6].blue = settings.value("User Colors/User6.blue", 190).toInt();
+    lpal->colors[Colors::PCUSTOM7].red = settings.value("User Colors/User7.red", 150).toInt();
+    lpal->colors[Colors::PCUSTOM7].green = settings.value("User Colors/User7.green", 0).toInt();
+    lpal->colors[Colors::PCUSTOM7].blue = settings.value("User Colors/User7.blue", 0).toInt();
+    lpal->colors[Colors::PCUSTOM8].red = settings.value("User Colors/User8.red", 0).toInt();
+    lpal->colors[Colors::PCUSTOM8].green = settings.value("User Colors/User8.green", 150).toInt();
+    lpal->colors[Colors::PCUSTOM8].blue = settings.value("User Colors/User8.blue", 0).toInt();
+    lpal->colors[Colors::PCUSTOM9].red = settings.value("User Colors/User9.red", 0).toInt();
+    lpal->colors[Colors::PCUSTOM9].green = settings.value("User Colors/User9.green", 0).toInt();
+    lpal->colors[Colors::PCUSTOM9].blue = settings.value("User Colors/User9.blue", 150).toInt();
+    lpal->colors[Colors::PCUSTOM10].red = settings.value("User Colors/User10.red", 150).toInt();
+    lpal->colors[Colors::PCUSTOM10].green = settings.value("User Colors/User10.green", 150).toInt();
 
-    lpal->colors[Colors::PCUSTOM10].blue = config->GetProfileInt("User Colors", "User10.blue", 0);
+    lpal->colors[Colors::PCUSTOM10].blue = settings.value("User Colors/User10.blue", 0).toInt();
 
-    lpal->colors[Colors::PMAP1].red = config->GetProfileInt("Map Colors", "Map1.red", 0);
-    lpal->colors[Colors::PMAP1].green = config->GetProfileInt("Map Colors", "Map1.green", 0);
-    lpal->colors[Colors::PMAP1].blue = config->GetProfileInt("Map Colors", "Map1.blue", 230);
-    lpal->colors[Colors::PMAP2].red = config->GetProfileInt("Map Colors", "Map2.red", 128);
-    lpal->colors[Colors::PMAP2].green = config->GetProfileInt("Map Colors", "Map2.green", 0);
-    lpal->colors[Colors::PMAP2].blue = config->GetProfileInt("Map Colors", "Map2.blue", 230);
-    lpal->colors[Colors::PMAP3].red = config->GetProfileInt("Map Colors", "Map3.red", 230);
-    lpal->colors[Colors::PMAP3].green = config->GetProfileInt("Map Colors", "Map3.green", 0);
-    lpal->colors[Colors::PMAP3].blue = config->GetProfileInt("Map Colors", "Map3.blue", 230);
-    lpal->colors[Colors::PMAP4].red = config->GetProfileInt("Map Colors", "Map4.red", 230);
-    lpal->colors[Colors::PMAP4].green = config->GetProfileInt("Map Colors", "Map4.green", 0);
-    lpal->colors[Colors::PMAP4].blue = config->GetProfileInt("Map Colors", "Map4.blue", 128);
-    lpal->colors[Colors::PMAP5].red = config->GetProfileInt("Map Colors", "Map5.red", 230);
-    lpal->colors[Colors::PMAP5].green = config->GetProfileInt("Map Colors", "Map5.green", 0);
-    lpal->colors[Colors::PMAP5].blue = config->GetProfileInt("Map Colors", "Map5.blue", 0);
-    lpal->colors[Colors::PMAP6].red = config->GetProfileInt("Map Colors", "Map6.red", 0);
-    lpal->colors[Colors::PMAP6].green = config->GetProfileInt("Map Colors", "Map6.green", 230);
-    lpal->colors[Colors::PMAP6].blue = config->GetProfileInt("Map Colors", "Map6.blue", 0);
-    lpal->colors[Colors::PMAP7].red = config->GetProfileInt("Map Colors", "Map7.red", 0);
-    lpal->colors[Colors::PMAP7].green = config->GetProfileInt("Map Colors", "Map7.green", 230);
-    lpal->colors[Colors::PMAP7].blue = config->GetProfileInt("Map Colors", "Map7.blue", 128);
-    lpal->colors[Colors::PMAP8].red = config->GetProfileInt("Map Colors", "Map8.red", 0);
-    lpal->colors[Colors::PMAP8].green = config->GetProfileInt("Map Colors", "Map8.green", 230);
-    lpal->colors[Colors::PMAP8].blue = config->GetProfileInt("Map Colors", "Map8.blue", 230);
-    lpal->colors[Colors::PMAP9].red = config->GetProfileInt("Map Colors", "Map9.red", 0);
-    lpal->colors[Colors::PMAP9].green = config->GetProfileInt("Map Colors", "Map9.green", 128);
-    lpal->colors[Colors::PMAP9].blue = config->GetProfileInt("Map Colors", "Map9.blue", 230);
-    lpal->colors[Colors::PMAP10].red = config->GetProfileInt("Map Colors", "Map10.red", 128);
-    lpal->colors[Colors::PMAP10].green = config->GetProfileInt("Map Colors", "Map10.green", 128);
-    lpal->colors[Colors::PMAP10].blue = config->GetProfileInt("Map Colors", "Map10.blue", 230);
+    lpal->colors[Colors::PMAP1].red = settings.value("Map Colors/Map1.red", 0).toInt();
+    lpal->colors[Colors::PMAP1].green = settings.value("Map Colors/Map1.green", 0).toInt();
+    lpal->colors[Colors::PMAP1].blue = settings.value("Map Colors/Map1.blue", 230).toInt();
+    lpal->colors[Colors::PMAP2].red = settings.value("Map Colors/Map2.red", 128).toInt();
+    lpal->colors[Colors::PMAP2].green = settings.value("Map Colors/Map2.green", 0).toInt();
+    lpal->colors[Colors::PMAP2].blue = settings.value("Map Colors/Map2.blue", 230).toInt();
+    lpal->colors[Colors::PMAP3].red = settings.value("Map Colors/Map3.red", 230).toInt();
+    lpal->colors[Colors::PMAP3].green = settings.value("Map Colors/Map3.green", 0).toInt();
+    lpal->colors[Colors::PMAP3].blue = settings.value("Map Colors/Map3.blue", 230).toInt();
+    lpal->colors[Colors::PMAP4].red = settings.value("Map Colors/Map4.red", 230).toInt();
+    lpal->colors[Colors::PMAP4].green = settings.value("Map Colors/Map4.green", 0).toInt();
+    lpal->colors[Colors::PMAP4].blue = settings.value("Map Colors/Map4.blue", 128).toInt();
+    lpal->colors[Colors::PMAP5].red = settings.value("Map Colors/Map5.red", 230).toInt();
+    lpal->colors[Colors::PMAP5].green = settings.value("Map Colors/Map5.green", 0).toInt();
+    lpal->colors[Colors::PMAP5].blue = settings.value("Map Colors/Map5.blue", 0).toInt();
+    lpal->colors[Colors::PMAP6].red = settings.value("Map Colors/Map6.red", 0).toInt();
+    lpal->colors[Colors::PMAP6].green = settings.value("Map Colors/Map6.green", 230).toInt();
+    lpal->colors[Colors::PMAP6].blue = settings.value("Map Colors/Map6.blue", 0).toInt();
+    lpal->colors[Colors::PMAP7].red = settings.value("Map Colors/Map7.red", 0).toInt();
+    lpal->colors[Colors::PMAP7].green = settings.value("Map Colors/Map7.green", 230).toInt();
+    lpal->colors[Colors::PMAP7].blue = settings.value("Map Colors/Map7.blue", 128).toInt();
+    lpal->colors[Colors::PMAP8].red = settings.value("Map Colors/Map8.red", 0).toInt();
+    lpal->colors[Colors::PMAP8].green = settings.value("Map Colors/Map8.green", 230).toInt();
+    lpal->colors[Colors::PMAP8].blue = settings.value("Map Colors/Map8.blue", 230).toInt();
+    lpal->colors[Colors::PMAP9].red = settings.value("Map Colors/Map9.red", 0).toInt();
+    lpal->colors[Colors::PMAP9].green = settings.value("Map Colors/Map9.green", 128).toInt();
+    lpal->colors[Colors::PMAP9].blue = settings.value("Map Colors/Map9.blue", 230).toInt();
+    lpal->colors[Colors::PMAP10].red = settings.value("Map Colors/Map10.red", 128).toInt();
+    lpal->colors[Colors::PMAP10].green = settings.value("Map Colors/Map10.green", 128).toInt();
+    lpal->colors[Colors::PMAP10].blue = settings.value("Map Colors/Map10.blue", 230).toInt();
 
-    lpal->colors[Colors::PCONTOUR1].red = config->GetProfileInt("Contour Colors", "Contour1.red", 218);
-    lpal->colors[Colors::PCONTOUR1].green = config->GetProfileInt("Contour Colors", "Contour1.green", 152);
-    lpal->colors[Colors::PCONTOUR1].blue = config->GetProfileInt("Contour Colors", "Contour1.blue", 207);
-    lpal->colors[Colors::PCONTOUR2].red = config->GetProfileInt("Contour Colors", "Contour2.red", 113);
-    lpal->colors[Colors::PCONTOUR2].green = config->GetProfileInt("Contour Colors", "Contour2.green", 87);
-    lpal->colors[Colors::PCONTOUR2].blue = config->GetProfileInt("Contour Colors", "Contour2.blue", 185);
-    lpal->colors[Colors::PCONTOUR3].red = config->GetProfileInt("Contour Colors", "Contour3.red", 72);
-    lpal->colors[Colors::PCONTOUR3].green = config->GetProfileInt("Contour Colors", "Contour3.green", 107);
-    lpal->colors[Colors::PCONTOUR3].blue = config->GetProfileInt("Contour Colors", "Contour3.blue", 254);
-    lpal->colors[Colors::PCONTOUR4].red = config->GetProfileInt("Contour Colors", "Contour4.red", 75);
-    lpal->colors[Colors::PCONTOUR4].green = config->GetProfileInt("Contour Colors", "Contour4.green", 230);
-    lpal->colors[Colors::PCONTOUR4].blue = config->GetProfileInt("Contour Colors", "Contour4.blue", 251);
-    lpal->colors[Colors::PCONTOUR5].red = config->GetProfileInt("Contour Colors", "Contour5.red", 0);
-    lpal->colors[Colors::PCONTOUR5].green = config->GetProfileInt("Contour Colors", "Contour5.green", 255);
-    lpal->colors[Colors::PCONTOUR5].blue = config->GetProfileInt("Contour Colors", "Contour5.blue", 0);
-    lpal->colors[Colors::PCONTOUR6].red = config->GetProfileInt("Contour Colors", "Contour6.red", 255);
-    lpal->colors[Colors::PCONTOUR6].green = config->GetProfileInt("Contour Colors", "Contour6.green", 255);
-    lpal->colors[Colors::PCONTOUR6].blue = config->GetProfileInt("Contour Colors", "Contour6.blue", 30);
-    lpal->colors[Colors::PCONTOUR7].red = config->GetProfileInt("Contour Colors", "Contour7.red", 255);
-    lpal->colors[Colors::PCONTOUR7].green = config->GetProfileInt("Contour Colors", "Contour7.green", 200);
-    lpal->colors[Colors::PCONTOUR7].blue = config->GetProfileInt("Contour Colors", "Contour7.blue", 30);
-    lpal->colors[Colors::PCONTOUR8].red = config->GetProfileInt("Contour Colors", "Contour8.red", 245);
-    lpal->colors[Colors::PCONTOUR8].green = config->GetProfileInt("Contour Colors", "Contour8.green", 141);
-    lpal->colors[Colors::PCONTOUR8].blue = config->GetProfileInt("Contour Colors", "Contour8.blue", 3);
-    lpal->colors[Colors::PCONTOUR9].red = config->GetProfileInt("Contour Colors", "Contour9.red", 255);
-    lpal->colors[Colors::PCONTOUR9].green = config->GetProfileInt("Contour Colors", "Contour9.green", 60);
-    lpal->colors[Colors::PCONTOUR9].blue = config->GetProfileInt("Contour Colors", "Contour9.blue", 00);
-    lpal->colors[Colors::PCONTOUR10].red = config->GetProfileInt("Contour Colors", "Contour10.red", 220);
-    lpal->colors[Colors::PCONTOUR10].green = config->GetProfileInt("Contour Colors", "Contour10.green", 0);
-    lpal->colors[Colors::PCONTOUR10].blue = config->GetProfileInt("Contour Colors", "Contour10.blue", 0);
+    lpal->colors[Colors::PCONTOUR1].red = settings.value("Contour Colors/Contour1.red", 218).toInt();
+    lpal->colors[Colors::PCONTOUR1].green = settings.value("Contour Colors/Contour1.green", 152).toInt();
+    lpal->colors[Colors::PCONTOUR1].blue = settings.value("Contour Colors/Contour1.blue", 207).toInt();
+    lpal->colors[Colors::PCONTOUR2].red = settings.value("Contour Colors/Contour2.red", 113).toInt();
+    lpal->colors[Colors::PCONTOUR2].green = settings.value("Contour Colors/Contour2.green", 87).toInt();
+    lpal->colors[Colors::PCONTOUR2].blue = settings.value("Contour Colors/Contour2.blue", 185).toInt();
+    lpal->colors[Colors::PCONTOUR3].red = settings.value("Contour Colors/Contour3.red", 72).toInt();
+    lpal->colors[Colors::PCONTOUR3].green = settings.value("Contour Colors/Contour3.green", 107).toInt();
+    lpal->colors[Colors::PCONTOUR3].blue = settings.value("Contour Colors/Contour3.blue", 254).toInt();
+    lpal->colors[Colors::PCONTOUR4].red = settings.value("Contour Colors/Contour4.red", 75).toInt();
+    lpal->colors[Colors::PCONTOUR4].green = settings.value("Contour Colors/Contour4.green", 230).toInt();
+    lpal->colors[Colors::PCONTOUR4].blue = settings.value("Contour Colors/Contour4.blue", 251).toInt();
+    lpal->colors[Colors::PCONTOUR5].red = settings.value("Contour Colors/Contour5.red", 0).toInt();
+    lpal->colors[Colors::PCONTOUR5].green = settings.value("Contour Colors/Contour5.green", 255).toInt();
+    lpal->colors[Colors::PCONTOUR5].blue = settings.value("Contour Colors/Contour5.blue", 0).toInt();
+    lpal->colors[Colors::PCONTOUR6].red = settings.value("Contour Colors/Contour6.red", 255).toInt();
+    lpal->colors[Colors::PCONTOUR6].green = settings.value("Contour Colors/Contour6.green", 255).toInt();
+    lpal->colors[Colors::PCONTOUR6].blue = settings.value("Contour Colors/Contour6.blue", 30).toInt();
+    lpal->colors[Colors::PCONTOUR7].red = settings.value("Contour Colors/Contour7.red", 255).toInt();
+    lpal->colors[Colors::PCONTOUR7].green = settings.value("Contour Colors/Contour7.green", 200).toInt();
+    lpal->colors[Colors::PCONTOUR7].blue = settings.value("Contour Colors/Contour7.blue", 30).toInt();
+    lpal->colors[Colors::PCONTOUR8].red = settings.value("Contour Colors/Contour8.red", 245).toInt();
+    lpal->colors[Colors::PCONTOUR8].green = settings.value("Contour Colors/Contour8.green", 141).toInt();
+    lpal->colors[Colors::PCONTOUR8].blue = settings.value("Contour Colors/Contour8.blue", 3).toInt();
+    lpal->colors[Colors::PCONTOUR9].red = settings.value("Contour Colors/Contour9.red", 255).toInt();
+    lpal->colors[Colors::PCONTOUR9].green = settings.value("Contour Colors/Contour9.green", 60).toInt();
+    lpal->colors[Colors::PCONTOUR9].blue = settings.value("Contour Colors/Contour9.blue", 00).toInt();
+    lpal->colors[Colors::PCONTOUR10].red = settings.value("Contour Colors/Contour10.red", 220).toInt();
+    lpal->colors[Colors::PCONTOUR10].green = settings.value("Contour Colors/Contour10.green", 0).toInt();
+    lpal->colors[Colors::PCONTOUR10].blue = settings.value("Contour Colors/Contour10.blue", 0).toInt();
 
-    BackgroundColor = PaletteColor(config->GetProfileInt("View Parameters", "BackgroundColorRed", 0), config->GetProfileInt("View Parameters", "BackgroundColorGreen", 0), config->GetProfileInt("View Parameters", "BackgroundColorBlue", 0));
+    BackgroundColor = PaletteColor(settings.value("View Parameters/BackgroundColorRed", 0).toInt(), settings.value("View Parameters/BackgroundColorGreen", 0).toInt(), settings.value("View Parameters/BackgroundColorBlue", 0).toInt());
     MixBackgroundColor();
 
-    Colors::sec_colors[Colors::HELIX] = config->GetProfileInt("SecStr Colors", "Helix", Colors::MAGENTA);
-    Colors::sec_colors[Colors::SHEET] = config->GetProfileInt("SecStr Colors", "Sheet", Colors::YELLOW);
-    Colors::sec_colors[Colors::COIL] = config->GetProfileInt("SecStr Colors", "Coil", Colors::BLUE);
+    Colors::sec_colors[Colors::HELIX] = settings.value("SecStr Colors/Helix", Colors::MAGENTA).toInt();
+    Colors::sec_colors[Colors::SHEET] = settings.value("SecStr Colors/Sheet", Colors::YELLOW).toInt();
+    Colors::sec_colors[Colors::COIL] = settings.value("SecStr Colors/Coil", Colors::BLUE).toInt();
 
-    Colors::BValueColors[0] = config->GetProfileInt("BValue Colors", "Color1", Colors::CONTOUR1);
-    Colors::BValueRanges[0] = config->GetProfileInt("BValue Colors", "Range1", 300);
-    Colors::BValueColors[1] = config->GetProfileInt("BValue Colors", "Color2", Colors::CONTOUR2);
-    Colors::BValueRanges[1] = config->GetProfileInt("BValue Colors", "Range2", 600);
-    Colors::BValueColors[2] = config->GetProfileInt("BValue Colors", "Color3", Colors::CONTOUR3);
-    Colors::BValueRanges[2] = config->GetProfileInt("BValue Colors", "Range3", 1000);
-    Colors::BValueColors[3] = config->GetProfileInt("BValue Colors", "Color4", Colors::CONTOUR4);
-    Colors::BValueRanges[3] = config->GetProfileInt("BValue Colors", "Range4", 1500);
-    Colors::BValueColors[4] = config->GetProfileInt("BValue Colors", "Color5", Colors::CONTOUR5);
-    Colors::BValueRanges[4] = config->GetProfileInt("BValue Colors", "Range5", 2000);
-    Colors::BValueColors[5] = config->GetProfileInt("BValue Colors", "Color6", Colors::CONTOUR6);
-    Colors::BValueRanges[5] = config->GetProfileInt("BValue Colors", "Range6", 2500);
-    Colors::BValueColors[6] = config->GetProfileInt("BValue Colors", "Color7", Colors::CONTOUR7);
-    Colors::BValueRanges[6] = config->GetProfileInt("BValue Colors", "Range7", 3500);
-    Colors::BValueColors[7] = config->GetProfileInt("BValue Colors", "Color8", Colors::CONTOUR8);
-    Colors::BValueRanges[7] = config->GetProfileInt("BValue Colors", "Range8", 5000);
-    Colors::BValueColors[8] = config->GetProfileInt("BValue Colors", "Color9", Colors::CONTOUR9);
-    Colors::BValueRanges[8] = config->GetProfileInt("BValue Colors", "Range9", 7500);
-    Colors::BValueColors[9] = config->GetProfileInt("BValue Colors", "Color10", Colors::CONTOUR10);
-    Colors::BValueRanges[9] = config->GetProfileInt("BValue Colors", "Range10", 10000);
+    Colors::BValueColors[0] = settings.value("BValue Colors/Color1", Colors::CONTOUR1).toInt();
+    Colors::BValueRanges[0] = settings.value("BValue Colors/Range1", 300).toInt();
+    Colors::BValueColors[1] = settings.value("BValue Colors/Color2", Colors::CONTOUR2).toInt();
+    Colors::BValueRanges[1] = settings.value("BValue Colors/Range2", 600).toInt();
+    Colors::BValueColors[2] = settings.value("BValue Colors/Color3", Colors::CONTOUR3).toInt();
+    Colors::BValueRanges[2] = settings.value("BValue Colors/Range3", 1000).toInt();
+    Colors::BValueColors[3] = settings.value("BValue Colors/Color4", Colors::CONTOUR4).toInt();
+    Colors::BValueRanges[3] = settings.value("BValue Colors/Range4", 1500).toInt();
+    Colors::BValueColors[4] = settings.value("BValue Colors/Color5", Colors::CONTOUR5).toInt();
+    Colors::BValueRanges[4] = settings.value("BValue Colors/Range5", 2000).toInt();
+    Colors::BValueColors[5] = settings.value("BValue Colors/Color6", Colors::CONTOUR6).toInt();
+    Colors::BValueRanges[5] = settings.value("BValue Colors/Range6", 2500).toInt();
+    Colors::BValueColors[6] = settings.value("BValue Colors/Color7", Colors::CONTOUR7).toInt();
+    Colors::BValueRanges[6] = settings.value("BValue Colors/Range7", 3500).toInt();
+    Colors::BValueColors[7] = settings.value("BValue Colors/Color8", Colors::CONTOUR8).toInt();
+    Colors::BValueRanges[7] = settings.value("BValue Colors/Range8", 5000).toInt();
+    Colors::BValueColors[8] = settings.value("BValue Colors/Color9", Colors::CONTOUR9).toInt();
+    Colors::BValueRanges[8] = settings.value("BValue Colors/Range9", 7500).toInt();
+    Colors::BValueColors[9] = settings.value("BValue Colors/Color10", Colors::CONTOUR10).toInt();
+    Colors::BValueRanges[9] = settings.value("BValue Colors/Range10", 10000).toInt();
 
     /* temporary code used to write out the colros to a file for the manual
        8 left in because it seemed it might be useful at a future date - dem 8/9/2005
@@ -712,9 +559,9 @@ class myMolPrefsHandler
 public:
     void operator()(bool *breakByDiscontinuity, bool *breakByNonpeptide)
     {
-        MIConfig *config = MIConfig::Instance();
-        config->Read("Options/breakByDiscontinuity", breakByDiscontinuity, true);
-        config->Read("Options/breakByNonpeptide", breakByNonpeptide, false);
+        QSettings settings;
+        *breakByDiscontinuity = settings.value("Options/breakByDiscontinuity", true).toBool();
+        *breakByNonpeptide = settings.value("Options/breakByNonpeptide", false).toBool();
     }
 
 };
@@ -760,32 +607,32 @@ public:
 
 void Application::Write()
 {
+    QSettings settings;
     if (!CrystalData.empty())
     {
-        config->Write("CRYSTALDATA", CrystalData);
+        settings.setValue("CRYSTALDATA", CrystalData.c_str());
     }
-    config->Write("XFITDICT", XFitDictSetting);
+    settings.setValue("XFITDICT", XFitDictSetting.c_str());
     if (!HTMLBrowser.empty())
     {
-        config->Write("HTMLBROWSER", HTMLBrowser);
+        settings.setValue("HTMLBROWSER", HTMLBrowser.c_str());
     }
     if (!ShelxHome.empty())
     {
-        config->Write("SHELXHOME", ShelxHome);
+        settings.setValue("SHELXHOME", ShelxHome.c_str());
     }
     if (!SmilesDbCommand.empty())
     {
-        config->Write("SmilesDbCommand", SmilesDbCommand);
+        settings.setValue("SmilesDbCommand", SmilesDbCommand.c_str());
     }
     if (!checkpointDirectory.empty())
     {
-        config->Write("checkpointDirectory", checkpointDirectory);
+        settings.setValue("checkpointDirectory", checkpointDirectory.c_str());
     }
-    config->Write("onCloseSaveActiveModelToPdb", onCloseSaveActiveModelToPdb);
+    settings.setValue("onCloseSaveActiveModelToPdb", onCloseSaveActiveModelToPdb);
 
     WriteProfiles();
 
-    config->Flush();
 }
 
 void Application::Init()
@@ -793,10 +640,9 @@ void Application::Init()
 
     SetMolimageHome();
     SetCrystalData();
-    std::string tmp;
-    bool ret = config->Read("XFITDICT", tmp);
-    if (ret)
-        XFitDictSetting = tmp.c_str();
+    QSettings settings;
+    if (settings.contains("XFITDICT"))
+        XFitDictSetting = settings.value("XFITDICT").toString().toStdString();
     SetDictionary(XFitDictSetting);
     PentDir = MolimageHome;
 #ifndef _WIN32
@@ -805,11 +651,9 @@ void Application::Init()
     PentDir += "\\data\\pdbvec";
 #endif
 
-    tmp = "";
-    ret = config->Read("HTMLBROWSER", tmp);
-    if (ret)
-        HTMLBrowser = tmp.c_str();
-    if (!ret)
+    if (settings.contains("HTMLBROWSER"))
+        HTMLBrowser = settings.value("HTMLBROWSER").toString().toStdString();
+    else
     {
 #ifndef _WIN32
 #ifdef __APPLE__
@@ -821,41 +665,36 @@ void Application::Init()
         HTMLBrowser = "C:\\Program Files\\Internet Explorer\\iexplore.exe";
 #endif
     }
-    tmp = "";
-    if (config->Read("SmilesDbCommand", tmp))
-        SmilesDbCommand = tmp.c_str();
-    tmp = "";
-    if (config->Read("SHELXHOME", tmp))
-        ShelxHome = tmp.c_str();
-    tmp = "";
-    if (config->Read("checkpointDirectory", tmp))
-        checkpointDirectory = tmp.c_str();
-    long boolValue;
-    config->Read("onCloseSaveActiveModelToPdb", &boolValue, 0);
-    onCloseSaveActiveModelToPdb = boolValue != 0;
+    if (settings.contains("SmilesDbCommand"))
+        SmilesDbCommand = settings.value("SmilesDbCommand").toString().toStdString();
+    if (settings.contains("SHELXHOME"))
+        ShelxHome = settings.value("SHELXHOME").toString().toStdString();
+    if (settings.contains("checkpointDirectory"))
+        checkpointDirectory = settings.value("checkpointDirectory").toString().toStdString();
+    onCloseSaveActiveModelToPdb = settings.value("onCloseSaveActiveModelToPdb", false).toBool();
     SetEnv();
 
-    xfitMouseMode = config->GetProfileInt("Options", "MouseMode", 0) != 0;
-    incrementallyColorModels = config->GetProfileInt("Options", "IncrementallyColorModels", 1) != 0;
-    dimNonactiveModels = config->GetProfileInt("Options", "DimNonactiveModels", 1) != 0;
-    concurrentJobLimit = config->GetProfileInt("Options", "ConcurrentJobLimit", 1);
+    xfitMouseMode = settings.value("Options/MouseMode", false).toBool();
+    incrementallyColorModels = settings.value("Options/IncrementallyColorModels", true).toBool();
+    dimNonactiveModels = settings.value("Options/DimNonactiveModels", true).toBool();
+    concurrentJobLimit = settings.value("Options/ConcurrentJobLimit", 1).toInt();
 
     SetGammaCorrection(1.0);
     BuildPalette();
 
     ResidueBuffer = NULL;
 
-    LabelToggle = config->GetProfileInt("View Parameters", "LabelToggle", 1) != 0;
-    LabelPicks = config->GetProfileInt("View Parameters", "LabelPicks", 1);
+    LabelToggle = settings.value("View Parameters/LabelToggle", true).toBool();
+    LabelPicks = settings.value("View Parameters/LabelPicks", true).toBool();
 
-    ATOMLABEL::defaultStyle(config->GetProfileInt("View Parameters", "LabelStyle", 0));
-    ATOMLABEL::defaultColor(config->GetProfileInt("View Parameters", "LabelColorRed", 255),
-                            config->GetProfileInt("View Parameters", "LabelColorGreen", 255),
-                            config->GetProfileInt("View Parameters", "LabelColorBlue", 255));
-    ATOMLABEL::defaultSize(config->GetProfileInt("View Parameters", "LabelSize", 12));
+    ATOMLABEL::defaultStyle(settings.value("View Parameters/LabelStyle", 0).toInt());
+    ATOMLABEL::defaultColor(settings.value("View Parameters/LabelColorRed", 255).toInt(),
+                            settings.value("View Parameters/LabelColorGreen", 255).toInt(),
+                            settings.value("View Parameters/LabelColorBlue", 255).toInt());
+    ATOMLABEL::defaultSize(settings.value("View Parameters/LabelSize", 12).toInt());
 
 
-    int natomnames = config->GetProfileInt("Atom Colors", "NoEntries", 0);
+    int natomnames = settings.value("Atom Colors/NoEntries", 0).toInt();
     if (natomnames == 0)
     {
         init_colornames();
@@ -867,10 +706,10 @@ void Application::Init()
         for (int i = 0; i < natomnames; i++)
         {
             std::string b = format("Color%d", i);
-            int ci = config->GetProfileInt("Atom Colors", b.c_str(), Colors::WHITE);
+            int ci = settings.value(("Atom Colors/" + b).c_str(), Colors::WHITE).toInt();
             Colors::atomcolors.push_back(Colors::colornames[ci]);
             b = format("Name%d", i);
-            b = config->GetProfileString("Atom Colors", b, "");
+            b = settings.value(("Atom Colors/" + b).c_str(), "").toString().toStdString();
             Colors::atomnames.push_back(b);
         }
     }
@@ -929,102 +768,106 @@ void Application::WriteProfiles()
 
 void Application::WritePalette()
 {
-    config->WriteProfileInt("Palette", "Red.red", lpal->colors[Colors::PRED].red);
-    config->WriteProfileInt("Palette", "Red.green", lpal->colors[Colors::PRED].green);
-    config->WriteProfileInt("Palette", "Red.blue", lpal->colors[Colors::PRED].blue);
-    config->WriteProfileInt("Palette", "Blue.red", lpal->colors[Colors::PBLUE].red);
-    config->WriteProfileInt("Palette", "Blue.green", lpal->colors[Colors::PBLUE].green);
-    config->WriteProfileInt("Palette", "Blue.blue", lpal->colors[Colors::PBLUE].blue);
-    config->WriteProfileInt("Palette", "Green.red", lpal->colors[Colors::PGREEN].red);
-    config->WriteProfileInt("Palette", "Green.green", lpal->colors[Colors::PGREEN].green);
-    config->WriteProfileInt("Palette", "Green.blue", lpal->colors[Colors::PGREEN].blue);
-    config->WriteProfileInt("Palette", "Cyan.red", lpal->colors[Colors::PCYAN].red);
-    config->WriteProfileInt("Palette", "Cyan.green", lpal->colors[Colors::PCYAN].green);
-    config->WriteProfileInt("Palette", "Cyan.blue", lpal->colors[Colors::PCYAN].blue);
-    config->WriteProfileInt("Palette", "Magenta.red", lpal->colors[Colors::PMAGENTA].red);
-    config->WriteProfileInt("Palette", "Magenta.green", lpal->colors[Colors::PMAGENTA].green);
-    config->WriteProfileInt("Palette", "Magenta.blue", lpal->colors[Colors::PMAGENTA].blue);
-    config->WriteProfileInt("Palette", "Yellow.red", lpal->colors[Colors::PYELLOW].red);
-    config->WriteProfileInt("Palette", "Yellow.green", lpal->colors[Colors::PYELLOW].green);
-    config->WriteProfileInt("Palette", "Yellow.blue", lpal->colors[Colors::PYELLOW].blue);
-    config->WriteProfileInt("Palette", "White.red", lpal->colors[Colors::PWHITE].red);
-    config->WriteProfileInt("Palette", "White.green", lpal->colors[Colors::PWHITE].green);
-    config->WriteProfileInt("Palette", "White.blue", lpal->colors[Colors::PWHITE].blue);
-    config->WriteProfileInt("Palette", "Black.red", lpal->colors[Colors::PBLACK].red);
-    config->WriteProfileInt("Palette", "Black.green", lpal->colors[Colors::PBLACK].green);
-    config->WriteProfileInt("Palette", "Black.blue", lpal->colors[Colors::PBLACK].blue);
+    QSettings settings;
+    settings.setValue("Palette/Red.red", lpal->colors[Colors::PRED].red);
+    settings.setValue("Palette/Red.green", lpal->colors[Colors::PRED].green);
+    settings.setValue("Palette/Red.blue", lpal->colors[Colors::PRED].blue);
+    settings.setValue("Palette/Blue.red", lpal->colors[Colors::PBLUE].red);
+    settings.setValue("Palette/Blue.green", lpal->colors[Colors::PBLUE].green);
+    settings.setValue("Palette/Blue.blue", lpal->colors[Colors::PBLUE].blue);
+    settings.setValue("Palette/Green.red", lpal->colors[Colors::PGREEN].red);
+    settings.setValue("Palette/Green.green", lpal->colors[Colors::PGREEN].green);
+    settings.setValue("Palette/Green.blue", lpal->colors[Colors::PGREEN].blue);
+    settings.setValue("Palette/Cyan.red", lpal->colors[Colors::PCYAN].red);
+    settings.setValue("Palette/Cyan.green", lpal->colors[Colors::PCYAN].green);
+    settings.setValue("Palette/Cyan.blue", lpal->colors[Colors::PCYAN].blue);
+    settings.setValue("Palette/Magenta.red", lpal->colors[Colors::PMAGENTA].red);
+    settings.setValue("Palette/Magenta.green", lpal->colors[Colors::PMAGENTA].green);
+    settings.setValue("Palette/Magenta.blue", lpal->colors[Colors::PMAGENTA].blue);
+    settings.setValue("Palette/Yellow.red", lpal->colors[Colors::PYELLOW].red);
+    settings.setValue("Palette/Yellow.green", lpal->colors[Colors::PYELLOW].green);
+    settings.setValue("Palette/Yellow.blue", lpal->colors[Colors::PYELLOW].blue);
+    settings.setValue("Palette/White.red", lpal->colors[Colors::PWHITE].red);
+    settings.setValue("Palette/White.green", lpal->colors[Colors::PWHITE].green);
+    settings.setValue("Palette/White.blue", lpal->colors[Colors::PWHITE].blue);
+    settings.setValue("Palette/Black.red", lpal->colors[Colors::PBLACK].red);
+    settings.setValue("Palette/Black.green", lpal->colors[Colors::PBLACK].green);
+    settings.setValue("Palette/Black.blue", lpal->colors[Colors::PBLACK].blue);
 
-    config->WriteProfileInt("User Colors", "User1.red", lpal->colors[Colors::PCUSTOM1].red);
-    config->WriteProfileInt("User Colors", "User1.green", lpal->colors[Colors::PCUSTOM1].green);
-    config->WriteProfileInt("User Colors", "User1.blue", lpal->colors[Colors::PCUSTOM1].blue);
-    config->WriteProfileInt("User Colors", "User2.red", lpal->colors[Colors::PCUSTOM2].red);
-    config->WriteProfileInt("User Colors", "User2.green", lpal->colors[Colors::PCUSTOM2].green);
-    config->WriteProfileInt("User Colors", "User2.blue", lpal->colors[Colors::PCUSTOM2].blue);
-    config->WriteProfileInt("User Colors", "User3.red", lpal->colors[Colors::PCUSTOM3].red);
-    config->WriteProfileInt("User Colors", "User3.green", lpal->colors[Colors::PCUSTOM3].green);
-    config->WriteProfileInt("User Colors", "User3.blue", lpal->colors[Colors::PCUSTOM3].blue);
-    config->WriteProfileInt("User Colors", "User4.red", lpal->colors[Colors::PCUSTOM4].red);
-    config->WriteProfileInt("User Colors", "User4.green", lpal->colors[Colors::PCUSTOM4].green);
-    config->WriteProfileInt("User Colors", "User4.blue", lpal->colors[Colors::PCUSTOM4].blue);
-    config->WriteProfileInt("User Colors", "User5.red", lpal->colors[Colors::PCUSTOM5].red);
-    config->WriteProfileInt("User Colors", "User5.green", lpal->colors[Colors::PCUSTOM5].green);
-    config->WriteProfileInt("User Colors", "User5.blue", lpal->colors[Colors::PCUSTOM5].blue);
-    config->WriteProfileInt("User Colors", "User6.red", lpal->colors[Colors::PCUSTOM6].red);
-    config->WriteProfileInt("User Colors", "User6.green", lpal->colors[Colors::PCUSTOM6].green);
-    config->WriteProfileInt("User Colors", "User6.blue", lpal->colors[Colors::PCUSTOM6].blue);
-    config->WriteProfileInt("View Parameters", "BackgroundColorRed", BackgroundColor.red);
-    config->WriteProfileInt("View Parameters", "BackgroundColorGreen", BackgroundColor.green);
-    config->WriteProfileInt("View Parameters", "BackgroundColorBlue", BackgroundColor.blue);
-    config->WriteProfileInt("View Parameters", "LabelPicks", LabelPicks);
-    config->WriteProfileInt("View Parameters", "LabelToggle", LabelToggle);
-    config->WriteProfileInt("View Parameters", "LabelStyle", ATOMLABEL::defaultStyle());
-    config->WriteProfileInt("View Parameters", "LabelSize", ATOMLABEL::defaultSize());
-    config->WriteProfileInt("View Parameters", "LabelColorRed", ATOMLABEL::defaultRed());
-    config->WriteProfileInt("View Parameters", "LabelColorGreen", ATOMLABEL::defaultGreen());
-    config->WriteProfileInt("View Parameters", "LabelColorBlue", ATOMLABEL::defaultBlue());
+    settings.setValue("User Colors/User1.red", lpal->colors[Colors::PCUSTOM1].red);
+    settings.setValue("User Colors/User1.green", lpal->colors[Colors::PCUSTOM1].green);
+    settings.setValue("User Colors/User1.blue", lpal->colors[Colors::PCUSTOM1].blue);
+    settings.setValue("User Colors/User2.red", lpal->colors[Colors::PCUSTOM2].red);
+    settings.setValue("User Colors/User2.green", lpal->colors[Colors::PCUSTOM2].green);
+    settings.setValue("User Colors/User2.blue", lpal->colors[Colors::PCUSTOM2].blue);
+    settings.setValue("User Colors/User3.red", lpal->colors[Colors::PCUSTOM3].red);
+    settings.setValue("User Colors/User3.green", lpal->colors[Colors::PCUSTOM3].green);
+    settings.setValue("User Colors/User3.blue", lpal->colors[Colors::PCUSTOM3].blue);
+    settings.setValue("User Colors/User4.red", lpal->colors[Colors::PCUSTOM4].red);
+    settings.setValue("User Colors/User4.green", lpal->colors[Colors::PCUSTOM4].green);
+    settings.setValue("User Colors/User4.blue", lpal->colors[Colors::PCUSTOM4].blue);
+    settings.setValue("User Colors/User5.red", lpal->colors[Colors::PCUSTOM5].red);
+    settings.setValue("User Colors/User5.green", lpal->colors[Colors::PCUSTOM5].green);
+    settings.setValue("User Colors/User5.blue", lpal->colors[Colors::PCUSTOM5].blue);
+    settings.setValue("User Colors/User6.red", lpal->colors[Colors::PCUSTOM6].red);
+    settings.setValue("User Colors/User6.green", lpal->colors[Colors::PCUSTOM6].green);
+    settings.setValue("User Colors/User6.blue", lpal->colors[Colors::PCUSTOM6].blue);
+    settings.setValue("View Parameters/BackgroundColorRed", BackgroundColor.red);
+    settings.setValue("View Parameters/BackgroundColorGreen", BackgroundColor.green);
+    settings.setValue("View Parameters/BackgroundColorBlue", BackgroundColor.blue);
+    settings.setValue("View Parameters/LabelPicks", LabelPicks);
+    settings.setValue("View Parameters/LabelToggle", LabelToggle);
+    settings.setValue("View Parameters/LabelStyle", ATOMLABEL::defaultStyle());
+    settings.setValue("View Parameters/LabelSize", ATOMLABEL::defaultSize());
+    settings.setValue("View Parameters/LabelColorRed", ATOMLABEL::defaultRed());
+    settings.setValue("View Parameters/LabelColorGreen", ATOMLABEL::defaultGreen());
+    settings.setValue("View Parameters/LabelColorBlue", ATOMLABEL::defaultBlue());
 }
 
 void Application::WriteSecStr()
 {
-    config->WriteProfileInt("SecStr Colors", "Helix", Colors::sec_colors[Colors::HELIX]);
-    config->WriteProfileInt("SecStr Colors", "Sheet", Colors::sec_colors[Colors::SHEET]);
-    config->WriteProfileInt("SecStr Colors", "Coil", Colors::sec_colors[Colors::COIL]);
+    QSettings settings;
+    settings.setValue("SecStr Colors/Helix", Colors::sec_colors[Colors::HELIX]);
+    settings.setValue("SecStr Colors/Sheet", Colors::sec_colors[Colors::SHEET]);
+    settings.setValue("SecStr Colors/Coil", Colors::sec_colors[Colors::COIL]);
 }
 
 void Application::WriteAtomTypes()
 {
-    config->WriteProfileInt("Atom Colors", "NoEntries", Colors::atomcolors.size());
+    QSettings settings;
+    settings.setValue("Atom Colors/NoEntries", Colors::atomcolors.size());
     for (unsigned int i = 0; i < Colors::atomcolors.size(); i++)
     {
         std::string b = format("Color%d", i);
-        config->WriteProfileInt("Atom Colors", b.c_str(), Colors::findColorNumber(Colors::atomcolors[i]));
+        settings.setValue(("Atom Colors/" + b).c_str(), Colors::findColorNumber(Colors::atomcolors[i]));
         b = format("Name%d", i);
-        config->WriteProfileString("Atom Colors", b.c_str(), Colors::atomnames[i]);
+        settings.setValue(("Atom Colors/" + b).c_str(), Colors::atomnames[i].c_str());
     }
 }
 
 void Application::WriteBValues()
 {
-    config->WriteProfileInt("BValue Colors", "Color1", Colors::BValueColors[0]);
-    config->WriteProfileInt("BValue Colors", "Range1", Colors::BValueRanges[0]);
-    config->WriteProfileInt("BValue Colors", "Color2", Colors::BValueColors[1]);
-    config->WriteProfileInt("BValue Colors", "Range2", Colors::BValueRanges[1]);
-    config->WriteProfileInt("BValue Colors", "Color3", Colors::BValueColors[2]);
-    config->WriteProfileInt("BValue Colors", "Range3", Colors::BValueRanges[2]);
-    config->WriteProfileInt("BValue Colors", "Color4", Colors::BValueColors[3]);
-    config->WriteProfileInt("BValue Colors", "Range4", Colors::BValueRanges[3]);
-    config->WriteProfileInt("BValue Colors", "Color5", Colors::BValueColors[4]);
-    config->WriteProfileInt("BValue Colors", "Range5", Colors::BValueRanges[4]);
-    config->WriteProfileInt("BValue Colors", "Color6", Colors::BValueColors[5]);
-    config->WriteProfileInt("BValue Colors", "Range6", Colors::BValueRanges[5]);
-    config->WriteProfileInt("BValue Colors", "Color7", Colors::BValueColors[6]);
-    config->WriteProfileInt("BValue Colors", "Range7", Colors::BValueRanges[6]);
-    config->WriteProfileInt("BValue Colors", "Color8", Colors::BValueColors[7]);
-    config->WriteProfileInt("BValue Colors", "Range8", Colors::BValueRanges[7]);
-    config->WriteProfileInt("BValue Colors", "Color9", Colors::BValueColors[8]);
-    config->WriteProfileInt("BValue Colors", "Range9", Colors::BValueRanges[8]);
-    config->WriteProfileInt("BValue Colors", "Color10", Colors::BValueColors[9]);
-    config->WriteProfileInt("BValue Colors", "Range10", Colors::BValueRanges[9]);
+    QSettings settings;
+    settings.setValue("BValue Colors/Color1", Colors::BValueColors[0]);
+    settings.setValue("BValue Colors/Range1", Colors::BValueRanges[0]);
+    settings.setValue("BValue Colors/Color2", Colors::BValueColors[1]);
+    settings.setValue("BValue Colors/Range2", Colors::BValueRanges[1]);
+    settings.setValue("BValue Colors/Color3", Colors::BValueColors[2]);
+    settings.setValue("BValue Colors/Range3", Colors::BValueRanges[2]);
+    settings.setValue("BValue Colors/Color4", Colors::BValueColors[3]);
+    settings.setValue("BValue Colors/Range4", Colors::BValueRanges[3]);
+    settings.setValue("BValue Colors/Color5", Colors::BValueColors[4]);
+    settings.setValue("BValue Colors/Range5", Colors::BValueRanges[4]);
+    settings.setValue("BValue Colors/Color6", Colors::BValueColors[5]);
+    settings.setValue("BValue Colors/Range6", Colors::BValueRanges[5]);
+    settings.setValue("BValue Colors/Color7", Colors::BValueColors[6]);
+    settings.setValue("BValue Colors/Range7", Colors::BValueRanges[6]);
+    settings.setValue("BValue Colors/Color8", Colors::BValueColors[7]);
+    settings.setValue("BValue Colors/Range8", Colors::BValueRanges[7]);
+    settings.setValue("BValue Colors/Color9", Colors::BValueColors[8]);
+    settings.setValue("BValue Colors/Range9", Colors::BValueRanges[8]);
+    settings.setValue("BValue Colors/Color10", Colors::BValueColors[9]);
+    settings.setValue("BValue Colors/Range10", Colors::BValueRanges[9]);
 }
 
 
@@ -1052,9 +895,8 @@ void Application::SetMolimageHome(bool reset)
 
 void Application::SetShelxHome(bool reset)
 {
-    std::string tmp;
-    if (config->Read("SHELXHOME", tmp))
-        ShelxHome = tmp.c_str();
+    QSettings settings;
+    ShelxHome = settings.value("SHELXHOME").toString().toStdString();
     if (reset || ShelxHome.empty() || !QFileInfo(ShelxHome.c_str()).exists())
     {
         QString str = QFileDialog::getExistingDirectory(0, "Find the Shelx home directory");
@@ -1084,9 +926,7 @@ void Application::SetCrystalData(bool reset)
 {
     if (reset || CrystalData.empty())
     {
-        std::string tmp;
-        if (config->Read("CRYSTALDATA", tmp))
-            CrystalData = tmp.c_str();
+        CrystalData = QSettings().value("CRYSTALDATA").toString().toStdString();
         if (CrystalData.empty())
         {
 #ifndef _WIN32
@@ -1242,8 +1082,9 @@ std::string Application::getDictionary()
 
 void Application::toggleStereo()
 {
-    bool stereo = config->GetProfileInt("View Parameters", "stereo", 0) != 0;
-    config->WriteProfileInt("View Parameters", "stereo", !stereo);
+    QSettings settings;
+    bool stereo = settings.value("View Parameters/stereo", 0).toInt() != 0;
+    settings.setValue("View Parameters/stereo", !stereo);
 }
 
 long Application::GetPid()
@@ -1258,8 +1099,9 @@ long Application::GetPid()
 // requirement.
 void Application::toggleHardwareStereo()
 {
-    bool hardwareStereo = config->GetProfileInt("View Parameters", "hardwareStereo", 0) != 0;
-    config->WriteProfileInt("View Parameters", "hardwareStereo", !hardwareStereo);
+    QSettings settings;
+    bool hardwareStereo = settings.value("View Parameters/hardwareStereo", 0).toInt() != 0;
+    settings.setValue("View Parameters/hardwareStereo", !hardwareStereo);
     //  QMessageBox::warning(this, "Hardware Stereo Notice",
     //    "Changing the hardware stereo setting does not affect\n"
     //    "open document or dictionary windows. Re-open documents\n"
@@ -1406,30 +1248,18 @@ chemlib::MIMolDictionary *MIFitDictionary()
     return &MIFitGeomRefiner()->dict;
 }
 
-QSettings *MIGetQSettings()
-{
-    return ((MIConfigImpl*)MIConfig::Instance())->GetQSettings();
-}
-
 QString Application::latestFileBrowseDirectory(const QString &path)
 {
     const QString LATEST_FILE_BROWSE_DIRECTORY("latestFileBrowseDirectory");
-    QSettings *settings = MIGetQSettings();
-    if (settings)
+    QSettings settings;
+    if (path.isEmpty())
     {
-        if (path.isEmpty())
-        {
-            QString settingsPath = settings->value(LATEST_FILE_BROWSE_DIRECTORY).toString();
-            if (QFile::exists(settingsPath))
-            {
-                return settingsPath;
-            }
-        }
-        else
-        {
-            settings->setValue(LATEST_FILE_BROWSE_DIRECTORY, path);
-        }
+        QString settingsPath = settings.value(LATEST_FILE_BROWSE_DIRECTORY).toString();
+        if (QFile::exists(settingsPath))
+            return settingsPath;
     }
+    else
+        settings.setValue(LATEST_FILE_BROWSE_DIRECTORY, path);
     return path;
 }
 

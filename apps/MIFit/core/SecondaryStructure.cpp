@@ -6,6 +6,8 @@
 #include "RESIDUE.h"
 #include <chemlib/Monomer.h>
 
+#include <QtCore/QSettings>
+
 using namespace chemlib;
 
 SecondaryStructure::SecondaryStructure()
@@ -31,18 +33,13 @@ SecondaryStructure::~SecondaryStructure()
 bool SecondaryStructure::AddRibbonSegment(Residue *pFirstResidue, int nResidues)
 {
     RibbonSegment *pNewRSeg = new RibbonSegment();
-    double width;
-    double thickness;
-    bool square;
-    long red;
-    long green;
-    long blue;
-    MIConfig::Instance()->Read("Secondary Structure/tube/width", &width, 0.8);
-    MIConfig::Instance()->Read("Secondary Structure/tube/thickness", &thickness, 0.8);
-    MIConfig::Instance()->Read("Secondary Structure/tube/square", &square, false);
-    MIConfig::Instance()->Read("Secondary Structure/tube/red", &red, 0);
-    MIConfig::Instance()->Read("Secondary Structure/tube/green", &green, 0);
-    MIConfig::Instance()->Read("Secondary Structure/tube/blue", &blue, 255);
+    QSettings settings;
+    double width = settings.value("Secondary Structure/tube/width", 0.8).toDouble();
+    double thickness = settings.value("Secondary Structure/tube/thickness", 0.8).toDouble();
+    bool square = settings.value("Secondary Structure/tube/square", false).toBool();
+    long red = settings.value("Secondary Structure/tube/red", 0).toInt();
+    long green = settings.value("Secondary Structure/tube/green", 0).toInt();
+    long blue = settings.value("Secondary Structure/tube/blue", 255).toInt();
 
     pNewRSeg->RibbonProfile(width, thickness, square, 8, 10);
     pNewRSeg->SetColor(
@@ -76,16 +73,13 @@ bool SecondaryStructure::AddSchematic(chemlib::MIMoleculeBase *mol,
                                       std::vector<std::pair<chemlib::Residue*, chemlib::Residue*> > &pRandom)
 {
 
+    QSettings settings;
     //First do the helices
     unsigned int i;
-    double radius;
-    long red;
-    long green;
-    long blue;
-    MIConfig::Instance()->Read("Secondary Structure/helix/radius", &radius, 2.5);
-    MIConfig::Instance()->Read("Secondary Structure/helix/red", &red, 255);
-    MIConfig::Instance()->Read("Secondary Structure/helix/green", &green, 0);
-    MIConfig::Instance()->Read("Secondary Structure/helix/blue", &blue, 0);
+    double radius = settings.value("Secondary Structure/helix/radius", 2.5).toDouble();
+    long red = settings.value("Secondary Structure/helix/red", 255).toInt();
+    long green = settings.value("Secondary Structure/helix/green", 0).toInt();
+    long blue = settings.value("Secondary Structure/helix/blue", 0).toInt();
     for (i = 0; i < pHelix.size(); i++)
     {
         Helix *pNewHelix = new Helix(radius);
@@ -100,15 +94,12 @@ bool SecondaryStructure::AddSchematic(chemlib::MIMoleculeBase *mol,
     }
 
     //Now do the beta sheets
-    double width;
-    double thickness;
-    bool square;
-    MIConfig::Instance()->Read("Secondary Structure/sheet/width", &width, 2.0);
-    MIConfig::Instance()->Read("Secondary Structure/sheet/thickness", &thickness, 1.0);
-    MIConfig::Instance()->Read("Secondary Structure/sheet/square", &square, true);
-    MIConfig::Instance()->Read("Secondary Structure/sheet/red", &red, 255);
-    MIConfig::Instance()->Read("Secondary Structure/sheet/green", &green, 255);
-    MIConfig::Instance()->Read("Secondary Structure/sheet/blue", &blue, 0);
+    double width = settings.value("Secondary Structure/sheet/width", 2.0).toDouble();
+    double thickness = settings.value("Secondary Structure/sheet/thickness", 1.0).toDouble();
+    bool square = settings.value("Secondary Structure/sheet/square", true).toBool();
+    red = settings.value("Secondary Structure/sheet/red", 255).toInt();
+    green = settings.value("Secondary Structure/sheet/green", 255).toInt();
+    blue = settings.value("Secondary Structure/sheet/blue", 0).toInt();
     for (i = 0; i < pSheet.size(); i++)
     {
         //Ribbon stuff expexts start and number
@@ -147,12 +138,13 @@ bool SecondaryStructure::AddSchematic(chemlib::MIMoleculeBase *mol,
     }
 
     //Now do the turns
-    MIConfig::Instance()->Read("Secondary Structure/turn/width", &width, 0.9);
-    MIConfig::Instance()->Read("Secondary Structure/turn/thickness", &thickness, 0.9);
-    MIConfig::Instance()->Read("Secondary Structure/turn/square", &square, false);
-    MIConfig::Instance()->Read("Secondary Structure/turn/red", &red, 0);
-    MIConfig::Instance()->Read("Secondary Structure/turn/green", &green, 0);
-    MIConfig::Instance()->Read("Secondary Structure/turn/blue", &blue, 255);
+    width = settings.value("Secondary Structure/turn/width", 0.9).toDouble();
+    thickness = settings.value("Secondary Structure/turn/thickness", 0.9).toDouble();
+    square = settings.value("Secondary Structure/turn/square", false).toBool();
+    red = settings.value("Secondary Structure/turn/red", 0).toInt();
+    green = settings.value("Secondary Structure/turn/green", 0).toInt();
+    blue = settings.value("Secondary Structure/turn/blue", 255).toInt();
+
     for (i = 0; i < pTurn.size(); i++)
     {
         //Ribbon stuff expexts start and number
@@ -192,12 +184,12 @@ bool SecondaryStructure::AddSchematic(chemlib::MIMoleculeBase *mol,
     }
 
     //Now do the random coil
-    MIConfig::Instance()->Read("Secondary Structure/random/width", &width, 1.8);
-    MIConfig::Instance()->Read("Secondary Structure/random/thickness", &thickness, 0.9);
-    MIConfig::Instance()->Read("Secondary Structure/random/square", &square, false);
-    MIConfig::Instance()->Read("Secondary Structure/random/red", &red, 0);
-    MIConfig::Instance()->Read("Secondary Structure/random/green", &green, 255);
-    MIConfig::Instance()->Read("Secondary Structure/random/blue", &blue, 0);
+    width = settings.value("Secondary Structure/random/width", 1.8).toDouble();
+    thickness = settings.value("Secondary Structure/random/thickness", 0.9).toDouble();
+    square = settings.value("Secondary Structure/random/square", false).toBool();
+    red = settings.value("Secondary Structure/random/red", 0).toInt();
+    green = settings.value("Secondary Structure/random/green", 255).toInt();
+    blue = settings.value("Secondary Structure/random/blue", 0).toInt();
     for (i = 0; i < pRandom.size(); i++)
     {
         //Ribbon stuff expexts start and number

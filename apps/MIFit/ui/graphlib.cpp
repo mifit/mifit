@@ -414,7 +414,7 @@ void GraphWindow::myRenderText(int x, int y, const QString &str, const QFont &fo
     {
         firsttime = false;
         use_alternate_rendering =
-            MIConfig::Instance()->GetProfileInt("View Parameters", "AlternateTextRendering", 0) != 0;
+            QSettings().value("View Parameters/AlternateTextRendering", false).toBool();
     }
 
     if (use_alternate_rendering)
@@ -469,7 +469,7 @@ void GraphWindow::myRenderText(double x, double y, double z, const QString &str,
     {
         firsttime = false;
         use_alternate_rendering =
-            MIConfig::Instance()->GetProfileInt("View Parameters", "AlternateTextRendering", 0) != 0;
+            QSettings().value("View Parameters/AlternateTextRendering", false);
     }
 
     if (use_alternate_rendering)

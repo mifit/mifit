@@ -1,26 +1,28 @@
 #include "core/corelib.h"
 
+#include <QSettings>
 #include "RenderStyle.h"
 
-const RenderStyle*RenderStyle::defaultLine = NULL;
-const RenderStyle*RenderStyle::defaultBallAndLine = NULL;
-const RenderStyle*RenderStyle::defaultStick = NULL;
-const RenderStyle*RenderStyle::defaultBallAndStick = NULL;
-const RenderStyle*RenderStyle::defaultBall = NULL;
+const RenderStyle *RenderStyle::defaultLine = NULL;
+const RenderStyle *RenderStyle::defaultBallAndLine = NULL;
+const RenderStyle *RenderStyle::defaultStick = NULL;
+const RenderStyle *RenderStyle::defaultBallAndStick = NULL;
+const RenderStyle *RenderStyle::defaultBall = NULL;
 
-const RenderStyle*RenderStyle::line = NULL;
-const RenderStyle*RenderStyle::ballAndLine = NULL;
-const RenderStyle*RenderStyle::stick = NULL;
-const RenderStyle*RenderStyle::ballAndStick = NULL;
-const RenderStyle*RenderStyle::ball = NULL;
+const RenderStyle *RenderStyle::line = NULL;
+const RenderStyle *RenderStyle::ballAndLine = NULL;
+const RenderStyle *RenderStyle::stick = NULL;
+const RenderStyle *RenderStyle::ballAndStick = NULL;
+const RenderStyle *RenderStyle::ball = NULL;
 
 bool RenderStyle::createDefaults()
 {
     float defaultBallSize = 10.0f / 100.0f;
     float defaultStickPercent = defaultBallSize * 33.0f / 100.0f;
-    float ballPercent = (float) MIConfig::Instance()->GetProfileInt("View Parameters", "ballsize", 10) / 100.0f;
+    QSettings settings;
+    float ballPercent = settings.value("View Parameters/ballsize", 10).toInt() / 100.0f;
     float stickPercent = ballPercent
-                         * (float) MIConfig::Instance()->GetProfileInt("View Parameters", "cylindersize", 33) / 100.0f;
+                         * settings.value("View Parameters/cylindersize", 33).toInt() / 100.0f;
 
     RenderStyle *style = new RenderStyle;
     style->setAtomBall(false);

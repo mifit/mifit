@@ -1,6 +1,7 @@
 #include <QApplication>
 #include <QFileDialog>
 #include <QMenu>
+#include <QSettings>
 #include <QVBoxLayout>
 #include <set>
 
@@ -243,8 +244,7 @@ void DisplayTree::OnItemPressed(QTreeWidgetItem *id, int)
     QAction *autoShowImportErrorsAction = menu->addAction("Auto-show imported errors", this,
                                                           SLOT(AutoShowErrors()));
     autoShowImportErrorsAction->setCheckable(true);
-    autoShowImportErrorsAction->setChecked(
-                MIConfig::Instance()->GetProfileInt("DisplayView", "autoShowError", 1) != 0);
+    autoShowImportErrorsAction->setChecked(QSettings().value("DisplayView/autoShowError", 1).toInt() != 0);
 
     if (!(hasAnnotationList || hasAtomLabelList || hasAnnotation || hasAtomLabel))
     {
@@ -551,9 +551,10 @@ std::string toErrorDescription(const std::string &s)
 
 void DisplayTree::AutoShowErrors()
 {
-    bool state = MIConfig::Instance()->GetProfileInt("DisplayView", "autoShowError", 1) != 0;
+    QSettings settings;
+    bool state = settings.value("DisplayView/autoShowError", 1).toInt() != 0;
     state = !state;
-    MIConfig::Instance()->WriteProfileInt("DisplayView", "autoShowError", (int)state);
+    settings.setValue("DisplayView/autoShowError", state ? 1 : 0);
 }
 
 void DisplayTree::ImportErrors()

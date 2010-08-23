@@ -3473,7 +3473,7 @@ QWidget*ModelsView::createPanelForView(MIGLWidget *view, QWidget *parent)
     toolButton->setToolTip("Sync with selection");
     toolButton->setIcon(QIcon(QPixmap(synced_xpm)));
     toolButton->setCheckable(true);
-    toolButton->setChecked(MIConfig::Instance()->GetProfileInt("ModelsView", "syncView", 1) != 0);
+    toolButton->setChecked(QSettings().value("ModelsView/syncView", true).toBool());
     connect(toolButton, SIGNAL(toggled(bool)), this, SLOT(updateSyncView(bool)));
 
     panelToToolButton[panel] = toolButton;
@@ -3511,9 +3511,9 @@ QWidget*ModelsView::createPanelForView(MIGLWidget *view, QWidget *parent)
     connect(splitter, SIGNAL(splitterMoved(int, int)),
             this, SLOT(OnSplitterChanged(int, int)));
 
-    QSettings *settings = MIGetQSettings(); // could use MIConfig (it's the same file), but this api is easier here
-    if (settings->contains("ModelsViewSplitter"))
-        splitter->restoreState(settings->value("ModelsViewSplitter", splitter->saveState()).toByteArray());
+    QSettings settings;
+    if (settings.contains("ModelsViewSplitter"))
+        splitter->restoreState(settings.value("ModelsViewSplitter", splitter->saveState()).toByteArray());
 
     connect(gotoButton, SIGNAL(clicked()), this, SLOT(OnGoToResidueReturnPressed()));
     connect(goToResidueLineEdit, SIGNAL(returnPressed()), this, SLOT(OnGoToResidueReturnPressed()));
@@ -3564,7 +3564,7 @@ void ModelsView::updateSyncView(bool state)
         ++iter;
         tb->setChecked(syncView);
     }
-    MIConfig::Instance()->WriteProfileInt("ModelsView", "syncView", syncView);
+    QSettings().setValue("ModelsView/syncView", syncView);
 }
 
 void ModelsView::OnSplitterChanged(int, int)
@@ -3575,8 +3575,8 @@ void ModelsView::OnSplitterChanged(int, int)
         //printf("Splitter changed signal not from splitter\n");
         return;
     }
-    QSettings *settings = MIGetQSettings(); // could use MIConfig (it's the same file), but this api is easier here
-    settings->setValue("ModelsViewSplitter", splitter->saveState());
+    QSettings settings;
+    settings.setValue("ModelsViewSplitter", splitter->saveState());
 }
 
 void ModelsView::resizeEvent(QResizeEvent *event)
