@@ -23,26 +23,6 @@ bool endsWith(const std::string &str, const char *substr);
  */
 const char *file_extension(const char *file);
 
-/**
- * Returns the current directory.
- */
-std::string getCurrentDirectory();
-
-/**
- * Returns whether the given path is absolute.
- */
-bool isAbsolutePath (const std::string &path);
-
-/**
- * Converts the given path to an absolute path using the current directory.
- */
-std::string toAbsolutePath(const char *path);
-
-/**
- * Joins two paths.
- */
-std::string joinPaths(const char *p1, const char *p2);
-
 #ifdef DEBUG
 #define MI_ASSERT(expr) \
     ((expr) \
