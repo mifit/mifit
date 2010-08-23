@@ -36,9 +36,6 @@ GraphWindow::GraphWindow(QWidget *parent)
     graphstyle = 0;
     bigFont = QFont();
     bigFont.setWeight(QFont::Light);
-    mouseover_handler = 0;
-    pick_handler = 0;
-    key_handler = 0;
     rubber_x1 = rubber_x2 = rubber_y1 = rubber_y2 = 0.0f;
     _last_close_id = -1;
 
@@ -60,28 +57,10 @@ int Theight(QFont &font)
 
 
 
-void GraphWindow::RegisterMouseoverHandler(GraphMouseoverHandlerBase *mo)
-{
-    mouseover_handler = mo;
-}
-
-void GraphWindow::RegisterPickHandler(GraphPickHandlerBase *ph)
-{
-    pick_handler = ph;
-}
-
-void GraphWindow::RegisterKeyHandler(GraphKeyHandlerBase *kh)
-{
-    key_handler = kh;
-}
-
 void GraphWindow::keyPressEvent(QKeyEvent *key_evt)
 {
-    if (key_handler)
-    {
-        (*key_handler)(key_evt->key(),
-                       (key_evt->modifiers() & (Qt::ControlModifier | Qt::ShiftModifier | Qt::AltModifier)));
-    }
+    emit keyPress(key_evt->key(),
+                  (key_evt->modifiers() & (Qt::ControlModifier | Qt::ShiftModifier | Qt::AltModifier)));
 }
 
 
@@ -144,10 +123,7 @@ void GraphWindow::finishMouseEvent(QMouseEvent *evt, float fx, float fy)
 
     if (close_pts.size())
     {
-        if (mouseover_handler)
-        {
-            mouseover_handler->Mouseover(close_ids[closest]);
-        }
+        emit mouseOver(close_ids[closest]);
         if (evt->button() & Qt::LeftButton)
         {
             if (_last_close_id != -1 && _last_close_id < (int)data.size())
@@ -156,10 +132,7 @@ void GraphWindow::finishMouseEvent(QMouseEvent *evt, float fx, float fy)
             }
             _last_close_id = close_ids[closest];
             data[_last_close_id].flag |= asplib::GR_BOX;
-            if (pick_handler)
-            {
-                (*pick_handler)(close_pts[closest]);
-            }
+                emit pick(close_pts[closest]);
         }
     }
 }

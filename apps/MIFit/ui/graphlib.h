@@ -1,8 +1,11 @@
 #ifndef graph_HEADER
 #define graph_HEADER
 
-#include <vector>
 #include <string>
+#include <QFont>
+#include <QGLWidget>
+#include <vector>
+
 
 class GraphColor
 {
@@ -43,42 +46,6 @@ public:
     int width;
 };
 
-
-
-class GraphPickHandlerBase
-{
-public:
-    virtual ~GraphPickHandlerBase()
-    {
-    }
-
-    virtual void operator()(const GR_POINT&) = 0;
-};
-class GraphKeyHandlerBase
-{
-public:
-    virtual ~GraphKeyHandlerBase()
-    {
-    }
-
-    virtual void operator()(int keycode, bool shift) = 0;
-};
-
-class GraphMouseoverHandlerBase
-{
-public:
-    virtual ~GraphMouseoverHandlerBase()
-    {
-    }
-
-    virtual void Mouseover(int id) = 0;
-};
-
-
-
-#include <QFont>
-#include <QGLWidget>
-
 class GraphWindow : public QGLWidget
 {
     Q_OBJECT
@@ -101,10 +68,6 @@ public:
     void mouseMoveEvent(QMouseEvent *e);
 
 
-    void RegisterMouseoverHandler(GraphMouseoverHandlerBase *mouseover_handler);
-    void RegisterPickHandler(GraphPickHandlerBase *pick_handler);
-    void RegisterKeyHandler(GraphKeyHandlerBase *key_handler);
-
     const std::vector<GR_POINT>&GetData()
     {
         return data;
@@ -112,6 +75,11 @@ public:
 
     void graph_push_scale(double x1, double x2, double y1, double y2);
     void graph_pop_scale();
+
+signals:
+    void keyPress(int keycode, bool shift);
+    void pick(const GR_POINT &point);
+    void mouseOver(int id);
 
 private:
     void myRenderText(int x, int y, const QString &str,
@@ -123,9 +91,6 @@ private:
     void finishMouseEvent(QMouseEvent *e, float fx, float fy);
     void DrawMultiLineString(float x, float y, const std::string &c);
 
-    GraphMouseoverHandlerBase *mouseover_handler;
-    GraphPickHandlerBase *pick_handler;
-    GraphKeyHandlerBase *key_handler;
     std::vector<GR_POINT> data;
     std::string xlabel;
     int xlabelsize;     /* not currently implemented */
