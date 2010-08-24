@@ -4,6 +4,7 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QMenu>
+#include <QMessageBox>
 #include <QSettings>
 #include "ui/Application.h"
 #include "BatchJob.h"
@@ -12,6 +13,66 @@
 
 using namespace std;
 
+namespace
+{
+    bool testPyQt(QString pythonPath)
+    {
+        QProcess python;
+        python.start(pythonPath, QStringList() << "-");
+        if (python.waitForStarted())
+        {
+            python.write("from PyQt4 import QtCore, Qt\n");
+            python.write("print 'Qt', QtCore.QT_VERSION_STR\n");
+            python.write("print 'PyQt', QtCore.PYQT_VERSION_STR\n");
+            python.closeWriteChannel();
+            if (python.waitForFinished())
+            {
+                QString versions = python.readAll();
+                if (versions.contains("Qt 4.6") && versions.contains("PyQt 4.7"))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    QString checkPyQtPath(QString dir)
+    {
+#ifdef Q_OS_WIN32
+        const QString exe = "python.exe";
+#else
+        const QString exe = "python";
+#endif
+        QDir d(dir);
+        if (d.exists(exe))
+        {
+            QString exePath = d.absoluteFilePath(exe);
+            if (testPyQt(exePath))
+                return exePath;
+        }
+        return QString::null;
+    }
+
+    QString findPyQt()
+    {
+        QString pythonExePath;
+#ifdef Q_OS_WIN32
+        const QString separator = ";";
+#else
+        const QString separator = ":";
+#endif
+
+        QString pathEnv = getenv("PATH");
+        QStringList paths = pathEnv.split(separator);
+        foreach (QString p, paths)
+        {
+            QString exePath = checkPyQtPath(p);
+            if (!exePath.isEmpty())
+                return exePath;
+        }
+        return QString::null;
+    }
+
+} // anonymous namespace
 
 QString BatchJobManager::pythonExe()
 {
@@ -23,31 +84,27 @@ QString BatchJobManager::pythonExe()
     }
     if (pythonExePath.isEmpty() || !QFile::exists(pythonExePath))
     {
+        pythonExePath = findPyQt();
+
 #ifdef Q_OS_WIN32
-        QString separator = ";";
-        QString exe = "python.exe";
         QString filters = "Programs (*.exe);;All files (*.*)";
 #else
-        QString separator = ":";
-        QString exe = "python";
-        QString filters = "All files (*)";
+        const QString filters = "All files (*)";
 #endif
-        QString pathEnv = getenv("PATH");
-        QStringList paths = pathEnv.split(separator);
-        foreach (QString p, paths)
-        {
-            QDir dir(p);
-            if (dir.exists(exe))
-            {
-                pythonExePath = dir.absoluteFilePath(exe);
-                break;
-            }
-        }
-        if (pythonExePath.isEmpty())
+        while (pythonExePath.isEmpty())
         {
             QString fileName = QFileDialog::getOpenFileName(NULL, "Select Python Executable",
                                                             "/", filters);
-            if (!fileName.isEmpty())
+            if (!testPyQt(fileName))
+            {
+                if (QMessageBox::warning(0, "Invalid Python",
+                                         "MIFit requires Python with PyQt4 installed\n"
+                                         "  Python: http://python.org/\n"
+                                         "  PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt",
+                                         QMessageBox::Retry | QMessageBox::Abort) != QMessageBox::Retry)
+                    break;
+            }
+            else
                 pythonExePath = fileName;
         }
 
