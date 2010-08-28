@@ -5,7 +5,7 @@
 
 class GeneralPreferences;
 class EnvironmentPreferences;
-class ContourOptions;
+class ContourOptionsWidget;
 class CustomJobPreferences;
 
 class PreferencesDialog : public QDialog, public Ui::PreferencesDialog
@@ -21,7 +21,7 @@ public:
 private:
     GeneralPreferences *generalPrefs;
     EnvironmentPreferences *environmentPrefs;
-    ContourOptions *contourOptions;
+    ContourOptionsWidget *contourOptions;
     CustomJobPreferences *customJobPrefs;
 };
 

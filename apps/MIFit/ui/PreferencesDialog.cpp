@@ -1,7 +1,7 @@
 #include "PreferencesDialog.h"
 #include "GeneralPreferences.h"
 #include "EnvironmentPreferences.h"
-#include "ContourOptions.h"
+#include "ContourOptionsWidget.h"
 #include "CustomJobPreferences.h"
 
 PreferencesDialog::PreferencesDialog(QWidget *parent)
@@ -18,7 +18,7 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
 
     generalPrefs = new GeneralPreferences(this);
     environmentPrefs = new EnvironmentPreferences(this);
-    contourOptions = new ContourOptions(this, true);
+    contourOptions = new ContourOptionsWidget(this, true);
     customJobPrefs = new CustomJobPreferences(this);
 
     stackedWidget->addWidget(generalPrefs);

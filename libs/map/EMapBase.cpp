@@ -702,9 +702,8 @@ EMapBase::EMapBase()
     orthgrid = false;
     gridspacing = 1.0;
     UseNCR = false;
-    settings = new MapSettingsBase();
-    mapheader = new CMapHeaderBase();
-    settings->load();
+    settings = new MapSettingsBase;
+    mapheader = new CMapHeaderBase;
     mapmin = -250;
     mapmax = 300;
     changed = false;

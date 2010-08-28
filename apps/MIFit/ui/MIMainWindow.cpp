@@ -208,7 +208,7 @@ MIMainWindow::MIMainWindow()
 
 MIMainWindow::~MIMainWindow()
 {
-    for (int i = 0; i < imhCount; ++i)
+    for (size_t i = 0; i < imhCount; ++i)
         delete cursors[i];
     MIMapFreeScatteringFactorTables();
     delete JobManager;

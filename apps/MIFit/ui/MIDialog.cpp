@@ -18,7 +18,7 @@
 #include "MIColorPickerDlg.h"
 #include "SelectCrystal.h"
 #include "SmilesDialog.h"
-#include "ContourOptions.h"
+#include "ContourOptionsWidget.h"
 #include "RefinementOptionsDialog.h"
 #include "PhaseFileLoadDialog.h"
 #include "BValueColors.h"

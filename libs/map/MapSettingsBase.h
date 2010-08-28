@@ -38,11 +38,7 @@ public:
     float mapmin;
     float mapmax;
 
-    virtual void save()
-    {
-    }
-
-    virtual void load();
+    MapSettingsBase();
     virtual ~MapSettingsBase()
     {
     }
