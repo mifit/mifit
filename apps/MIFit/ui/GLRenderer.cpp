@@ -62,7 +62,8 @@ GLRenderer::GLRenderer()
       joinBondsOfSameColor(true),
       showBondOrders(false),
       fontSize(ATOMLABEL::defaultSize()),
-      viewVectorSet(false)
+      viewVectorSet(false),
+      sphereList(0)
 {
 
     popStackImage = new TargaImage(Application::instance()->GetMolimageHome() + "/data/images/popStack.tga");
@@ -145,6 +146,8 @@ void GLRenderer::initializeForRender()
 
     glEnable(GL_COLOR_MATERIAL);
     glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+
+    initSphere(16);
 }
 
 void GLRenderer::renderLight()
@@ -1701,6 +1704,25 @@ void GLRenderer::setIdentity(float rotation[])
     rotation[15] = 1.0f;
 }
 
+void GLRenderer::initSphere(int tess)
+{
+    if (sphereList)
+        return;
+
+    sphereList = glGenLists(1);
+    if (!quad[getContext()])
+        quad[getContext()] = gluNewQuadric();
+
+    glNewList(sphereList, GL_COMPILE);
+
+    //  static float center[] = { 0.0, 0.0, 0.0 };
+    //  DrawSphere2(0, center, 1.0, tess);
+    gluQuadricNormals(quad[getContext()], GLU_SMOOTH);
+    gluSphere(quad[getContext()], 1.0, tess, tess);
+
+    glEndList();
+}
+
 void GLRenderer::DrawSphere(float c[3], float radius, int tess)
 {
 
@@ -1710,10 +1732,15 @@ void GLRenderer::DrawSphere(float c[3], float radius, int tess)
     glPushMatrix();
     glTranslated(c[0], c[1], c[2]);
     glScaled(radius, radius, radius);
-    //  static float center[] = { 0.0, 0.0, 0.0 };
-    //  DrawSphere2(0, center, 1.0, tess);
-    gluQuadricNormals(quad[getContext()], GLU_SMOOTH);
-    gluSphere(quad[getContext()], 1.0, tess, tess);
+    if (pickingEnabled)
+    {
+        //  static float center[] = { 0.0, 0.0, 0.0 };
+        //  DrawSphere2(0, center, 1.0, tess);
+        gluQuadricNormals(quad[getContext()], GLU_SMOOTH);
+        gluSphere(quad[getContext()], 1.0, tess, tess);
+    }
+    else
+        glCallList(sphereList);
 
     glPopMatrix();
 }

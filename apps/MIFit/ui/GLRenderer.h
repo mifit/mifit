@@ -85,6 +85,9 @@ class GLRenderer
 
     bool viewVectorSet;
 
+    GLuint sphereList;
+    void initSphere(int tess);
+
     void drawBondLine(const mi::math::Vector3<float> &pos1, int color1, const mi::math::Vector3<float> &pos2, int color2, float lineWidth);
     void drawBondCylinder(const mi::math::Vector3<float> &pos1, int color1, const mi::math::Vector3<float> &pos2, int color2, float radius, bool capped);
 
