@@ -771,7 +771,7 @@ void MIGLWidget::paintGL()
             if (Models->CurrentItem()->modelnumber == 0)
             {
                 // no number if not from .mlw file
-                if (Models->NumberItems() == 1 || QMessageBox::question(this, "Center view?", "Center view on new molecule?", QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+                if (Models->NumberItems() == 1)
                 {
                     std::string resshow;
                     std::string at("*");
