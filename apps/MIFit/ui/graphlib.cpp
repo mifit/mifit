@@ -271,6 +271,7 @@ void GraphWindow::resizeGL(int w, int h)
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(0, (GLint)w, (GLint)h, 0, -1, 1);
+    glMatrixMode(GL_MODELVIEW);
 }
 
 void GraphWindow::redraw()
@@ -451,6 +452,7 @@ void GraphWindow::myRenderText(int x, int y, const QString &str, const QFont &fo
         glPopMatrix();
         glMatrixMode(GL_PROJECTION);
         glPopMatrix();
+        glMatrixMode(GL_MODELVIEW);
         glPopAttrib();
         return;
     }
