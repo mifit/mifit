@@ -555,6 +555,9 @@ void drawCircle (int x, int y, int r)
 
 void GraphWindow::paintGL()
 {
+    if (!isVisible())
+        return;
+
     char buff[200];
     int xorigin, yorigin, xend, yend;
     float xint, yint, x1, y1, x2, y2;

@@ -157,12 +157,13 @@ void GLOverviewCanvas::createAlphaCarbonTrace()
  */
 void GLOverviewCanvas::paintGL()
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    if (!isVisible())
+        return;
 
     if (GetView() == NULL)
-    {
         return;
-    }
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     createAlphaCarbonTrace();
 
