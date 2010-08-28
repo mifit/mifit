@@ -4,6 +4,7 @@
 #include <cmath>
 #include <QGLWidget>
 #include <QMdiSubWindow>
+#include <QTime>
 #include <QVBoxLayout>
 
 #include <math/Quaternion.h>
@@ -98,6 +99,9 @@ class MIGLWidget : public QGLWidget
     int m_timer;
     int ClockTick;
     int TimerOn;
+
+    QTime time;
+
 public:
     void timerEvent(QTimerEvent *e);
 private:

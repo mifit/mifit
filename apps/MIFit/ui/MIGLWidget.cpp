@@ -897,7 +897,10 @@ void MIGLWidget::paintGL()
     scene->renderer->setViewVector(camera->getViewVector());
     scene->showSymmetryAsBackbone = link_symm;
     MISurfaceSetCurrentView(this);
+    time.start();
     stereoView->render(*scene);
+    int elapsedTime = time.elapsed();
+
     //  prepareAtomPicking();
     //  stereoView->render(*atomPickingRenderable);
     //  prepareBondPicking();
@@ -910,6 +913,10 @@ void MIGLWidget::paintGL()
     viewpoint->Yup = SaveYup;
 
     glFlush();
+
+    QString framesPerSecond = QString("render in %1 ms")
+                              .arg(elapsedTime);
+    Logger::debug(framesPerSecond.toAscii().constData());
 
     is_drawing = false;
 }
@@ -7313,7 +7320,7 @@ bool MIGLWidget::SaveModelFile(Molecule *model, const char *description)
     s.path = pathname;
     s.model = model;
     {
-        time_t t = time(0);
+        time_t t = ::time(0);
         s.time = ctime(&t);
     }
     s.description = description;
@@ -11604,7 +11611,7 @@ void MIGLWidget::Serialize(XMLArchive &ar)
     ViewPoint *viewpoint = GetViewPoint();
     std::string date;
     {
-        time_t t = time(0);
+        time_t t = ::time(0);
         date = ctime(&t);
     }
     std::list<Molecule*>::iterator node = Models->begin();
