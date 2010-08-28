@@ -4249,14 +4249,12 @@ void MIGLWidget::OnFitLsqsuperpose()
         return;
     }
 
-    static LSQFitDialog dlg(this);
-    dlg.setWindowTitle("Least-Squares Superposition");
-    dlg.InitializeFromData();
-    if (dlg.exec() != QDialog::Accepted)
-    {
+    static LSQFitDialog *dlg = new LSQFitDialog(this);
+    dlg->setWindowTitle("Least-Squares Superposition");
+    dlg->InitializeFromData();
+    if (dlg->exec() != QDialog::Accepted)
         return;
-    }
-    LSQFitDialog::Data data =  dlg.GetData();
+    LSQFitDialog::Data data =  dlg->GetData();
 
     Molecule *source = findMolecule(GetDisplaylist(), data.sourceModel);
     Molecule *target = findMolecule(GetDisplaylist(), data.targetModel);
