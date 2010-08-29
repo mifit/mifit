@@ -126,7 +126,7 @@ bool EMap::ContourLevels()
         return false;
     }
     co->GetData(data);
-
+    *settings = data;
     SetMapLinewidth(settings->maplinewidth);
     //settings->save(); // No longer relevant.  only the preferences are saved
     mapContourLevelsChanged(this);
