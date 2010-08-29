@@ -1114,9 +1114,7 @@ void GLRenderer::DrawVus(std::vector<PLINE> &Vus, int w)
 void GLRenderer::drawLines(std::vector<PLINE> &Vus, int w, bool withDepthTest)
 {
     if (Vus.size() <= 0)
-    {
         return;
-    }
 
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT | GL_LIGHTING_BIT | GL_COLOR_BUFFER_BIT | GL_LINE_BIT);
     glEnable(GL_BLEND);
@@ -1130,16 +1128,30 @@ void GLRenderer::drawLines(std::vector<PLINE> &Vus, int w, bool withDepthTest)
     glDisable(GL_LIGHTING);
 
     glLineWidth(w);
+    QVector<QVector3D> vertices;
+    QVector<QVector4D> colors;
+    vertices.reserve(Vus.size()*2);
+    colors.reserve(Vus.size()*2);
+
     for (unsigned int i = 0; i < Vus.size(); i++)
     {
         APOINT &a1 = Vus[i].p1;
         APOINT &a2 = Vus[i].p2;
-        glColor4fv(getColor(a1.color));
-        glBegin(GL_LINES);
-        glVertex3f(a1.x, a1.y, a1.z);
-        glVertex3f(a2.x, a2.y, a2.z);
-        glEnd();
+        vertices.append(QVector3D(a1.x, a1.y, a1.z));
+        QVector4D color(getColorVector(a1.color, false));
+        colors.append(color);
+        vertices.append(QVector3D(a2.x, a2.y, a2.z));
+        colors.append(color);
     }
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_COLOR_ARRAY);
+    glVertexPointer(3, GL_FLOAT, 0, vertices.constData());
+    glColorPointer(4, GL_FLOAT, 0, colors.constData());
+    glDrawArrays(GL_LINES, 0, vertices.size());
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_COLOR_ARRAY);
+
     glPopAttrib();
 }
 
