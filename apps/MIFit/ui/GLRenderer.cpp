@@ -12,6 +12,7 @@
 #include "core/corelib.h"
 #include <chemlib/Monomer.h>
 #include "GLRenderer.h"
+#include "BondRenderer.h"
 #include "TargaImage.h"
 #include "EMap.h"
 #include <climits>
@@ -1158,6 +1159,19 @@ float*GLRenderer::getColor(int colorIndex, bool adjustForCurrentModel)
     return color;
 }
 
+QVector4D GLRenderer::getColorVector(int colorIndex, bool adjustForCurrentModel)
+{
+    float scaling = 1.0f;
+    if (adjustForCurrentModel && !currentModel)
+        scaling = 1.0 - amountToDimNonactiveModels;
+    int c = PaletteIndex(colorIndex);
+    return QVector4D(Colors::RPallette[c] / 255.0f * scaling,
+                     Colors::GPallette[c] / 255.0f * scaling,
+                     Colors::BPallette[c] / 255.0f * scaling,
+                     1.0f);
+}
+
+
 float*GLRenderer::getColor(PaletteColor c, bool adjustForCurrentModel)
 {
     static float color[4];
@@ -1206,6 +1220,9 @@ void GLRenderer::drawBonds(std::vector<Bond> &bonds, int *color)
     int lineDepthCueSteps = 4;
     float lineDepthCueIncrement = (frustum->getFarClipping() - frustum->getNearClipping()) / lineDepthCueSteps;
     float lineDepthCueStart = frustum->getNearClipping();
+
+    // Map of bond renderers by line width
+    QMap<float, BondRenderer> bondRenders;
     std::vector<Bond>::iterator bondsIter = bonds.begin();
     std::vector<Bond>::iterator bondsEnd = bonds.end();
     Vector3<float> pos1;
@@ -1319,7 +1336,11 @@ void GLRenderer::drawBonds(std::vector<Bond> &bonds, int *color)
                     if (bondOrder == NORMALBOND || bondOrder == SINGLEBOND || bondOrder == TRIPLEBOND
                         || bondOrder == IONICBOND || bondOrder == METALLIGANDBOND)
                     {
-                        drawBondLine(pos1, c1, pos2, c2, lineWidth);
+                        if (!pickingEnabled)
+                            bondRenders[lineWidth].addBond(QVector3D(pos1.x, pos1.y, pos1.z), getColorVector(c1, true),
+                                                          QVector3D(pos2.x, pos2.y, pos2.z), getColorVector(c2, true));
+                        else
+                            drawBondLine(pos1, c1, pos2, c2, lineWidth);
                     }
                     if (bondOrder == DOUBLEBOND || bondOrder == PARTIALDOUBLEBOND || bondOrder == TRIPLEBOND)
                     {
@@ -1344,6 +1365,32 @@ void GLRenderer::drawBonds(std::vector<Bond> &bonds, int *color)
                 glPopName();
             }
         }
+    }
+    if (!pickingEnabled)
+    {
+        glPushAttrib(GL_ENABLE_BIT | GL_LINE_BIT | GL_LIGHTING_BIT);
+        if (antialiasLines)
+        {
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glEnable(GL_LINE_SMOOTH);
+            glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+        }
+        else
+        {
+            //    glDisable(GL_BLEND);
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glDisable(GL_LINE_SMOOTH);
+        }
+        glDisable(GL_LIGHTING);
+
+        foreach (float lineWidth, bondRenders.keys())
+        {
+            glLineWidth(lineWidth);
+            bondRenders[lineWidth].draw();
+        }
+        glPopAttrib();
     }
 }
 

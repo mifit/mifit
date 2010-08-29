@@ -21,6 +21,7 @@ class RibbonSpan;
 class SecondaryStructure;
 class TargaImage;
 class QGLWidget;
+class QVector4D;
 namespace mi
 {
     namespace opengl
@@ -237,6 +238,7 @@ public:
     void clearPickNames();
 
     float *getColor(int colorIndex, bool adjustForCurrentModel = false);
+    QVector4D getColorVector(int colorIndex, bool adjustForCurrentModel);
     float *getColor(PaletteColor c, bool adjustForCurrentModel = false);
 
     void drawLabels(Molecule::AtomLabelList &labels);
