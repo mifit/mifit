@@ -28,6 +28,7 @@ public:
 
 public slots:
     virtual void accept();
+    int exec();
 
 private:
     enum FieldType

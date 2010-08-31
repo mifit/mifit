@@ -157,6 +157,12 @@ void GenericDataDialog::addColorIndexField(const QString &label, int colorIndex)
     formLayout_->addRow(label, widget);
 }
 
+int GenericDataDialog::exec()
+{
+    adjustSize();
+    return QDialog::exec();
+}
+
 QVariant GenericDataDialog::value(int index) const
 {
     return values_.at(index);
