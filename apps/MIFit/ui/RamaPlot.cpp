@@ -182,7 +182,7 @@ unsigned int RichardsonRamaData::region(float phi, float psi)
     return 0;
 }
 
-void RamaPlotMgr::operator()(int keycode, bool shift)
+void RamaPlotMgr::handleKeyPress(int keycode, bool shift)
 {
     if (!_view || !Monomer::isValid(_focusres) || !_view->IsFitting())
     {
@@ -224,7 +224,7 @@ void RamaPlotMgr::operator()(int keycode, bool shift)
     _view->ReDraw();
 }
 
-void RamaPlotMgr::operator()(const GR_POINT &gr)
+void RamaPlotMgr::handlePick(const GR_POINT &gr)
 {
     Residue *res = static_cast<Residue*>(gr.data);
     if (Monomer::isValid(res))
@@ -236,7 +236,7 @@ void RamaPlotMgr::operator()(const GR_POINT &gr)
     }
 }
 
-void RamaPlotMgr::Mouseover(int id)
+void RamaPlotMgr::handleMouseOver(int id)
 {
     if (id == _last_mouseover_id)
     {
@@ -679,9 +679,9 @@ RamaPlotMgr::RamaPlotMgr(bool allowed)
 
     _gw = new GraphWindow(MIMainWindow::instance());
 
-    _gw->RegisterMouseoverHandler(this);
-    _gw->RegisterPickHandler(this);
-    _gw->RegisterKeyHandler(this);
+    connect(_gw, SIGNAL(mouseOver(int)), this, SLOT(handleMouseOver(int)));
+    connect(_gw, SIGNAL(pick(GR_POINT)), this, SLOT(handlePick(GR_POINT)));
+    connect(_gw, SIGNAL(keyPress(int,bool)), this, SLOT(handleKeyPress(int,bool)));
 
     CreateContours();
 }

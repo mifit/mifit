@@ -4,7 +4,6 @@
 /**
  * The top level class from which the application is started.
  */
-class MIConfig;
 
 #include <map/maplib.h>
 #include <QtCore/QDir>
@@ -28,7 +27,6 @@ class Application : public QApplication
     friend class MIGLWidget;
     friend class MIMainWindow;
 
-    MIConfig *config;
     GeomRefiner *geomrefiner;
 
     bool dimNonactiveModels;
@@ -229,10 +227,6 @@ private:
 
     static MIBusyManager *_instance;
 };
-
-
-QSettings *MIGetQSettings();
-
 
 
 #endif /*MIFIT_UI_MYAPP_H_*/

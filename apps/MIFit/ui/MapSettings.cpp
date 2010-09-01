@@ -1,10 +1,9 @@
 #include "core/corelib.h"
 #include "MapSettings.h"
 
-#include "core/MIConfig.h"
 #include "core/Colors.h"
 #include <util/utillib.h>
-
+#include <QSettings>
 
 static bool GetHardcodedDefaults(MapSettingsBase &settings, int styleno)
 {
@@ -132,39 +131,39 @@ static bool GetHardcodedDefaults(MapSettingsBase &settings, int styleno)
 
 void MapSettings::saveStyle(int i, const MapSettingsBase& settings)
 {
-    std::string key;
-    std::string stylestr("");
+    QString key;
+    QString sty("");
     if (i!=-1)
-        stylestr = format("%d", i);
-    const char *sty = stylestr.c_str();
+        sty = QString::number(i);
 
-    key = format("MapSettings%s/m_radiusmax", sty);
-    MIConfig::Instance()->Write(key, (long)settings.m_radiusmax);
-    key = format("MapSettings%s/Radius", sty);
-    MIConfig::Instance()->Write(key, settings.Radius);
-    key = format("MapSettings%s/ContourMethod", sty);
-    MIConfig::Instance()->Write(key, (long)settings.ContourMethod);
-    key = format("MapSettings%s/BlobRadius", sty);
-    MIConfig::Instance()->Write(key, settings.BlobRadius);
-    key = format("MapSettings%s/maplinewidth", sty);
-    MIConfig::Instance()->Write(key, settings.maplinewidth);
+    QSettings qsettings;
+    key = QString("MapSettings%1/m_radiusmax").arg(sty);
+    qsettings.setValue(key, settings.m_radiusmax);
+    key = QString("MapSettings%1/Radius").arg(sty);
+    qsettings.setValue(key, settings.Radius);
+    key = QString("MapSettings%1/ContourMethod").arg(sty);
+    qsettings.setValue(key, settings.ContourMethod);
+    key = QString("MapSettings%1/BlobRadius").arg(sty);
+    qsettings.setValue(key, settings.BlobRadius);
+    key = QString("MapSettings%1/maplinewidth").arg(sty);
+    qsettings.setValue(key, settings.maplinewidth);
 
     for (int i = 0; i < 5; ++i)
     {
-        key = format("MapSettings%s/MapLevelColor%d", sty, i);
-        MIConfig::Instance()->Write(key, (long)settings.MapLevelColor[i]);
+        key = QString("MapSettings%1/MapLevelColor%2").arg(sty).arg(i);
+        qsettings.setValue(key, settings.MapLevelColor[i]);
     }
 
     for (int i = 0; i < 5; ++i)
     {
-        key = format("MapSettings%s/MapLevelOn%d", sty, i);
-        MIConfig::Instance()->Write(key, settings.MapLevelOn[i]);
+        key = QString("MapSettings%1/MapLevelOn%2").arg(sty).arg(i);
+        qsettings.setValue(key, settings.MapLevelOn[i]);
     }
 
     for (int i = 0; i < 5; ++i)
     {
-        key = format("MapSettings%s/MapLevel%d", sty, i);
-        MIConfig::Instance()->Write(key, (double)settings.MapLevel[i]);
+        key = QString("MapSettings%1/MapLevel%2").arg(sty).arg(i);
+        qsettings.setValue(key, settings.MapLevel[i]);
     }
 }
 
@@ -176,47 +175,37 @@ void MapSettings::loadStyle(int i, MapSettingsBase& settings)
 
     // now try in the user prefs file, using the hardcoded values as defaults
     // in case they're not in the settings file
-    std::string key;
-    std::string stylestr("");
+    QString key;
+    QString sty("");
     if (i!=-1)
-        stylestr = format("%d", i);
-    const char *sty = stylestr.c_str();
+        sty = QString::number(i);
 
-    long longValue;
-    double d;
-
-    key = format("MapSettings%s/m_radiusmax", sty);
-    MIConfig::Instance()->Read(key, &longValue, (long)settings.m_radiusmax);
-    settings.m_radiusmax = longValue;
-    key = format("MapSettings%s/Radius", sty);
-    MIConfig::Instance()->Read(key, &d, settings.Radius);
-    settings.Radius = (float) d;
-    key = format("MapSettings%s/ContourMethod", sty);
-    MIConfig::Instance()->Read(key, &longValue, (long)settings.ContourMethod);
-    settings.ContourMethod = longValue;
-    key = format("MapSettings%s/BlobRadius", sty);
-    MIConfig::Instance()->Read(key, &d, settings.BlobRadius);
-    settings.BlobRadius = (float) d;
-    key = format("MapSettings%s/maplinewidth", sty);
-    MIConfig::Instance()->Read(key, &d, settings.maplinewidth);
-    settings.maplinewidth = d;
+    QSettings qsettings;
+    key = QString("MapSettings%1/m_radiusmax").arg(sty);
+    settings.m_radiusmax = qsettings.value(key, settings.m_radiusmax).toInt();
+    key = QString("MapSettings%1/Radius").arg(sty);
+    settings.Radius = (float) qsettings.value(key, settings.Radius).toDouble();
+    key = QString("MapSettings%1/ContourMethod").arg(sty);
+    settings.ContourMethod = qsettings.value(key, settings.ContourMethod).toInt();
+    key = QString("MapSettings%1/BlobRadius").arg(sty);
+    settings.BlobRadius = (float) qsettings.value(key, settings.BlobRadius).toDouble();
+    key = QString("MapSettings%1/maplinewidth").arg(sty);
+    settings.maplinewidth = qsettings.value(key, settings.maplinewidth).toDouble();
 
     for (int i = 0; i < 5; ++i)
     {
-        key = format("MapSettings%s/MapLevelColor%d", sty, i);
-        MIConfig::Instance()->Read(key, &longValue, (long)settings.MapLevelColor[i]);
-        settings.MapLevelColor[i] = longValue;
+        key = QString("MapSettings%1/MapLevelColor%2").arg(sty).arg(i);
+        settings.MapLevelColor[i] = qsettings.value(key, settings.MapLevelColor[i]).toInt();
     }
     for (int i = 0; i < 5; ++i)
     {
-        key = format("MapSettings%s/MapLevelOn%d", sty, i);
-        MIConfig::Instance()->Read(key, &settings.MapLevelOn[i], settings.MapLevelOn[i]);
+        key = QString("MapSettings%1/MapLevelOn%2").arg(sty).arg(i);
+        settings.MapLevelOn[i] = qsettings.value(key, settings.MapLevelOn[i]).toInt();
     }
     for (int i = 0; i < 5; ++i)
     {
-        key = format("MapSettings%s/MapLevel%d", sty, i);
-        MIConfig::Instance()->Read(key, &d, settings.MapLevel[i]);
-        settings.MapLevel[i] = d;
+        key = QString("MapSettings%1/MapLevel%2").arg(sty).arg(i);
+        settings.MapLevel[i] = qsettings.value(key, settings.MapLevel[i]).toDouble();
     }
 }
 

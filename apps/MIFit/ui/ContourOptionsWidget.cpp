@@ -1,8 +1,8 @@
-#include "ContourOptions.h"
+#include "ContourOptionsWidget.h"
 #include "ui/uilib.h"
 #include "ui/MIColorPickerDlg.h"
 
-ContourOptions::ContourOptions(QWidget *parent, bool prefsMode)
+ContourOptionsWidget::ContourOptionsWidget(QWidget *parent, bool prefsMode)
     : QWidget(parent)
 {
     setupUi(this);
@@ -29,7 +29,7 @@ ContourOptions::ContourOptions(QWidget *parent, bool prefsMode)
     _preferencesMode = prefsMode;
 }
 
-void ContourOptions::setColor(QToolButton *valueControl, int c)
+void ContourOptionsWidget::setColor(QToolButton *valueControl, int c)
 {
     colors[valueControl] = c;
 
@@ -54,7 +54,7 @@ void ContourOptions::setColor(QToolButton *valueControl, int c)
 }
 
 
-void ContourOptions::InitializeFromData(const MapSettingsBase &data)
+void ContourOptionsWidget::InitializeFromData(const MapSettingsBase &data)
 {
     maxRadiusSpinBox->setValue(data.m_radiusmax);
     radiusSlider->setMaximum(data.m_radiusmax);
@@ -160,7 +160,7 @@ void ContourOptions::InitializeFromData(const MapSettingsBase &data)
     setColor(colorButton_4, data.MapLevelColor[4]);
 }
 
-void ContourOptions::GetData(MapSettingsBase &data)
+void ContourOptionsWidget::GetData(MapSettingsBase &data)
 {
     data.m_radiusmax = maxRadiusSpinBox->value();
 
@@ -205,13 +205,13 @@ void ContourOptions::GetData(MapSettingsBase &data)
     data.MapLevelColor[4] = colors[colorButton_4];
 }
 
-void ContourOptions::on_maxRadiusSpinBox_valueChanged(int i)
+void ContourOptionsWidget::on_maxRadiusSpinBox_valueChanged(int i)
 {
     radiusSpinBox->setMaximum(i);
     radiusSlider->setMaximum(i);
 }
 
-void ContourOptions::on_revertPushButton_clicked()
+void ContourOptionsWidget::on_revertPushButton_clicked()
 {
     for (unsigned int i = 0; i<NUM_DEFINED_STYLES; ++i)
     {
@@ -224,7 +224,7 @@ void ContourOptions::on_revertPushButton_clicked()
 }
 
 
-void ContourOptions::colorButtonPressed()
+void ContourOptionsWidget::colorButtonPressed()
 {
     //find relevant control
     QToolButton *control = (QToolButton*)sender();
@@ -233,7 +233,7 @@ void ContourOptions::colorButtonPressed()
     setColor(control, ci);
 }
 
-void ContourOptions::on_mapStylesComboBox_currentIndexChanged(int styleNum)
+void ContourOptionsWidget::on_mapStylesComboBox_currentIndexChanged(int styleNum)
 {
     MapSettingsBase data;
     if (!_preferencesMode)
@@ -251,7 +251,7 @@ void ContourOptions::on_mapStylesComboBox_currentIndexChanged(int styleNum)
 }
 
 
-void ContourOptions::savePreferences()
+void ContourOptionsWidget::savePreferences()
 {
     if (!_preferencesMode)
         return;

@@ -9,7 +9,7 @@
 #include "Application.h"
 
 #include "MapSettings.h"
-#include "ui/ContourOptions.h"
+#include "ui/ContourOptionsWidget.h"
 #include "ui/SelectCrystal.h"
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -110,7 +110,7 @@ bool EMap::ContourLevels()
     dlg.setModal(true);
     dlg.setSizeGripEnabled(true);
 
-    ContourOptions *co = new ContourOptions(&dlg, false);
+    ContourOptionsWidget *co = new ContourOptionsWidget(&dlg, false);
     QDialogButtonBox *bb = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, &dlg);
     dlg.connect(bb, SIGNAL(accepted()), &dlg, SLOT(accept()));
     dlg.connect(bb, SIGNAL(rejected()), &dlg, SLOT(reject()));

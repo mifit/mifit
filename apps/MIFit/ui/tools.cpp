@@ -44,15 +44,15 @@ void Tools::OnCustom()
 
     QString jobName(QString("Custom job %1").arg(customJobNumber++));
 
-    QSettings *settings = MIGetQSettings();
-    settings->beginGroup("CustomJob");
-    QString program = settings->value("executable").toString();
-    QString arguments = settings->value("arguments").toString();
-    QString workingDirectory = settings->value("workingDirectory", QDir::currentPath()).toString();
-    bool useCurrentModel = settings->value("useCurrentModel", true).toBool();
-    QString modelFile = settings->value("modelFile").toString();
-    QString dataFile = settings->value("dataFile").toString();
-    settings->endGroup();
+    QSettings settings;
+    settings.beginGroup("CustomJob");
+    QString program = settings.value("executable").toString();
+    QString arguments = settings.value("arguments").toString();
+    QString workingDirectory = settings.value("workingDirectory", QDir::currentPath()).toString();
+    bool useCurrentModel = settings.value("useCurrentModel", true).toBool();
+    QString modelFile = settings.value("modelFile").toString();
+    QString dataFile = settings.value("dataFile").toString();
+    settings.endGroup();
 
     MIGLWidget *doc = MIMainWindow::instance()->currentMIGLWidget();
     if (doc != NULL)
@@ -141,14 +141,14 @@ void Tools::OnCustom()
 
     job->StartJob();
 
-    settings->beginGroup("CustomJob");
-    settings->setValue("executable", program);
-    settings->setValue("arguments", arguments);
-    settings->setValue("useCurrentModel", useCurrentModel);
-    settings->setValue("workingDirectory", workingDirectory);
-    settings->setValue("modelFile", modelFile);
-    settings->setValue("dataFile", dataFile);
-    settings->endGroup();
+    settings.beginGroup("CustomJob");
+    settings.setValue("executable", program);
+    settings.setValue("arguments", arguments);
+    settings.setValue("useCurrentModel", useCurrentModel);
+    settings.setValue("workingDirectory", workingDirectory);
+    settings.setValue("modelFile", modelFile);
+    settings.setValue("dataFile", dataFile);
+    settings.endGroup();
 
 }
 

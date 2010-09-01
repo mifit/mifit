@@ -184,9 +184,9 @@ MIMainWindow::MIMainWindow()
 
     memset(cursors, 0, imhCount*sizeof(QCursor*));
 
-    QSettings *settings = MIGetQSettings(); // could use MIConfig (it's the same file), but this api is easier here
-    restoreState(settings->value("WindowLayout", saveState()).toByteArray());
-    setGeometry(settings->value("WindowGeometry", geometry()).toRect());
+    QSettings settings;
+    restoreState(settings.value("WindowLayout", saveState()).toByteArray());
+    setGeometry(settings.value("WindowGeometry", geometry()).toRect());
 
     tabifyDockWidget(modelsDock, displayDock);
     tabifyDockWidget(displayDock, jobsDock);
@@ -208,7 +208,7 @@ MIMainWindow::MIMainWindow()
 
 MIMainWindow::~MIMainWindow()
 {
-    for (int i = 0; i < imhCount; ++i)
+    for (size_t i = 0; i < imhCount; ++i)
         delete cursors[i];
     MIMapFreeScatteringFactorTables();
     delete JobManager;
@@ -238,9 +238,9 @@ void MIMainWindow::childActivated(QMdiSubWindow *w)
 
 void MIMainWindow::saveLayout()
 {
-    QSettings *settings = MIGetQSettings(); // could use MIConfig (it's the same file), but this api is easier here
-    settings->setValue("WindowLayout", saveState());
-    settings->setValue("WindowGeometry", geometry());
+    QSettings settings;
+    settings.setValue("WindowLayout", saveState());
+    settings.setValue("WindowGeometry", geometry());
 }
 
 void MIMainWindow::OnExit()
@@ -956,13 +956,13 @@ void MIMainWindow::updateToolBar()
 
 void MIMainWindow::OnUpdateStereoToggle()
 {
-    bool stereo = MIConfig::Instance()->GetProfileInt("View Parameters", "stereo", 0) != 0;
+    bool stereo = QSettings().value("View Parameters/stereo", false).toBool();
     _stereoToggleAction->setChecked(stereo);
 }
 
 void MIMainWindow::OnUpdateHardwareStereo()
 {
-    bool hardwareStereo = MIConfig::Instance()->GetProfileInt("View Parameters", "hardwareStereo", 0) != 0;
+    bool hardwareStereo = QSettings().value("View Parameters/hardwareStereo", false).toBool();
     _hardwareStereoAction->setEnabled(Application::instance()->isHardwareStereoAvailable());
     _hardwareStereoAction->setChecked(hardwareStereo);
 }
@@ -1083,7 +1083,7 @@ void MIMainWindow::OpenFiles(const std::vector<std::string> &files, bool newWin)
             // command line switch
             if (strcmp(arg, "-altTextRender") == 0)
             {
-                MIConfig::Instance()->WriteProfileInt("View Parameters", "AlternateTextRendering", 1);
+                QSettings().setValue("View Parameters/AlternateTextRendering", true);
                 OnExit();
             }
             continue;
@@ -2283,20 +2283,20 @@ void MIMainWindow::setCurrentFile(const std::string &fname)
 {
     QString fileName(fname.c_str());
 
-    QSettings *settings = MIGetQSettings(); // could use MIConfig (it's the same file), but this api is easier here
-    QStringList files = settings->value("recentFileList").toStringList();
+    QSettings settings;
+    QStringList files = settings.value("recentFileList").toStringList();
     files.removeAll(fileName);
     files.prepend(fileName);
     while (files.size() > MaxRecentFiles)
         files.removeLast();
-    settings->setValue("recentFileList", files);
+    settings.setValue("recentFileList", files);
     updateRecentFileActions();
 }
 
 void MIMainWindow::updateRecentFileActions()
 {
-    QSettings *settings = MIGetQSettings(); // could use MIConfig (it's the same file), but this api is easier here
-    QStringList files = settings->value("recentFileList").toStringList();
+    QSettings settings;
+    QStringList files = settings.value("recentFileList").toStringList();
 
     int numRecentFiles = qMin(files.size(), (int)MaxRecentFiles);
 

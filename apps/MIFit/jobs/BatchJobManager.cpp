@@ -79,8 +79,8 @@ QString BatchJobManager::pythonExe()
     static QString pythonExePath;
     if (pythonExePath.isEmpty() || !QFile::exists(pythonExePath))
     {
-        QSettings *settings = MIGetQSettings();
-        pythonExePath = settings->value("pythonExe").toString();
+        QSettings settings;
+        pythonExePath = settings.value("pythonExe").toString();
     }
     if (pythonExePath.isEmpty() || !QFile::exists(pythonExePath))
     {
@@ -110,8 +110,8 @@ QString BatchJobManager::pythonExe()
 
         if (!pythonExePath.isEmpty() && QFile::exists(pythonExePath))
         {
-            QSettings *settings = MIGetQSettings();
-            settings->setValue("pythonExe", pythonExePath);
+            QSettings settings;
+            settings.setValue("pythonExe", pythonExePath);
         }
     }
 
@@ -186,36 +186,36 @@ QAction *BatchJobManager::customJobAction(const QString &menuName, const QString
     jobAction->setData(QVariant::fromValue(customJob));
     connect(jobAction, SIGNAL(triggered()), this, SLOT(handleCustomJobAction()));
 
-    QSettings *settings = MIGetQSettings();
-    settings->beginWriteArray("customJobs");
-    settings->setArrayIndex(_customJobIndex);
-    settings->setValue("job", QVariant::fromValue(customJob));
+    QSettings settings;
+    settings.beginWriteArray("customJobs");
+    settings.setArrayIndex(_customJobIndex);
+    settings.setValue("job", QVariant::fromValue(customJob));
     ++_customJobIndex;
-    settings->endArray();
+    settings.endArray();
 
     return jobAction;
 }
 
 void BatchJobManager::setupJobMenu(QMenu *menu)
 {
-    QSettings *settings = MIGetQSettings();
-    _customJobIndex = settings->beginReadArray("customJobs");
+    QSettings settings;
+    _customJobIndex = settings.beginReadArray("customJobs");
     for (int i = 0; i < _customJobIndex; ++i)
     {
-        settings->setArrayIndex(i);
-        CustomJob job = settings->value("job").value<CustomJob>();
+        settings.setArrayIndex(i);
+        CustomJob job = settings.value("job").value<CustomJob>();
         QAction *jobAction = new QAction(job.menuName, this);
         jobAction->setData(QVariant::fromValue(job));
         connect(jobAction, SIGNAL(triggered()), this, SLOT(handleCustomJobAction()));
         menu->addAction(jobAction);
     }
-    settings->endArray();
+    settings.endArray();
 }
 
 void BatchJobManager::saveJobMenu(QMenu *menu)
 {
-    QSettings *settings = MIGetQSettings();
-    settings->beginWriteArray("customJobs");
+    QSettings settings;
+    settings.beginWriteArray("customJobs");
     int index = 0;
     foreach (QAction *action, menu->actions())
     {
@@ -224,11 +224,11 @@ void BatchJobManager::saveJobMenu(QMenu *menu)
         if (!action->data().isValid() || !action->data().canConvert<CustomJob>())
             continue;
 
-        settings->setArrayIndex(index);
-        settings->setValue("job", action->data());
+        settings.setArrayIndex(index);
+        settings.setValue("job", action->data());
         ++index;
     }
-    settings->endArray();
+    settings.endArray();
 }
 
 void BatchJobManager::handleCustomJobAction()

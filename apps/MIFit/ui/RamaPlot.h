@@ -16,7 +16,7 @@ class RamaPlotDialog;
 class RamaDataBase;
 class MIGLWidget;
 
-class RamaPlotMgr : public QObject, public GraphPickHandlerBase, public GraphKeyHandlerBase, public GraphMouseoverHandlerBase
+class RamaPlotMgr : public QObject
 {
     Q_OBJECT
 private:
@@ -41,16 +41,16 @@ public:
         return show_allowed;
     }
 
-    void operator()(const GR_POINT &gr);
-    void operator()(int keycode, bool shift);
-    void Mouseover(int id);
-
     void SetView(MIGLWidget *v)
     {
         _view = v;
     }
 
 public slots:
+    void handleMouseOver(int id);
+    void handlePick(const GR_POINT &gr);
+    void handleKeyPress(int keycode, bool shift);
+
     // object changed slots
     void atomChanged(chemlib::MIMoleculeBase *mol, chemlib::MIAtomList &atom);
     void moleculeChanged(chemlib::MIMoleculeBase *mol);

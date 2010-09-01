@@ -2,6 +2,7 @@
 #include <set>
 #include <algorithm>
 #include <cfloat>
+#include <QSettings>
 
 #include "core/corelib.h"
 #include "uilib.h"
@@ -935,7 +936,7 @@ float SURFACE_ALPHA = -1.0f;
 float MIGetSurfaceAlpha()
 {
     if (SURFACE_ALPHA == -1.0f)
-        SURFACE_ALPHA = MIConfig::Instance()->GetProfileInt("View Parameters", "surfaceAlpha", 100)/100.0f;
+        SURFACE_ALPHA = QSettings().value("View Parameters/surfaceAlpha", 100).toInt()/100.0f;
     return SURFACE_ALPHA;
 }
 
@@ -944,7 +945,7 @@ void MISetSurfaceAlpha(float alpha)
     if (alpha >= 0.0f && alpha <= 1.0f)
     {
         SURFACE_ALPHA = alpha;
-        MIConfig::Instance()->WriteProfileInt("View Parameters", "surfaceAlpha", (int)(SURFACE_ALPHA*100.0f));
+        QSettings().setValue("View Parameters/surfaceAlpha", static_cast<int>(SURFACE_ALPHA*100.0f));
     }
     if (MIGetSurfaceUseGradColor())
         SuperSurfaces[CURRENT_VIEW].Rebuild();
@@ -979,13 +980,13 @@ int SURFACE_MINCOLOR = -1;
 int MIGetSurfaceMinColor()
 {
     if (SURFACE_MINCOLOR == -1)
-        SURFACE_MINCOLOR = MIConfig::Instance()->GetProfileInt("View Parameters", "surfaceMinColor", Colors::GREEN);
+        SURFACE_MINCOLOR = QSettings().value("View Parameters/surfaceMinColor", Colors::GREEN).toInt();
     return SURFACE_MINCOLOR;
 }
 void MISetSurfaceMinColor(int mincolor)
 {
     SURFACE_MINCOLOR = mincolor;
-    MIConfig::Instance()->WriteProfileInt("View Parameters", "surfaceMincolor", SURFACE_MINCOLOR);
+    QSettings().setValue("View Parameters/surfaceMincolor", SURFACE_MINCOLOR);
     if (MIGetSurfaceUseGradColor())
         SuperSurfaces[CURRENT_VIEW].Rebuild();
 }
@@ -995,13 +996,13 @@ int SURFACE_MAXCOLOR = -1;
 int MIGetSurfaceMaxColor()
 {
     if (SURFACE_MAXCOLOR == -1)
-        SURFACE_MAXCOLOR = MIConfig::Instance()->GetProfileInt("View Parameters", "surfaceMaxColor", Colors::WHITE);
+        SURFACE_MAXCOLOR = QSettings().value("View Parameters/surfaceMaxColor", Colors::WHITE).toInt();
     return SURFACE_MAXCOLOR;
 }
 void MISetSurfaceMaxColor(int maxcolor)
 {
     SURFACE_MAXCOLOR = maxcolor;
-    MIConfig::Instance()->WriteProfileInt("View Parameters", "surfaceMaxColor", SURFACE_MAXCOLOR);
+    QSettings().setValue("View Parameters/surfaceMaxColor", SURFACE_MAXCOLOR);
     if (MIGetSurfaceUseGradColor())
         SuperSurfaces[CURRENT_VIEW].Rebuild();
 }

@@ -22,6 +22,7 @@
 #include <QTime>
 #include <QTimer>
 #include <QInputDialog>
+#include <QSettings>
 
 #include <nongui/nonguilib.h>
 #include <chemlib/chemlib.h>
@@ -95,9 +96,10 @@ DictEditCanvas::DictEditCanvas(DictEditDialog *daddy)
 
     camera = new Camera();
     frustum = new Frustum();
+    QSettings settings;
     stereoView = new StereoView(frustum, camera);
-    stereoView->setStereo(MIConfig::Instance()->GetProfileInt("View Parameters", "stereo", 0) != 0);
-    stereoView->setHardwareStereo(MIConfig::Instance()->GetProfileInt("View Parameters", "hardwareStereo", 1) != 0);
+    stereoView->setStereo(settings.value("View Parameters/stereo", 0).toInt() != 0);
+    stereoView->setHardwareStereo(settings.value("View Parameters/hardwareStereo", 1).toInt() != 0);
 
     scene = new DictEditScene();
     scene->frustum = frustum;
@@ -575,7 +577,7 @@ void DictEditCanvas::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_Backslash: {
         Application::instance()->toggleStereo();
-        bool stereo = MIConfig::Instance()->GetProfileInt("View Parameters", "stereo", 0) != 0;
+        bool stereo = QSettings().value("View Parameters/stereo", 0).toInt() != 0;
         stereoView->setStereo(stereo);
         if (stereoView->isStereo())
         {
