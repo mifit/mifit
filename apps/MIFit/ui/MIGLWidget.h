@@ -627,10 +627,6 @@ public:
      */
     void OnMouseMove(unsigned short nFlags, CPoint point);
     /**
-     * Mouse handler for a mouse left-button up event.
-     */
-    void OnLButtonUp(unsigned short nFlags, CPoint point);
-    /**
      * Mouse handler for a mouse left-button double-click event.
      */
     void OnLButtonDblClk(unsigned short nFlags, CPoint point);
@@ -647,8 +643,6 @@ public:
     {
         return QSize(320, 200);
     }
-
-    void OnRButtonUp(unsigned short nFlags, CPoint point);
 
     /**
      * Prompts for phase file and then calls mapLoadfromphsfile(string).

@@ -45,6 +45,24 @@ static void logOpenGLErrors(const char *file, int line)
     }
 }
 
+class PushedName
+{
+    bool enabled;
+public:
+    PushedName(GLuint name, bool enabled) : enabled(enabled)
+    {
+        if (enabled)
+            glPushName(name);
+    }
+
+    ~PushedName()
+    {
+        if (enabled)
+            glPopName();
+    }
+};
+
+
 GLRenderer::GLRenderer()
     :  pickingEnabled(false),
       qcanvas_win(NULL),
@@ -744,7 +762,7 @@ void GLRenderer::drawAnnotations(Molecule::AnnotationList &Annotations, bool dra
         {
             continue;
         }
-        glPushName(getPickName(*annotation));
+        PushedName pushedName(getPickName(*annotation), pickingEnabled);
         const char *text = annotation->m_text.c_str();
         float x = annotation->m_x;
         float y = annotation->m_y;
@@ -756,7 +774,6 @@ void GLRenderer::drawAnnotations(Molecule::AnnotationList &Annotations, bool dra
         }
         float *foreground = getColor(annotation->m_color);
         drawText(text, x, y, z, 0.0f, labelsTextScale, inverseRotation, displayNumber, annotationNumber, foreground);
-        glPopName();
     }
     glPopAttrib();
 }
@@ -1206,18 +1223,17 @@ void GLRenderer::drawAngles(std::vector<ANGLE> &angles)
     for (unsigned int i = 0; i < angles.size(); i++)
     {
         ANGLE &angle = angles[i];
-        glPushName(getPickName(angle));
         MIAtom *a1 = angles[i].getAtom1();
         MIAtom *a2 = angles[i].atom3;
         if (hideHydrogens && (MIAtom::MIIsHydrogen(a1) || MIAtom::MIIsHydrogen(a2)))
         {
             continue;
         }
+        PushedName pushedName(getPickName(angle), pickingEnabled);
         glBegin(GL_LINES);
         glVertex3f(a1->x(), a1->y(), a1->z());
         glVertex3f(a2->x(), a2->y(), a2->z());
         glEnd();
-        glPopName();
     }
     glPopAttrib();
 }
@@ -1273,7 +1289,6 @@ void GLRenderer::drawBonds(std::vector<Bond> &bonds, int *color)
                 {
                     bondOrder = NORMALBOND;
                 }
-                glPushName(getPickName(bond));
                 if (bond.type == B_POINT || bond.type == B_SYMM_POINT)
                 {
                     if (!style.isAtomBall())
@@ -1281,6 +1296,7 @@ void GLRenderer::drawBonds(std::vector<Bond> &bonds, int *color)
                         float radius = a1->getRadius() * style.getBallPercent();
                         if (radius > 0.0f && a1->color() > 0)
                         {
+                            PushedName pushedName(getPickName(bond), pickingEnabled);
                             int c1 = ::getColor(a1);
                             glColor4fv(getColor(c1));
                             float p1[3];
@@ -1293,6 +1309,7 @@ void GLRenderer::drawBonds(std::vector<Bond> &bonds, int *color)
                 }
                 else if (style.isBondCylinder())
                 {
+                    PushedName pushedName(getPickName(bond), pickingEnabled);
                     float radius = std::min(a1->getRadius(), a2->getRadius());
                     radius *= style.getStickPercent();
 
@@ -1345,6 +1362,7 @@ void GLRenderer::drawBonds(std::vector<Bond> &bonds, int *color)
                             }
                         }
                     }
+                    PushedName pushedName(getPickName(bond), pickingEnabled && lineWidth > 0.0f);
                     if (bondOrder == NORMALBOND || bondOrder == SINGLEBOND || bondOrder == TRIPLEBOND
                         || bondOrder == IONICBOND || bondOrder == METALLIGANDBOND)
                     {
@@ -1374,7 +1392,6 @@ void GLRenderer::drawBonds(std::vector<Bond> &bonds, int *color)
                         drawBondLine(p1, c1, p2, c2, lineWidth);
                     }
                 }
-                glPopName();
             }
         }
     }
@@ -1415,30 +1432,32 @@ void GLRenderer::drawBondCylinder(const Vector3<float> &pos1, int color1, const 
     Vector3<float> midPoint = pos1 + pos2;
     midPoint.scale(0.5);
 
-    glPushName(1);
-    glColor4fv(getColor(color1));
-    DrawCylinder(pos1, midPoint, radius);
     float p[3];
-    if (capped)
     {
-        p[0] = pos1.x;
-        p[1] = pos1.y;
-        p[2] = pos1.z;
-        DrawSphere(p, radius, 16);
+        PushedName pushedName(1, pickingEnabled);
+        glColor4fv(getColor(color1));
+        DrawCylinder(pos1, midPoint, radius);
+        if (capped)
+        {
+            p[0] = pos1.x;
+            p[1] = pos1.y;
+            p[2] = pos1.z;
+            DrawSphere(p, radius, 16);
+        }
     }
-    glPopName();
 
-    glPushName(2);
-    glColor4fv(getColor(color2));
-    DrawCylinder(midPoint, pos2, radius);
-    if (capped)
     {
-        p[0] = pos2.x;
-        p[1] = pos2.y;
-        p[2] = pos2.z;
-        DrawSphere(p, radius, 16);
+        PushedName pushedName(2, pickingEnabled);
+        glColor4fv(getColor(color2));
+        DrawCylinder(midPoint, pos2, radius);
+        if (capped)
+        {
+            p[0] = pos2.x;
+            p[1] = pos2.y;
+            p[2] = pos2.z;
+            DrawSphere(p, radius, 16);
+        }
     }
-    glPopName();
 }
 
 void GLRenderer::drawBondLine(const Vector3<float> &pos1, int color1, const Vector3<float> &pos2, int color2, float lineWidth)
@@ -1477,20 +1496,22 @@ void GLRenderer::drawBondLine(const Vector3<float> &pos1, int color1, const Vect
     {
         Vector3<float> midPoint = pos1 + pos2;
         midPoint.scale(0.5f);
-        glPushName(1);
-        glBegin(GL_LINES);
-        glColor4fv(getColor(color1, true));
-        glVertex3f(pos1.x, pos1.y, pos1.z);
-        glVertex3f(midPoint.x, midPoint.y, midPoint.z);
-        glEnd();
-        glPopName();
-        glPushName(2);
-        glBegin(GL_LINES);
-        glColor4fv(getColor(color2, true));
-        glVertex3f(midPoint.x, midPoint.y, midPoint.z);
-        glVertex3f(pos2.x, pos2.y, pos2.z);
-        glEnd();
-        glPopName();
+        {
+            PushedName pushedName(1, pickingEnabled);
+            glBegin(GL_LINES);
+            glColor4fv(getColor(color1, true));
+            glVertex3f(pos1.x, pos1.y, pos1.z);
+            glVertex3f(midPoint.x, midPoint.y, midPoint.z);
+            glEnd();
+        }
+        {
+            PushedName pushedName(2, pickingEnabled);
+            glBegin(GL_LINES);
+            glColor4fv(getColor(color2, true));
+            glVertex3f(midPoint.x, midPoint.y, midPoint.z);
+            glVertex3f(pos2.x, pos2.y, pos2.z);
+            glEnd();
+        }
     }
     glPopAttrib();
 }
@@ -1515,7 +1536,7 @@ void GLRenderer::drawResidueAtoms(ResidueListIterator res, ResidueListIterator r
                 pos.set(a1->x(), a1->y(), a1->z());
                 if (frustum->sphereInFrustum(pos, radius) != Frustum::OUTSIDE)
                 {
-                    glPushName(getPickName(a1));
+                    PushedName pushedName(getPickName(a1), pickingEnabled);
                     int c1 = ::getColor(a1);
                     glColor4fv(getColor(c1));
                     float p1[3];
@@ -1523,7 +1544,6 @@ void GLRenderer::drawResidueAtoms(ResidueListIterator res, ResidueListIterator r
                     p1[1] = a1->y();
                     p1[2] = a1->z();
                     DrawSphere(p1, radius, 16);
-                    glPopName();
                 }
             }
         }
