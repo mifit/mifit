@@ -93,6 +93,7 @@ using namespace mi::opengl::interact;
 using namespace mi::opengl;
 using namespace std;
 
+#define SHOW_RENDER_TIME 0
 
 // surface types of current atoms
 #define NO_SURFACE 0
@@ -897,9 +898,13 @@ void MIGLWidget::paintGL()
     scene->renderer->setViewVector(camera->getViewVector());
     scene->showSymmetryAsBackbone = link_symm;
     MISurfaceSetCurrentView(this);
+#if SHOW_RENDER_TIME
     time.start();
+#endif
     stereoView->render(*scene);
+#if SHOW_RENDER_TIME
     int elapsedTime = time.elapsed();
+#endif
 
     //  prepareAtomPicking();
     //  stereoView->render(*atomPickingRenderable);
@@ -914,9 +919,11 @@ void MIGLWidget::paintGL()
 
     glFlush();
 
+#if SHOW_RENDER_TIME
     QString framesPerSecond = QString("render in %1 ms")
                               .arg(elapsedTime);
     Logger::debug(framesPerSecond.toAscii().constData());
+#endif
 
     is_drawing = false;
 }
