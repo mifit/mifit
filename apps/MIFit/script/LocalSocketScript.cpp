@@ -54,9 +54,7 @@ void LocalSocketScript::handleConnection()
         while (moreInput)
         {
             if (!connection->waitForReadyRead())
-                return;
-            if (stream.atEnd())
-                return;
+                break;
             QString str;
             stream >> str;
             int i = str.indexOf('\b');
@@ -87,16 +85,15 @@ void LocalSocketScript::handleConnection()
 
         Logger::debug(("script result: " + result).toStdString());
 
-        QByteArray data;
-        QDataStream outStream(&data, QIODevice::WriteOnly);
-        outStream.setVersion(QDataStream::Qt_4_0);
-        outStream << static_cast<qint64>(0);
-        outStream << result;
-        outStream.device()->seek(0);
-        outStream << static_cast<qint64>(data.size() - sizeof(qint64));
-        connection->write(data);
+        stream << (result + "\b");
+        connection->flush();
 
-        connection->disconnectFromServer();
+        if (connection->waitForReadyRead())
+        {
+            QString str;
+            stream >> str;
+        }
+        connection->close();
         Logger::debug("script done");
     }
 }
