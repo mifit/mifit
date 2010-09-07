@@ -14,6 +14,8 @@ class ContourOptionsWidget : public QWidget, public Ui::ContourOptionsWidget
 
 public:
     ContourOptionsWidget(QWidget *parent = 0, bool prefsMode = false);
+    void setMapMin(float mapMin);
+    void setMapMax(float mapMax);
     void InitializeFromData(const MapSettingsBase &dat);
     void GetData(MapSettingsBase &dat);
     void savePreferences();
@@ -30,6 +32,8 @@ private:
     MapSettingsBase _styleSettings[NUM_DEFINED_STYLES];
     bool _preferencesMode;
     int _currentStyle;
+    float _mapMin;
+    float _mapMax;
 };
 
 #endif // CONTOUR_OPTIONS_WIDGET_H

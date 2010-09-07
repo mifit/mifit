@@ -200,7 +200,7 @@ void MapSettings::loadStyle(int i, MapSettingsBase& settings)
     for (int i = 0; i < 5; ++i)
     {
         key = QString("MapSettings%1/MapLevelOn%2").arg(sty).arg(i);
-        settings.MapLevelOn[i] = qsettings.value(key, settings.MapLevelOn[i]).toInt();
+        settings.MapLevelOn[i] = qsettings.value(key, settings.MapLevelOn[i]).toBool();
     }
     for (int i = 0; i < 5; ++i)
     {

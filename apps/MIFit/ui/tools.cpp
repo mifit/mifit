@@ -7,7 +7,6 @@
 #include <map/maplib.h>
 #include <nongui/nonguilib.h>
 #include <math/mathlib.h>
-#include <QDebug>
 #include <QFile>
 #include <QProcess>
 #include <QString>

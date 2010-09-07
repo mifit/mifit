@@ -111,6 +111,8 @@ bool EMap::ContourLevels()
     dlg.setSizeGripEnabled(true);
 
     ContourOptionsWidget *co = new ContourOptionsWidget(&dlg, false);
+    co->setMapMin(mapmin);
+    co->setMapMax(mapmax);
     QDialogButtonBox *bb = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, &dlg);
     dlg.connect(bb, SIGNAL(accepted()), &dlg, SLOT(accept()));
     dlg.connect(bb, SIGNAL(rejected()), &dlg, SLOT(reject()));

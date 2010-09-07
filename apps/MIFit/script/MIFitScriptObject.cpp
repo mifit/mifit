@@ -2,7 +2,6 @@
 #include <core/Version.h>
 #include <jobs/BatchJob.h>
 #include <jobs/BatchJobManager.h>
-#include <QDebug>
 #include <QFileInfo>
 #include <QScriptEngine>
 #include <ui/uilib.h>

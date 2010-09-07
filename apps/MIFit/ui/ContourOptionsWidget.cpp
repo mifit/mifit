@@ -53,6 +53,60 @@ void ContourOptionsWidget::setColor(QToolButton *valueControl, int c)
     valueControl->setIcon(icon);
 }
 
+void ContourOptionsWidget::setMapMin(float mapMin)
+{
+    _mapMin = mapMin;
+
+    int imin = static_cast<int>(mapMin);
+
+    contourSpinBox_0->setMinimum(imin);
+    contourSlider_0->setMinimum(imin);
+    minLabel_0->setNum(imin);
+
+    contourSpinBox_1->setMinimum(imin);
+    contourSlider_1->setMinimum(imin);
+    minLabel_1->setNum(imin);
+
+    contourSpinBox_2->setMinimum(imin);
+    contourSlider_2->setMinimum(imin);
+    minLabel_2->setNum(imin);
+
+    contourSpinBox_3->setMinimum(imin);
+    contourSlider_3->setMinimum(imin);
+    minLabel_3->setNum(imin);
+
+    contourSpinBox_4->setMinimum(imin);
+    contourSlider_4->setMinimum(imin);
+    minLabel_4->setNum(imin);
+
+}
+
+void ContourOptionsWidget::setMapMax(float mapMax)
+{
+    _mapMax = mapMax;
+
+    int imax = static_cast<int>(mapMax);
+
+    contourSpinBox_0->setMaximum(imax);
+    contourSlider_0->setMaximum(imax);
+    maxLabel_0->setNum(imax);
+
+    contourSpinBox_1->setMaximum(imax);
+    contourSlider_1->setMaximum(imax);
+    maxLabel_1->setNum(imax);
+
+    contourSpinBox_2->setMaximum(imax);
+    contourSlider_2->setMaximum(imax);
+    maxLabel_2->setNum(imax);
+
+    contourSpinBox_3->setMaximum(imax);
+    contourSlider_3->setMaximum(imax);
+    maxLabel_3->setNum(imax);
+
+    contourSpinBox_4->setMaximum(imax);
+    contourSlider_4->setMaximum(imax);
+    maxLabel_4->setNum(imax);
+}
 
 void ContourOptionsWidget::InitializeFromData(const MapSettingsBase &data)
 {
@@ -61,56 +115,6 @@ void ContourOptionsWidget::InitializeFromData(const MapSettingsBase &data)
 
     radiusSpinBox->setValue((int)data.Radius);
     radiusSlider->setValue((int)data.Radius);
-
-    if (data.mapmin != 0.0f)
-    {
-        int imin = (int)data.mapmin;
-
-        contourSpinBox_0->setMinimum(imin);
-        contourSlider_0->setMinimum(imin);
-        minLabel_0->setNum(imin);
-
-        contourSpinBox_1->setMinimum(imin);
-        contourSlider_1->setMinimum(imin);
-        minLabel_1->setNum(imin);
-
-        contourSpinBox_2->setMinimum(imin);
-        contourSlider_2->setMinimum(imin);
-        minLabel_2->setNum(imin);
-
-        contourSpinBox_3->setMinimum(imin);
-        contourSlider_3->setMinimum(imin);
-        minLabel_3->setNum(imin);
-
-        contourSpinBox_4->setMinimum(imin);
-        contourSlider_4->setMinimum(imin);
-        minLabel_4->setNum(imin);
-    }
-
-    if (data.mapmax != 0.0f)
-    {
-        int imax = (int)data.mapmax;
-
-        contourSpinBox_0->setMaximum(imax);
-        contourSlider_0->setMaximum(imax);
-        maxLabel_0->setNum(imax);
-
-        contourSpinBox_1->setMaximum(imax);
-        contourSlider_1->setMaximum(imax);
-        maxLabel_1->setNum(imax);
-
-        contourSpinBox_2->setMaximum(imax);
-        contourSlider_2->setMaximum(imax);
-        maxLabel_2->setNum(imax);
-
-        contourSpinBox_3->setMaximum(imax);
-        contourSlider_3->setMaximum(imax);
-        maxLabel_3->setNum(imax);
-
-        contourSpinBox_4->setMaximum(imax);
-        contourSlider_4->setMaximum(imax);
-        maxLabel_4->setNum(imax);
-    }
 
     switch (data.ContourMethod)
     {

@@ -2,7 +2,6 @@
 
 #include "MIMainWindow.h"
 #include "MIGLWidget.h"
-#include <QDebug>
 #include <QMenu>
 #include <QMetaMethod>
 #include <QMetaObject>
