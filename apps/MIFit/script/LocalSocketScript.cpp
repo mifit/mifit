@@ -50,20 +50,22 @@ void LocalSocketScript::handleConnection()
         QString script;
         bool moreInput = true;
         QDataStream stream(connection);
-        stream.setVersion(QDataStream::Qt_4_0);
+        stream.setVersion(QDataStream::Qt_4_5);
+        quint32 dataSize = 0;
         while (moreInput)
         {
             if (!connection->waitForReadyRead())
                 break;
-            QString str;
-            stream >> str;
-            int i = str.indexOf('\b');
-            if (i >= 0)
+            if (dataSize == 0)
             {
-                str = str.mid(0, i);
-                moreInput = false;
+                if (connection->bytesAvailable() < sizeof(quint32))
+                    continue;
+                stream >> dataSize;
             }
-            script += str;
+            if (connection->bytesAvailable() < dataSize)
+                continue;
+            stream >> script;
+            moreInput = false;
         }
         Logger::debug(("script: " + script).toStdString());
 
@@ -85,14 +87,17 @@ void LocalSocketScript::handleConnection()
 
         Logger::debug(("script result: " + result).toStdString());
 
-        stream << (result + "\b");
-        connection->flush();
+        QByteArray data;
+        QDataStream out(&data, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_4_5);
 
-        if (connection->waitForReadyRead())
-        {
-            QString str;
-            stream >> str;
-        }
+        out << quint32(0) << result;
+
+        out.device()->seek(0);
+        out << data.size() - sizeof(quint32);
+        connection->write(data);
+        connection->flush();
+        connection->waitForDisconnected();
         connection->close();
         Logger::debug("script done");
     }
