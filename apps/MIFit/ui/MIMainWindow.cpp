@@ -518,7 +518,7 @@ void MIMainWindow::OnDefineBValueColors()
 void MIMainWindow::OnLoadDictReplace()
 {
     QString s = QFileDialog::getOpenFileName(this, "Choose a dictionary file", "",
-                                          "Dictionary files (*.pdb,*.cif,*.ent);;All files (*.*)");
+                                          "Dictionary files (*.pdb *.cif *.ent);;All files (*.*)");
     if (!s.isEmpty())
     {
         MIFitDictionary()->LoadDictionary(s.toAscii().constData(), false, true);
@@ -541,7 +541,7 @@ void MIMainWindow::ShowDictEditor(const char *type)
 void MIMainWindow::OnLoadDictAppend()
 {
     QString s = QFileDialog::getOpenFileName(this, "Choose a dictionary file", "",
-                                          "Dictionary files (*.pdb,*.cif,*.ent);;All files (*.*)");
+                                          "Dictionary files (*.pdb *.cif *.ent);;All files (*.*)");
     if (!s.isEmpty())
     {
         MIFitDictionary()->LoadDictionary(s.toAscii().constData(), true);
