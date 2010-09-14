@@ -26,35 +26,38 @@ if 'SHELX_DIR' in os.environ.keys():
 def exec_script(script):
     """Executes the given script in the associated MIFit session"""
     global socketId
-    result = None
+    result = QtCore.QString()
     sock = QtNetwork.QLocalSocket()
     sock.connectToServer(socketId)
     if sock.waitForConnected():
 
         stream = QtCore.QDataStream(sock)
-        stream.setVersion(QtCore.QDataStream.Qt_4_0)
+        stream.setVersion(QtCore.QDataStream.Qt_4_5)
 
-        scriptString = QtCore.QString(script + "\b")
-        stream << scriptString
+        data = QtCore.QByteArray()
+        out = QtCore.QDataStream(data, QtCore.QIODevice.WriteOnly)
+        out.setVersion(QtCore.QDataStream.Qt_4_5)
+        out.writeUInt32(0)
+        out << QtCore.QString(script)
+        out.device().seek(0)
+        out.writeUInt32(data.size() - 8)
+        sock.write(data)
         sock.flush()
 
+        moreInput = True
         dataSize = 0
-        waitForData = True
-        while waitForData:
-            if not sock.waitForReadyRead(5000):
+        while moreInput:
+            QtGui.qApp.processEvents()
+            if not sock.waitForReadyRead(200):
                 break
             if dataSize == 0:
                 if sock.bytesAvailable() < 8:
-                  continue
-                dataSize = stream.readInt64()
-            if stream.atEnd():
-                break
+                    continue
+                dataSize = stream.readUInt32()
             if sock.bytesAvailable() < dataSize:
-                QtGui.qApp.processEvents()
                 continue
-            waitForData = False
-            result = QtCore.QString()
             stream >> result
+            moreInput = False
 
         sock.close()
     else:
