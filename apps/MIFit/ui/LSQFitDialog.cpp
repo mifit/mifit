@@ -16,6 +16,8 @@ LSQFitDialog::LSQFitDialog(QWidget *parent)
     : QDialog(parent)
 {
     setupUi(this);
+    targetComboBox->setMinimumContentsLength(20);
+    sourceComboBox->setMinimumContentsLength(20);
 
     targetres = NULL;
     sourceres = NULL;
@@ -107,6 +109,7 @@ void LSQFitDialog::on_targetListWidget_currentTextChanged(const QString &str)
 
 void LSQFitDialog::on_targetComboBox_currentIndexChanged(const QString &text)
 {
+    targetComboBox->setToolTip(text);
     Molecule *mol = findMolecule(text.toStdString());
     if (mol)
     {
@@ -121,6 +124,7 @@ void LSQFitDialog::on_targetComboBox_currentIndexChanged(const QString &text)
 
 void LSQFitDialog::on_sourceComboBox_currentIndexChanged(const QString &text)
 {
+    sourceComboBox->setToolTip(text);
     Molecule *mol = findMolecule(text.toStdString());
     if (mol)
     {
@@ -381,7 +385,9 @@ void LSQFitDialog::ListSourceChoices()
         {
             isel = i;
         }
-        sourceComboBox->addItem((*p)->pathname.c_str());
+        QString path = (*p)->pathname.c_str();
+        sourceComboBox->addItem(path);
+        sourceComboBox->setItemData(i, path, Qt::ToolTipRole);
         p++;
         i++;
     }
@@ -399,7 +405,9 @@ void LSQFitDialog::ListTargetChoices()
         {
             isel = i;
         }
-        targetComboBox->addItem((*p)->pathname.c_str());
+        QString path = (*p)->pathname.c_str();
+        targetComboBox->addItem(path);
+        targetComboBox->setItemData(i, path, Qt::ToolTipRole);
         p++;
         i++;
     }
