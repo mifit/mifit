@@ -937,7 +937,10 @@ void MIGLWidget::paintGL()
 
 void MIGLWidget::OnPrint()
 {
+    scene->renderer->setPickingEnabled(true);
     QPixmap imageToPrint = renderPixmap(); //TODO: could alter canvas size here
+    scene->renderer->setPickingEnabled(false);
+
     QPrinter prn;
     QPrintDialog printDialog( &prn, this );
     if (printDialog.exec())
@@ -3658,7 +3661,9 @@ void MIGLWidget::clearStack()
 
 void MIGLWidget::OnEditCopy()
 {
+    scene->renderer->setPickingEnabled(true);
     QApplication::clipboard()->setPixmap(renderPixmap());
+    scene->renderer->setPickingEnabled(false);
 }
 
 void MIGLWidget::OnAnimateRockandrollparameters()
@@ -10859,8 +10864,10 @@ void MIGLWidget::OnExportImage()
         path += defaultExt;
     }
 
+    scene->renderer->setPickingEnabled(true);
     QPixmap image = renderPixmap(); //TODO: could alter canvas size here
     image.save(path);
+    scene->renderer->setPickingEnabled(false);
 
     QFileInfo imagePath(path);
     settings.setValue(ExportImageDirKey, imagePath.absoluteDir().canonicalPath());
