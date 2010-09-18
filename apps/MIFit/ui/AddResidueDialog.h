@@ -17,8 +17,8 @@ public:
 
     enum ModelLocation
     {
-        BeforeSelectedResidue,
         AfterSelectedResidue,
+        BeforeSelectedResidue,
         StartOfModel,
         EndOfModel
     };
