@@ -1,2 +1,2 @@
 
-char MIFit_version[] = "2010.09.rc5";
+char MIFit_version[] = "2010.09.rc6";
