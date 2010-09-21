@@ -70,6 +70,7 @@ private:
     int zmax;
 
     bool drawBox;
+    bool symmatoms_visible;
     float symm_radius;
     float symm_center[3];
     std::string alt_seq;
@@ -91,7 +92,6 @@ private:
     {
         return *((Molecule*)0);
     }                                                                        // NOTE: broken implementation just to avoid compiler warning, do not use!
-
 
 public:
 
@@ -131,7 +131,6 @@ public:
 
     int ModelType;
     bool HVisible;
-    bool symmatoms_visible;
     std::vector<CONTACT> hbondContacts;
 
     Molecule(chemlib::Residue *reslist, std::string cmpd, FILE *fp, chemlib::Bond *conns, int nconns, int type = MoleculeType::PDB);
@@ -162,6 +161,9 @@ public:
     void setAtomLabelVisible(ATOMLABEL *label, bool visible);
     void setAtomLabelColor(ATOMLABEL *label, unsigned char red, unsigned char green, unsigned char blue);
     void setAtomLabelText(ATOMLABEL *label, const char *text);
+
+    bool symmAtomsVisible() const;
+    void setSymmAtomsVisible(bool value);
 
 signals:
     void atomLabelAdded(Molecule*, ATOMLABEL*);

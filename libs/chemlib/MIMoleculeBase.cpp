@@ -43,13 +43,13 @@ bool MIMoleculeBase::isValid(MIMoleculeBase *mol)
 }
 
 MIMoleculeBase::MIMoleculeBase()
+    : SymmResidues(NULL)
 {
     ++refCounts[this];
     compound = "";
 
     Tatom1 = Tatom2 = NULL;
     residues = NULL;
-    SymmResidues = NULL;
 
     coords_changed = true;
     modified = true;
@@ -60,13 +60,13 @@ MIMoleculeBase::MIMoleculeBase()
 }
 
 MIMoleculeBase::MIMoleculeBase(Residue *reslist, const std::string &cmpd, Bond *conns, int nconns)
+    : SymmResidues(NULL)
 {
     ++refCounts[this];
     compound = cmpd;
 
     Tatom1 = Tatom2 = NULL;
     residues = reslist;
-    SymmResidues = NULL;
 
     strcpy(link_here, "C");  // protein link thru peptide bond
     strcpy(link_next, "N");  // in derived class you can change         to other bond type.

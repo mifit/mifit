@@ -28,11 +28,12 @@ Molecule::Molecule(int type)
       mapheader(new CMapHeader),
       m_pSecondaryStructure(NULL),
       secStruc_ribbon(false),
-      secStruc_schematic(false)
+      secStruc_schematic(false),
+      symmatoms_visible(false)
+
 {
     ModelType = type;
     visible = dots_visible = labels_visible = annots_visible = 1;
-    SymmResidues = NULL;
     HVisible = 1;
     modelnumber = 0; // 0 means uninitialized valid numbers are above 0
     nribbons = 0;
@@ -53,11 +54,11 @@ Molecule::Molecule(Residue *reslist, std::string cmpd, FILE *fp, Bond *conns, in
       mapheader(new CMapHeader),
       m_pSecondaryStructure(NULL),
       secStruc_ribbon(false),
-      secStruc_schematic(false)
+      secStruc_schematic(false),
+      symmatoms_visible(false)
 {
     ModelType = type;
     visible = dots_visible = labels_visible = annots_visible = 1;
-    symmatoms_visible = true;
     pathname = cmpd;
     compound = cmpd;
     HVisible = 1;
@@ -1140,10 +1141,8 @@ bool Molecule::CheckCenter(float x, float y, float z)
 {
     // if we have symm atoms and we have moved substantially, make a new list
 
-    if (!SymmResidues)
-    {
+    if (!symmatoms_visible)
         return false;
-    }
     float center[3] = {x, y, z};
     double d;
     double dx = center[0] - symm_center[0];
@@ -3137,3 +3136,12 @@ void Molecule::updateFixChainOptions(bool *breakByDiscontinuity, bool *breakByNo
     }
 }
 
+bool Molecule::symmAtomsVisible() const
+{
+    return symmatoms_visible;
+}
+
+void Molecule::setSymmAtomsVisible(bool value)
+{
+    symmatoms_visible = value;
+}

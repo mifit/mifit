@@ -10286,18 +10286,21 @@ void MIGLWidget::OnShowHideBackbone()
 
 void MIGLWidget::OnShowSymmAtomsAsAtoms()
 {
+    GetDisplaylist()->CurrentItem()->setSymmAtomsVisible(true);
     link_symm = false;
     generateSymmAtoms();
 }
 
 void MIGLWidget::OnShowSymmAtomsAsCATrace()
 {
+    GetDisplaylist()->CurrentItem()->setSymmAtomsVisible(true);
     link_symm = true;
     generateSymmAtoms();
 }
 
 void MIGLWidget::OnShowHideSymmAtoms()
 {
+    GetDisplaylist()->CurrentItem()->setSymmAtomsVisible(false);
     clearSymmAtoms();
 }
 
