@@ -152,9 +152,6 @@ void GLOverviewCanvas::createAlphaCarbonTrace()
     frustum->setFarClipping(3.0f * cameraDistance);
 }
 
-/**
- * Adjusts color for depth.
- */
 void GLOverviewCanvas::paintGL()
 {
     if (!isVisible())
@@ -164,6 +161,7 @@ void GLOverviewCanvas::paintGL()
         return;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glDisable(GL_LIGHTING);
 
     createAlphaCarbonTrace();
 

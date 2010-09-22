@@ -811,6 +811,7 @@ void MIGLWidget::paintGL()
             PaletteChanged = true;
         }
         CheckCenter();
+        MIMainWindow::instance()->updateNavigator();
     }
 
     makeCurrent();
