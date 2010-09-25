@@ -11,6 +11,7 @@
 #include <QFontMetrics>
 #include <QKeyEvent>
 #include <QMouseEvent>
+#include <QSettings>
 
 #define LABEL_ROOM (4*fheight)
 #define TITLE_ROOM (3*fheight)
@@ -444,7 +445,7 @@ void GraphWindow::myRenderText(double x, double y, double z, const QString &str,
     {
         firsttime = false;
         use_alternate_rendering =
-            QSettings().value("View Parameters/AlternateTextRendering", false);
+            QSettings().value("View Parameters/AlternateTextRendering", false).toBool();
     }
 
     if (use_alternate_rendering)

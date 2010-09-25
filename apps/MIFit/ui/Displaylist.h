@@ -28,13 +28,8 @@ class Displaylist : public QObject
      */
     static DisplaylistRefCountMap refCounts;
 
-    Displaylist(const Displaylist& /* list */)
-    {
-    }
-    Displaylist&operator=(const Displaylist& /* list */)
-    {
-        return *((Displaylist*)0);
-    }                                                                                  // NOTE: broken implementation just to avoid compiler warning, do not use!
+    Displaylist(const Displaylist&);
+    Displaylist&operator=(const Displaylist&);                               // NOTE: broken implementation just to avoid compiler warning, do not use!
 
 public:
 
