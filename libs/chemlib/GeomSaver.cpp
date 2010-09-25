@@ -33,7 +33,7 @@ unsigned int GeomSaver::Save(Residue *res, int nres, MIMoleculeBase *model)
     ResidueListIterator resIterEnd = Residue::getIterator(0);
     ResidueListIterator lastres = resIter;
     ResidueListIterator firstres = resIter;
-    for (; resIter != resIterEnd && n < nres; ++res)
+    for (; resIter != resIterEnd && n < nres; ++resIter)
     {
         const MIAtomList &atoms = resIter->atoms();
         endAtom = atoms.end();
