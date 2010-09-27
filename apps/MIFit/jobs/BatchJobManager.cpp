@@ -21,14 +21,13 @@ namespace
         python.start(pythonPath, QStringList() << "-");
         if (python.waitForStarted())
         {
-            python.write("from PyQt4 import QtCore, Qt\n");
-            python.write("print 'Qt', QtCore.QT_VERSION_STR\n");
+            python.write("from PyQt4 import QtCore\n");
             python.write("print 'PyQt', QtCore.PYQT_VERSION_STR\n");
             python.closeWriteChannel();
             if (python.waitForFinished())
             {
                 QString versions = python.readAll();
-                if (versions.contains("Qt 4.6") && versions.contains("PyQt 4.7"))
+                if (versions.contains("PyQt 4.7"))
                     return true;
             }
         }
