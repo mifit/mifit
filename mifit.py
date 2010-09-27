@@ -48,8 +48,6 @@ def exec_script(script):
         dataSize = 0
         while moreInput:
             QtGui.qApp.processEvents()
-            if not sock.waitForReadyRead(200):
-                break
             if dataSize == 0:
                 if sock.bytesAvailable() < 8:
                     continue
