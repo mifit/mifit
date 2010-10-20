@@ -116,7 +116,7 @@ void StereoView::render(Scene &scene)
     overlayFrustum->setFocalLength(frustum->getFocalLength());
     overlayFrustum->setHeight((float)viewport->getHeight());
 
-    resetView(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    resetView(GL_DEPTH_BUFFER_BIT);
 
     Viewport *currentViewport = viewport;
     if (stereo)
@@ -234,7 +234,7 @@ Viewport*StereoView::prepareRightEye(float cameraOffset, float frustumAsymmetry)
     if (glStereo)
     {
         glDrawBuffer(GL_BACK_RIGHT);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_DEPTH_BUFFER_BIT);
     }
 
     Vector3<float> newEye(1.0f, 0.0f, 0.0f);
@@ -269,7 +269,7 @@ Viewport*StereoView::prepareLeftEye(float cameraOffset, float frustumAsymmetry)
     if (glStereo)
     {
         glDrawBuffer(GL_BACK_LEFT);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_DEPTH_BUFFER_BIT);
     }
 
     Vector3<float> newEye(1.0f, 0.0f, 0.0f);
@@ -300,7 +300,7 @@ void StereoView::render(Renderable &renderable)
 {
     frustum->updateFrustum(*viewport);
 
-    resetView(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    resetView(GL_DEPTH_BUFFER_BIT);
 
     if (stereo)
     {

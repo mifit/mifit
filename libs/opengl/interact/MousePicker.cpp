@@ -25,6 +25,11 @@ MousePicker::~MousePicker()
 
 std::vector<GLuint> MousePicker::pick(int x, int y, Frustum *frustum, Renderable *scene)
 {
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
 
     glSelectBuffer(selectBufferLength, selectBuffer);
     glRenderMode(GL_SELECT);
@@ -62,6 +67,12 @@ std::vector<GLuint> MousePicker::pick(int x, int y, Frustum *frustum, Renderable
             i += numberOfNames + 3;
         }
     }
+
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+    glPopAttrib();
 
     return selectedIds;
 }

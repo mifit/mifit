@@ -2,7 +2,7 @@
 #define mifit_ui_MIGLWidget_h
 
 #include <cmath>
-#include <QGLWidget>
+#include <QDeclarativeView>
 #include <QMdiSubWindow>
 #include <QTime>
 #include <QVBoxLayout>
@@ -32,8 +32,12 @@ class CMolwViewScene;
 
 class GLRenderer;
 class QActionGroup;
+class QDeclarativeEngine;
+class QGraphicsObject;
+class QGraphicsSceneMouseEvent;
 class QResizeEvent;
 class InterpBox;
+class MainItem;
 class NavigatorCanvas;
 namespace mi
 {
@@ -58,7 +62,7 @@ class MAP_POINT;
 #define sign(a) (a < 0 ? -1 : 1)
 
 
-class MIGLWidget : public QGLWidget
+class MIGLWidget : public QDeclarativeView
 {
     Q_OBJECT
 
@@ -109,6 +113,8 @@ private:
     QVBoxLayout *fullScreenLayout;
     QMdiSubWindow *oldParent;
     QWidget *containerWidget;
+    MainItem *mainItem;
+    QGraphicsObject *stackItem;
 
     chemlib::Residue *focusres;
     bool focusresDeleted;
@@ -567,7 +573,7 @@ public:
     /**
      * Called by the system when the canvas needs drawing.
      */
-    virtual void paintGL();
+    void draw(QPainter *painter);
 
     /**
      * main frame will call this when this widget is activated.
@@ -712,10 +718,14 @@ public:
 
     void handleKey_space(bool spaceKeyDown);
 
-    void mousePressEvent(QMouseEvent *e);
-    void mouseReleaseEvent(QMouseEvent *e);
-    void mouseMoveEvent(QMouseEvent *e);
-    void mouseDoubleClickEvent(QMouseEvent *e);
+    using QGraphicsView::mousePressEvent;
+    using QGraphicsView::mouseMoveEvent;
+    using QGraphicsView::mouseReleaseEvent;
+    using QGraphicsView::mouseDoubleClickEvent;
+    void handleMousePress(QGraphicsSceneMouseEvent *e);
+    void handleMouseRelease(QGraphicsSceneMouseEvent *e);
+    void handleMouseMove(QGraphicsSceneMouseEvent *e);
+    void handleMouseDoubleClick(QGraphicsSceneMouseEvent *e);
     void keyPressEvent(QKeyEvent *e);
     void enterEvent(QEvent *e);
     void leaveEvent(QEvent *e);

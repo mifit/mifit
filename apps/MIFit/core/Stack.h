@@ -5,7 +5,8 @@ class Stack;
 
 #include <stack>
 #include <deque>
-#include <QObject>
+#include <QtCore/QObject>
+#include <QtCore/QStringList>
 #include "CRect.h"
 #include "Molecule.h"
 
@@ -23,6 +24,8 @@ typedef struct
 class Stack : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(int size READ size NOTIFY sizeChanged)
+    Q_PROPERTY(QStringList stringList READ toStringList NOTIFY sizeChanged);
 
 public:
     typedef std::deque<StackItem> DataContainer;
@@ -46,13 +49,12 @@ public:
     Stack();
     ~Stack();
 
-
-
-
     int size();
     bool empty();
     StackItem top();
-    const DataContainer&getData();
+    const DataContainer& getData();
+    QStringList toStringList() const;
+
     void Pop(chemlib::MIAtom* &atom, chemlib::Residue* &res);
     void Pop(chemlib::MIAtom* &atom, chemlib::Residue* &res, Molecule* &m);
     chemlib::MIAtom *Pop();
@@ -84,84 +86,14 @@ public:
     void atomsToBeDeleted(chemlib::MIMoleculeBase *model, const chemlib::MIAtomList &atoms);
     void moleculeToBeDeleted(chemlib::MIMoleculeBase *model);
 
+public slots:
+    void pop();
+    void clear();
+
 signals:
     void emptyChanged(bool);
+    void sizeChanged();
 };
-
-inline bool Stack::isMinimized()
-{
-    return minimized;
-}
-
-inline int Stack::size()
-{
-    return data.size();
-}
-
-inline bool Stack::empty()
-{
-    return data.empty();
-}
-
-inline StackItem Stack::top()
-{
-    return data.back();
-}
-
-inline const Stack::DataContainer&Stack::getData()
-{
-    return data;
-}
-
-inline CRect&Stack::getClearBox()
-{
-    return ClearBox;
-}
-
-inline CRect&Stack::getHideBox()
-{
-    return HideBox;
-}
-
-inline CRect&Stack::getPopBox()
-{
-    return PopBox;
-}
-
-inline void Stack::Clear()
-{
-    DataContainer().swap(data); // was data.clear();
-}
-
-inline bool Stack::PickClearBox(int sx, int sy)
-{
-    return ClearBox.Within(sx, sy);
-}
-
-inline bool Stack::PickHideBox(int sx, int sy)
-{
-    return HideBox.Within(sx, sy);
-}
-
-inline bool Stack::PickPopBox(int sx, int sy)
-{
-    return PopBox.Within(sx, sy);
-}
-
-inline void Stack::Minimize()
-{
-    minimized = true;
-}
-
-inline void Stack::Maximize()
-{
-    minimized = false;
-}
-
-inline void Stack::ToggleMinMax()
-{
-    minimized = !minimized;
-}
 
 #endif // ifndef mifit_model_Stack_h
 

@@ -1,3 +1,7 @@
+#include <QtDeclarative/QDeclarativeEngine>
+#include <QtDeclarative/QDeclarativeContext>
+#include <QtDeclarative/QDeclarativeComponent>
+
 #include <vector>
 #include <algorithm>
 #include <cstring>
@@ -44,6 +48,9 @@
 #include <QInputDialog>
 #include <QSettings>
 #include <QFileDialog>
+#include <QGraphicsItem>
+#include <QGraphicsObject>
+#include <QDebug>
 
 #include <nongui/nonguilib.h>
 #include <math/mathlib.h>
@@ -268,9 +275,72 @@ static bool checkmappath(char *file)
 }
 
 
+class MainItem : public QGraphicsItem
+{
+public:
+    MainItem(MIGLWidget *widget, QGraphicsItem *parent = 0)
+        : QGraphicsItem(parent), glWidget(widget)
+    {
+        setFlag(ItemStacksBehindParent);
+        setFlag(ItemIgnoresTransformations);
+        setFlag(ItemIgnoresParentOpacity);
+        setZValue(-std::numeric_limits<qreal>::max());
+    }
+
+    void setSize(const QSizeF &size)
+    {
+        prepareGeometryChange();
+        this->size = size;
+    }
+
+    virtual QRectF boundingRect() const
+    {
+        return QRectF(QPointF(), size);
+    }
+
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0)
+    {
+        Q_UNUSED(option)
+        Q_UNUSED(widget)
+        glWidget->draw(painter);
+    }
+
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event)
+    {
+        glWidget->handleMousePress(event);
+    }
+
+    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+    {
+        glWidget->handleMouseMove(event);
+    }
+
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+    {
+        glWidget->handleMouseRelease(event);
+    }
+
+    virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+    {
+        glWidget->handleMouseDoubleClick(event);
+    }
+
+private:
+    MIGLWidget *glWidget;
+    QSizeF size;
+};
 
 MIGLWidget::MIGLWidget()
+    : QDeclarativeView(QUrl("qrc:/qml/root.qml"))
 {
+    setViewport(new QGLWidget);
+    setViewportUpdateMode(FullViewportUpdate);
+    PaletteColor c = Application::instance()->GetBackgroundColor();
+    QDeclarativeView::scene()->setBackgroundBrush(QColor(c.red, c.green, c.blue));
+
+    setResizeMode(SizeRootObjectToView);
+    mainItem = new MainItem(this, rootObject());
+
     SetTitle(""); // so that Modify won't complain about missing [*]
 
     newfile = 0;
@@ -345,6 +415,7 @@ MIGLWidget::MIGLWidget()
     ShowLabels = settings.value("View Parameters/ShowLabels", true).toBool();
     ShowContacts = settings.value("View Parameters/ShowContacts", true).toBool();
     ShowStack = settings.value("View Parameters/ShowStack", true).toBool();
+    rootContext()->setContextProperty("stackVisible", ShowStack);
     ShowGnomon = settings.value("View Parameters/ShowGnomon", true).toBool();
     showUnitCell = settings.value("View Parameters/ShowUnitCell", false).toBool();
     scene->ShowLabels = ShowLabels;
@@ -366,6 +437,13 @@ MIGLWidget::MIGLWidget()
     SaveColors = true;
     is_drawing = false;
     link_symm = false;
+
+    rootContext()->setContextProperty("root", rootObject());
+    rootContext()->setContextProperty("stack", AtomStack);
+    QDeclarativeComponent component(engine(), QUrl("qrc:/qml/stack.qml"));
+    stackItem = qobject_cast<QGraphicsObject *>(component.create());
+    if (stackItem)
+        stackItem->setParentItem(rootObject());
 
     popup_menu = new QMenu(this);
     connect(popup_menu, SIGNAL(aboutToShow()), this, SLOT(updatePopupMenu()));
@@ -414,7 +492,7 @@ MIGLWidget::MIGLWidget()
 
     DoingRange = 0;
 
-    scene->renderer->setQGLWidget(this);
+    scene->renderer->setQGLWidget(static_cast<QGLWidget*>(viewport()));
 
     annotationPickingRenderable = new CMolwViewAnnotationPickingRenderable(stereoView, frustum, this);
     annotationPickingRenderable->setFontSize(12);
@@ -608,7 +686,9 @@ void MIGLWidget::moleculeToBeDeleted(MIMoleculeBase *model)
 
 void MIGLWidget::doRefresh()
 {
-    updateGL();
+    QDeclarativeView::scene()->invalidate();
+    QDeclarativeView::scene()->update();
+    update();
     MIMainWindow::instance()->updateToolBar();
     MIMainWindow::instance()->updateNavigator();
 
@@ -715,7 +795,8 @@ void MIGLWidget::OnActivated()
 void MIGLWidget::ReDraw()
 {
     CheckCenter();
-    updateGL();
+    mainItem->update();
+    qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
     MIMainWindow::instance()->updateNavigator();
 }
 
@@ -755,8 +836,16 @@ void MIGLWidget::CheckCenter()
 }
 
 
-void MIGLWidget::paintGL()
+void MIGLWidget::draw(QPainter *painter)
 {
+    painter->save();
+    painter->beginNativePainting();
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+
     is_drawing = true;
     int SaveYup = viewpoint->Yup;
     Displaylist *Models = GetDisplaylist();
@@ -814,7 +903,6 @@ void MIGLWidget::paintGL()
         MIMainWindow::instance()->updateNavigator();
     }
 
-    makeCurrent();
     scene->initializeForRender();
 
     //float maxDistance = 10.0f;
@@ -922,15 +1010,21 @@ void MIGLWidget::paintGL()
     Update = NewSize = 0;
     viewpoint->Yup = SaveYup;
 
-    glFlush();
-
 #if SHOW_RENDER_TIME
     QString framesPerSecond = QString("render in %1 ms")
                               .arg(elapsedTime);
     Logger::debug(framesPerSecond.toAscii().constData());
+    qDebug() << qPrintable(framesPerSecond);
 #endif
 
     is_drawing = false;
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+    glPopAttrib();
+    painter->endNativePainting();
+    painter->restore();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -939,7 +1033,7 @@ void MIGLWidget::paintGL()
 void MIGLWidget::OnPrint()
 {
     scene->renderer->setPickingEnabled(true);
-    QPixmap imageToPrint = renderPixmap(); //TODO: could alter canvas size here
+    QPixmap imageToPrint = static_cast<QGLWidget*>(viewport())->renderPixmap(); //TODO: could alter canvas size here
     scene->renderer->setPickingEnabled(false);
 
     QPrinter prn;
@@ -1942,6 +2036,7 @@ void MIGLWidget::resizeEvent(QResizeEvent *evt)
 {
     int sx = evt->size().width();
     int sy = evt->size().height();
+    mainItem->setSize(evt->size());
 
 #ifdef __APPLE__
     QSettings settings;
@@ -1951,7 +2046,7 @@ void MIGLWidget::resizeEvent(QResizeEvent *evt)
 
     if (sx == 0 || sy == 0)
     {
-        QWidget::resizeEvent(evt);
+        QDeclarativeView::resizeEvent(evt);
         return;
     }
     // Set the Resize bitmap flag
@@ -1961,7 +2056,7 @@ void MIGLWidget::resizeEvent(QResizeEvent *evt)
         viewpoint->SetWindow(0, 0, sx, sy);
     }
     MIMainWindow::instance()->updateNavigator();
-    QWidget::resizeEvent(evt);
+    QDeclarativeView::resizeEvent(evt);
 }
 
 void MIGLWidget::OnStereoToggle()
@@ -2102,6 +2197,7 @@ void MIGLWidget::OnViewAtomstack()
     ShowStack = !ShowStack;
     QSettings settings;
     settings.setValue("View Parameters/ShowStack", ShowStack ? 1 : 0);
+    rootContext()->setContextProperty("stackVisible", ShowStack);
     scene->ShowStack = ShowStack;
     doRefresh();
 }
@@ -3663,7 +3759,7 @@ void MIGLWidget::clearStack()
 void MIGLWidget::OnEditCopy()
 {
     scene->renderer->setPickingEnabled(true);
-    QApplication::clipboard()->setPixmap(renderPixmap());
+    QApplication::clipboard()->setPixmap(static_cast<QGLWidget*>(viewport())->renderPixmap());
     scene->renderer->setPickingEnabled(false);
 }
 
@@ -6976,25 +7072,25 @@ void MIGLWidget::OnFlipPeptide()
     if (N)
     {
         N->getPosition(pos);
-        rotate(&pos[0], &pos[1], &pos[2], mat);
+        ::rotate(&pos[0], &pos[1], &pos[2], mat);
         N->setPosition(pos[0], pos[1], pos[2]);
     }
     if (HN)
     {
         HN->getPosition(pos);
-        rotate(&pos[0], &pos[1], &pos[2], mat);
+        ::rotate(&pos[0], &pos[1], &pos[2], mat);
         HN->setPosition(pos[0], pos[1], pos[2]);
     }
     if (C)
     {
         C->getPosition(pos);
-        rotate(&pos[0], &pos[1], &pos[2], mat);
+        ::rotate(&pos[0], &pos[1], &pos[2], mat);
         C->setPosition(pos[0], pos[1], pos[2]);
     }
     if (O)
     {
         O->getPosition(pos);
-        rotate(&pos[0], &pos[1], &pos[2], mat);
+        ::rotate(&pos[0], &pos[1], &pos[2], mat);
         O->setPosition(pos[0], pos[1], pos[2]);
     }
     m->SetCoordsChanged();
@@ -10459,7 +10555,7 @@ void MIGLWidget::keyPressEvent(QKeyEvent *e)
     }
     if (!OnKeyDown(nChar, nRepCnt, nFlags))
     {
-        QGLWidget::keyPressEvent(e); // chain to parent
+        QDeclarativeView::keyPressEvent(e); // chain to parent
     }
     if (ViewChanged())
     {
@@ -10469,7 +10565,7 @@ void MIGLWidget::keyPressEvent(QKeyEvent *e)
 }
 
 
-static void getFlags(QMouseEvent *e, unsigned short &flags)
+static void getFlags(QGraphicsSceneMouseEvent *e, unsigned short &flags)
 {
     // flags for the key states
     if (e->modifiers() & Qt::ControlModifier)
@@ -10503,9 +10599,10 @@ static void getFlags(QMouseEvent *e, unsigned short &flags)
 }
 
 
-void MIGLWidget::mousePressEvent(QMouseEvent *e)
+void MIGLWidget::handleMousePress(QGraphicsSceneMouseEvent *e)
 {
-    mouse = CPoint(e->x(), e->y());
+    QPoint pos = mapFromScene(e->scenePos());
+    mouse = CPoint(pos.x(), pos.y());
     mousestart = mouse;
 
     if (!MouseCaptured)
@@ -10513,7 +10610,7 @@ void MIGLWidget::mousePressEvent(QMouseEvent *e)
         MouseCaptured = true;
     }
 
-    if (e->y() > 30)
+    if (pos.y() > 30)
     {
         SetCursor(imhCross);
     }
@@ -10521,13 +10618,15 @@ void MIGLWidget::mousePressEvent(QMouseEvent *e)
     {
         SetCursor(imhZCursor);
     }
+    e->accept();
 }
 
-void MIGLWidget::mouseReleaseEvent(QMouseEvent *e)
+void MIGLWidget::handleMouseRelease(QGraphicsSceneMouseEvent *e)
 {
     unsigned short flags = 0;
     getFlags(e, flags);
 
+    QPoint pos = mapFromScene(e->scenePos());
 
     if (e->button() & Qt::LeftButton)
     {
@@ -10537,22 +10636,22 @@ void MIGLWidget::mouseReleaseEvent(QMouseEvent *e)
         DraggingSlab = false;
         DraggingRotate = false;
 
-        if (e->x() == mousestart.x && e->y() == mousestart.y && !doubleclicked)
+        if (pos.x() == mousestart.x && pos.y() == mousestart.y && !doubleclicked)
         {
-            mouse = CPoint(e->x(), e->y());
+            mouse = CPoint(pos.x(), pos.y());
             if (!TopView)
             {
-                if (ShowStack && !AtomStack->empty() && AtomStack->PickClearBox(e->x(), stereoView->getViewport()->getHeight() - e->y()))
+                if (ShowStack && !AtomStack->empty() && AtomStack->PickClearBox(pos.x(), stereoView->getViewport()->getHeight() - pos.y()))
                 {
                     AtomStack->Clear();
                     ReDraw();
                 }
-                else if (ShowStack && !AtomStack->empty() && AtomStack->PickHideBox(e->x(), stereoView->getViewport()->getHeight() - e->y()))
+                else if (ShowStack && !AtomStack->empty() && AtomStack->PickHideBox(pos.x(), stereoView->getViewport()->getHeight() - pos.y()))
                 {
                     AtomStack->ToggleMinMax();
                     ReDraw();
                 }
-                else if (ShowStack && !AtomStack->empty() && AtomStack->PickPopBox(e->x(), stereoView->getViewport()->getHeight() - e->y()))
+                else if (ShowStack && !AtomStack->empty() && AtomStack->PickPopBox(pos.x(), stereoView->getViewport()->getHeight() - pos.y()))
                 {
                     AtomStack->Pop();
                     ReDraw();
@@ -10561,7 +10660,7 @@ void MIGLWidget::mouseReleaseEvent(QMouseEvent *e)
                 {
                     annotationPickingRenderable->setModels(models);
 
-                    vector<GLuint> ids = mousePicker->pick(e->x(), e->y(), frustum, annotationPickingRenderable);
+                    vector<GLuint> ids = mousePicker->pick(pos.x(), pos.y(), frustum, annotationPickingRenderable);
 
                     Annotation *annot = NULL;
                     if (ids.size() > 0)
@@ -10577,7 +10676,7 @@ void MIGLWidget::mouseReleaseEvent(QMouseEvent *e)
                     else
                     {
                         prepareAtomPicking();
-                        ids = mousePicker->pick(e->x(), e->y(), frustum, atomPickingRenderable);
+                        ids = mousePicker->pick(pos.x(), pos.y(), frustum, atomPickingRenderable);
                         MIAtom *atom = NULL;
                         if (ids.size() > 0)
                         {
@@ -10586,7 +10685,7 @@ void MIGLWidget::mouseReleaseEvent(QMouseEvent *e)
                         if (IsFitting())
                         {
                             prepareBondPicking();
-                            ids = mousePicker->pick(e->x(), e->y(), frustum, bondPickingRenderable);
+                            ids = mousePicker->pick(pos.x(), pos.y(), frustum, bondPickingRenderable);
                             Bond *bond = NULL;
                             if (ids.size() > 0)
                             {
@@ -10647,7 +10746,7 @@ void MIGLWidget::mouseReleaseEvent(QMouseEvent *e)
         }
         DragStart = false;
 
-        if (e->y() > 30)
+        if (pos.y() > 30)
         {
             SetCursor(imhCross);
         }
@@ -10662,7 +10761,7 @@ void MIGLWidget::mouseReleaseEvent(QMouseEvent *e)
         // we've been showing drags as ball-and-stick and now we need
         // to redraw
 
-        if (e->x() != mousestart.x || e->y() != mousestart.y)
+        if (pos.x() != mousestart.x || pos.y() != mousestart.y)
         {
             if (viewpoint->GetBallandStick() > ViewPoint::BALLANDSTICK)
             {
@@ -10671,10 +10770,10 @@ void MIGLWidget::mouseReleaseEvent(QMouseEvent *e)
         }
         else
         {
-            popup_menu->popup(mapToGlobal(e->pos()));
+            popup_menu->popup(mapToGlobal(pos));
         }
 
-        if (e->y() > 30)
+        if (pos.y() > 30)
         {
             SetCursor(imhCross);
         }
@@ -10694,23 +10793,25 @@ void MIGLWidget::mouseReleaseEvent(QMouseEvent *e)
 
 }
 
-void MIGLWidget::mouseMoveEvent(QMouseEvent *e)
+void MIGLWidget::handleMouseMove(QGraphicsSceneMouseEvent *e)
 {
     unsigned short flags = 0;
     getFlags(e, flags);
+    QPoint pos = mapFromScene(e->scenePos());
+
     if (e->buttons() == Qt::NoButton)
     {
-        mouse.x = e->x();
-        mouse.y = e->y();
-        OnMouseMove(flags, CPoint(e->x(), e->y()));
+        mouse.x = pos.x();
+        mouse.y = pos.y();
+        OnMouseMove(flags, CPoint(pos.x(), pos.y()));
     }
     else
     {
-        OnMouseMove(flags, CPoint(e->x(), e->y()));
+        OnMouseMove(flags, CPoint(pos.x(), pos.y()));
     }
 }
 
-void MIGLWidget::mouseDoubleClickEvent(QMouseEvent *e)
+void MIGLWidget::handleMouseDoubleClick(QGraphicsSceneMouseEvent *e)
 {
 //FIXME: implement double click support.  Note that the widget gets a
 //mousePressEvent() and a mouseReleaseEvent() before the
@@ -10718,10 +10819,11 @@ void MIGLWidget::mouseDoubleClickEvent(QMouseEvent *e)
 
     unsigned short flags = 0;
     getFlags(e, flags);
+    QPoint pos = mapFromScene(e->scenePos());
 
     if (e->button() & Qt::LeftButton)
     {
-        OnLButtonDblClk(flags, CPoint(e->x(), e->y()));
+        OnLButtonDblClk(flags, CPoint(pos.x(), pos.y()));
     }
 }
 
@@ -10869,7 +10971,7 @@ void MIGLWidget::OnExportImage()
     }
 
     scene->renderer->setPickingEnabled(true);
-    QPixmap image = renderPixmap(); //TODO: could alter canvas size here
+    QPixmap image = static_cast<QGLWidget*>(viewport())->renderPixmap(); //TODO: could alter canvas size here
     image.save(path);
     scene->renderer->setPickingEnabled(false);
 

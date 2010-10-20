@@ -14,10 +14,10 @@
 #include <opengl/Axes.h>
 #include <opengl/Camera.h>
 #include <opengl/Frustum.h>
-#include <opengl/GLFont.h>
 #include <opengl/OpenGL.h>
 #include <opengl/QuatUtil.h>
 #include <opengl/Sphere.h>
+#include <opengl/Text.h>
 #include <opengl/Viewport.h>
 #include <opengl/ViewportRelativeViewpoint.h>
 #include <opengl/interact/TargetFeedback.h>
@@ -82,7 +82,7 @@ void CMolwViewScene::initializeForRender()
 {
     if (axes[renderer->getContext()] == NULL)
     {
-        axes[renderer->getContext()] = new Axes(renderer->createGLFont());
+        axes[renderer->getContext()] = new Axes(std::auto_ptr<mi::opengl::Text>(new Text(QFont("Helvetica", 12, QFont::Bold))));
         axes[renderer->getContext()]->setFontSize(10);
         axes[renderer->getContext()]->setLength(30);
     }
@@ -100,8 +100,6 @@ void CMolwViewScene::initializeForRender()
     glShadeModel(GL_SMOOTH);
     glEnable(GL_COLOR_MATERIAL);
     glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-    float *background = renderer->getColor(Application::instance()->GetBackgroundColor());
-    glClearColor(background[0], background[1], background[2], 1.0f);
     renderer->initializeForRender();
 }
 
@@ -191,10 +189,6 @@ void CMolwViewScene::render()
         glEnable(GL_CLIP_PLANE1);
         delete plane;
     }
-    logOpenGLErrors(__FILE__, __LINE__);
-
-
-    renderer->updateFonts();
     logOpenGLErrors(__FILE__, __LINE__);
 
 
@@ -363,10 +357,6 @@ void CMolwViewScene::renderOverlay()
 void CMolwViewScene::render2DOverlay()
 {
     glClear(GL_DEPTH_BUFFER_BIT);
-    if (ShowStack)
-    {
-        renderer->DrawStack(atomStack, 5, 0);
-    }
     if (message.length() > 0)
     {
         glColor3f(1.0f, 1.0f, 1.0f);

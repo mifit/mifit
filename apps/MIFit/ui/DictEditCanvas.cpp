@@ -1,8 +1,18 @@
+#include <QDeclarativeComponent>
+#include <QDeclarativeContext>
+#include <QGLWidget>
+#include <QGraphicsItem>
+#include <QKeyEvent>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QTime>
+#include <QTimer>
+#include <QInputDialog>
+#include <QSettings>
+
 #include <math/Point3.h>
 #include <opengl/Camera.h>
 #include <opengl/Frustum.h>
-
-
 #include <opengl/OpenGL.h>
 #include <opengl/Sphere.h>
 #include <opengl/StereoView.h>
@@ -15,14 +25,6 @@
 #include <opengl/interact/MouseZoomer.h>
 
 #include <algorithm>
-
-#include <QMenuBar>
-#include <QKeyEvent>
-#include <QMessageBox>
-#include <QTime>
-#include <QTimer>
-#include <QInputDialog>
-#include <QSettings>
 
 #include <nongui/nonguilib.h>
 #include <chemlib/chemlib.h>
@@ -80,14 +82,75 @@ bool ordering(const Bond &e1, const Bond &e2)
 }
 
 
-DictEditCanvas::DictEditCanvas(DictEditDialog *daddy)
-    : QGLWidget(daddy),
+class DictEditMainItem : public QGraphicsItem
+{
+public:
+    DictEditMainItem(DictEditCanvas *widget, QGraphicsItem *parent = 0)
+        : QGraphicsItem(parent), glWidget(widget)
+    {
+        setFlag(ItemStacksBehindParent);
+        setFlag(ItemIgnoresTransformations);
+        setFlag(ItemIgnoresParentOpacity);
+        setZValue(-std::numeric_limits<qreal>::max());
+    }
+
+    void setSize(const QSizeF &size)
+    {
+        prepareGeometryChange();
+        this->size = size;
+    }
+
+    virtual QRectF boundingRect() const
+    {
+        return QRectF(QPointF(), size);
+    }
+
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0)
+    {
+        Q_UNUSED(option)
+        Q_UNUSED(widget)
+        glWidget->draw(painter);
+    }
+
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event)
+    {
+        glWidget->handleMousePressEvent(event);
+    }
+
+    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+    {
+        glWidget->handleMouseMoveEvent(event);
+    }
+
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+    {
+        glWidget->handleMouseReleaseEvent(event);
+    }
+
+    virtual void wheelEvent(QGraphicsSceneWheelEvent *event)
+    {
+        glWidget->handleWheelEvent(event);
+    }
+
+private:
+    DictEditCanvas *glWidget;
+    QSizeF size;
+};
+
+DictEditCanvas::DictEditCanvas(DictEditDialog *parent)
+    : QDeclarativeView(QUrl("qrc:/qml/root.qml")),
+      parent(parent),
       popupMenu(NULL),
       geomrefiner(NULL),
       isRotating(false),
       isZooming(false),
       isPanning(false)
 {
+    setViewport(new QGLWidget);
+    setViewportUpdateMode(FullViewportUpdate);
+    QDeclarativeView::scene()->setBackgroundBrush(Qt::black);
+    setResizeMode(SizeRootObjectToView);
+    mainItem = new DictEditMainItem(this, rootObject());
 
     mouseTimer = new QTimer(this);
     mouseTimer->setSingleShot(true);
@@ -105,7 +168,7 @@ DictEditCanvas::DictEditCanvas(DictEditDialog *daddy)
     scene->frustum = frustum;
     scene->camera = camera;
     scene->renderer->setFrustum(frustum);
-    scene->renderer->setQGLWidget(this);
+    scene->renderer->setQGLWidget(static_cast<QGLWidget*>(viewport()));
     scene->renderer->setRenderStyle(RenderStyle::getDefaultBallAndStick());
 
     cameraMouseOrbitor = new MouseArcBallOrbitor(camera, frustum->getFocalLength());
@@ -120,8 +183,16 @@ DictEditCanvas::DictEditCanvas(DictEditDialog *daddy)
 
     AtomStack = new Stack;
     scene->atomStack = AtomStack;
+    rootContext()->setContextProperty("root", rootObject());
+    rootContext()->setContextProperty("stack", AtomStack);
+    rootContext()->setContextProperty("stackVisible", true);
+    QDeclarativeComponent component(engine(), QUrl("qrc:/qml/stack.qml"));
+    stackItem = qobject_cast<QGraphicsObject *>(component.create());
+    if (stackItem)
+        stackItem->setParentItem(rootObject());
+
     Models = new Displaylist;
-    parent = daddy;
+    parent = parent;
 
     SetPick((Bond*) NULL);
     SetPick((ANGLE*) NULL);
@@ -276,6 +347,23 @@ void DictEditCanvas::initializeForRender()
     std::string resshow;
     std::string at("*");
     model->Select(1, 1, 1, 1, resshow, at, NULL, NULL, 0, 0, 0, 0, 1);
+
+    ResidueListIterator res = model->residuesBegin();
+    for (int i = 0; i < res->atomCount(); i++)
+    {
+        res->atom(i)->setType(0);
+        res->atom(i)->setColor(model->getcolor(res, res->atom(i), 1, Colors::YELLOW, Colors::COLORC, at));
+        CurrentAtoms.push_back(res->atom(i));
+    }
+    model->FixAtomicNumbers();
+    // Should the bond orders be guessed here? For mol files, it messes up bond orders read from file
+    //chemlib::GuessBondOrders(res, geomrefiner->dict.RefiBonds);
+    UpdateGeom();
+    UpdateButtons();
+    // Should the bond orders be guessed here? For mol files, it messes up bond orders read from file
+    //chemlib::GuessBondOrders(res, model->getBonds());
+
+
     Point3<double> center;
     int atomCount = 0;
     for (ResidueListIterator res = model->residuesBegin(); res != model->residuesEnd(); ++res)
@@ -292,21 +380,6 @@ void DictEditCanvas::initializeForRender()
     center.x /= atomCount;
     center.y /= atomCount;
     center.z /= atomCount;
-
-    ResidueListIterator res = model->residuesBegin();
-    for (int i = 0; i < res->atomCount(); i++)
-    {
-        res->atom(i)->setType(0);
-        res->atom(i)->setColor(model->getcolor(res, res->atom(i), 1, Colors::YELLOW, Colors::COLORC, at));
-        CurrentAtoms.push_back(res->atom(i));
-    }
-    model->FixAtomicNumbers();
-    // Should the bond orders be guessed here? For mol files, it messes up bond orders read from file
-    //chemlib::GuessBondOrders(res, geomrefiner->dict.RefiBonds);
-    UpdateGeom();
-    UpdateButtons();
-    // Should the bond orders be guessed here? For mol files, it messes up bond orders read from file
-    //chemlib::GuessBondOrders(res, model->getBonds());
 
     Point3<double> pos;
     float maxDistance = 0.0;
@@ -334,20 +407,14 @@ void DictEditCanvas::initializeForRender()
     frustum->setFieldOfView(fieldOfView);
     frustum->setPerspective(stereoView->isStereo());
     frustum->setFocalLength(cameraDistance);
-    cameraMouseOrbitor->setDistanceToTarget(frustum->getFocalLength());
-
-
     frustum->setNearClipping(0.01f);
     frustum->setFarClipping(3.0f * cameraDistance);
 
-    updateViewDependentSettings();
+    cameraMouseOrbitor->setDistanceToTarget(frustum->getFocalLength());
 
-    scene->models = Models;
     scene->renderer->setFogEnabled(true);
     scene->renderer->setFogStart(0.9 * cameraDistance);
     scene->renderer->setFogEnd(2.0 * cameraDistance);
-
-    scene->initializeForRender();
 }
 
 void DictEditCanvas::render()
@@ -524,29 +591,41 @@ void DictEditCanvas::UpdateGeom()
     {
         DrawChirals();
     }
-    ReDraw();
 }
 
-void DictEditCanvas::initializeGL()
-{
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-}
-
-void DictEditCanvas::paintGL()
+void DictEditCanvas::draw(QPainter *painter)
 {
     if (working)
         return;
+
+    painter->save();
+    painter->beginNativePainting();
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
 
     if (!initialized)
     {
         initialized = true;
         initializeForRender();
-        return;
+//        return;
     }
 
     working = true;
+
+    updateViewDependentSettings();
+    scene->initializeForRender();
     render();
-    glFlush();
+
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+    glPopAttrib();
+    painter->endNativePainting();
+    painter->restore();
     working = false;
 }
 
@@ -574,6 +653,7 @@ void DictEditCanvas::keyPressEvent(QKeyEvent *event)
     case Qt::Key_Space:
         geomrefiner->Refine();
         UpdateGeom();
+        ReDraw();
         break;
     case Qt::Key_Backslash: {
         Application::instance()->toggleStereo();
@@ -637,10 +717,10 @@ void DictEditCanvas::OnTimer()
     beginDragAction();
 }
 
-void DictEditCanvas::mousePressEvent(QMouseEvent *evt)
+void DictEditCanvas::handleMousePressEvent(QGraphicsSceneMouseEvent *evt)
 {
     evt->accept();
-    QPoint point = evt->pos();
+    QPoint point = mapFromScene(evt->scenePos());
 
     if (evt->button() & Qt::LeftButton)
     {
@@ -679,10 +759,10 @@ void DictEditCanvas::mousePressEvent(QMouseEvent *evt)
 }
 
 
-void DictEditCanvas::mouseMoveEvent(QMouseEvent *evt)
+void DictEditCanvas::handleMouseMoveEvent(QGraphicsSceneMouseEvent *evt)
 {
     evt->accept();
-    QPoint point = evt->pos();
+    QPoint point = mapFromScene(evt->scenePos());
 
     if (isRotating || isZooming || isPanning)
     {
@@ -719,16 +799,16 @@ void DictEditCanvas::mouseMoveEvent(QMouseEvent *evt)
     }
 }
 
-void DictEditCanvas::mouseReleaseEvent(QMouseEvent *evt)
+void DictEditCanvas::handleMouseReleaseEvent(QGraphicsSceneMouseEvent *evt)
 {
-    QPoint point = evt->pos();
+    QPoint point = mapFromScene(evt->scenePos());
     evt->accept();
 
     if (evt->button() == Qt::LeftButton)
     {
         if (mouseStart.x() == point.x() && mouseStart.y() == point.y())
         {
-            handlePick(evt->pos());
+            handlePick(point);
         }
         endDragAction();
         reRender();
@@ -767,7 +847,7 @@ void DictEditCanvas::mouseReleaseEvent(QMouseEvent *evt)
 }
 
 
-void DictEditCanvas::wheelEvent(QWheelEvent *evt)
+void DictEditCanvas::handleWheelEvent(QGraphicsSceneWheelEvent *evt)
 {
     evt->accept();
     if (evt->delta() != 0)
@@ -795,7 +875,6 @@ void DictEditCanvas::beginDragAction()
     {
         cameraMouseTranslator->beginTranslate(mouseStart.x(), mouseStart.y());
     }
-    reRender();
 }
 
 void DictEditCanvas::endDragAction()
@@ -816,7 +895,6 @@ void DictEditCanvas::endDragAction()
         cameraMouseTranslator->endTranslate();
         isPanning = false;
     }
-    reRender();
 }
 
 bool DictEditCanvas::handlePick(const QPoint &point)
@@ -862,6 +940,7 @@ bool DictEditCanvas::handlePick(const QPoint &point)
             }
 
             UpdateGeom();
+            ReDraw();
             somethingPicked = true;
         }
         else
@@ -929,6 +1008,7 @@ bool DictEditCanvas::handlePick(const QPoint &point)
 
             PaletteChanged = true;
             UpdateGeom();
+            ReDraw();
         }
     }
     UpdateButtons();
@@ -937,13 +1017,16 @@ bool DictEditCanvas::handlePick(const QPoint &point)
 
 void DictEditCanvas::ReDraw()
 {
-    updateGL();
+    mainItem->update();
+    qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
 }
 
-void DictEditCanvas::resizeGL(int width, int height)
+void DictEditCanvas::resizeEvent(QResizeEvent *evt)
 {
-    stereoView->setSize(width, height);
+    mainItem->setSize(evt->size());
+    stereoView->setSize(evt->size().width(), evt->size().height());
     updateViewDependentSettings();
+    QDeclarativeView::resizeEvent(evt);
 }
 
 void DictEditCanvas::updateViewDependentSettings()
@@ -1080,6 +1163,7 @@ void DictEditCanvas::OnExport(const char *optionalFilename)
         }
     }
     UpdateGeom();
+    ReDraw();
 }
 
 void DictEditCanvas::OnRemoveAtomsFromPlane()
@@ -1206,6 +1290,7 @@ bool DictEditCanvas::removeAtomFromPlane(MIAtom *a, bool atomNotToBeDeleted)
     // Final updates to the new plane
     lsqplane(*pickedPlane);
     UpdateGeom();
+    ReDraw();
     return true;
 }
 
@@ -1250,6 +1335,7 @@ void DictEditCanvas::OnRemovePlane()
     DeletePlane(pickedPlane);
     SetPick((PLANE*) NULL);
     UpdateGeom();
+    ReDraw();
 }
 
 void DictEditCanvas::OnAddPlane()
@@ -1296,6 +1382,7 @@ void DictEditCanvas::OnAddPlane()
     geomrefiner->dict.RefiPlanes.push_back(p);
     createPlanes();
     UpdateGeom();
+    ReDraw();
 }
 
 void Russtransform(float rt[3][3], float tr[3], float *x, float *y, float *z)
@@ -1522,6 +1609,7 @@ void DictEditCanvas::OnInvertCenter()
             QMessageBox::warning(this, myerror.c_str(), myerror.c_str());
             confs.Restore(conf);
             UpdateGeom();
+            ReDraw();
             return;
         }
         tmp.Save(CurrentAtoms, model);
@@ -1821,6 +1909,7 @@ void DictEditCanvas::OnChangeBondOrder()
     }
     OnSetBondLength2(chemlib::IdealBondLength(*pickedBond)); // Only need the refiner and updater, not the dialog
     UpdateGeom();
+    ReDraw();
 }
 
 void DictEditCanvas::OnDeleteBond(Bond *tokill)
@@ -1838,6 +1927,7 @@ void DictEditCanvas::OnDeleteBond(Bond *tokill)
             model->BreakBond(b->getAtom1(), b->getAtom2());
             geomrefiner->dict.RefiBonds.erase(b);
             UpdateGeom();
+            ReDraw();
             return;
         }
         b++;
@@ -1850,6 +1940,7 @@ void DictEditCanvas::OnDeleteBond()
     OnDeleteBond(pickedBond);
     SetPick((Bond*) NULL);
     UpdateGeom();
+    ReDraw();
 }
 
 void DictEditCanvas::OnRemoveHydrogens()
@@ -1986,6 +2077,7 @@ void DictEditCanvas::OnRemoveAtom()
     confs.Purge(atom);
     model->DeleteAtom(atom);
     UpdateGeom();
+    ReDraw();
 }
 
 void DictEditCanvas::OnChangeAtomType()
@@ -2084,30 +2176,35 @@ void DictEditCanvas::OnChangeAtomType()
         SetPick(orig_picked);
     }
     UpdateGeom();
+    ReDraw();
 }
 
 void DictEditCanvas::on_showChirals_clicked()
 {
     ShowChirals ^= 1;
     UpdateGeom();
+    ReDraw();
 }
 
 void DictEditCanvas::on_showTorsions_clicked()
 {
     ShowTorsions ^= 1;
     UpdateGeom();
+    ReDraw();
 }
 
 void DictEditCanvas::on_showPlanes_clicked()
 {
     ShowPlanes ^= 1;
     UpdateGeom();
+    ReDraw();
 }
 
 void DictEditCanvas::on_showAtomLabels_clicked()
 {
     scene->showAtomLabels = !scene->showAtomLabels;
     UpdateGeom();
+    ReDraw();
 }
 
 void DictEditCanvas::on_showHydrogens_clicked()
@@ -2115,18 +2212,21 @@ void DictEditCanvas::on_showHydrogens_clicked()
     ShowHydrogens ^= 1;
     scene->renderer->setHideHydrogens(!ShowHydrogens);
     UpdateGeom();
+    ReDraw();
 }
 
 void DictEditCanvas::on_showAngles_clicked()
 {
     ShowAngles ^= 1;
     UpdateGeom();
+    ReDraw();
 }
 
 void DictEditCanvas::on_showBonds_clicked()
 {
     ShowBonds ^= 1;
     UpdateGeom();
+    ReDraw();
 }
 
 TORSION*DictEditCanvas::SearchTorsions(MIAtom *a1, MIAtom *a2)
@@ -2391,10 +2491,6 @@ void DictEditCanvas::on_resetButton_clicked()
     // Get planes that already exist so that we can display them
     createPlanes();
     SetNeedsRefine(false); //After a reset we don't need a refine
-
-    // Force redo of setup
-    makeCurrent();
-    initializeGL();
 
     //Reset conformations
     confs.Clear();
@@ -2772,7 +2868,8 @@ void DictEditCanvas::createPlanes()
 
 void DictEditCanvas::reRender()
 {
-    updateGL();
+    mainItem->update();
+    qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
 }
 
 int DictEditCanvas::getEventX(QMouseEvent &e)

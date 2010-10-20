@@ -8,6 +8,7 @@
 #include "RESIDUE.h"
 #include "Molecule.h"
 
+
 using namespace chemlib;
 
 Stack::Stack()
@@ -80,6 +81,7 @@ void Stack::Push(MIAtom *atom, Residue *res, Molecule *m)
     item.molecule = m;
     bool wasEmpty = empty();
     data.push_back(item);
+    sizeChanged();
     changed = true;
     if (wasEmpty != empty())
     {
@@ -117,7 +119,7 @@ void Stack::Pop(MIAtom* &atom, Residue* &res, Molecule* &m)
     m = item.molecule;
 }
 
-MIAtom*Stack::Pop()
+MIAtom *Stack::Pop()
 {
     if (data.size() == 0)
     {
@@ -133,6 +135,7 @@ void Stack::dataPop()
     bool wasEmpty = empty();
     data.pop_back();
     changed = true;
+    emit sizeChanged();
     if (wasEmpty != empty())
     {
         emptyChanged(empty());
@@ -342,6 +345,8 @@ void Stack::Purge(MIMoleculeBase *model)
         }
         ++iter;
     }
+    if (changed)
+        emit sizeChanged();
 }
 
 void Stack::Purge(Residue *res)
@@ -359,6 +364,8 @@ void Stack::Purge(Residue *res)
         }
         ++iter;
     }
+    if (changed)
+        emit sizeChanged();
 }
 
 void Stack::Purge(MIAtom *atom)
@@ -376,5 +383,124 @@ void Stack::Purge(MIAtom *atom)
         }
         ++iter;
     }
+    if (changed)
+        emit sizeChanged();
 }
 
+
+bool Stack::isMinimized()
+{
+    return minimized;
+}
+
+int Stack::size()
+{
+    return data.size();
+}
+
+bool Stack::empty()
+{
+    return data.empty();
+}
+
+StackItem Stack::top()
+{
+    return data.back();
+}
+
+const Stack::DataContainer &Stack::getData()
+{
+    return data;
+}
+
+CRect &Stack::getClearBox()
+{
+    return ClearBox;
+}
+
+CRect &Stack::getHideBox()
+{
+    return HideBox;
+}
+
+CRect &Stack::getPopBox()
+{
+    return PopBox;
+}
+
+void Stack::Clear()
+{
+    bool wasEmpty = empty();
+    DataContainer().swap(data);
+    if (!wasEmpty)
+    {
+        emit sizeChanged();
+        emit emptyChanged(true);
+    }
+}
+
+bool Stack::PickClearBox(int sx, int sy)
+{
+    return ClearBox.Within(sx, sy);
+}
+
+bool Stack::PickHideBox(int sx, int sy)
+{
+    return HideBox.Within(sx, sy);
+}
+
+bool Stack::PickPopBox(int sx, int sy)
+{
+    return PopBox.Within(sx, sy);
+}
+
+void Stack::Minimize()
+{
+    minimized = true;
+}
+
+void Stack::Maximize()
+{
+    minimized = false;
+}
+
+void Stack::ToggleMinMax()
+{
+    minimized = !minimized;
+}
+
+QStringList Stack::toStringList() const
+{
+    QStringList list;
+    DataContainer::const_reverse_iterator iter = data.rbegin();
+    int n = 0;
+    while (iter != data.rend() && n < 4)
+    {
+        StackItem item = *iter;
+        ++iter;
+        if (MIAtom::isValid(item.atom) && Monomer::isValid(item.residue) && MIMoleculeBase::isValid(item.molecule) && item.molecule->Visible())
+        {
+            ++n;
+            list += tr("%1: %2 %3 %4")
+                    .arg(n)
+                    .arg(item.residue->type().c_str())
+                    .arg(item.residue->name().c_str())
+                    .arg(item.atom->name());
+        }
+    }
+    if (data.size() > 4)
+    {
+        list += tr(" + %1 more...").arg(data.size() - 4);
+    }
+    return list;
+}
+
+void Stack::pop()
+{
+    dataPop();
+}
+
+void Stack::clear()
+{
+    Clear();
+}

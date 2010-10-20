@@ -29,7 +29,7 @@ namespace mi
         class Light;
         class Frustum;
         class Camera;
-        class GLFont;
+        class Text;
     }
 }
 
@@ -48,8 +48,8 @@ class GLRenderer
     int width;
     int height;
     float xyDisplayRange;
-    std::auto_ptr<mi::opengl::GLFont> labelsFont_;
-    std::auto_ptr<mi::opengl::GLFont> stackFont_;
+    std::auto_ptr<mi::opengl::Text> labelsFont_;
+    std::auto_ptr<mi::opengl::Text> stackFont_;
     TargaImage *popStackImage;
     TargaImage *minimizeStackImage;
     TargaImage *unminimizeStackImage;
@@ -85,9 +85,6 @@ class GLRenderer
     float labelsTextScale;
 
     bool viewVectorSet;
-
-    GLuint sphereList;
-    void initSphere(int tess);
 
     void drawBondLine(const mi::math::Vector3<float> &pos1, int color1, const mi::math::Vector3<float> &pos2, int color2, float lineWidth);
     void drawBondCylinder(const mi::math::Vector3<float> &pos1, int color1, const mi::math::Vector3<float> &pos2, int color2, float radius, bool capped);
@@ -140,7 +137,7 @@ class GLRenderer
     GLuint getPickName(chemlib::Bond &bond);
     GLuint getPickName(chemlib::ANGLE &angle);
 
-    void drawStackText(int x, int y, const std::string &s);
+    void drawStackText(int x, int y, const QString &s);
 
     void computeBounds(std::list<Molecule*> &molecules);
 
@@ -252,13 +249,9 @@ public:
 
     void drawText(const char *text, float x, float y, float z);
 
-    void updateFonts();
     void *getContext();
 
     void setPickingEnabled(bool value);
-
-    std::auto_ptr<mi::opengl::GLFont> createGLFont();
-
 };
 
 #endif // ifndef mifit_ui_GLRenderer_h

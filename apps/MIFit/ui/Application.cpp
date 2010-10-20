@@ -153,6 +153,8 @@ Application::Application(int &argc, char **argv)
     setOrganizationName(name);
     setApplicationName(name);
 
+    Q_INIT_RESOURCE(ui);
+
     FileIo::setAsDefaultIo();
 
     appname = std::string(name);

@@ -2,16 +2,26 @@
 #define MIFIT_UI_DICTEDITCANVAS_H_
 
 #include <map>
-
 #include <chemlib/chemlib.h>
+#include <QDeclarativeView>
 #include "core/corelib.h"
 
 class DictEditAnglePickingRenderable;
 class DictEditAnnotationPickingRenderable;
 class DictEditAtomPickingRenderable;
 class DictEditBondPickingRenderable;
-class Stack;
+class DictEditScene;
 class Displaylist;
+class GeomRefiner;
+class DictEditMainItem;
+class QDeclarativeEngine;
+class QGraphicsObject;
+class QGraphicsSceneMouseEvent;
+class QKeyEvent;
+class QMenu;
+class QMenuBar;
+class Stack;
+
 
 namespace mi
 {
@@ -32,15 +42,6 @@ namespace mi
     }
 }
 
-class DictEditScene;
-class GeomRefiner;
-
-class QKeyEvent;
-class QMenu;
-class QMenuBar;
-
-#include <QGLWidget>
-
 namespace Ui
 {
     class DictEditorForm;
@@ -50,9 +51,12 @@ namespace Ui
  * Canvas for editing a dictionary entry.
  */
 class DictEditDialog;
-class DictEditCanvas : public QGLWidget
+class DictEditCanvas : public QDeclarativeView
 {
     Q_OBJECT
+
+    DictEditMainItem *mainItem;
+    QGraphicsObject *stackItem;
 
     mi::opengl::StereoView *stereoView;
     mi::opengl::Camera *camera;
@@ -215,14 +219,13 @@ public:
 
     void createMenus();
 
-    void initializeGL();
-    void paintGL();
-    void resizeGL(int w, int h);
+    void draw(QPainter *painter);
+    void resizeEvent(QResizeEvent *evt);
     void keyPressEvent(QKeyEvent *e);
-    void mousePressEvent(QMouseEvent *e);
-    void mouseReleaseEvent(QMouseEvent *e);
-    void mouseMoveEvent(QMouseEvent *e);
-    void wheelEvent(QWheelEvent *e);
+    void handleMousePressEvent(QGraphicsSceneMouseEvent *e);
+    void handleMouseReleaseEvent(QGraphicsSceneMouseEvent *e);
+    void handleMouseMoveEvent(QGraphicsSceneMouseEvent *e);
+    void handleWheelEvent(QGraphicsSceneWheelEvent *e);
 
     void OnOk();
     void ReDraw();

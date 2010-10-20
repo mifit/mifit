@@ -72,7 +72,6 @@ void DictEditScene::initializeForRender()
     glShadeModel(GL_SMOOTH);
     glEnable(GL_COLOR_MATERIAL);
     glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     renderer->initializeForRender();
 }
 
@@ -92,8 +91,6 @@ void DictEditScene::render()
     logOpenGLErrors(__FILE__, __LINE__);
 
     glPushMatrix();
-
-    renderer->updateFonts();
 
     renderer->Draw2(models, true, true);
     if (showAtomLabels)
@@ -172,5 +169,4 @@ void DictEditScene::renderOverlay()
 
 void DictEditScene::render2DOverlay()
 {
-    renderer->DrawStack(atomStack, 5, 0);
 }

@@ -17,7 +17,7 @@ CMolwViewAnnotationPickingRenderable::CMolwViewAnnotationPickingRenderable(Stere
     renderer->setPickingEnabled(true);
     renderer->setFrustum(frustum);
     renderer->setRenderStyle(RenderStyle::getStick());
-    renderer->setQGLWidget(canvas);
+    renderer->setQGLWidget(static_cast<QGLWidget*>(canvas->viewport()));
 
     annotationRenderable = new CMolwViewAnnotationRenderable(renderer);
 

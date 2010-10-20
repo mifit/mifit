@@ -5,7 +5,7 @@
 #include <opengl/Frustum.h>
 #include <opengl/Light.h>
 #include <opengl/OpenGL.h>
-#include <opengl/GLFont.h>
+#include <opengl/Text.h>
 
 #include <nongui/nonguilib.h>
 #include <map/maplib.h>
@@ -81,8 +81,7 @@ GLRenderer::GLRenderer()
       joinBondsOfSameColor(true),
       showBondOrders(false),
       fontSize(ATOMLABEL::defaultSize()),
-      viewVectorSet(false),
-      sphereList(0)
+      viewVectorSet(false)
 {
 
     popStackImage = new TargaImage(Application::instance()->GetMolimageHome() + "/data/images/popStack.tga");
@@ -165,8 +164,6 @@ void GLRenderer::initializeForRender()
 
     glEnable(GL_COLOR_MATERIAL);
     glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-
-    initSphere(16);
 }
 
 void GLRenderer::renderLight()
@@ -182,12 +179,8 @@ void GLRenderer::renderLight()
 void GLRenderer::setQGLWidget(QGLWidget *qcanvas_win)
 {
     this->qcanvas_win = qcanvas_win;
-    labelsFont_ = createGLFont();
-    stackFont_ = createGLFont();
-#ifndef Q_OS_LINUX
-    // Linux has problem rendering stack font if different than labels.
-    stackFont_->setFont(QFont("Helvetica", 10));
-#endif
+    labelsFont_.reset(new mi::opengl::Text(QFont("Helvetica", 12, QFont::Bold)));
+    stackFont_.reset(new mi::opengl::Text(qApp->font()));
 }
 
 void*GLRenderer::getContext()
@@ -195,10 +188,6 @@ void*GLRenderer::getContext()
     if (!qcanvas_win)
         return 0;
     return (void*)qcanvas_win->context();
-}
-
-void GLRenderer::updateFonts()
-{
 }
 
 void GLRenderer::swapBuffers()
@@ -588,18 +577,11 @@ void GLRenderer::drawText(const char *text, float x, float y, float z)
     drawText(text, x, y, z, 0.0f, labelsTextScale, inverseRotation, false, 0, white);
 }
 
-std::auto_ptr<mi::opengl::GLFont> GLRenderer::createGLFont()
-{
-    return std::auto_ptr<mi::opengl::GLFont>(new GLFont(qcanvas_win));
-}
-
 void GLRenderer::drawText(const char *text, float x, float y, float z, float offset, float scale, float inverseRotation[16], bool displayNumber, int number, float foreground[4])
 {
-
     if (!labelsFont_.get())
-    {
         return;
-    }
+
     glPushMatrix();
     // Position at coordintes.
     glTranslatef(x, y, z);
@@ -621,16 +603,15 @@ void GLRenderer::drawText(const char *text, float x, float y, float z, float off
     if (displayNumber)
     {
         glPushAttrib(GL_CURRENT_BIT);
-        static char buffer[10];
-        sprintf(buffer, " %d ", number);
-        float numberWidth = labelsFont_->fontMetrics().width(QString(buffer));
+        QString numberString = QString(" %1 ").arg(number);
+        float numberWidth = labelsFont_->fontMetrics().width(numberString);
         glColor3f(1.0f, 1.0f, 0.0f);
         float x1 = 0.0f;
         float y1 = -labelsFont_->fontMetrics().descent();
         float x2 = numberWidth;
         float y2 = labelsFont_->fontMetrics().ascent();
         float z = -0.02f;
-        glBegin(GL_POLYGON);
+        glBegin(GL_QUADS);
         glVertex3f(x1, y1, z);
         glVertex3f(x2, y1, z);
         glVertex3f(x2, y2, z);
@@ -644,7 +625,7 @@ void GLRenderer::drawText(const char *text, float x, float y, float z, float off
         y2 -= yOffset;
         z += 0.01f;
         glColor3f(1.0f, 0.0f, 0.0f);
-        glBegin(GL_POLYGON);
+        glBegin(GL_QUADS);
         glVertex3f(x1, y1, z);
         glVertex3f(x2, y1, z);
         glVertex3f(x2, y2, z);
@@ -654,7 +635,7 @@ void GLRenderer::drawText(const char *text, float x, float y, float z, float off
         glEnable(GL_TEXTURE_2D);
         glColor3f(1.0f, 1.0f, 1.0f);
         glPushMatrix();
-        labelsFont_->render(QString(buffer));
+        labelsFont_->renderText(0, 0, numberString);
         glPopMatrix();
 
         glTranslatef(numberWidth, 0.0f, 0.0f);
@@ -669,7 +650,7 @@ void GLRenderer::drawText(const char *text, float x, float y, float z, float off
 
     glColor4fv(foreground);
     glPushMatrix();
-    labelsFont_->render(QString(text));
+    labelsFont_->renderText(0, 0, QString(text));
     glPopMatrix();
 
     glPopAttrib();
@@ -850,21 +831,21 @@ void GLRenderer::circleStackAtoms(Stack *stack)
     logOpenGLErrors(__FILE__, __LINE__);
 }
 
-void GLRenderer::drawStackText(int x, int y, const std::string &s)
+void GLRenderer::drawStackText(int x, int y, const QString &s)
 {
     if (!stackFont_.get())
-    {
         return;
-    }
+
     glPushAttrib(GL_ENABLE_BIT);
     glDisable(GL_DEPTH_TEST);
     glPushMatrix();
     glTranslatef(x, y, 0.0f);
-    stackFont_->render(QString(s.c_str()));
+    stackFont_->renderText(0, 0, s);
     glPopMatrix();
     glPopAttrib();
 }
 
+#if 0
 void GLRenderer::DrawStack(Stack *stack, int x, int y)
 {
 
@@ -884,8 +865,6 @@ void GLRenderer::DrawStack(Stack *stack, int x, int y)
 
     glColor3f(1.0f, 1.0f, 1.0f);
 
-    Stack::DataContainer::const_iterator iter = stack->getData().begin();
-    std::string s;
     const int lineHeight = (int)(stackFont_->fontMetrics().ascent() - stackFont_->fontMetrics().descent() + 5);
 
     y += 5;
@@ -893,92 +872,22 @@ void GLRenderer::DrawStack(Stack *stack, int x, int y)
     {
         // list the stack in the lower-left corner of the screen
         // stack pushes up from the bottom
-        glColor3f(0.7f, 0.7f, 1.0f);
-        StackItem item = *iter;
-        if (stack->size() > 4)
-        {
-            for (int n = 0; n < stack->size()-4; ++n)
-            {
-                ++iter;
-            }
-            // if more than 4 print a more...
-            s = " + ";
-            s += ftoa(stack->size()-4);
-            s += " more...";
-            drawStackText(x, y, s);
-            y += lineHeight;
-        }
-        if (stack->size() > 3)
-        {
-            item = *iter;
-            ++iter;
-            if (MIAtom::isValid(item.atom) && Monomer::isValid(item.residue) && MIMoleculeBase::isValid(item.molecule) && item.molecule->Visible())
-            {
-                s = "4: ";
-                s += item.residue->type().c_str();
-                s += " ";
-                s += item.residue->name().c_str();
-                s += " ";
-                s += item.atom->name();
-                drawStackText(x, y, s);
-                y += lineHeight;
-            }
-        }
-
-        if (stack->size() > 2)
-        {
-            item = *iter;
-            ++iter;
-            if (MIAtom::isValid(item.atom) && Monomer::isValid(item.residue) && MIMoleculeBase::isValid(item.molecule) && item.molecule->Visible())
-            {
-                s = "3: ";
-                s += item.residue->type().c_str();
-                s += " ";
-                s += item.residue->name().c_str();
-                s += " ";
-                s += item.atom->name();
-                drawStackText(x, y, s);
-                y += lineHeight;
-            }
-        }
-
-        if (stack->size() > 1)
-        {
-            item = *iter;
-            ++iter;
-            if (MIAtom::isValid(item.atom) && Monomer::isValid(item.residue) && MIMoleculeBase::isValid(item.molecule) && item.molecule->Visible())
-            {
-                s = "2: ";
-                s += item.residue->type().c_str();
-                s += " ";
-                s += item.residue->name().c_str();
-                s += " ";
-                s += item.atom->name();
-                drawStackText(x, y, s);
-                y += lineHeight;
-            }
-        }
-
         glColor3f(1.0f, 1.0f, 1.0f);
-        item = *iter;
-        ++iter;
-        if (MIAtom::isValid(item.atom) && Monomer::isValid(item.residue) && MIMoleculeBase::isValid(item.molecule) && item.molecule->Visible())
+        QStringList stackList = stack->toStringList();
+        int itemY = y;
+        int n = 1;
+        foreach (QString stackItem, stackList)
         {
-            s = "1: ";
-            s += item.residue->type().c_str();
-            s += " ";
-            s += item.residue->name().c_str();
-            s += " ";
-            s += item.atom->name();
-            drawStackText(x, y, s);
-            y += lineHeight;
+            drawStackText(x, itemY + (stackList.size() - n) * lineHeight, stackItem);
+            glColor3f(0.7f, 0.7f, 1.0f);
+            ++n;
         }
+        y += stackList.size() * lineHeight;
     }
     else
     {
         glColor3f(1.0f, 1.0f, 1.0f);
-        std::string str("...");
-        drawStackText(x, y, str);
+        drawStackText(x, y, "...");
     }
 
     CRect &PopBox = stack->getPopBox();
@@ -1023,6 +932,7 @@ void GLRenderer::DrawStack(Stack *stack, int x, int y)
     glPopMatrix();
     glPopAttrib();
 }
+#endif
 
 void GLRenderer::CircleAtoms(MIAtom **atoms, int natoms)
 {
@@ -1080,7 +990,7 @@ void GLRenderer::CircleAtoms(MIAtom **atoms, int natoms)
 
 void GLRenderer::DrawMessage(const std::string &message, int x, int y)
 {
-    drawStackText(x, y, message);
+    drawStackText(x, y, QString(message.c_str()));
 }
 
 void GLRenderer::DrawContacts(std::vector<CONTACT> &Contacts)
@@ -1783,25 +1693,6 @@ void GLRenderer::setIdentity(float rotation[])
     rotation[15] = 1.0f;
 }
 
-void GLRenderer::initSphere(int tess)
-{
-    if (sphereList)
-        return;
-
-    sphereList = glGenLists(1);
-    if (!quad[getContext()])
-        quad[getContext()] = gluNewQuadric();
-
-    glNewList(sphereList, GL_COMPILE);
-
-    //  static float center[] = { 0.0, 0.0, 0.0 };
-    //  DrawSphere2(0, center, 1.0, tess);
-    gluQuadricNormals(quad[getContext()], GLU_SMOOTH);
-    gluSphere(quad[getContext()], 1.0, tess, tess);
-
-    glEndList();
-}
-
 void GLRenderer::DrawSphere(float c[3], float radius, int tess)
 {
 
@@ -1811,15 +1702,10 @@ void GLRenderer::DrawSphere(float c[3], float radius, int tess)
     glPushMatrix();
     glTranslated(c[0], c[1], c[2]);
     glScaled(radius, radius, radius);
-    if (pickingEnabled)
-    {
-        //  static float center[] = { 0.0, 0.0, 0.0 };
-        //  DrawSphere2(0, center, 1.0, tess);
-        gluQuadricNormals(quad[getContext()], GLU_SMOOTH);
-        gluSphere(quad[getContext()], 1.0, tess, tess);
-    }
-    else
-        glCallList(sphereList);
+    //  static float center[] = { 0.0, 0.0, 0.0 };
+    //  DrawSphere2(0, center, 1.0, tess);
+    gluQuadricNormals(quad[getContext()], GLU_SMOOTH);
+    gluSphere(quad[getContext()], 1.0, tess, tess);
 
     glPopMatrix();
 }

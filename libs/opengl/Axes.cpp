@@ -3,7 +3,8 @@
 #include <math/Matrix4.h>
 #include <math/Quaternion.h>
 #include <opengl/OpenGL.h>
-#include <opengl/GLFont.h>
+#include <opengl/Text.h>
+#include <QtCore/QString>
 
 using namespace mi::math;
 
@@ -14,7 +15,7 @@ namespace opengl
 
 int Axes::labelsFontSize = 16;
 
-Axes::Axes(std::auto_ptr<GLFont> font)
+Axes::Axes(std::auto_ptr<Text> font)
     : labelsFont(font)
 {
 
@@ -62,18 +63,9 @@ void Axes::drawText(const char *text, float x, float y, float z, float offset, f
     // Scale size.
     glScalef(scale, scale, 1.0f);
 
-    glPushAttrib(GL_CURRENT_BIT | GL_LINE_BIT | GL_ENABLE_BIT);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_LINE_SMOOTH);
-    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-
     glColor3f(1.0f, 1.0f, 1.0f);
-    glPushMatrix();
-    labelsFont->render(QString(text));
-    glPopMatrix();
+    labelsFont->renderText(0, 0, QString(text));
 
-    glPopAttrib();
     glPopMatrix();
 }
 
@@ -84,6 +76,8 @@ void Axes::render()
     float renderedLength = length * glUnitsPerPixel;
 
     glPushAttrib(GL_LINE_BIT);
+    glEnable(GL_LINE_SMOOTH);
+    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
     glLineWidth(3.0f);
     glBegin(GL_LINES);
     glColor3f(1.0f, 0.0f, 0.0f);
@@ -96,13 +90,13 @@ void Axes::render()
     glVertex3f(0.0f, 0.0f, 0.0f);
     glVertex3f(0.0f, 0.0f, renderedLength);
     glEnd();
+    glPopAttrib();
 
     float inverseRotation[16];
     getInverseRotation(inverseRotation);
-    drawText("X", renderedLength, 0.0f, 0.0f, 0.0f, labelsTextScale, inverseRotation);
-    drawText("Y", 0.0f, renderedLength, 0.0f, 0.0f, labelsTextScale, inverseRotation);
-    drawText("Z", 0.0f, 0.0f, renderedLength, 0.0f, labelsTextScale, inverseRotation);
-    glPopAttrib();
+    drawText(" X ", renderedLength, 0.0f, 0.0f, 0.0f, labelsTextScale, inverseRotation);
+    drawText(" Y ", 0.0f, renderedLength, 0.0f, 0.0f, labelsTextScale, inverseRotation);
+    drawText(" Z ", 0.0f, 0.0f, renderedLength, 0.0f, labelsTextScale, inverseRotation);
 }
 
 }

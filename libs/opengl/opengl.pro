@@ -44,7 +44,7 @@ HEADERS += Arc.h \
            zlib/zconf.h \
            zlib/zlib.h \
            zlib/zutil.h \
-           GLFont.h
+           Text.h
 SOURCES += Arc.cpp \
            Axes.cpp \
            Axis.cpp \
@@ -79,4 +79,4 @@ SOURCES += Arc.cpp \
            zlib/inftrees.cpp \
            zlib/infutil.cpp \
            zlib/zutil.cpp \
-           GLFont.cpp
+           Text.cpp

@@ -8,14 +8,14 @@ namespace mi
     namespace opengl
     {
 
-        class GLFont;
+        class Text;
 
         class Axes
         {
 
             static int labelsFontSize;
 
-            std::auto_ptr<GLFont> labelsFont;
+            std::auto_ptr<Text> labelsFont;
 
             int fontSize;
 
@@ -27,7 +27,7 @@ namespace mi
 
         public:
 
-            Axes(std::auto_ptr<GLFont> font);
+            Axes(std::auto_ptr<Text> font);
 
             void setFontSize(int fontSize);
 

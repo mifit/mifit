@@ -396,7 +396,7 @@ void MIMainWindow::OnGLFormat()
     GLFormatDialog dialog;
     if (currentMIGLWidget())
     {
-        dialog.setCurrentFormat(currentMIGLWidget()->format());
+        dialog.setCurrentFormat(static_cast<QGLWidget*>(currentMIGLWidget()->viewport())->format());
     }
     dialog.exec();
 }
