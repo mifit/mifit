@@ -98,8 +98,8 @@ DictEditCanvas::DictEditCanvas(DictEditDialog *daddy)
     frustum = new Frustum();
     QSettings settings;
     stereoView = new StereoView(frustum, camera);
-    stereoView->setStereo(settings.value("View Parameters/stereo", 0).toInt() != 0);
-    stereoView->setHardwareStereo(settings.value("View Parameters/hardwareStereo", 1).toInt() != 0);
+    stereoView->setStereo(settings.value("View Parameters/stereo", false).toBool());
+    stereoView->setHardwareStereo(settings.value("View Parameters/hardwareStereo", true).toBool());
 
     scene = new DictEditScene();
     scene->frustum = frustum;
@@ -577,7 +577,7 @@ void DictEditCanvas::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_Backslash: {
         Application::instance()->toggleStereo();
-        bool stereo = QSettings().value("View Parameters/stereo", 0).toInt() != 0;
+        bool stereo = QSettings().value("View Parameters/stereo", false).toBool();
         stereoView->setStereo(stereo);
         if (stereoView->isStereo())
         {

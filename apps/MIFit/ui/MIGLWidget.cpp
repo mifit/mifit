@@ -189,9 +189,9 @@ public:
     {
         QSettings settings;
         perspective = settings.value("View Parameters/perspective", 0).toInt() / 100.0f;
-        depthcue_color = settings.value("View Parameters/depthcue_colors", 1).toInt() != 0;
-        depthcue_width = settings.value("View Parameters/depthcue_width", 1).toInt() != 0;
-        dimNonactiveModels = settings.value("View Parameters/dimNonactiveModels", 1).toInt() != 0;
+        depthcue_color = settings.value("View Parameters/depthcue_colors", true).toBool();
+        depthcue_width = settings.value("View Parameters/depthcue_width", true).toBool();
+        dimNonactiveModels = settings.value("View Parameters/dimNonactiveModels", true).toBool();
         amountToDimNonactiveModels = settings.value("View Parameters/amountToDimNonactiveModels", 50).toInt() / 100.0f;
         ballandstick = settings.value("View Parameters/ballandstick", 0).toInt();
         lineThickness = settings.value("View Parameters/lineThickness", 1).toInt();
@@ -203,9 +203,9 @@ public:
     {
         QSettings settings;
         settings.setValue("View Parameters/perspective", static_cast<int>(perspective*100.0f));
-        settings.setValue("View Parameters/depthcue_colors", depthcue_color ? 1 : 0);
-        settings.setValue("View Parameters/depthcue_width", depthcue_width ? 1 : 0);
-        settings.setValue("View Parameters/dimNonactiveModels", dimNonactiveModels ? 1 : 0);
+        settings.setValue("View Parameters/depthcue_colors", depthcue_color);
+        settings.setValue("View Parameters/depthcue_width", depthcue_width);
+        settings.setValue("View Parameters/dimNonactiveModels", dimNonactiveModels);
         settings.setValue("View Parameters/amountToDimNonactiveModels", static_cast<int>(amountToDimNonactiveModels*100.0f));
         settings.setValue("View Parameters/ballandstick", ballandstick);
         settings.setValue("View Parameters/ballsize", ballsize);
@@ -283,9 +283,9 @@ MIGLWidget::MIGLWidget()
     camera = new Camera();
     stereoView = new StereoView(frustum, camera);
     QSettings settings;
-    stereoView->setStereo(settings.value("View Parameters/stereo", 0).toInt() != 0);
+    stereoView->setStereo(settings.value("View Parameters/stereo", false).toBool());
     frustum->setPerspective(stereoView->isStereo());
-    stereoView->setHardwareStereo(settings.value("View Parameters/hardwareStereo", 1).toInt() != 0);
+    stereoView->setHardwareStereo(settings.value("View Parameters/hardwareStereo", true).toBool());
 
     scene = new CMolwViewScene();
     scene->frustum = frustum;
@@ -342,11 +342,11 @@ MIGLWidget::MIGLWidget()
     doubleclicked = false;
     MouseCaptured = false;
     viewpoint->Yup = 0;
-    ShowLabels = settings.value("View Parameters/ShowLabels", 1).toInt() != 0;
-    ShowContacts = settings.value("View Parameters/ShowContacts", 1).toInt() != 0;
-    ShowStack = settings.value("View Parameters/ShowStack", 1).toInt() != 0;
-    ShowGnomon = settings.value("View Parameters/ShowGnomon", 1).toInt() != 0;
-    showUnitCell = settings.value("View Parameters/ShowUnitCell", 0).toInt() != 0;
+    ShowLabels = settings.value("View Parameters/ShowLabels", true).toBool();
+    ShowContacts = settings.value("View Parameters/ShowContacts", true).toBool();
+    ShowStack = settings.value("View Parameters/ShowStack", true).toBool();
+    ShowGnomon = settings.value("View Parameters/ShowGnomon", true).toBool();
+    showUnitCell = settings.value("View Parameters/ShowUnitCell", false).toBool();
     scene->ShowLabels = ShowLabels;
     scene->ShowContacts = ShowContacts;
     scene->ShowStack = ShowStack;
@@ -356,7 +356,7 @@ MIGLWidget::MIGLWidget()
     RockIncrement = settings.value("View Parameters/RockIncrement", 150).toInt()/100.0F;
     RollIncrement = settings.value("View Parameters/RollIncrement", 150).toInt()/100.0F;
     ClusterSize = 10;
-    DontConfirmWater = settings.value("View Parameters/DontConfirmWater", 1).toInt() != 0;
+    DontConfirmWater = settings.value("View Parameters/DontConfirmWater", true).toBool();
     Blink = false;
     BlinkTime = settings.value("View Parameters/BlinkTime", 20).toInt();
     BlinkCounter = 0;
@@ -821,7 +821,7 @@ void MIGLWidget::paintGL()
     float focalLength = 50.0f;
 
     QSettings settings;
-    bool stereo = settings.value("View Parameters/stereo", 0).toInt() != 0;
+    bool stereo = settings.value("View Parameters/stereo", false).toBool();
     if (!stereo && equals(viewpoint->getperspective(), 0.0f))
     {
         frustum->setPerspective(false);
@@ -1972,7 +1972,7 @@ void MIGLWidget::OnStereoToggle()
 
     Application::instance()->toggleStereo();
     QSettings settings;
-    bool stereo = settings.value("View Parameters/stereo", 0).toInt() != 0;
+    bool stereo = settings.value("View Parameters/stereo", false).toBool();
     stereoView->setStereo(stereo);
     if (stereoView->isStereo())
     {
@@ -2254,13 +2254,13 @@ void MIGLWidget::OnUpdateRenderingDepthcuedlinewidth(QAction *action)
 
 void MIGLWidget::OnUpdateStereoToggle(QAction *action)
 {
-    bool stereo = QSettings().value("View Parameters/stereo", 0).toInt() != 0;
+    bool stereo = QSettings().value("View Parameters/stereo", false).toBool();
     action->setChecked(stereo);
 }
 
 void MIGLWidget::OnUpdateHardwareStereo(QAction *action)
 {
-    bool hardwareStereo = QSettings().value("View Parameters/hardwareStereo", 0).toInt() != 0;
+    bool hardwareStereo = QSettings().value("View Parameters/hardwareStereo", false).toBool();
     action->setEnabled(Application::instance()->isHardwareStereoAvailable());
     action->setChecked(hardwareStereo);
 }

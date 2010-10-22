@@ -1083,7 +1083,7 @@ std::string Application::getDictionary()
 void Application::toggleStereo()
 {
     QSettings settings;
-    bool stereo = settings.value("View Parameters/stereo", 0).toInt() != 0;
+    bool stereo = settings.value("View Parameters/stereo", false).toBool();
     settings.setValue("View Parameters/stereo", !stereo);
 }
 
@@ -1100,7 +1100,7 @@ long Application::GetPid()
 void Application::toggleHardwareStereo()
 {
     QSettings settings;
-    bool hardwareStereo = settings.value("View Parameters/hardwareStereo", 0).toInt() != 0;
+    bool hardwareStereo = settings.value("View Parameters/hardwareStereo", false).toBool();
     settings.setValue("View Parameters/hardwareStereo", !hardwareStereo);
     //  QMessageBox::warning(this, "Hardware Stereo Notice",
     //    "Changing the hardware stereo setting does not affect\n"

@@ -244,7 +244,7 @@ void DisplayTree::OnItemPressed(QTreeWidgetItem *id, int)
     QAction *autoShowImportErrorsAction = menu->addAction("Auto-show imported errors", this,
                                                           SLOT(AutoShowErrors()));
     autoShowImportErrorsAction->setCheckable(true);
-    autoShowImportErrorsAction->setChecked(QSettings().value("DisplayView/autoShowError", 1).toInt() != 0);
+    autoShowImportErrorsAction->setChecked(QSettings().value("DisplayView/autoShowError", true).toBool());
 
     if (!(hasAnnotationList || hasAtomLabelList || hasAnnotation || hasAtomLabel))
     {
@@ -552,9 +552,9 @@ std::string toErrorDescription(const std::string &s)
 void DisplayTree::AutoShowErrors()
 {
     QSettings settings;
-    bool state = settings.value("DisplayView/autoShowError", 1).toInt() != 0;
+    bool state = settings.value("DisplayView/autoShowError", true).toBool();
     state = !state;
-    settings.setValue("DisplayView/autoShowError", state ? 1 : 0);
+    settings.setValue("DisplayView/autoShowError", state);
 }
 
 void DisplayTree::ImportErrors()
