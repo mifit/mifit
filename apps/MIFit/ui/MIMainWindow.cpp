@@ -967,17 +967,6 @@ void MIMainWindow::OnUpdateHardwareStereo()
     _hardwareStereoAction->setChecked(hardwareStereo);
 }
 
-void MIMainWindow::OnStereoToggle()
-{
-    Application::instance()->toggleStereo();
-}
-
-
-void MIMainWindow::OnHardwareStereo()
-{
-    Application::instance()->toggleHardwareStereo();
-}
-
 void MIMainWindow::OnScript()
 {
 }
@@ -1820,11 +1809,11 @@ void MIMainWindow::createMenus()
     miGLWidgetAction = new CurrentMIGLWidgetAction("&Fullscreen\tESC", "Canvas fills the entire screen", view_menu, SLOT(OnFullScreen()), SLOT(OnUpdateFullScreen(QAction*)));
     miGLWidgetAction->setCheckable(true);
 
-    _hardwareStereoAction = view_menu->addAction(tr("Use &Hardware Stereo"), this, SLOT(OnHardwareStereo()));
+    _hardwareStereoAction = new CurrentMIGLWidgetAction(tr("Use &Hardware Stereo"), tr("Use &Hardware Stereo"), view_menu, SLOT(OnHardwareStereo()));
     _hardwareStereoAction->setCheckable(true);
     connect(view_menu, SIGNAL(aboutToShow()), this, SLOT(OnUpdateHardwareStereo()));
 
-    _stereoToggleAction = view_menu->addAction(tr("S&tereo\t|"), this, SLOT(OnStereoToggle()));
+    _stereoToggleAction = new CurrentMIGLWidgetAction(tr("S&tereo\t|"), tr("Toggle stereo mode"), view_menu, SLOT(OnStereoToggle()));
     _stereoToggleAction->setCheckable(true);
     connect(view_menu, SIGNAL(aboutToShow()), this, SLOT(OnUpdateStereoToggle()));
 

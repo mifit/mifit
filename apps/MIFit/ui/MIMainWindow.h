@@ -151,8 +151,6 @@ private slots:
 
     void OnUpdateStereoToggle();
     void OnUpdateHardwareStereo();
-    void OnStereoToggle();
-    void OnHardwareStereo();
     void OnAbout();
     void OnGLFormat();
     void OnHelp();
