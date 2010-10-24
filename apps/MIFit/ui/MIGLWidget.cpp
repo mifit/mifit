@@ -443,7 +443,8 @@ MIGLWidget::MIGLWidget()
     if (stackItem)
         stackItem->setParentItem(rootObject());
 
-    setMessage(QString::null);
+    rootContext()->setContextProperty("messageVisible", false);
+    rootContext()->setContextProperty("message", "");
     QDeclarativeComponent messageComponent(engine(), QUrl("qrc:/qml/message.qml"));
     messageItem = qobject_cast<QGraphicsObject *>(messageComponent.create());
     if (messageItem)
@@ -12601,5 +12602,7 @@ void MIGLWidget::StackExpandTop2Range()
 
 void MIGLWidget::setMessage(const QString &message)
 {
-    rootContext()->setContextProperty("message", message);
+    rootContext()->setContextProperty("messageVisible", !message.isEmpty());
+    if (!message.isEmpty())
+        rootContext()->setContextProperty("message", message);
 }

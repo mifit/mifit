@@ -23,6 +23,7 @@ Item {
     anchors.bottomMargin: 5
     height: (list.height + 7) + stackHeader.height
     opacity: 0
+    clip:  true
 
     Text {
         id: minimizedText
