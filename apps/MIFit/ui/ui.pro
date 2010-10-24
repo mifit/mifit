@@ -9,4 +9,5 @@ RESOURCES += \
 
 OTHER_FILES += \
     root.qml \
-    stack.qml
+    stack.qml \
+    message.qml

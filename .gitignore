@@ -16,6 +16,7 @@ ui_*.h
 moc_*.cpp
 *.moc
 apps/MIFit/core/Version.cpp
-MIFit
+debug/
+/MIFit
 MIFit.exe
 *~

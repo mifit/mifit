@@ -71,8 +71,6 @@ class CMolwViewScene : public mi::opengl::Scene
 
     std::vector<PLINE> torsionArrow;
 
-    std::string message;
-
     mi::math::Vector3<float> *corners;
 
     float targetFeedbackSize;
@@ -91,10 +89,6 @@ public:
     virtual void render();
 
     virtual void renderOverlay();
-
-    virtual void render2DOverlay();
-
-    void setMessage(const std::string &message);
 
     void setCorners(mi::math::Vector3<float> *corners);
 

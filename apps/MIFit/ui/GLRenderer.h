@@ -48,7 +48,6 @@ class GLRenderer
     int height;
     float xyDisplayRange;
     std::auto_ptr<mi::opengl::Text> labelsFont_;
-    std::auto_ptr<mi::opengl::Text> stackFont_;
 
     RenderStyle style;
     bool hideHydrogens;
@@ -132,8 +131,6 @@ class GLRenderer
     GLuint getPickName(chemlib::Bond &bond);
     GLuint getPickName(chemlib::ANGLE &angle);
 
-    void drawStackText(int x, int y, const QString &s);
-
     void computeBounds(std::list<Molecule*> &molecules);
 
     void applyProjection(float scale);
@@ -168,10 +165,8 @@ public:
     void Draw2(Displaylist *displaylist, bool ShowVus, bool drawMapsFirst, bool showSymmetryAsBackbone = false);
     void DrawLabels(std::list<Molecule*> &molecules);
     void DrawAnnotations(std::list<Molecule*> &molecules);
-    void DrawStack(Stack *stack, int x, int y);
     void circleStackAtoms(Stack *stack);
     void CircleAtoms(chemlib::MIAtom **atoms, int natoms);
-    void DrawMessage(const std::string&, int x, int y);
     void DrawContacts(std::vector<CONTACT> &Contacts);
     void DrawVus(std::vector<PLINE> &Vus, int w);
     void DrawMaps(std::vector<EMap*> &maps);

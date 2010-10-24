@@ -166,7 +166,6 @@ void GLRenderer::setQGLWidget(QGLWidget *qcanvas_win)
 {
     this->qcanvas_win = qcanvas_win;
     labelsFont_.reset(new mi::opengl::Text(QFont("Helvetica", 12, QFont::Bold)));
-    stackFont_.reset(new mi::opengl::Text(qApp->font()));
 }
 
 void*GLRenderer::getContext()
@@ -817,20 +816,6 @@ void GLRenderer::circleStackAtoms(Stack *stack)
     logOpenGLErrors(__FILE__, __LINE__);
 }
 
-void GLRenderer::drawStackText(int x, int y, const QString &s)
-{
-    if (!stackFont_.get())
-        return;
-
-    glPushAttrib(GL_ENABLE_BIT);
-    glDisable(GL_DEPTH_TEST);
-    glPushMatrix();
-    glTranslatef(x, y, 0.0f);
-    stackFont_->renderText(0, 0, s);
-    glPopMatrix();
-    glPopAttrib();
-}
-
 void GLRenderer::CircleAtoms(MIAtom **atoms, int natoms)
 {
 
@@ -883,11 +868,6 @@ void GLRenderer::CircleAtoms(MIAtom **atoms, int natoms)
     glPopAttrib();
     logOpenGLErrors(__FILE__, __LINE__);
 
-}
-
-void GLRenderer::DrawMessage(const std::string &message, int x, int y)
-{
-    drawStackText(x, y, QString(message.c_str()));
 }
 
 void GLRenderer::DrawContacts(std::vector<CONTACT> &Contacts)

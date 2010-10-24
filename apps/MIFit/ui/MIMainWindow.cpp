@@ -1718,7 +1718,7 @@ void MIMainWindow::createMenus()
 
     miGLWidgetAction = new CurrentMIGLWidgetAction("&Gnomon", "Toggle the axes visibility", canvas_menu, SLOT(OnViewGnomon()), SLOT(OnUpdateViewGnomon(QAction*)));
     miGLWidgetAction->setCheckable(true);
-    new CurrentMIGLWidgetAction("Clea&r Message", "Use this command to clear the message at the screen bottom", canvas_menu, SLOT(OnViewClearmessage()));
+    new CurrentMIGLWidgetAction("Clea&r Message", "Use this command to clear the message at the screen bottom", canvas_menu, SLOT(clearMessage()));
 
     QMenu *labels_menu = show_menu->addMenu("Labels");
     miGLWidgetAction = new CurrentMIGLWidgetAction("&Show/Hide Labels", "Toggle labels on and off", labels_menu, SLOT(OnViewLabels()), SLOT(OnUpdateViewLabels(QAction*)));

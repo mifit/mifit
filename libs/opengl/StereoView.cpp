@@ -192,16 +192,6 @@ void StereoView::render(Scene &scene)
         scene.renderOverlay();
 
     }
-
-    scene.setViewport(viewport);
-    viewport->render();
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(0.0f, viewport->getWidth(), 0.0f, viewport->getHeight(), -1.0f, 1.0f);
-    glMatrixMode(GL_MODELVIEW);
-
-    scene.render2DOverlay();
-
 }
 
 void StereoView::resetView(int flags)

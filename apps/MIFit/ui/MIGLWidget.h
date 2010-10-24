@@ -115,6 +115,7 @@ private:
     QWidget *containerWidget;
     MainItem *mainItem;
     QGraphicsObject *stackItem;
+    QGraphicsObject *messageItem;
 
     chemlib::Residue *focusres;
     bool focusresDeleted;
@@ -367,10 +368,10 @@ public:
      * Cluster residue being optimized
      */
     InterpBox *BoundingBox;
-    /**
-     * string containing the message printed at the bottom of the screen.
-     */
-    std::string message;
+
+    //! Sets the message printed at the bottom of the screen.
+    void setMessage(const QString &message);
+
     /**
      * The viewpoint containing the current screen center, rotation and so forth.
      * Created when view is created.
@@ -1262,7 +1263,7 @@ public slots:
     void OnViewLabels();
     void OnUpdateViewLabels(QAction *action);
     void OnVdwDotSurface();
-    void OnViewClearmessage();
+    void clearMessage();
     // void OnObjectsModels();
     void OnFitResidue();
     void OnFitResidues();

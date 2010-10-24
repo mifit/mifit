@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/qml">
+        <file>stack.qml</file>
+        <file>root.qml</file>
+        <file>message.qml</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>images/closeStack.png</file>
+        <file>images/minimizeStack.png</file>
+        <file>images/popStack.png</file>
+        <file>images/unminimizeStack.png</file>
+    </qresource>
+</RCC>

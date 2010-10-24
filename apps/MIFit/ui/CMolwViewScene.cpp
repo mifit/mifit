@@ -354,21 +354,6 @@ void CMolwViewScene::renderOverlay()
 {
 }
 
-void CMolwViewScene::render2DOverlay()
-{
-    glClear(GL_DEPTH_BUFFER_BIT);
-    if (message.length() > 0)
-    {
-        glColor3f(1.0f, 1.0f, 1.0f);
-        renderer->DrawMessage(message, 150, 20);
-    }
-}
-
-void CMolwViewScene::setMessage(const std::string &message)
-{
-    this->message = message;
-}
-
 float CMolwViewScene::getTargetSize()
 {
     return targetFeedbackSize;

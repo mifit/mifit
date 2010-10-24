@@ -438,11 +438,16 @@ MIGLWidget::MIGLWidget()
 
     rootContext()->setContextProperty("root", rootObject());
     rootContext()->setContextProperty("stack", AtomStack);
-//    QDeclarativeComponent component(engine(), QUrl("qrc:/qml/stack.qml"));
-    QDeclarativeComponent component(engine(), QUrl("apps/MIFit/ui/stack.qml"));
-    stackItem = qobject_cast<QGraphicsObject *>(component.create());
+    QDeclarativeComponent stackComponent(engine(), QUrl("qrc:/qml/stack.qml"));
+    stackItem = qobject_cast<QGraphicsObject *>(stackComponent.create());
     if (stackItem)
         stackItem->setParentItem(rootObject());
+
+    setMessage(QString::null);
+    QDeclarativeComponent messageComponent(engine(), QUrl("qrc:/qml/message.qml"));
+    messageItem = qobject_cast<QGraphicsObject *>(messageComponent.create());
+    if (messageItem)
+        messageItem->setParentItem(rootObject());
 
     popup_menu = new QMenu(this);
     connect(popup_menu, SIGNAL(aboutToShow()), this, SLOT(updatePopupMenu()));
@@ -980,7 +985,6 @@ void MIGLWidget::draw(QPainter *painter)
     scene->renderer->updateTextScale(glUnitsPerPixel);
     annotationPickingRenderable->updateTextScale(glUnitsPerPixel);
 
-    scene->setMessage(message.c_str());
     scene->models = Models;
     scene->pentamerModel = PentamerModel;
     scene->atomStack = AtomStack;
@@ -1220,7 +1224,7 @@ void MIGLWidget::RightMouseDrag(CPoint d, float xang, float yang, float zang)
             char torval[100];
             if (fitmol->GetTorsionValue(torval, fitres))
             {
-                message = torval;
+                setMessage(torval);
             }
             UpdateCurrent();
         }
@@ -2132,9 +2136,11 @@ void MIGLWidget::OnGeometryAngle()
     if (a1 && a2 && a3)
     {
         float d = (float)CalcAtomAngle(*a1, *a2, *a3);
-        message = ::format("Angle %s-%s-%s is %0.3f",
-                           a1->name(), a2->name(), a3->name(), d);
-        Logger::log(message.c_str());
+        QString message = QString("Angle %1-%2-%3 is %4")
+                   .arg(a1->name()).arg(a2->name()).arg(a3->name())
+                   .arg(d, 0, 'f', 3);
+        setMessage(message);
+        Logger::log(message.toAscii().constData());
         PaletteChanged = true;
         doRefresh();
     }
@@ -2147,9 +2153,11 @@ void MIGLWidget::OnGeometryDistance()
     if (a1 && a2)
     {
         float d = (float)AtomDist(*a1, *a2);
-        message = ::format("Distance between %s and %s is %0.3f",
-                           a1->name(), a2->name(), d);
-        Logger::log(message.c_str());
+        QString message = QString("Distance %1-%2 is %4")
+                   .arg(a1->name()).arg(a2->name())
+                   .arg(d, 0, 'f', 3);
+        setMessage(message);
+        Logger::log(message.toAscii().constData());
         Displaylist *models = GetDisplaylist();
         if (models != NULL)
         {
@@ -2170,9 +2178,11 @@ void MIGLWidget::OnGeometryTorsion()
     if (a1 && a2 && a3 && a4)
     {
         float d = CalcAtomTorsion(a1, a2, a3, a4);
-        message = ::format("Torsion %s-%s-%s-%s is %0.3f",
-                           a1->name(), a2->name(), a3->name(), a4->name(), d);
-        Logger::log(message.c_str());
+        QString message = QString("Torsion %1-%2-%3-%4 is %5")
+                   .arg(a1->name()).arg(a2->name()).arg(a3->name()).arg(a4->name())
+                   .arg(d, 0, 'f', 3);
+        setMessage(message);
+        Logger::log(message.toAscii().constData());
         PaletteChanged = true;
         doRefresh();
     }
@@ -2482,13 +2492,15 @@ void MIGLWidget::OnVdwDotSurface()
             dotsper = newDotsper;
             boxsize = newBoxsize;
             ignoreHidden = dlg.value(2).toBool();
-            message = "Number of dots: ";
-            message += ftoa(lastnode->SurfaceCenter(
-                                viewpoint,
-                                (dotsper > 0.0f ? static_cast<float>(1.0/dotsper) : 0.5f),
-                                boxsize, ignoreHidden));
+            int numDots = lastnode->SurfaceCenter(
+                        viewpoint,
+                        (dotsper > 0.0f ? static_cast<float>(1.0/dotsper) : 0.5f),
+                        boxsize, ignoreHidden);
+            QString message = QString("Number of dots: %1")
+                    .arg(numDots);
+            setMessage(message);
             viewpoint->setchanged();
-            Logger::log(message);
+            Logger::log(message.toAscii().constData());
             PaletteChanged = true;
             doRefresh();
         }
@@ -2515,20 +2527,21 @@ void MIGLWidget::OnSurfaceSolvent()
         if (newDotsper >= 1.0 && newDotsper <= 10.0)
         {
             dotsper = newDotsper;
-            message = "Number of dots: ";
-            message += ftoa(lastnode->SolventSurface(viewpoint, static_cast<float>(1.0/dotsper)));
+            int numDots = lastnode->SolventSurface(viewpoint, static_cast<float>(1.0/dotsper));
+            QString message = QString("Number of dots: %1")
+                    .arg(numDots);
+            setMessage(message);
             viewpoint->setchanged();
-            Logger::log(message);
+            Logger::log(message.toAscii().constData());
             PaletteChanged = true;
             doRefresh();
         }
     }
 }
 
-void MIGLWidget::OnViewClearmessage()
+void MIGLWidget::clearMessage()
 {
-    message = "";
-    ReDraw();
+    setMessage(QString::null);
 }
 
 void MIGLWidget::cancelFitting()
@@ -3068,9 +3081,10 @@ void MIGLWidget::OnFitSetuptorsion()
                 std::vector<PLINE>().swap(TorsionArrow); // was TorsionArrow.clear();
                 arrow2(TorsionArrow, a2->x() - a1->x(), a2->y() - a1->y(), a2->z() - a1->z(),
                        a1->x(), a1->y(), a1->z(), Colors::WHITE);
-                message = ftoa(Torsioning);
-                message += " atoms under torsion";
-                Logger::log(message);
+                QString message = QString("%1 atoms under torsion")
+                        .arg(Torsioning);
+                setMessage(message);
+                Logger::log(message.toAscii().constData());
             }
         }
         PaletteChanged = true;
@@ -3264,6 +3278,7 @@ void MIGLWidget::clearFitTorsion()
 {
     if (fitmol != NULL && Torsioning > 0)
     {
+        clearMessage();
         fitmol->ClearTorsion();
         Torsioning = 0;
         if (RightMouseMode == BONDTWIST)
@@ -3849,15 +3864,14 @@ void MIGLWidget::OnGeomNeighbours()
     float cutoff = 4.0F;
     AtomStack->Pop(a, res, node);
     if (!a)
-    {
         return;
-    }
-    message = "Found ";
-    message += ftoa(GetDisplaylist()->FindContacts(a, res, cutoff, viewpoint));
-    message += " contacts <= ";
-    message += ftoa(cutoff);
+
+    QString message = QString("Found %1 contacts <= %2")
+            .arg(GetDisplaylist()->FindContacts(a, res, cutoff, viewpoint))
+            .arg(cutoff);
+    setMessage(message);
     PaletteChanged = true;
-    Logger::log(message);
+    Logger::log(message.toAscii().constData());
     doRefresh();
 }
 
@@ -3884,10 +3898,6 @@ void MIGLWidget::OnGeomHbonds()
         return;
     }
     node->BuildHBonds();
-    //  message = "Built ";
-    //  message += ftoa((long)node->hbonds.size());
-    //  message += " H-bonds";
-    Logger::log(message);
 
     ReDraw();
 }
@@ -5169,12 +5179,13 @@ void MIGLWidget::OnObjectSurfaceresidues()
                 AtomStack->Pop(a, res, node);
                 res->setFlags(res->flags()|128);
             }
-            message = "Number of dots: ";
-            message += ftoa(node->SurfaceResidues(1.0f/dotsper,
+            int numDots = node->SurfaceResidues(1.0f/dotsper,
                                                   viewpoint,
-                                                  ignoreHidden));
+                                                  ignoreHidden);
             viewpoint->setchanged();
-            Logger::log(message);
+            QString message = QString("Number of dots: %1").arg(numDots);
+            setMessage(message);
+            Logger::log(message.toAscii().constData());
             PaletteChanged = true;
             ReDraw();
         }
@@ -5214,10 +5225,11 @@ void MIGLWidget::OnObjectSurfaceatom()
         {
             dotsper = newDotsper;
             ignoreHidden = dlg.value(1).toBool();
-            message = "Number of dots: ";
-            message += ftoa(node->SurfaceAtom(a, 1.0f/dotsper, ignoreHidden));
+            int numDots = node->SurfaceAtom(a, 1.0f/dotsper, ignoreHidden);
             viewpoint->setchanged();
-            Logger::log(message);
+            QString message = QString("Number of dots: %1").arg(numDots);
+            setMessage(message);
+            Logger::log(message.toAscii().constData());
             PaletteChanged = true;
             ReDraw();
         }
@@ -5252,16 +5264,16 @@ void MIGLWidget::OnObjectSurfaceAtoms()
         {
             dotsper = newDotsper;
             ignoreHidden = dlg.value(1).toBool();
-            message = "Number of dots: ";
-            message += ftoa(node->SurfaceAtom(a, 1.0f/dotsper, ignoreHidden));
+            int numDots = node->SurfaceAtom(a, 1.0f/dotsper, ignoreHidden);
             while (!AtomStack->empty())
             {
                 AtomStack->Pop(a, res, node);
-                message = "Number of dots: ";
-                message += ftoa(node->SurfaceAtom(a, 1.0f/dotsper, ignoreHidden));
+                numDots += node->SurfaceAtom(a, 1.0f/dotsper, ignoreHidden);
             }
             viewpoint->setchanged();
-            Logger::log(message);
+            QString message = QString("Number of dots: %1").arg(numDots);
+            setMessage(message);
+            Logger::log(message.toAscii().constData());
             PaletteChanged = true;
             ReDraw();
         }
@@ -5656,9 +5668,10 @@ void MIGLWidget::OnSequenceInsertgap()
         return;
     }
     node->InsertGap(res);
-    message = "Sequence identities: ";
-    message += ftoa(node->SequenceIdentities());
-    Logger::log(message);
+    QString message = QString("Sequence identities: %1")
+            .arg(node->SequenceIdentities());
+    setMessage(message);
+    Logger::log(message.toAscii().constData());
     PaletteChanged = true;
     ReDraw();
 }
@@ -5691,9 +5704,10 @@ void MIGLWidget::OnSequenceDeletegap()
         return;
     }
     node->DeleteGap(res);
-    message = "Sequence identities: ";
-    message += ftoa(node->SequenceIdentities());
-    Logger::log(message);
+    QString message = QString("Sequence identities: %1")
+            .arg(node->SequenceIdentities());
+    setMessage(message);
+    Logger::log(message.toAscii().constData());
     PaletteChanged = true;
     ReDraw();
 }
@@ -5726,9 +5740,10 @@ void MIGLWidget::OnSequenceInsertlowergap()
         return;
     }
     node->InsertLowerGap(res);
-    message = "Sequence identities: ";
-    message += ftoa(node->SequenceIdentities());
-    Logger::log(message);
+    QString message = QString("Sequence identities: %1")
+            .arg(node->SequenceIdentities());
+    setMessage(message);
+    Logger::log(message.toAscii().constData());
     PaletteChanged = true;
     ReDraw();
 }
@@ -5761,9 +5776,9 @@ void MIGLWidget::OnSequenceDeletelowergap()
         return;
     }
     node->DeleteLowerGap(res);
-    message = "Sequence identities: ";
-    message += ftoa(node->SequenceIdentities());
-    Logger::log(message);
+    QString message = QString("Sequence identities: %1")
+            .arg(node->SequenceIdentities());
+    Logger::log(message.toAscii().constData());
     PaletteChanged = true;
     ReDraw();
 }
@@ -6353,7 +6368,9 @@ void MIGLWidget::UpdateCurrent()
     if (emap)
     {
         float r = emap->RDensity(CurrentAtoms);
-        message = ::format("Current Gdensity = %0.4f", r);
+        QString message = QString("Current Gdensity = %1")
+                .arg(r, 0, 'f', 4);
+        setMessage(message);
     }
     GeomRefiner *refi = MIFitGeomRefiner();
     if (refi->IsRefining() && refi->GetRefineWhileFit())
@@ -12580,4 +12597,9 @@ void MIGLWidget::StackExpandTop2Range()
             AtomStack->Push(res->atom(0), res, m2);
         }
     }
+}
+
+void MIGLWidget::setMessage(const QString &message)
+{
+    rootContext()->setContextProperty("message", message);
 }

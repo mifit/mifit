@@ -81,8 +81,6 @@ public:
 
     virtual void renderOverlay();
 
-    virtual void render2DOverlay();
-
 };
 
 #endif // ifndef MIFIT_UI_DICTEDITSCENE_H_

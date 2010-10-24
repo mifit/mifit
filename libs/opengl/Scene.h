@@ -22,8 +22,6 @@ namespace mi
 
             virtual void renderOverlay() = 0;
 
-            virtual void render2DOverlay() = 0;
-
         };
     }
 }

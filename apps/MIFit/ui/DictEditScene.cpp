@@ -166,7 +166,3 @@ void DictEditScene::renderOverlay()
         arcBallFeedback->render();
     }
 }
-
-void DictEditScene::render2DOverlay()
-{
-}
