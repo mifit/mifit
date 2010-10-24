@@ -900,116 +900,96 @@ void DictEditCanvas::endDragAction()
 bool DictEditCanvas::handlePick(const QPoint &point)
 {
     bool somethingPicked = false;
-    if (!AtomStack->empty() && AtomStack->PickClearBox(point.x(), height() - point.y()))
+
+    vector<GLuint> ids = mousePicker->pick(point.x(), point.y(), frustum, annotationPickingRenderable);
+    Annotation *annot = NULL;
+    if (ids.size() > 0)
     {
-        AtomStack->Clear();
-        ReDraw();
-        somethingPicked = true;
+        annot = annotationPickingRenderable->getAnnotation(ids[0]);
     }
-    else if (!AtomStack->empty() && AtomStack->PickHideBox(point.x(), height() - point.y()))
+
+    if (annot != NULL && planes.find(annot->m_id) != planes.end())
     {
-        AtomStack->ToggleMinMax();
-        ReDraw();
-        somethingPicked = true;
-    }
-    else if (!AtomStack->empty() && AtomStack->PickPopBox(point.x(), height() - point.y()))
-    {
-        AtomStack->Pop();
+        PLANE *picked = planes.find(annot->m_id)->second;
+        if (pickedPlane == picked)
+        {
+            SetPick((PLANE*)NULL);
+        }
+        else
+        {
+            SetPick(picked);
+        }
+
+        UpdateGeom();
         ReDraw();
         somethingPicked = true;
     }
     else
     {
-        vector<GLuint> ids = mousePicker->pick(point.x(), point.y(), frustum, annotationPickingRenderable);
-        Annotation *annot = NULL;
+        ids = mousePicker->pick(point.x(), point.y(), frustum, atomPickingRenderable);
+        MIAtom *atom = NULL;
         if (ids.size() > 0)
         {
-            annot = annotationPickingRenderable->getAnnotation(ids[0]);
+            atom = atomPickingRenderable->getAtom(ids[0]);
         }
-
-        if (annot != NULL && planes.find(annot->m_id) != planes.end())
+        if (atom != NULL)
         {
-            PLANE *picked = planes.find(annot->m_id)->second;
-            if (pickedPlane == picked)
+            Molecule *molecule = 0;
+            Residue *res = 0;
+            std::list<Molecule*>::iterator molIter = Models->getMolecules().begin();
+            while (molIter != Models->getMolecules().end())
             {
-                SetPick((PLANE*)NULL);
+                molecule = *molIter;
+                molIter++;
+                res = residue_from_atom(molecule->residuesBegin(), atom);
+                if (res != NULL)
+                {
+                    break;
+                }
             }
-            else
-            {
-                SetPick(picked);
-            }
-
-            UpdateGeom();
-            ReDraw();
+            Models->SetPicked(molecule, res, atom);
+        }
+        ids = mousePicker->pick(point.x(), point.y(), frustum, bondPickingRenderable);
+        Bond *bestbond = NULL;
+        if (ids.size() > 0)
+        {
+            bestbond = bondPickingRenderable->getBond(ids[0]);
+        }
+        ids = mousePicker->pick(point.x(), point.y(), frustum, anglePickingRenderable);
+        ANGLE *bestangle = NULL;
+        if (ids.size() > 0)
+        {
+            bestangle = anglePickingRenderable->getAngle(ids[0]);
+        }
+        if (bestbond != NULL)
+        {
+            SetPick(bestbond);
+            SetPick(SearchTorsions(bestbond->getAtom1(), bestbond->getAtom2()));
             somethingPicked = true;
         }
-        else
+        if (bestangle != NULL)
         {
-            ids = mousePicker->pick(point.x(), point.y(), frustum, atomPickingRenderable);
-            MIAtom *atom = NULL;
-            if (ids.size() > 0)
-            {
-                atom = atomPickingRenderable->getAtom(ids[0]);
-            }
-            if (atom != NULL)
-            {
-                Molecule *molecule = 0;
-                Residue *res = 0;
-                std::list<Molecule*>::iterator molIter = Models->getMolecules().begin();
-                while (molIter != Models->getMolecules().end())
-                {
-                    molecule = *molIter;
-                    molIter++;
-                    res = residue_from_atom(molecule->residuesBegin(), atom);
-                    if (res != NULL)
-                    {
-                        break;
-                    }
-                }
-                Models->SetPicked(molecule, res, atom);
-            }
-            ids = mousePicker->pick(point.x(), point.y(), frustum, bondPickingRenderable);
-            Bond *bestbond = NULL;
-            if (ids.size() > 0)
-            {
-                bestbond = bondPickingRenderable->getBond(ids[0]);
-            }
-            ids = mousePicker->pick(point.x(), point.y(), frustum, anglePickingRenderable);
-            ANGLE *bestangle = NULL;
-            if (ids.size() > 0)
-            {
-                bestangle = anglePickingRenderable->getAngle(ids[0]);
-            }
-            if (bestbond != NULL)
-            {
-                SetPick(bestbond);
-                SetPick(SearchTorsions(bestbond->getAtom1(), bestbond->getAtom2()));
-                somethingPicked = true;
-            }
-            if (bestangle != NULL)
-            {
-                SetPick(bestangle);
-                somethingPicked = true;
-            }
-            if (atom != NULL)
-            {
-                AtomStack->Push(atom, Models->GetPickedResidue(), Models->GetPickedMolecule());
-                if (SearchChirals(atom))
-                {
-                    SetPick(SearchChirals(atom));
-                }
-                somethingPicked = true;
-            }
-            if (atom != NULL && (Application::instance()->LabelPicks))
-            {
-                model->labelAtom(atom, Models->GetPickedResidue());
-                model->labelAtomStyle(atom, 5);
-            }
-
-            PaletteChanged = true;
-            UpdateGeom();
-            ReDraw();
+            SetPick(bestangle);
+            somethingPicked = true;
         }
+        if (atom != NULL)
+        {
+            AtomStack->Push(atom, Models->GetPickedResidue(), Models->GetPickedMolecule());
+            if (SearchChirals(atom))
+            {
+                SetPick(SearchChirals(atom));
+            }
+            somethingPicked = true;
+        }
+        if (atom != NULL && (Application::instance()->LabelPicks))
+        {
+            model->labelAtom(atom, Models->GetPickedResidue());
+            model->labelAtomStyle(atom, 5);
+        }
+
+        PaletteChanged = true;
+        UpdateGeom();
+        ReDraw();
     }
     UpdateButtons();
     return somethingPicked;
@@ -1945,7 +1925,7 @@ void DictEditCanvas::OnDeleteBond()
 
 void DictEditCanvas::OnRemoveHydrogens()
 {
-    AtomStack->Clear();
+    AtomStack->clear();
     Molecule *mol = (Molecule*)geomrefiner->GetCurrentModel();
     for (ResidueListIterator res = mol->residuesBegin(); res != mol->residuesEnd(); ++res)
     {
@@ -2479,7 +2459,7 @@ void DictEditCanvas::on_resetButton_clicked()
     // end of the cancel function
 
     // blank out the atom stack so that we won't have bad pointers hanging around
-    AtomStack->Clear();
+    AtomStack->clear();
 
     // similar to the geomrefiner OnEdit function and our own init function
     Residue *reslist = new Residue(*dictres);

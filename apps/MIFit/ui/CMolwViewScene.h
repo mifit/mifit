@@ -64,7 +64,6 @@ class CMolwViewScene : public mi::opengl::Scene
 
     bool ShowLabels;
     bool ShowContacts;
-    bool ShowStack;
     bool ShowGnomon;
     bool topView;
     bool showUnitCell;

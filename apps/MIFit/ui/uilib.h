@@ -28,7 +28,6 @@
 #include "core/RenderStyle.h"
 #include "SaveModel.h"
 #include "surf.h"
-#include "TargaImage.h"
 #include "tools.h"
 #include "Xguicryst.h"
 

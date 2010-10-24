@@ -414,13 +414,11 @@ MIGLWidget::MIGLWidget()
     viewpoint->Yup = 0;
     ShowLabels = settings.value("View Parameters/ShowLabels", true).toBool();
     ShowContacts = settings.value("View Parameters/ShowContacts", true).toBool();
-    ShowStack = settings.value("View Parameters/ShowStack", true).toBool();
-    rootContext()->setContextProperty("stackVisible", ShowStack);
+    AtomStack->setVisible(settings.value("View Parameters/ShowStack", true).toBool());
     ShowGnomon = settings.value("View Parameters/ShowGnomon", true).toBool();
     showUnitCell = settings.value("View Parameters/ShowUnitCell", false).toBool();
     scene->ShowLabels = ShowLabels;
     scene->ShowContacts = ShowContacts;
-    scene->ShowStack = ShowStack;
     scene->ShowGnomon = ShowGnomon;
     scene->showUnitCell = showUnitCell;
     RockRange = settings.value("View Parameters/RockRange", 800).toInt()/100.0F;
@@ -440,7 +438,8 @@ MIGLWidget::MIGLWidget()
 
     rootContext()->setContextProperty("root", rootObject());
     rootContext()->setContextProperty("stack", AtomStack);
-    QDeclarativeComponent component(engine(), QUrl("qrc:/qml/stack.qml"));
+//    QDeclarativeComponent component(engine(), QUrl("qrc:/qml/stack.qml"));
+    QDeclarativeComponent component(engine(), QUrl("apps/MIFit/ui/stack.qml"));
     stackItem = qobject_cast<QGraphicsObject *>(component.create());
     if (stackItem)
         stackItem->setParentItem(rootObject());
@@ -2194,11 +2193,9 @@ void MIGLWidget::OnViewSlabout()
 
 void MIGLWidget::OnViewAtomstack()
 {
-    ShowStack = !ShowStack;
     QSettings settings;
-    settings.setValue("View Parameters/ShowStack", ShowStack ? 1 : 0);
-    rootContext()->setContextProperty("stackVisible", ShowStack);
-    scene->ShowStack = ShowStack;
+    AtomStack->setVisible(!AtomStack->isVisible());
+    settings.setValue("View Parameters/ShowStack", AtomStack->isVisible());
     doRefresh();
 }
 
@@ -2363,7 +2360,7 @@ void MIGLWidget::OnUpdateHardwareStereo(QAction *action)
 
 void MIGLWidget::OnUpdateViewAtomstack(QAction *action)
 {
-    action->setChecked(ShowStack == 1);
+    action->setChecked(AtomStack->isVisible() == 1);
 }
 
 void MIGLWidget::OnUpdateViewGnomon(QAction *action)
@@ -9196,7 +9193,7 @@ void MIGLWidget::ClearAtomStack()
 {
     if (AtomStack)
     {
-        AtomStack->Clear();
+        AtomStack->clear();
     }
 }
 
@@ -9346,7 +9343,23 @@ void MIGLWidget::ReadStack(const char *pathname, bool append)
 
 void MIGLWidget::OnObjectStackExpandtopallatomsinresidue()
 {
-    AtomStack->ExpandTopAllAtoms();
+    MIAtom *a;
+    Molecule *m;
+    Residue *r;
+    AtomStack->Pop(a, r, m);
+
+    if (a && a->type() & AtomType::SYMMATOM)
+    {
+        AtomStack->Push(a, r, m);
+        Logger::message("Can't expand symmetry atom(s) on stack");
+        return;
+    }
+
+    for (int i = 0; i < r->atomCount(); i++)
+    {
+        AtomStack->Push(r->atom(i), r, m);
+    }
+
     ReDraw();
 }
 
@@ -9362,13 +9375,69 @@ void MIGLWidget::OnUpdateObjectStackExpandtop2residues(QAction *action)
 
 void MIGLWidget::OnObjectStackExpandtop2residues()
 {
-    AtomStack->ExpandTop2Range();
+    StackExpandTop2Range();
     ReDraw();
 }
 
 void MIGLWidget::OnObjectStackExpandtop2allatomsinrange()
 {
-    AtomStack->ExpandTop2AllAtoms();
+    MIAtom *a1;
+    MIAtom *a2;
+    Molecule *m1, *m2;
+    Residue *r1, *r2;
+    AtomStack->Pop(a1, r1, m1);
+    AtomStack->Pop(a2, r2, m2);
+    if (m1 != m2)
+    {
+        Logger::message("Both atoms must be in same molecule");
+        AtomStack->Push(a2, r2, m2);
+        AtomStack->Push(a1, r1, m1);
+        return;
+    }
+
+    if ((a1 && a1->type() & AtomType::SYMMATOM)
+        || (a2 && a2->type() & AtomType::SYMMATOM))
+    {
+        Logger::message("Can't expand symmetry atom(s) on stack");
+        AtomStack->Push(a2, r2, m2);
+        AtomStack->Push(a1, r1, m1);
+        return;
+    }
+
+    if (r1 == r2)
+    {
+        for (int i = 0; i < r2->atomCount(); i++)
+        {
+            AtomStack->Push(r2->atom(i), r2, m2);
+        }
+        return;
+    }
+    std::vector<ResidueListIterator> marks;
+    ResidueListIterator res;
+    for (res = m1->residuesBegin(); res != m1->residuesBegin(); ++res)
+    {
+        if (res == ResidueListIterator(r1)
+            || res == ResidueListIterator(r2))
+        {
+            marks.push_back(res);
+        }
+    }
+    if (marks.size() != 2)
+    {
+        Logger::message("Error expanding stack: residue not found in model");
+        AtomStack->Push(a2, r2, m2);
+        AtomStack->Push(a1, r1, m1);
+    }
+
+    ++marks[1];
+    for (res = marks[0]; res != marks[1]; ++res)
+    {
+        for (int i = 0; i < res->atomCount(); i++)
+        {
+            AtomStack->Push(res->atom(i), res, m2);
+        }
+    }
+
     ReDraw();
 }
 
@@ -9395,7 +9464,7 @@ bool MIGLWidget::DoYouWantBallAndCylinder()
 void MIGLWidget::OnObjectShowresiduerange()
 {
     int stackstart = AtomStack->size();
-    AtomStack->ExpandTop2Range();
+    StackExpandTop2Range();
     SaveColors = true;
     DoingRange++;
     while (AtomStack->size() > stackstart-2 && !AtomStack->empty())
@@ -9424,7 +9493,7 @@ void MIGLWidget::OnObjectShowsidechainrange()
 {
     int stackstart = AtomStack->size();
     SaveColors = true;
-    AtomStack->ExpandTop2Range();
+    StackExpandTop2Range();
     DoingRange++;
     while (AtomStack->size() > stackstart-2 && !AtomStack->empty())
     {
@@ -9550,7 +9619,7 @@ void MIGLWidget::OnObjectResiduerangeColor()
         return;
     }
     int stackstart = AtomStack->size();
-    AtomStack->ExpandTop2Range();
+    StackExpandTop2Range();
     Residue *res;
     Molecule *node;
     MIAtom *a;
@@ -9587,7 +9656,7 @@ void MIGLWidget::OnUpdateObjectResiduerangeColor(QAction *action)
 void MIGLWidget::OnObjectResiduerangeRadius()
 {
     int stackstart = AtomStack->size();
-    AtomStack->ExpandTop2Range();
+    StackExpandTop2Range();
     Wait = true;
     SaveColors = true;
     DoingRange++;
@@ -9615,7 +9684,7 @@ void MIGLWidget::OnUpdateObjectResiduerangeRadius(QAction *action)
 void MIGLWidget::OnObjectResiduerangeTurnoff()
 {
     int stackstart = AtomStack->size();
-    AtomStack->ExpandTop2Range();
+    StackExpandTop2Range();
     SaveColors = true;
     DoingRange++;
     while (AtomStack->size() > stackstart-2 && !AtomStack->empty())
@@ -10641,91 +10710,73 @@ void MIGLWidget::handleMouseRelease(QGraphicsSceneMouseEvent *e)
             mouse = CPoint(pos.x(), pos.y());
             if (!TopView)
             {
-                if (ShowStack && !AtomStack->empty() && AtomStack->PickClearBox(pos.x(), stereoView->getViewport()->getHeight() - pos.y()))
+                annotationPickingRenderable->setModels(models);
+
+                vector<GLuint> ids = mousePicker->pick(pos.x(), pos.y(), frustum, annotationPickingRenderable);
+
+                Annotation *annot = NULL;
+                if (ids.size() > 0)
                 {
-                    AtomStack->Clear();
-                    ReDraw();
+                    annot = annotationPickingRenderable->getAnnotation(ids[0]);
                 }
-                else if (ShowStack && !AtomStack->empty() && AtomStack->PickHideBox(pos.x(), stereoView->getViewport()->getHeight() - pos.y()))
+                if (annot)
                 {
-                    AtomStack->ToggleMinMax();
-                    ReDraw();
-                }
-                else if (ShowStack && !AtomStack->empty() && AtomStack->PickPopBox(pos.x(), stereoView->getViewport()->getHeight() - pos.y()))
-                {
-                    AtomStack->Pop();
-                    ReDraw();
+                    CurrentAnnotation = annot;
+                    Logger::log("Picked Annotation:");
+                    Logger::log(annot->GetText());
                 }
                 else
                 {
-                    annotationPickingRenderable->setModels(models);
-
-                    vector<GLuint> ids = mousePicker->pick(pos.x(), pos.y(), frustum, annotationPickingRenderable);
-
-                    Annotation *annot = NULL;
+                    prepareAtomPicking();
+                    ids = mousePicker->pick(pos.x(), pos.y(), frustum, atomPickingRenderable);
+                    MIAtom *atom = NULL;
                     if (ids.size() > 0)
                     {
-                        annot = annotationPickingRenderable->getAnnotation(ids[0]);
+                        atom = atomPickingRenderable->getAtom(ids[0]);
                     }
-                    if (annot)
+                    if (IsFitting())
                     {
-                        CurrentAnnotation = annot;
-                        Logger::log("Picked Annotation:");
-                        Logger::log(annot->GetText());
-                    }
-                    else
-                    {
-                        prepareAtomPicking();
-                        ids = mousePicker->pick(pos.x(), pos.y(), frustum, atomPickingRenderable);
-                        MIAtom *atom = NULL;
+                        prepareBondPicking();
+                        ids = mousePicker->pick(pos.x(), pos.y(), frustum, bondPickingRenderable);
+                        Bond *bond = NULL;
                         if (ids.size() > 0)
                         {
-                            atom = atomPickingRenderable->getAtom(ids[0]);
+                            bond = bondPickingRenderable->getBond(ids[0]);
                         }
-                        if (IsFitting())
+                        if (bond != NULL)
                         {
-                            prepareBondPicking();
-                            ids = mousePicker->pick(pos.x(), pos.y(), frustum, bondPickingRenderable);
-                            Bond *bond = NULL;
-                            if (ids.size() > 0)
+                            MIAtom *atom1 = bond->getAtom1();
+                            MIAtom *atom2 = bond->getAtom2();
+                            if (ids.size() > 1 && ids[1] == 2)
                             {
-                                bond = bondPickingRenderable->getBond(ids[0]);
+                                MIAtom *a = atom1;
+                                atom1 = atom2;
+                                atom2 = a;
                             }
-                            if (bond != NULL)
                             {
-                                MIAtom *atom1 = bond->getAtom1();
-                                MIAtom *atom2 = bond->getAtom2();
-                                if (ids.size() > 1 && ids[1] == 2)
-                                {
-                                    MIAtom *a = atom1;
-                                    atom1 = atom2;
-                                    atom2 = a;
-                                }
-                                {
-                                    Residue *res1 = residue_from_atom(fitmol->residuesBegin(), atom1);
-                                    Residue *res2 = residue_from_atom(fitmol->residuesBegin(), atom2);
-                                    AtomStack->Push(atom2, res2, fitmol);
-                                    AtomStack->Push(atom1, res1, fitmol);
-                                }
-                                OnFitSetuptorsion();
+                                Residue *res1 = residue_from_atom(fitmol->residuesBegin(), atom1);
+                                Residue *res2 = residue_from_atom(fitmol->residuesBegin(), atom2);
+                                AtomStack->Push(atom2, res2, fitmol);
+                                AtomStack->Push(atom1, res1, fitmol);
                             }
+                            OnFitSetuptorsion();
                         }
-                        if (atom != NULL)
-                        {
-
-                            Residue *res = NULL;
-                            Molecule *mol = NULL;
-                            findResidueAndMoleculeForAtom(atom, res, mol);
-                            select(mol, res, atom);
-                            if (res != NULL && mol != NULL)
-                            {
-                                AtomStack->Push(atom, res, mol);
-                            }
-                        }
-
-                        PaletteChanged = true;
-                        doRefresh();
                     }
+                    if (atom != NULL)
+                    {
+
+                        Residue *res = NULL;
+                        Molecule *mol = NULL;
+                        findResidueAndMoleculeForAtom(atom, res, mol);
+                        select(mol, res, atom);
+                        if (res != NULL && mol != NULL)
+                        {
+                            AtomStack->Push(atom, res, mol);
+                        }
+                    }
+
+                    PaletteChanged = true;
+                    doRefresh();
                 }
             }
         }
@@ -12463,3 +12514,70 @@ ViewController*ViewController::instance()
     return &theInstance;
 }
 
+void MIGLWidget::StackExpandTop2Range()
+{
+    MIAtom *a1, *a2, *a;
+    Molecule *m1, *m2;
+    Residue *r1, *r2;
+    AtomStack->Pop(a1, r1, m1);
+    AtomStack->Pop(a2, r2, m2);
+    if (m1 != m2)
+    {
+        Logger::message("Both atoms must be in same molecule");
+        AtomStack->Push(a2, r2, m2);
+        AtomStack->Push(a1, r1, m1);
+        return;
+    }
+
+    if ((a1 && a1->type() & AtomType::SYMMATOM)
+        || (a2 && a2->type() & AtomType::SYMMATOM))
+    {
+        Logger::message("Can't expand symmetry atom(s) on stack");
+        AtomStack->Push(a2, r2, m2);
+        AtomStack->Push(a1, r1, m1);
+        return;
+    }
+
+    if (r1 == r2)
+    {
+        if ((a = atom_from_name("CA", *r2)) == NULL)
+        {
+            AtomStack->Push(a, r2, m2);
+        }
+        else
+        {
+            AtomStack->Push(r2->atom(0), r2, m2);
+        }
+        return;
+    }
+
+    ResidueListIterator res;
+    std::vector<ResidueListIterator> marks;
+    for (res = m1->residuesBegin(); res != m1->residuesEnd(); ++res)
+    {
+        if (res == ResidueListIterator(r1) || res == ResidueListIterator(r2))
+            marks.push_back(res);
+        if (marks.size() == 2)
+            break;
+    }
+    if (marks.size() != 2)
+    {
+        Logger::message("Error expanding stack: residue not found in model");
+        AtomStack->Push(a2, r2, m2);
+        AtomStack->Push(a1, r1, m1);
+        return;
+    }
+
+    ++marks[1];
+    for (res = marks[0]; res != marks[1]; ++res)
+    {
+        if ((a = atom_from_name("CA", *res)) != NULL)
+        {
+            AtomStack->Push(a, res, m2);
+        }
+        else
+        {
+            AtomStack->Push(res->atom(0), res, m2);
+        }
+    }
+}

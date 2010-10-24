@@ -3,23 +3,36 @@ import Qt 4.7
 Item {
     id: stackArea
     property bool minimized: false
-    visible: stackVisible && stack.size > 0
+
+    function updateState() {
+        if (stack.visible && stack.size != 0)
+            state = minimized ? "minimized" : "shown"
+        else
+            state = ""
+    }
+
+    Component.onCompleted: {
+        stack.sizeChanged.connect(updateState)
+        stack.visibilityChanged.connect(updateState)
+    }
+
     width: list.width + 20
-    height: (stackArea.minimized ? 0 : (list.height + 7))
-            + stackHeader.height
     anchors.left: root.left
     anchors.leftMargin: 5
     anchors.bottom: root.bottom
     anchors.bottomMargin: 5
+    height: (list.height + 7) + stackHeader.height
+    opacity: 0
+
     Text {
-        id: text
-        visible: stackArea.minimized
+        id: minimizedText
         anchors.left: parent.left
         anchors.leftMargin: 5
         anchors.top: parent.top
-        opacity: 1
+        opacity: 0
         color: "white"
         text: "..."
+        z: 1
     }
     Rectangle {
         id: stackBox
@@ -64,7 +77,10 @@ Item {
             anchors.rightMargin: 5
             MouseArea {
                 anchors.fill: parent
-                onClicked: { stackArea.minimized = !stackArea.minimized }
+                onClicked: {
+                    stackArea.minimized = !stackArea.minimized
+                    stackArea.state = (stackArea.minimized) ? "minimized" : "shown";
+                }
             }
         }
         Image {
@@ -76,7 +92,7 @@ Item {
             anchors.rightMargin: 5
             MouseArea {
                 anchors.fill: parent
-                onClicked: { stack.clear() }
+                onClicked: { stackArea.state = "clear" }
             }
         }
         Text {
@@ -91,18 +107,74 @@ Item {
     }
     Column {
         id: list
-        visible: !stackArea.minimized
         anchors.left: parent.left
         anchors.leftMargin: 10
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 5
+        anchors.top: stackHeader.bottom
+        anchors.topMargin: 3
         Repeater {
             model: stack.stringList
             Text {
-                id: itemText
                 color: "white"
                 text: modelData
             }
         }
     }
+
+    states: [
+        State {
+            name: "minimized"
+            PropertyChanges { target: stackArea; height: stackHeader.height; opacity: 1 }
+            PropertyChanges { target: minimizedText; opacity: 1 }
+        },
+        State {
+            name: "shown"
+            PropertyChanges {
+                target: stackArea
+                height: (list.height + 7) + stackHeader.height
+                opacity: 1
+            }
+            PropertyChanges { target: minimizedText; opacity: 0 }
+        },
+        State {
+            name:  "clear"
+            PropertyChanges { target: stackArea; opacity: 0.0 }
+        }
+    ]
+
+    transitions: [
+        Transition {
+            from: ""; to: "minimized"
+            SequentialAnimation {
+                PropertyAnimation  { target: stackArea; property: "height"; duration: 1 }
+                ParallelAnimation {
+                    PropertyAnimation  { target: stackArea; property: "opacity"; duration: 300 }
+                    PropertyAnimation  { target: minimizedText; property: "opacity"; duration: 300 }
+                }
+            }
+        },
+        Transition {
+            from: "shown"; to: "minimized"
+            PropertyAnimation  { target: stackArea; property: "opacity"; duration: 300 }
+            PropertyAnimation  { target: stackArea; property: "height"; duration: 300 }
+            PropertyAnimation  { target: minimizedText; property: "opacity"; duration: 300 }
+        },
+        Transition {
+            from: "*"; to: "shown"
+            PropertyAnimation  { target: stackArea; property: "opacity"; duration: 300 }
+            PropertyAnimation  { target: stackArea; property: "height"; duration: 300 }
+            PropertyAnimation  { target: minimizedText; property: "opacity"; duration: 300 }
+        },
+        Transition {
+            from: "*"; to: "clear"
+            SequentialAnimation {
+                PropertyAnimation  { target: stackArea; property: "opacity"; duration: 300 }
+                ScriptAction { script: { stack.clear(); stackArea.state = "" } }
+            }
+        },
+        Transition {
+            from: "*"; to: ""
+            PropertyAnimation  { target: stackArea; property: "opacity"; duration: 300 }
+        }
+    ]
+
 }

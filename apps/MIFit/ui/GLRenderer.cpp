@@ -13,7 +13,6 @@
 #include <chemlib/Monomer.h>
 #include "GLRenderer.h"
 #include "BondRenderer.h"
-#include "TargaImage.h"
 #include "EMap.h"
 #include <climits>
 #include <vector>
@@ -66,10 +65,6 @@ public:
 GLRenderer::GLRenderer()
     :  pickingEnabled(false),
       qcanvas_win(NULL),
-      popStackImage(NULL),
-      minimizeStackImage(NULL),
-      unminimizeStackImage(NULL),
-      closeStackImage(NULL),
       hideHydrogens(false),
       light(NULL),
       light2(NULL),
@@ -83,11 +78,6 @@ GLRenderer::GLRenderer()
       fontSize(ATOMLABEL::defaultSize()),
       viewVectorSet(false)
 {
-
-    popStackImage = new TargaImage(Application::instance()->GetMolimageHome() + "/data/images/popStack.tga");
-    minimizeStackImage = new TargaImage(Application::instance()->GetMolimageHome() + "/data/images/minimizeStack.tga");
-    unminimizeStackImage = new TargaImage(Application::instance()->GetMolimageHome() + "/data/images/unminimizeStack.tga");
-    closeStackImage = new TargaImage(Application::instance()->GetMolimageHome() + "/data/images/closeStack.tga");
 
     style.set(RenderStyle::getBallAndStick());
 
@@ -109,10 +99,6 @@ GLRenderer::~GLRenderer()
 {
     delete light;
     delete light2;
-    delete popStackImage;
-    delete minimizeStackImage;
-    delete unminimizeStackImage;
-    delete closeStackImage;
     for (std::map<void*, GLUquadric*>::iterator i = quad.begin();
          i!=quad.end(); ++i)
     {
@@ -844,95 +830,6 @@ void GLRenderer::drawStackText(int x, int y, const QString &s)
     glPopMatrix();
     glPopAttrib();
 }
-
-#if 0
-void GLRenderer::DrawStack(Stack *stack, int x, int y)
-{
-
-    if (!stackFont_.get())
-    {
-        return;
-    }
-    if (stack->empty())
-    {
-        return;
-    }
-
-    glPushAttrib(GL_COLOR_BUFFER_BIT | GL_CURRENT_BIT | GL_ENABLE_BIT);
-    glPushMatrix();
-    glDisable(GL_FOG);
-    glDisable(GL_LIGHTING);
-
-    glColor3f(1.0f, 1.0f, 1.0f);
-
-    const int lineHeight = (int)(stackFont_->fontMetrics().ascent() - stackFont_->fontMetrics().descent() + 5);
-
-    y += 5;
-    if (!stack->isMinimized())
-    {
-        // list the stack in the lower-left corner of the screen
-        // stack pushes up from the bottom
-        glColor3f(1.0f, 1.0f, 1.0f);
-        QStringList stackList = stack->toStringList();
-        int itemY = y;
-        int n = 1;
-        foreach (QString stackItem, stackList)
-        {
-            drawStackText(x, itemY + (stackList.size() - n) * lineHeight, stackItem);
-            glColor3f(0.7f, 0.7f, 1.0f);
-            ++n;
-        }
-        y += stackList.size() * lineHeight;
-    }
-    else
-    {
-        glColor3f(1.0f, 1.0f, 1.0f);
-        drawStackText(x, y, "...");
-    }
-
-    CRect &PopBox = stack->getPopBox();
-    CRect &HideBox = stack->getHideBox();
-    CRect &ClearBox = stack->getClearBox();
-
-    x += 50;
-    const int spacing = 5;
-    PopBox.left = x;
-    PopBox.right = x + popStackImage->getWidth();
-    PopBox.bottom = y + popStackImage->getHeight();
-    PopBox.top = y;
-    glRasterPos2i(x, y);
-    glDrawPixels(popStackImage->getWidth(), popStackImage->getHeight(), popStackImage->getFormat(), GL_UNSIGNED_BYTE, popStackImage->getData());
-    x += popStackImage->getWidth();
-
-    x += spacing;
-    HideBox.left = x;
-    HideBox.right = x + minimizeStackImage->getWidth();
-    HideBox.bottom = y + minimizeStackImage->getHeight();
-    HideBox.top = y;
-    glRasterPos2i(x, y);
-    if (stack->isMinimized())
-    {
-        glDrawPixels(unminimizeStackImage->getWidth(), unminimizeStackImage->getHeight(), unminimizeStackImage->getFormat(), GL_UNSIGNED_BYTE, unminimizeStackImage->getData());
-        x += unminimizeStackImage->getWidth();
-    }
-    else
-    {
-        glDrawPixels(minimizeStackImage->getWidth(), minimizeStackImage->getHeight(), minimizeStackImage->getFormat(), GL_UNSIGNED_BYTE, minimizeStackImage->getData());
-        x += minimizeStackImage->getWidth();
-    }
-
-    x += spacing;
-    ClearBox.left = x;
-    ClearBox.right = x + closeStackImage->getWidth();
-    ClearBox.bottom = y + closeStackImage->getHeight();
-    ClearBox.top = y;
-    glRasterPos2i(x, y);
-    glDrawPixels(closeStackImage->getWidth(), closeStackImage->getHeight(), closeStackImage->getFormat(), GL_UNSIGNED_BYTE, closeStackImage->getData());
-
-    glPopMatrix();
-    glPopAttrib();
-}
-#endif
 
 void GLRenderer::CircleAtoms(MIAtom **atoms, int natoms)
 {

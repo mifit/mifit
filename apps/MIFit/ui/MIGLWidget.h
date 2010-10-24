@@ -194,6 +194,8 @@ private:
     void findResidueAndMoleculeForAtom(chemlib::MIAtom *atom, chemlib::Residue* &res, Molecule* &mol);
     void doSetFocusResidue(chemlib::Residue *res);
 
+    void StackExpandTop2Range();
+
     /**
      * Get rid of any pointers or objects pointing to model.
      * Prevents accessing bad pointers leading to a seg fault.
@@ -436,10 +438,6 @@ public:
      */
     bool ShowGnomon;
     bool showUnitCell;
-    /**
-     * if true then show the stack.
-     */
-    bool ShowStack;
     /**
      * if true then show the labels.
      */

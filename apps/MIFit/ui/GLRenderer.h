@@ -19,7 +19,6 @@ class Helix;
 class RibbonSegment;
 class RibbonSpan;
 class SecondaryStructure;
-class TargaImage;
 class QGLWidget;
 class QVector4D;
 namespace mi
@@ -50,10 +49,6 @@ class GLRenderer
     float xyDisplayRange;
     std::auto_ptr<mi::opengl::Text> labelsFont_;
     std::auto_ptr<mi::opengl::Text> stackFont_;
-    TargaImage *popStackImage;
-    TargaImage *minimizeStackImage;
-    TargaImage *unminimizeStackImage;
-    TargaImage *closeStackImage;
 
     RenderStyle style;
     bool hideHydrogens;

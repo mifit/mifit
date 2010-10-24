@@ -10,7 +10,6 @@
 #include "ColorUtil.h"
 #include "CONTACT.h"
 #include "corelib.h"
-#include "CRect.h"
 #include "Helix.h"
 #include "GeomRefiner.h"
 #include "MouseFlags.h"
