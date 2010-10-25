@@ -1,4 +1,5 @@
 import Qt 4.7
+import MIFit 1.0
 
 Item {
     id: stackArea
@@ -54,7 +55,6 @@ Item {
             color: "blue"
             radius:  5
             opacity: 0.5
-
         }
         Image {
             id: stackPop
@@ -66,6 +66,10 @@ Item {
             MouseArea {
                 anchors.fill: parent
                 onClicked: { stack.pop() }
+            }
+            CursorArea {
+                anchors.fill: parent
+                shape: "arrow"
             }
         }
         Image {
@@ -83,6 +87,10 @@ Item {
                     stackArea.state = (stackArea.minimized) ? "minimized" : "shown";
                 }
             }
+            CursorArea {
+                anchors.fill: parent
+                shape: "arrow"
+            }
         }
         Image {
             id: stackClear
@@ -94,6 +102,10 @@ Item {
             MouseArea {
                 anchors.fill: parent
                 onClicked: { stackArea.state = "clear" }
+            }
+            CursorArea {
+                anchors.fill: parent
+                shape: "arrow"
             }
         }
         Text {

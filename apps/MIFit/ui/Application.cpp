@@ -11,6 +11,7 @@
 #include <util/utillib.h>
 #include <core/corelib.h>
 
+#include "CursorArea.h"
 #include "Application.h"
 #include "tools.h"
 #include "DictEditCanvas.h"
@@ -29,6 +30,7 @@
 #include <QProcess>
 #include <QProgressDialog>
 #include <QSettings>
+#include <QtDeclarative>
 
 #ifndef _WIN32
 #include <unistd.h>
@@ -154,6 +156,7 @@ Application::Application(int &argc, char **argv)
     setApplicationName(name);
 
     Q_INIT_RESOURCE(ui);
+    qmlRegisterType<CursorArea>("MIFit", 1, 0, "CursorArea");
 
     FileIo::setAsDefaultIo();
 
