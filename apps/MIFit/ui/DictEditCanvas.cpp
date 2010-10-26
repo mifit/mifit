@@ -315,9 +315,9 @@ void DictEditCanvas::createMenus()
     addPlaneAtomAction = item6->addAction("&Include atom", this, SLOT(OnIncludeAtomInPlane()));
     addPlaneAtomsAction = item6->addAction("I&nclude atoms", this, SLOT(OnIncludeAtomsInPlane()));
     item6->addSeparator();
-    removePlaneAtomAction = item6->addAction("&Remove atom", this, SLOT(OnRemovePlane()));
+    removePlaneAtomAction = item6->addAction("&Remove atom", this, SLOT(OnRemoveAtomFromPlane()));
     removePlaneAtomsAction = item6->addAction("R&emove atoms", this, SLOT(OnRemoveAtomsFromPlane()));
-    removePlaneAction = item6->addAction("R&emove Plane", this, SLOT(OnRemoveAtomFromPlane()));
+    removePlaneAction = item6->addAction("Re&move plane", this, SLOT(OnRemovePlane()));
 
     popupMenu = new QMenu(this);
     connect(popupMenu, SIGNAL(triggered(QAction*)), SLOT(OnPopupMenu(QAction*)));
@@ -1183,15 +1183,13 @@ void DictEditCanvas::OnRemoveAtomFromPlane()
     MIAtom *a = NULL;
     Residue *res = NULL;
     if (pickedPlane == NULL)
-    {
         return;
-    }
+
     // What atom are we removing
     AtomStack->Pop(a, res);
     if (a == NULL)
-    {
         return;
-    }
+
     removeAtomFromPlane(a, true);
 }
 
@@ -1221,13 +1219,11 @@ bool DictEditCanvas::removeAtomFromPlane(MIAtom *a, bool atomNotToBeDeleted)
     int i, j;
     MIAtom **atoms;
     if (a == NULL)
-    {
         return false;
-    }
+
     if (pickedPlane == NULL)
-    {
         return false;
-    }
+
     if (!AtomInPlane(a))
     {
         ReDraw();
@@ -1309,9 +1305,8 @@ void DictEditCanvas::DeletePlane(PLANE *p)
 void DictEditCanvas::OnRemovePlane()
 {
     if (pickedPlane == NULL)
-    {
         return;
-    }
+
     DeletePlane(pickedPlane);
     SetPick((PLANE*) NULL);
     UpdateGeom();
@@ -1956,9 +1951,8 @@ void DictEditCanvas::OnRemoveAtoms()
 void DictEditCanvas::OnRemoveAtom()
 {
     if (AtomStack->size() <= 0)
-    {
         return;
-    }
+
     // delete the top atom on the stack
     MIAtom *atom = AtomStack->Pop();
     Bond *b;
