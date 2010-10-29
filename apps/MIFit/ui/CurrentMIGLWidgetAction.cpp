@@ -84,7 +84,10 @@ void CurrentMIGLWidgetAction::update()
 {
     MIGLWidget *currentMIGLWidget = MIMainWindow::instance()->currentMIGLWidget();
     if (_updateSlot && currentMIGLWidget)
+    {
+        setEnabled(true);
         invokeSlot(currentMIGLWidget, _updateSlot, this);
+    }
     else
         setEnabled(currentMIGLWidget != 0);
 }

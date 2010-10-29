@@ -3581,7 +3581,6 @@ void MIGLWidget::OnViewTopview()
 
 void MIGLWidget::OnUpdateViewTopview(QAction *action)
 {
-    //action->setEnabled(viewpoint->GetBallandStick()!=ViewPoint::CPK);
     action->setChecked(TopView);
 }
 
