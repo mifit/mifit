@@ -1437,9 +1437,6 @@ bool MIGLWidget::OnKeyDown(unsigned int nChar, unsigned int, unsigned int nFlags
     //bool alt = (nFlags & MK_ALT)!=0;
     //bool meta = (nFlags & MK_META)!=0;
 
-    //save mouse position for OnAddWaterAtCursor
-    QPoint p = QCursor::pos();
-
     bool xfit_mouse = Application::instance()->GetXfitMouseMode();
     switch (nChar)
     {
@@ -8837,7 +8834,8 @@ void MIGLWidget::OnAddWaterAtCursor()
 
     float x, y, z;
     float bx, by, bz;
-    viewpoint->Invert(mouse.x, mouse.y, 0, bx, by, bz);
+    QPoint p = mapFromGlobal(QCursor::pos());
+    viewpoint->Invert(p.x(), p.y(), 0, bx, by, bz);
     if (currentmap)
     {
         // search from -slab to + slab in z
@@ -8853,7 +8851,7 @@ void MIGLWidget::OnAddWaterAtCursor()
         }
         for (int is = bslab; is < fslab; is += (int)interval)
         {
-            viewpoint->Invert(mouse.x, mouse.y, is, x, y, z);
+            viewpoint->Invert(p.x(), p.y(), is, x, y, z);
             if ((dens = currentmap->Rho(x, y, z)) > bdens)
             {
                 bx = x;
@@ -8868,11 +8866,7 @@ void MIGLWidget::OnAddWaterAtCursor()
     {
         Logger::message("Warning: Unable to save model - will not be able to Undo");
     }
-    Residue *water = model->AddWater(bx, by, bz);
-    if (!SetupFit(water, water, model))
-        return;
-    MIFitGeomRefiner()->RigidOptimize(CurrentAtoms, fitmol, currentmap);
-    OnFitApply();
+    model->AddWater(bx, by, bz);
     int nlinks = model->getnlinks();
     model->Build();
     if (nlinks > 0)
