@@ -40,7 +40,6 @@ protected:
     float perspective;
     long zangle; //sin of perspective angle * 100;
     long scale;   // multiply by this factor.
-    float rotated;
 
     // clip in model coords.
     int frontclip;
@@ -181,9 +180,6 @@ public:
     void LineThickness(int n);
     int GetLineThickness();
     void SetLineThickness(int w);
-    float getrotated();
-    void clearrotated();
-    void setrotated(float r);
     bool ischanged();
     void clearchanged();
     void setchanged();
@@ -521,21 +517,6 @@ inline int ViewPoint::GetLineThickness()
 inline void ViewPoint::SetLineThickness(int w)
 {
     lineThickness = w;
-}
-
-inline float ViewPoint::getrotated()
-{
-    return (rotated);
-}
-
-inline void ViewPoint::clearrotated()
-{
-    rotated = 0.0F;
-}
-
-inline void ViewPoint::setrotated(float r)
-{
-    rotated = r;
 }
 
 inline bool ViewPoint::ischanged()

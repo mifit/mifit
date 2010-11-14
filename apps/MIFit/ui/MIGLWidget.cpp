@@ -10797,12 +10797,7 @@ void MIGLWidget::handleMouseRelease(QGraphicsSceneMouseEvent *e)
                 }
             }
         }
-        else if (viewpoint->getrotated() > 10.0 && viewpoint->GetBallandStick() != ViewPoint::CPK
-                 && viewpoint->GetBallandStick() != ViewPoint::BALLANDCYLINDER)
-        {
-            ReDraw();
-        }
-        else if (viewpoint->GetBallandStick() > ViewPoint::BALLANDSTICK)
+        else
         {
             ReDraw();
         }

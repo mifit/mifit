@@ -56,7 +56,6 @@ ViewPoint::ViewPoint()
     ymin = xmin = 0;
     xcenter = 100;
     ycenter = 50;
-    rotated = 0;
     topview = 0;
     ballmode = 0;
     Bmin = 0;
@@ -181,7 +180,6 @@ void ViewPoint::SetBounds()
 void ViewPoint::rotate(float rx, float ry, float rz)
 {
     incmatrix(rx, ry, rz, viewmat, viewmat);
-    rotated += float (fabs(rx) + fabs(ry));
     orthomatrix(viewmat, viewmat);
     changed = 1;
 }
