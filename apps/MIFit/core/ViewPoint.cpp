@@ -13,12 +13,6 @@
 
 using namespace chemlib;
 
-const int ViewPoint::COLORPRINT = 0;
-const int ViewPoint::BWPRINT = 1;
-
-const int ViewPoint::LEFT = 0;
-const int ViewPoint::RIGHT = 1;
-
 const int ViewPoint::STICKS = 0;
 const int ViewPoint::BALLANDSTICK = 1;
 const int ViewPoint::CPK = 2;
@@ -42,7 +36,6 @@ ViewPoint::ViewPoint()
             }
         }
     }
-    Yup = 0;
     center[0] = center[1] = center[2] = 0;
     changed = 0;
     zangle = (long)(1000.0*sin(perspective*M_PI/180.0));
@@ -58,11 +51,6 @@ ViewPoint::ViewPoint()
     ycenter = 50;
     topview = 0;
     ballmode = 0;
-    Bmin = 0;
-    Bmax = 800;
-    SetRadii();
-    imageScale = 2;
-    atom_cross = true;
 }
 
 void ViewPoint::UnDo()
@@ -174,7 +162,6 @@ void ViewPoint::SetBounds()
     zubound = center[2] + (int)maxdist;
     zlbound = center[2] - (int)maxdist;
     changed = 1;
-    SetRadii();
 }
 
 void ViewPoint::rotate(float rx, float ry, float rz)
@@ -850,14 +837,6 @@ float ViewPoint::getAmountToDimNonactiveModels()
     return amountToDimNonactiveModels;
 }
 
-void ViewPoint::SetRadii()
-{
-    for (int unsigned i = 0; i < NTYPES; i++)
-    {
-        iradius[i] = (int)(chemlib::MIAtom::MIAtomRadiusForType(i) * (float)scale / 10.0);
-    }
-}
-
 void ViewPoint::SetBallandStick()
 {
     ballandstick = BALLANDSTICK;
@@ -911,7 +890,6 @@ int ViewPoint::GetBallMode()
 void ViewPoint::SetBallMode(int b)
 {
     ballmode = b;
-    SetRadii();
 }
 
 int ViewPoint::GetCylinderSize()
@@ -1145,14 +1123,4 @@ int ViewPoint::getTopView()
 bool ViewPoint::UnDoable()
 {
     return UndoList.size() > 0;
-}
-
-int ViewPoint::GetImageScale()
-{
-    return imageScale;
-}
-
-void ViewPoint::SetImageScale(int s)
-{
-    imageScale = s;
 }

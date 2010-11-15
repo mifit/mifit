@@ -28,62 +28,14 @@ class ViewPoint
 {
 public:
 
-    static const int COLORPRINT;
-    static const int BWPRINT;
-
-    static const int LEFT;
-    static const int RIGHT;
-
-    //definitions for ballandstick
-    static const int STICKS;
-    static const int BALLANDSTICK;
-    static const int CPK;
-    static const int BALLANDCYLINDER;
-
-    bool atom_cross;
-
-    int Yup;
     long xmax, ymax, xmin, ymin; // viewport size; screen coords.
     long sxmax, symax, sxmin, symin; // viewport clipbox with extra edges; screen coords.
     long xcenter, ycenter; // viewport center in screen coords
-    int printstyle;
-    float Bmin, Bmax;
-    int iradius[NTYPES];
 
     ViewPoint();
 
-    bool CenterAtResidue(const chemlib::Residue *res);
     void PutOnLeft(float x, float y, float z);
     void PutVertical(float x, float y, float z);
-
-    void SetRadii();
-
-    void Save(CArchive&);
-    void Load(FILE *fp);
-
-    void setDepthCuedLineWidth(bool on);
-    bool isDepthCuedLineWidth();
-    void setDepthCuedColors(bool on);
-    bool isDepthCuedColors();
-    void setDimNonactiveModels(bool on);
-    bool isDimNonactiveModels();
-    void setAmountToDimNonactiveModels(float percent);
-    float getAmountToDimNonactiveModels();
-    void SetBallandStick();
-    void SetBallandStick(int s);
-    void SetBallandCylinder();
-    void SetSpaceFilling();
-    void SetSticks();
-    void ToggleBallandStick();
-    int GetBallandStick();
-    int GetBallSize();
-    void SetBallSize(int b);
-    int GetBallMode();
-    void SetBallMode(int b);
-    int GetCylinderSize();
-    void SetCylinderSize(int b);
-    int linewidth(int w);
-    int colordepth(int c);
 
     void rotx(float a);
     void roty(float a);
@@ -127,7 +79,6 @@ public:
     long getzangle();
     void setzangle(long s);
     void SetCenter(int x, int y);
-    void Center(chemlib::MIMoleculeBase*);
     int getcenterx();
     int getcentery();
     float getcenter(int i);
@@ -144,16 +95,52 @@ public:
     void clearchanged();
     void setchanged();
     void getdirection(int, int, int&, int&, int&);
-    void setTopView(int on);
-    int getTopView();
 
     void Do();
     void UnDo();
     bool UnDoable();
 
-    int GetImageScale();
-    void SetImageScale(int s);
     void Invert(int sx, int sy, int sz, float &x, float &y, float &z);
+
+
+    void Save(CArchive&);
+    void Load(FILE *fp);
+
+    bool CenterAtResidue(const chemlib::Residue *res);
+    void Center(chemlib::MIMoleculeBase*);
+
+    //definitions for ballandstick
+    static const int STICKS;
+    static const int BALLANDSTICK;
+    static const int CPK;
+    static const int BALLANDCYLINDER;
+
+    void setTopView(int on);
+    int getTopView();
+    void SetRadii();
+    void setDepthCuedLineWidth(bool on);
+    bool isDepthCuedLineWidth();
+    void setDepthCuedColors(bool on);
+    bool isDepthCuedColors();
+    void setDimNonactiveModels(bool on);
+    bool isDimNonactiveModels();
+    void setAmountToDimNonactiveModels(float percent);
+    float getAmountToDimNonactiveModels();
+    void SetBallandStick();
+    void SetBallandStick(int s);
+    void SetBallandCylinder();
+    void SetSpaceFilling();
+    void SetSticks();
+    void ToggleBallandStick();
+    int GetBallandStick();
+    int GetBallSize();
+    void SetBallSize(int b);
+    int GetBallMode();
+    void SetBallMode(int b);
+    int GetCylinderSize();
+    void SetCylinderSize(int b);
+    int linewidth(int w);
+    int colordepth(int c);
 
 private:
     float viewmat[3][3];
@@ -187,7 +174,6 @@ private:
     int ballmode;
     int cylindersize;
     int topview;
-    int imageScale;
     int lineThickness;
 
     void clampScale();

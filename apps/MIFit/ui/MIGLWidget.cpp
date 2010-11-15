@@ -409,7 +409,6 @@ MIGLWidget::MIGLWidget()
     TopView = false;
     doubleclicked = false;
     MouseCaptured = false;
-    viewpoint->Yup = 0;
     ShowLabels = settings.value("View Parameters/ShowLabels", true).toBool();
     ShowContacts = settings.value("View Parameters/ShowContacts", true).toBool();
     AtomStack->setVisible(settings.value("View Parameters/ShowStack", true).toBool());
@@ -851,10 +850,8 @@ void MIGLWidget::draw(QPainter *painter)
     glPushMatrix();
 
     is_drawing = true;
-    int SaveYup = viewpoint->Yup;
     Displaylist *Models = GetDisplaylist();
-    bool FittingView = true;
-    viewpoint->SetImageScale(1);
+//    bool FittingView = true;
 
 
     if (NewFile())
@@ -873,24 +870,24 @@ void MIGLWidget::draw(QPainter *painter)
                     std::string resshow;
                     std::string at("*");
                     //model->Do();
-                    if (!FittingView)
-                    {
-                        model->Select(1, 0, 0, 1, resshow, at, NULL, NULL, 0, 0, 0, 1, 0);
-                        int xmin, xmax, ymin, ymax, zmin, zmax;
-                        viewpoint->Center(Models->GetCurrentModel());
-                        if (Models->CurrentItem()->VisibleBounds(viewpoint, xmin, xmax, ymin, ymax, zmin, zmax))
-                        {
-                            float fzmin = (float)zmin/100.0F;
-                            float fzmax = (float)zmax/100.0F;
-                            fzmax = (fzmax - fzmin)/2.0F + 2.0F;
-                            viewpoint->slab(-fzmax, fzmax);
-                            long sw = 900L*(long)(viewpoint->xmax - viewpoint->xmin)/((long)xmax- (long)xmin+200);
-                            long sh = 900L*(long)(viewpoint->ymax - viewpoint->ymin)/((long)ymax- (long)ymin+200);
-                            viewpoint->setscale(std::min(sw, sh));
-                        }
-                    }
-                    else
-                    {
+//                    if (!FittingView)
+//                    {
+//                        model->Select(1, 0, 0, 1, resshow, at, NULL, NULL, 0, 0, 0, 1, 0);
+//                        int xmin, xmax, ymin, ymax, zmin, zmax;
+//                        viewpoint->Center(Models->GetCurrentModel());
+//                        if (Models->CurrentItem()->VisibleBounds(viewpoint, xmin, xmax, ymin, ymax, zmin, zmax))
+//                        {
+//                            float fzmin = (float)zmin/100.0F;
+//                            float fzmax = (float)zmax/100.0F;
+//                            fzmax = (fzmax - fzmin)/2.0F + 2.0F;
+//                            viewpoint->slab(-fzmax, fzmax);
+//                            long sw = 900L*(long)(viewpoint->xmax - viewpoint->xmin)/((long)xmax- (long)xmin+200);
+//                            long sh = 900L*(long)(viewpoint->ymax - viewpoint->ymin)/((long)ymax- (long)ymin+200);
+//                            viewpoint->setscale(std::min(sw, sh));
+//                        }
+//                    }
+//                    else
+//                    {
                         model->Select(1, 1, 1, 1, resshow, at, NULL, NULL, 0, 0, 0, 0, 1);
                         int xmin, xmax, ymin, ymax, zmin, zmax;
                         viewpoint->Center(Models->GetCurrentModel());
@@ -898,7 +895,7 @@ void MIGLWidget::draw(QPainter *painter)
                                                              zmin, zmax);
                         viewpoint->slab(-3.0F, 3.0F);
                         viewpoint->setscale(300L);
-                    }
+//                    }
                 }
             }
             PaletteChanged = true;
@@ -1011,7 +1008,6 @@ void MIGLWidget::draw(QPainter *painter)
 
     // cleanup
     Update = NewSize = 0;
-    viewpoint->Yup = SaveYup;
 
 #if SHOW_RENDER_TIME
     QString framesPerSecond = QString("render in %1 ms")
@@ -3683,15 +3679,11 @@ void MIGLWidget::OnRenderBallsize()
     dlg.setWindowTitle("Ball/Cylinder Size");
     dlg.addDoubleField("Ball diameter (% of CPK):", viewpoint->GetBallSize());
     dlg.addDoubleField("Cylinder diameter (% of ball d):", viewpoint->GetCylinderSize());
-    dlg.addDoubleField("Min:", viewpoint->Bmin/100.0f);
-    dlg.addDoubleField("Max:", viewpoint->Bmax/100.0f);
 
     if (dlg.exec() == QDialog::Accepted)
     {
         viewpoint->SetBallSize(dlg.value(0).toDouble());
         viewpoint->SetCylinderSize(dlg.value(1).toDouble());
-        viewpoint->Bmin = dlg.value(2).toDouble()*100.0f;
-        viewpoint->Bmax = dlg.value(3).toDouble()*100.0f;
         PaletteChanged = true;
         doRefresh();
     }
