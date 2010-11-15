@@ -1987,33 +1987,26 @@ long Molecule::SolventSurface(ViewPoint*, float dotsper)
 
 long Molecule::SurfaceResidues(float dotsper, ViewPoint *vp, bool ignore_hidden)
 {
-    //long x, y, z;
-    int i;
     extern int SurfResult;
     SurfResult = 1;
     srfdotsper = dotsper;
-    //ndots = 0;
     for (ResidueListIterator res = residuesBegin(); res != residuesEnd() && SurfResult != 0; ++res)
     {
         if (res->flags()&128)
         {
-            for (i = 0; i < res->atomCount(); i++)
+            for (int i = 0; i < res->atomCount(); ++i)
             {
                 if (!IsOnScreen(res->atom(i), vp))
-                {
                     continue;
-                }
                 Surface(res->atom(i), ignore_hidden, false);
                 if (SurfResult == 0)
-                {
                     break;
-                }
             }
             res->setFlags(res->flags()&(!128));
         }
     }
     surfaceChanged(this);
-    return (dots.size());
+    return dots.size();
 }
 
 long Molecule::SurfaceResidue(Residue *res, float dotsper, ViewPoint *vp, bool ignore_hidden)

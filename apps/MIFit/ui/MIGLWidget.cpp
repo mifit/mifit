@@ -188,40 +188,37 @@ private:
     ViewPoint *_viewpoint;
 };
 
-class ViewPointUI
-    : public ViewPoint
+namespace
 {
-public:
-    ViewPointUI()
+    void readViewPointSettings(ViewPoint *viewpoint)
     {
         QSettings settings;
-        perspective = settings.value("View Parameters/perspective", 0).toInt() / 100.0f;
-        depthcue_color = settings.value("View Parameters/depthcue_colors", true).toBool();
-        depthcue_width = settings.value("View Parameters/depthcue_width", true).toBool();
-        dimNonactiveModels = settings.value("View Parameters/dimNonactiveModels", true).toBool();
-        amountToDimNonactiveModels = settings.value("View Parameters/amountToDimNonactiveModels", 50).toInt() / 100.0f;
-        ballandstick = settings.value("View Parameters/ballandstick", 0).toInt();
-        lineThickness = settings.value("View Parameters/lineThickness", 1).toInt();
-        ballsize = settings.value("View Parameters/ballsize", 10).toInt();
-        cylindersize = settings.value("View Parameters/cylindersize", 33).toInt();
+        viewpoint->setperspective(settings.value("View Parameters/perspective", 0).toInt() / 100.0f);
+        viewpoint->setDepthCuedLineWidth(settings.value("View Parameters/depthcue_width", true).toBool());
+        viewpoint->setDepthCuedColors(settings.value("View Parameters/depthcue_colors", true).toBool());
+        viewpoint->setDimNonactiveModels(settings.value("View Parameters/dimNonactiveModels", true).toBool());
+        viewpoint->setAmountToDimNonactiveModels(settings.value("View Parameters/amountToDimNonactiveModels", 50).toInt() / 100.0f);
+        viewpoint->SetBallandStick(settings.value("View Parameters/ballandstick", 0).toInt());
+        viewpoint->SetLineThickness(settings.value("View Parameters/lineThickness", 1).toInt());
+        viewpoint->SetBallSize(settings.value("View Parameters/ballsize", 10).toInt());
+        viewpoint->SetCylinderSize(settings.value("View Parameters/cylindersize", 33).toInt());
     }
 
-    virtual ~ViewPointUI()
+    void writeViewPointSettings(ViewPoint *viewpoint)
     {
         QSettings settings;
-        settings.setValue("View Parameters/perspective", static_cast<int>(perspective*100.0f));
-        settings.setValue("View Parameters/depthcue_colors", depthcue_color);
-        settings.setValue("View Parameters/depthcue_width", depthcue_width);
-        settings.setValue("View Parameters/dimNonactiveModels", dimNonactiveModels);
-        settings.setValue("View Parameters/amountToDimNonactiveModels", static_cast<int>(amountToDimNonactiveModels*100.0f));
-        settings.setValue("View Parameters/ballandstick", ballandstick);
-        settings.setValue("View Parameters/ballsize", ballsize);
-        settings.setValue("View Parameters/cylindersize", cylindersize);
-        settings.setValue("View Parameters/lineThickness", lineThickness);
+        settings.setValue("View Parameters/perspective", static_cast<int>(viewpoint->getperspective()*100.0f));
+        settings.setValue("View Parameters/depthcue_width", viewpoint->isDepthCuedLineWidth());
+        settings.setValue("View Parameters/depthcue_colors", viewpoint->isDepthCuedColors());
+        settings.setValue("View Parameters/dimNonactiveModels", viewpoint->isDimNonactiveModels());
+        settings.setValue("View Parameters/amountToDimNonactiveModels", static_cast<int>(viewpoint->getAmountToDimNonactiveModels()*100.0f));
+        settings.setValue("View Parameters/ballandstick", viewpoint->GetBallandStick());
+        settings.setValue("View Parameters/ballsize", viewpoint->GetBallSize());
+        settings.setValue("View Parameters/cylindersize", viewpoint->GetCylinderSize());
+        settings.setValue("View Parameters/lineThickness", viewpoint->GetLineThickness());
     }
 
-};
-
+} // anonymous namespace
 
 
 static void SplitPath(const std::string &origPath,
@@ -347,7 +344,8 @@ MIGLWidget::MIGLWidget()
     CurrentAnnotation = NULL;
     Models = new Displaylist;
 
-    viewpoint = new ViewPointUI();
+    viewpoint = new ViewPoint;
+    readViewPointSettings(viewpoint);
 
     frustum = new Frustum();
     camera = new Camera();
@@ -563,6 +561,7 @@ MIGLWidget::~MIGLWidget()
     delete scene;
     delete mousePicker;
 
+    writeViewPointSettings(viewpoint);
     delete viewpoint;
     viewpoint = NULL;
     delete AtomStack;
@@ -3864,7 +3863,7 @@ void MIGLWidget::OnGeomNeighbours()
         return;
 
     QString message = QString("Found %1 contacts <= %2")
-            .arg(GetDisplaylist()->FindContacts(a, res, cutoff, viewpoint))
+            .arg(GetDisplaylist()->FindContacts(a, res, cutoff))
             .arg(cutoff);
     setMessage(message);
     PaletteChanged = true;

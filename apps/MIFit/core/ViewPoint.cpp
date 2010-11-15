@@ -793,3 +793,366 @@ bool IsOnScreen(const APOINT &a, ViewPoint *vp)
     return vp->transform(a.x, a.y, a.z, sx, sy, sz) != 0;
 }
 
+
+int ViewPoint::colordepth(int c)
+{
+    if (c < 0)
+    {
+        return 0;
+    }
+    else if (depthcue_color)
+    {
+        return (c);
+    }
+    else
+    {
+        return (0);
+    }
+}
+
+void ViewPoint::setDepthCuedLineWidth(bool on)
+{
+    depthcue_width = on;
+}
+
+bool ViewPoint::isDepthCuedLineWidth()
+{
+    return depthcue_width;
+}
+
+void ViewPoint::setDepthCuedColors(bool on)
+{
+    depthcue_color = on;
+}
+
+bool ViewPoint::isDepthCuedColors()
+{
+    return depthcue_color;
+}
+
+void ViewPoint::setDimNonactiveModels(bool on)
+{
+    dimNonactiveModels = on;
+}
+
+bool ViewPoint::isDimNonactiveModels()
+{
+    return dimNonactiveModels;
+}
+
+void ViewPoint::setAmountToDimNonactiveModels(float percent)
+{
+    amountToDimNonactiveModels = percent;
+}
+
+float ViewPoint::getAmountToDimNonactiveModels()
+{
+    return amountToDimNonactiveModels;
+}
+
+void ViewPoint::SetRadii()
+{
+    for (int unsigned i = 0; i < NTYPES; i++)
+    {
+        iradius[i] = (int)(chemlib::MIAtom::MIAtomRadiusForType(i) * (float)scale / 10.0);
+    }
+}
+
+void ViewPoint::SetBallandStick()
+{
+    ballandstick = BALLANDSTICK;
+}
+
+void ViewPoint::SetBallandStick(int s)
+{
+    ballandstick = s;
+}
+
+void ViewPoint::SetBallandCylinder()
+{
+    ballandstick = BALLANDCYLINDER;
+}
+
+void ViewPoint::SetSpaceFilling()
+{
+    ballandstick = CPK;
+}
+
+void ViewPoint::SetSticks()
+{
+    ballandstick = STICKS;
+}
+
+void ViewPoint::ToggleBallandStick()
+{
+    ballandstick = ballandstick ^ 1;
+}
+
+int ViewPoint::GetBallandStick()
+{
+    return ballandstick;
+}
+
+int ViewPoint::GetBallSize()
+{
+    return ballsize;
+}
+
+void ViewPoint::SetBallSize(int b)
+{
+    ballsize = b;
+}
+
+int ViewPoint::GetBallMode()
+{
+    return ballmode;
+}
+
+void ViewPoint::SetBallMode(int b)
+{
+    ballmode = b;
+    SetRadii();
+}
+
+int ViewPoint::GetCylinderSize()
+{
+    return cylindersize;
+}
+
+void ViewPoint::SetCylinderSize(int b)
+{
+    cylindersize = b;
+}
+
+int ViewPoint::linewidth(int w)
+{
+    if (depthcue_width)
+    {
+        return (w);
+    }
+    else
+    {
+        return (lineThickness);
+    }
+}
+
+void ViewPoint::rotx(float a)
+{
+    rotate(a, 0.0F, 0.0F);
+}
+
+void ViewPoint::roty(float a)
+{
+    rotate(0.0F, a, 0.0F);
+}
+
+void ViewPoint::rotz(float a)
+{
+    rotate(0.0F, 0.0F, a);
+}
+
+float*ViewPoint::getmatrix()
+{
+    return &(viewmat[0][0]);
+}
+
+void ViewPoint::setscale(long s)
+{
+    scale = s;
+    if (scale < 11)
+    {
+        scale = 11;
+    }
+    SetBounds();
+}
+
+long ViewPoint::getscale()
+{
+    return (scale);
+}
+
+float ViewPoint::getbackclip()
+{
+    return ((float)backclip/(float)CRS);
+}
+
+float ViewPoint::getfrontclip()
+{
+    return ((float)frontclip/(float)CRS);
+}
+
+int ViewPoint::getbackclipi()
+{
+    return (ROUND(backclip*scale/(float)CRS/10.0F));
+}
+
+int ViewPoint::getfrontclipi()
+{
+    return (ROUND(frontclip*scale/(float)CRS/10.0F));
+}
+
+int ViewPoint::getsbackclip()
+{
+    return (int)(backclip*scale/(float)CRS/10.0F)+ycenter;
+}
+
+int ViewPoint::getsfrontclip()
+{
+    return (int)(frontclip*scale/(float)CRS/10.0F)+ycenter;
+}
+
+void ViewPoint::setfrontclip(float f)
+{
+    if (f > 0.0)
+    {
+        frontclip = (int)(f*CRS);
+    }
+    else
+    {
+        frontclip = 0;
+    }
+    changed = 1;
+}
+
+void ViewPoint::setbackclip(float b)
+{
+    if (b < 0.0)
+    {
+        backclip = (int)(b*CRS);
+    }
+    else
+    {
+        backclip = 0;
+    }
+    changed = 1;
+}
+
+float ViewPoint::getperspective()
+{
+    return perspective;
+}
+
+long ViewPoint::getzangle()
+{
+    return zangle;
+}
+
+void ViewPoint::setzangle(long s)
+{
+    zangle = s;
+}
+
+void ViewPoint::SetCenter(int x, int y)
+{
+    center[0] = x;
+    center[1] = y;
+    changed = 1;
+}
+
+int ViewPoint::getcenterx()
+{
+    return xcenter;
+}
+
+int ViewPoint::getcentery()
+{
+    return ycenter;
+}
+
+float ViewPoint::getcenter(int i)
+{
+    if (i >= 0 && i < 3)
+    {
+        return ((float)center[i]/100.0F);
+    }
+    else
+    {
+        return (0.0F);
+    }
+}
+
+int ViewPoint::getcenteri(int i)
+{
+    if (i >= 0 && 1 < 3)
+    {
+        return (center[i]);
+    }
+    else
+    {
+        return (0);
+    }
+}
+
+void ViewPoint::orthomat()
+{
+    orthomatrix(viewmat, viewmat);
+}
+
+float ViewPoint::getwidth()
+{
+    return (float)((float)(xmax-xmin)*(float)CRS/(float)scale/10.0F);
+}
+
+float ViewPoint::getheight()
+{
+    return (float)((float)(ymax-ymin)*(float)CRS/(float)scale/10.0F);
+}
+
+void ViewPoint::LineThickness(int n)
+{
+    if (n < 0)
+    {
+        n = 0;
+    }
+    lineThickness = n;
+}
+
+int ViewPoint::GetLineThickness()
+{
+    return lineThickness;
+}
+
+void ViewPoint::SetLineThickness(int w)
+{
+    lineThickness = w;
+}
+
+bool ViewPoint::ischanged()
+{
+    return (changed);
+}
+
+void ViewPoint::clearchanged()
+{
+    changed = false;
+}
+
+void ViewPoint::setchanged()
+{
+    changed = true;
+}
+
+void ViewPoint::setTopView(int on)
+{
+    topview = on;
+}
+
+int ViewPoint::getTopView()
+{
+    return topview;
+}
+
+bool ViewPoint::UnDoable()
+{
+    return UndoList.size() > 0;
+}
+
+int ViewPoint::GetImageScale()
+{
+    return imageScale;
+}
+
+void ViewPoint::SetImageScale(int s)
+{
+    imageScale = s;
+}

@@ -401,45 +401,23 @@ Molecule*Displaylist::SetCurrent(Molecule *mol)
     return current;
 }
 
-int Displaylist::FindContacts(MIAtom *a, Residue *r, float cutoff, ViewPoint *vp)
+int Displaylist::FindContacts(MIAtom *a, Residue *r, float cutoff)
 {
-    int n = 0, i;
-    long lcut = (long)(cutoff*CRS);
-    float d;
-    MIAtom *a2;
+    int n = 0;
     std::list<Molecule*>::iterator node = Models.begin();
     while (node != Models.end())
     {
+        float d;
         ResidueListIterator res = (*node)->residuesBegin();
         for (; res != (*node)->residuesEnd(); ++res)
-        {
             if (r != res)
-            {
-                for (i = 0; i < res->atomCount(); i++)
+                for (int i = 0; i < res->atomCount(); ++i)
                 {
-                    a2 = res->atom(i);
-                    if (IsOnScreen(a2, vp))
-                    {
-                        if (abs((int)(a->x() - a2->x())) < lcut)
-                        {
-                            if (abs((int)(a->z() - a2->z())) < lcut)
-                            {
-                                if (abs((int)(a->y() - a2->y())) < lcut)
-                                {
-                                    if ((d = (float)AtomDist(*a, *a2)) <= cutoff)
-                                    {
-                                        if (AddContact(a, a2, d))
-                                        {
-                                            n++;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    MIAtom *a2 = res->atom(i);
+                    if ((d = (float)AtomDist(*a, *a2)) <= cutoff)
+                        if (AddContact(a, a2, d))
+                            n++;
                 }
-            }
-        }
         node++;
     }
     return n;

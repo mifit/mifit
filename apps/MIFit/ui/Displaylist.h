@@ -220,7 +220,7 @@ public:
      * Find the contacts to an atom in the context of a residue list.
      * Contacts are lines between adjacent atoms with a distance label.
      */
-    int FindContacts(chemlib::MIAtom*, chemlib::Residue *res, float, ViewPoint *vp);
+    int FindContacts(chemlib::MIAtom*, chemlib::Residue *res, float cutoff);
 
     /**
      * Add a contact between two atoms.
