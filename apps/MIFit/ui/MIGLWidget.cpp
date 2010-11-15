@@ -8808,7 +8808,7 @@ void MIGLWidget::OnViewSave()
 void MIGLWidget::OnViewLoad()
 {
     const std::string &pathname = MIFileSelector("Load Viewpoint (.vp) File", "", "", "vp",
-                                                 "Vp files (*.vp)|*.vp|All files (*.*)|*.*", MI_SAVE_MODE);
+                                                 "Vp files (*.vp)|*.vp|All files (*.*)|*.*", MI_OPEN_MODE);
     if (pathname.size())
     {
         FILE *fp = fopen(pathname.c_str(), "r");
