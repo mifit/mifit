@@ -2764,6 +2764,12 @@ void ModelsTree::refreshChains(Molecule *model)
         }
     }
     addChains(model);
+    if (view)
+    {
+        Residue* focusRes = const_cast<Residue*>(view->getFocusResidue());
+        if (focusRes)
+            selectionChanged(model, focusRes, atom_default(focusRes));
+    }
 }
 
 void ModelsTree::addChains(Molecule *model)
@@ -3119,8 +3125,7 @@ void ModelsTree::stylizeChain(Residue *residue)
     std::string name = chainstring(residue).c_str();
     std::string text = truncateRight(name, 24);
     item->setText(0, text.c_str());
-    item->setIcon(0, _imageList[ image]);
-    item->setIcon(0, _imageList[ image ]);
+    item->setIcon(0, _imageList[image]);
 }
 
 void ModelsTree::addMap(EMap *map)
