@@ -1853,7 +1853,6 @@ void MIMainWindow::createMenus()
     view_menu->addSeparator();
     new CurrentMIGLWidgetAction("&Center model on screen", "Center molecule on screen", view_menu, SLOT(OnGotoFittoscreen()));
     new CurrentMIGLWidgetAction("&Center All Models On Screen", "Center all the molecules on the screen", view_menu, SLOT(OnGotoFitalltoscreen()));
-    new CurrentMIGLWidgetAction("Center Visible Density", "Center the density visible on the screen", view_menu, SLOT(OnMapCenterVisibleDensity()), SLOT(OnUpdateMapCenterVisibleDensity(QAction*)));
 
     new CurrentMIGLWidgetAction("&Go to x,y,z...", "Center view at a coordinate in Angstroms", view_menu, SLOT(OnGotoGotoxyz()));
     view_menu->addSeparator();

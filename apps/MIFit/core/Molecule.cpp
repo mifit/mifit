@@ -307,108 +307,57 @@ Molecule::~Molecule()
     }
 }
 
-bool Molecule::VisibleBounds(ViewPoint *viewpoint, int &axmin, int &axmax,
-                             int &aymin, int &aymax, int &azmin, int &azmax)
+bool Molecule::VisibleBounds(ViewPoint *viewpoint, float &axmin, float &axmax,
+                             float &aymin, float &aymax, float &azmin, float &azmax)
 {
-    MIAtom *a;
-    axmin = INT_MAX;
-    axmax = INT_MIN;
-    aymin = INT_MAX;
-    aymax = INT_MIN;
-    azmin = INT_MAX;
-    azmax = INT_MIN;
-    //int scale;
-    unsigned int i;
-    int x, y, z;
+    axmin = std::numeric_limits<float>::max();
+    aymin = axmin;
+    azmin = axmin;
+    axmax = -std::numeric_limits<float>::max();
+    aymax = axmax;
+    azmax = axmax;
+
+    bool result = false;
 
     ResidueListIterator res = residuesBegin();
     for (; res != residuesEnd(); ++res)
     {
-        for (i = 0; i < (unsigned int) res->atomCount(); i++)
+        for (int i = 0; i < res->atomCount(); i++)
         {
-            a = res->atom(i);
+            MIAtom *a = res->atom(i);
             if (a->color() >= 0)
             {
                 // changed so that it returns the world coordinates if visible
                 // instead of the screen coordinates
-                x = ROUND(viewpoint->x(a->x(), a->y(), a->z())*CRS);
-                y = ROUND(viewpoint->y(a->x(), a->y(), a->z())*CRS);
-                z = ROUND(-viewpoint->z(a->x(), a->y(), a->z())*CRS);
-                if (x < axmin)
-                {
-                    axmin = x;
-                }
-                if (y < aymin)
-                {
-                    aymin = y;
-                }
-                if (z < azmin)
-                {
-                    azmin = z;
-                }
-                if (x > axmax)
-                {
-                    axmax = x;
-                }
-                if (y > aymax)
-                {
-                    aymax = y;
-                }
-                if (z > azmax)
-                {
-                    azmax = z;
-                }
+                float x = viewpoint->x(a->x(), a->y(), a->z());
+                float y = viewpoint->y(a->x(), a->y(), a->z());
+                float z = -viewpoint->z(a->x(), a->y(), a->z());
+                axmin = std::min(axmin, x);
+                aymin = std::min(aymin, y);
+                azmin = std::min(azmin, z);
+                axmax = std::max(axmax, x);
+                aymax = std::max(aymax, y);
+                azmax = std::max(azmax, z);
             }
+            result = true;
         }
     }
-    for (i = 0; i < ribbonatoms.size(); i++)
+    for (size_t i = 0; i < ribbonatoms.size(); i++)
     {
-        a = ribbonatoms[i];
-        x = ROUND(viewpoint->x(a->x(), a->y(), a->z())*CRS);
-        y = ROUND(viewpoint->y(a->x(), a->y(), a->z())*CRS);
-        z = ROUND(-viewpoint->z(a->x(), a->y(), a->z())*CRS);
-        if (x < axmin)
-        {
-            axmin = x;
-        }
-        if (y < aymin)
-        {
-            aymin = y;
-        }
-        if (z < azmin)
-        {
-            azmin = z;
-        }
-        if (x > axmax)
-        {
-            axmax = x;
-        }
-        if (y > aymax)
-        {
-            aymax = y;
-        }
-        if (z > azmax)
-        {
-            azmax = z;
-        }
+        MIAtom *a = ribbonatoms[i];
+        float x = viewpoint->x(a->x(), a->y(), a->z());
+        float y = viewpoint->y(a->x(), a->y(), a->z());
+        float z = -viewpoint->z(a->x(), a->y(), a->z());
+        axmin = std::min(axmin, x);
+        aymin = std::min(aymin, y);
+        azmin = std::min(azmin, z);
+        axmax = std::max(axmax, x);
+        aymax = std::max(aymax, y);
+        azmax = std::max(azmax, z);
+        result = true;
     }
 
-    if (axmin == INT_MAX || axmax == INT_MIN
-        || aymin == INT_MAX || aymax == INT_MIN
-        || azmin == INT_MAX || azmax == INT_MIN)
-    {
-        return false;
-    }
-
-
-    // save for later
-    xmin = axmin;
-    xmax = axmax;
-    ymin = aymin;
-    ymax = aymax;
-    zmin = azmin;
-    zmax = azmax;
-    return true;
+    return result;
 }
 
 void Molecule::FreeDots()
@@ -1129,7 +1078,7 @@ void Molecule::GenSymmAtoms(ViewPoint *viewpoint)
     symm_center[1] = viewpoint->getcenter(1);
     symm_center[2] = viewpoint->getcenter(2);
     ClearSymmList();
-    symm_radius = (float)viewpoint->xmax/((float)viewpoint->getscale()/10.0F)*0.7F;
+    symm_radius = (float)viewpoint->width()/((float)viewpoint->getscale()/10.0F)*0.7F;
     SymmResidues = SymmResidue(residuesBegin(), mapheader, symm_center, symm_radius);
     if (SymmResidues != NULL)
     {
@@ -1985,7 +1934,7 @@ long Molecule::SolventSurface(ViewPoint*, float dotsper)
     return (dots.size());
 }
 
-long Molecule::SurfaceResidues(float dotsper, ViewPoint *vp, bool ignore_hidden)
+long Molecule::SurfaceResidues(float dotsper, bool ignore_hidden)
 {
     extern int SurfResult;
     SurfResult = 1;
@@ -1996,8 +1945,6 @@ long Molecule::SurfaceResidues(float dotsper, ViewPoint *vp, bool ignore_hidden)
         {
             for (int i = 0; i < res->atomCount(); ++i)
             {
-                if (!IsOnScreen(res->atom(i), vp))
-                    continue;
                 Surface(res->atom(i), ignore_hidden, false);
                 if (SurfResult == 0)
                     break;
@@ -2009,7 +1956,7 @@ long Molecule::SurfaceResidues(float dotsper, ViewPoint *vp, bool ignore_hidden)
     return dots.size();
 }
 
-long Molecule::SurfaceResidue(Residue *res, float dotsper, ViewPoint *vp, bool ignore_hidden)
+long Molecule::SurfaceResidue(Residue *res, float dotsper, bool ignore_hidden)
 {
     int i;
     long nadots = 0;
@@ -2030,10 +1977,6 @@ long Molecule::SurfaceResidue(Residue *res, float dotsper, ViewPoint *vp, bool i
         {
             atom = res->atom(j);
             r1 = atom->getRadius();
-            if (!IsOnScreen(atom, vp))
-            {
-                continue;
-            }
             nb = 0;
             for (i = 0; i < res->atomCount(); i++)
             {

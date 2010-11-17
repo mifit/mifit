@@ -431,10 +431,6 @@ public:
      */
     int Update; // picture needs updating
     /**
-     * flag to indicate the size is being changed.
-     */
-    int NewSize;
-    /**
      * if true then show the gnomon.
      */
     bool ShowGnomon;
@@ -859,8 +855,6 @@ public slots:
     void OnFullScreen();
     void OnFindLigandDensity();
     void OnUpdateFindLigandDensity(QAction *action);
-    void OnUpdateMapCenterVisibleDensity(QAction *action);
-    void OnMapCenterVisibleDensity();
     void OnUpdateLabelEveryNth(QAction *action);
     void OnLabelEveryNth();
     void OnClearGeomAnnotations();

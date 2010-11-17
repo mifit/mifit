@@ -42,13 +42,10 @@ ViewPoint::ViewPoint()
     scale = 200;
     frontclip = 500;
     backclip = -500;
-    xubound = yubound = zubound = 20000;
-    ylbound = xlbound = zlbound = -20000;
-    ymax = 100;
-    xmax = 200;
-    ymin = xmin = 0;
-    xcenter = 100;
-    ycenter = 50;
+    width_ = 200;
+    xcenter = width_/2;
+    height_ = 100;
+    ycenter = height_/2;
     topview = 0;
     ballmode = 0;
 }
@@ -70,7 +67,8 @@ void ViewPoint::UnDo()
         backclip = UndoList.back().backclip;
         //undoable = false;
         UndoList.pop_back();
-        SetBounds();
+        clampScale();
+        changed = 1;
     }
 }
 
@@ -121,21 +119,13 @@ void ViewPoint::copymatrix(float mat[3][3])
     mat[2][2] = viewmat[2][2];
 }
 
-void ViewPoint::SetWindow(int x1, int y1, int x2, int y2)
+void ViewPoint::setSize(int width, int height)
 {
-    // set the window boundaries in pixel coordinates
-    xmin = (x1 < x2) ? (x1) : (x2);
-    xmax = (x1 >= x2) ? (x1) : (x2);
-    ymin = (y1 < y2) ? (y1) : (y2);
-    ymax = (y1 >= y2) ? (y1) : (y2);
-    long add = 5*100*scale/10;
-    sxmin = xmin - add;
-    symin = ymin - add;
-    sxmax = xmax + add;
-    symax = ymax + add;
-    xcenter = (xmax + xmin)/2;
-    ycenter = (ymax + ymin)/2;
-    SetBounds();
+    width_ = width;
+    height_ = height;
+    xcenter = width_/2;
+    ycenter = height_/2;
+    changed = 1;
 }
 
 void ViewPoint::clampScale()
@@ -145,23 +135,6 @@ void ViewPoint::clampScale()
         scale = 1;
         changed = 1;
     }
-}
-
-void ViewPoint::SetBounds()
-{
-    double maxdist, x, y, z;
-    clampScale();
-    x = xmax*1000.0/(double)scale;
-    y = ymax*1000.0/(double)scale;
-    z = (double)(frontclip-backclip);
-    maxdist = sqrt(x*x+y*y+z*z)/2.0 + 500.0; // add a fudge factor greater than one link
-    xubound = center[0] + (int)maxdist;
-    xlbound = center[0] - (int)maxdist;
-    yubound = center[1] + (int)maxdist;
-    ylbound = center[1] - (int)maxdist;
-    zubound = center[2] + (int)maxdist;
-    zlbound = center[2] - (int)maxdist;
-    changed = 1;
 }
 
 void ViewPoint::rotate(float rx, float ry, float rz)
@@ -176,7 +149,6 @@ void ViewPoint::translate(int x, int y, int z)
     center[0] += x;
     center[1] += y;
     center[2] += z;
-    SetBounds();
 }
 
 void ViewPoint::moveto(int x, int y, int z)
@@ -184,7 +156,6 @@ void ViewPoint::moveto(int x, int y, int z)
     center[0] = x;
     center[1] = y;
     center[2] = z;
-    SetBounds();
 }
 
 void ViewPoint::moveto(float x, float y, float z)
@@ -192,25 +163,6 @@ void ViewPoint::moveto(float x, float y, float z)
     center[0] = ROUND(x*CRS);
     center[1] = ROUND(y*CRS);
     center[2] = ROUND(z*CRS);
-    SetBounds();
-}
-
-void ViewPoint::transx(float d)
-{
-    center[0] += (long)(d*100.0F);
-    changed = 1;
-}
-
-void ViewPoint::transy(float d)
-{
-    center[1] += (long)(d*100.0F);
-    changed = 1;
-}
-
-void ViewPoint::transz(float d)
-{
-    center[2] += (long)(d*100.0F);
-    changed = 1;
 }
 
 void ViewPoint::setperspective(float p)
@@ -239,39 +191,21 @@ float ViewPoint::z(float x, float y, float z)
     return (-(viewmat[2][0]*x+viewmat[2][1]*y+viewmat[2][2]*z));
 }
 
-int ViewPoint::transform(float ix, float iy, float iz, int &xt, int &yt, int &zt)
+void ViewPoint::transform(float ix, float iy, float iz, int &xt, int &yt, int &zt)
 {
-    // returns >1 if on screen  else 0
     ix *= (float)CRS;
     iy *= (float)CRS;
     iz *= (float)CRS;
 
     static float rx, ry, rz, x, y, z, zp, t;
     static const float cscale = 100.0F;
-    bool clip = false;
-    // check to see if within bounding box -
-    if (ix > xubound || ix < xlbound)
-    {
-        clip = true;
-    }
-    if (iy > yubound || iy < ylbound)
-    {
-        clip = true;
-    }
-    if (iz > zubound || iz < zlbound)
-    {
-        clip = true;
-    }
 
     x = ix - center[0];
     y = iy - center[1];
     z = iz - center[2];
 
     rz = -(viewmat[2][0]*x+viewmat[2][1]*y+viewmat[2][2]*z);
-    if ( (rz) > frontclip || (rz) < backclip)
-    {
-        clip = true;
-    }
+
     // z is reversed to keep system righthanded
     // if x is across from left to right and y is down
     // then z points into the screen
@@ -279,30 +213,13 @@ int ViewPoint::transform(float ix, float iy, float iz, int &xt, int &yt, int &zt
 
     rx = (viewmat[0][0]*x+viewmat[0][1]*y+viewmat[0][2]*z);
     t = rx*zp/cscale/cscale/10.0F;
-    if (rx > 0)
-    {
-        if (rx < -t)
-        {
-            clip = true;
-        }
-    }
-    else
-    {
-        if (-rx < t)
-        {
-            clip = true;
-        }
-    }
+
     rx += t;
     rx = rx * scale/10.0F;
     rx = (rx > 0) ? (rx+50.0F) : (rx-50.0F);
     rx /= cscale;
     xt = (int)rx;
     xt += xcenter;
-    if (xt > sxmax || xt < sxmin)
-    {
-        clip = true;
-    }
 
     ry = (viewmat[1][0]*x+viewmat[1][1]*y+viewmat[1][2]*z);
     t = ry*zp/cscale/cscale/10L;
@@ -312,38 +229,11 @@ int ViewPoint::transform(float ix, float iy, float iz, int &xt, int &yt, int &zt
     ry /= cscale;
     yt = (int)ry;
     yt += ycenter;
-    if (yt > symax || yt < symin)
-    {
-        clip = true;
-    }
 
-    int d = 0;
-    if (!clip)
-    {
-        // depth cueing in 4 bins from front to back - keep this before scale
-        d = (int)((4L*((long)frontclip - rz))/(long)((frontclip - backclip)+1L)); //+1 to prevent divide by zero
-        if (d <= 0)
-        {
-            d = 0;
-        }
-        if (d > 4)
-        {
-            d = 4;
-        }
-    }
     rz *= scale/10L;
     rz = (rz > 0) ? (rz+50L) : (rz-50L);
     rz /= cscale;
     zt = (int)rz;
-
-    if (!clip)
-    {
-        return d+1;
-    }
-    else
-    {
-        return 0;
-    }
 }
 
 void ViewPoint::Invert(int sx, int sy, int sz, float &x, float &y, float &z)
@@ -404,7 +294,7 @@ void ViewPoint::Center(MIMoleculeBase *mol)
     center[0] = (long)(xsum/n);
     center[1] = (long)(ysum/n);
     center[2] = (long)(zsum/n);
-    SetBounds();
+    changed = 1;
 }
 
 void ViewPoint::zoom(float ds)
@@ -421,7 +311,7 @@ void ViewPoint::zoom(float ds)
         scale++;
     }
     clampScale();
-    SetBounds();
+    changed = 1;
 }
 
 void ViewPoint::getdirection(int xdrag, int ydrag, int &xdir, int &ydir, int &zdir)
@@ -438,25 +328,6 @@ void ViewPoint::getdirection(int xdrag, int ydrag, int &xdir, int &ydir, int &zd
                   +ydrag*umat[1][1])/(float)scale*MSF);
     zdir = ROUND((xdrag* umat[2][0]
                   +ydrag*umat[2][1])/(float)scale*MSF);
-}
-
-void ViewPoint::scroll(int xdrag, int ydrag)
-{
-    //Scroll view
-    //determine direction relative to molecule axes
-    //by inverting matrix
-    int xdir, ydir, zdir;
-
-    uinv(viewmat, umat);
-    xdir = ROUND((xdrag* umat[0][0]
-                  +ydrag*umat[0][1])/(float)scale*MSF);
-    ydir = ROUND((xdrag* umat[1][0]
-                  +ydrag*umat[1][1])/(float)scale*MSF);
-    zdir = ROUND((xdrag* umat[2][0]
-                  +ydrag*umat[2][1])/(float)scale*MSF);
-    translate(-xdir, -ydir, -zdir);
-    changed = 1;
-
 }
 
 void ViewPoint::scroll(int xdrag, int ydrag, int zdrag)
@@ -614,7 +485,7 @@ void ViewPoint::Load(FILE *fp)
     }
     if (changed)
     {
-        SetBounds();
+        clampScale();
     }
 }
 
@@ -653,7 +524,7 @@ void ViewPoint::PutVertical(float x2, float y2, float z2)
     rotate(bestx, besty, bestz);
     Do();
     transform(x2, y2, z2, sx2, sy2, sz2);
-    int mindx = abs(sx2 - getcenterx())+ abs(sz2);
+    int mindx = abs(sx2 - xcenter)+ abs(sz2);
     int dx;
     bestx = besty = bestz = 0;
     float angle = 10.0F;
@@ -664,7 +535,7 @@ void ViewPoint::PutVertical(float x2, float y2, float z2)
         zrot = frand2(angle)+bestz;
         rotate(xrot, yrot, zrot);
         transform(x2, y2, z2, sx2, sy2, sz2);
-        dx = abs(sx2 - getcenterx()) + abs(sz2);
+        dx = abs(sx2 - xcenter) + abs(sz2);
         if (dx < mindx)
         {
             mindx = dx;
@@ -759,27 +630,6 @@ bool ViewPoint::CenterAtResidue(const Residue *res)
     changed = 1;
     return true;
 }
-
-bool IsOnScreen(const MIAtom *a, ViewPoint *vp)
-{
-    if (a->isHidden() || a->type()&AtomType::DELETEDATOM)
-    {
-        return false;
-    }
-    int sx, sy, sz;
-    return vp->transform(a->x(), a->y(), a->z(), sx, sy, sz) != 0;
-}
-
-bool IsOnScreen(const APOINT &a, ViewPoint *vp)
-{
-    if (a.color < 0)
-    {
-        return false;
-    }
-    int sx, sy, sz;
-    return vp->transform(a.x, a.y, a.z, sx, sy, sz) != 0;
-}
-
 
 int ViewPoint::colordepth(int c)
 {
@@ -914,26 +764,6 @@ int ViewPoint::linewidth(int w)
     }
 }
 
-void ViewPoint::rotx(float a)
-{
-    rotate(a, 0.0F, 0.0F);
-}
-
-void ViewPoint::roty(float a)
-{
-    rotate(0.0F, a, 0.0F);
-}
-
-void ViewPoint::rotz(float a)
-{
-    rotate(0.0F, 0.0F, a);
-}
-
-float*ViewPoint::getmatrix()
-{
-    return &(viewmat[0][0]);
-}
-
 void ViewPoint::setscale(long s)
 {
     scale = s;
@@ -941,7 +771,8 @@ void ViewPoint::setscale(long s)
     {
         scale = 11;
     }
-    SetBounds();
+    clampScale();
+    changed = 1;
 }
 
 long ViewPoint::getscale()
@@ -967,16 +798,6 @@ int ViewPoint::getbackclipi()
 int ViewPoint::getfrontclipi()
 {
     return (ROUND(frontclip*scale/(float)CRS/10.0F));
-}
-
-int ViewPoint::getsbackclip()
-{
-    return (int)(backclip*scale/(float)CRS/10.0F)+ycenter;
-}
-
-int ViewPoint::getsfrontclip()
-{
-    return (int)(frontclip*scale/(float)CRS/10.0F)+ycenter;
 }
 
 void ViewPoint::setfrontclip(float f)
@@ -1010,33 +831,6 @@ float ViewPoint::getperspective()
     return perspective;
 }
 
-long ViewPoint::getzangle()
-{
-    return zangle;
-}
-
-void ViewPoint::setzangle(long s)
-{
-    zangle = s;
-}
-
-void ViewPoint::SetCenter(int x, int y)
-{
-    center[0] = x;
-    center[1] = y;
-    changed = 1;
-}
-
-int ViewPoint::getcenterx()
-{
-    return xcenter;
-}
-
-int ViewPoint::getcentery()
-{
-    return ycenter;
-}
-
 float ViewPoint::getcenter(int i)
 {
     if (i >= 0 && i < 3)
@@ -1066,14 +860,25 @@ void ViewPoint::orthomat()
     orthomatrix(viewmat, viewmat);
 }
 
+int ViewPoint::width()
+{
+    return width_;
+}
+
+int ViewPoint::height()
+{
+    return height_;
+}
+
+
 float ViewPoint::getwidth()
 {
-    return (float)((float)(xmax-xmin)*(float)CRS/(float)scale/10.0F);
+    return (float)((float)(width_)*(float)CRS/(float)scale/10.0F);
 }
 
 float ViewPoint::getheight()
 {
-    return (float)((float)(ymax-ymin)*(float)CRS/(float)scale/10.0F);
+    return (float)((float)(height_)*(float)CRS/(float)scale/10.0F);
 }
 
 void ViewPoint::LineThickness(int n)

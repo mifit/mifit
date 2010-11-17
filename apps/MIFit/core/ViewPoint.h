@@ -28,30 +28,17 @@ class ViewPoint
 {
 public:
 
-    long xmax, ymax, xmin, ymin; // viewport size; screen coords.
-    long sxmax, symax, sxmin, symin; // viewport clipbox with extra edges; screen coords.
-    long xcenter, ycenter; // viewport center in screen coords
-
     ViewPoint();
 
     void PutOnLeft(float x, float y, float z);
     void PutVertical(float x, float y, float z);
 
-    void rotx(float a);
-    void roty(float a);
-    void rotz(float a);
-
     void rotate(float rx, float ry, float rz);
 
-    float *getmatrix();
     void copymatrix(float mat[3][3]);
     void setmatrix(float mat[3][3]);
 
-    void transx(float);
-    void transy(float);
-    void transz(float);
-
-    int transform(float x, float y, float z, int &xt, int &yt, int &zt);
+    void transform(float x, float y, float z, int &xt, int &yt, int &zt);
     float x(float, float, float);
     float y(float, float, float);
     float z(float, float, float);
@@ -61,7 +48,6 @@ public:
     void setscale(long s);
     long getscale();
     void zoom(float ds);
-    void scroll(int, int);
     void scroll(int, int, int);
     void slab(int);
     void slab(float f, float b);
@@ -69,28 +55,19 @@ public:
     float getfrontclip();
     int getbackclipi();
     int getfrontclipi();
-    int getsbackclip();
-    int getsfrontclip();
     void setfrontclip(float f);
     void setbackclip(float b);
 
     float getperspective();
     void setperspective(float);
-    long getzangle();
-    void setzangle(long s);
-    void SetCenter(int x, int y);
-    int getcenterx();
-    int getcentery();
     float getcenter(int i);
     int getcenteri(int i);
     void orthomat();
-    void SetBounds();
-    void SetWindow(int, int, int, int);
-    float getwidth();
-    float getheight();
-    void LineThickness(int n);
-    int GetLineThickness();
-    void SetLineThickness(int w);
+    void setSize(int, int);
+    int width();  // in screen coordinates
+    int height();  // in screen coordinates
+    float getwidth();  // in ? coordinates
+    float getheight();  // in ? coordinates
     bool ischanged();
     void clearchanged();
     void setchanged();
@@ -126,6 +103,9 @@ public:
     bool isDimNonactiveModels();
     void setAmountToDimNonactiveModels(float percent);
     float getAmountToDimNonactiveModels();
+    void LineThickness(int n);
+    int GetLineThickness();
+    void SetLineThickness(int w);
     void SetBallandStick();
     void SetBallandStick(int s);
     void SetBallandCylinder();
@@ -147,9 +127,8 @@ private:
     float umat[3][3];
     long center[3];
 
-    // coordinate bounding box - if outside
-    // there is no need to transform - can't be on screen.
-    long xubound, xlbound, yubound, ylbound, zubound, zlbound;
+    long width_, height_; // viewport size; screen coords.
+    long xcenter, ycenter; // viewport center in screen coords
 
     long cscale; // coords are (int)Angstroms *cscale
 
@@ -178,9 +157,5 @@ private:
 
     void clampScale();
 };
-
-bool IsOnScreen(const chemlib::MIAtom *a, ViewPoint *vp);
-bool IsOnScreen(const APOINT &p, ViewPoint *vp);
-
 
 #endif // ifndef MIFIT_VIEWPOINT_H_

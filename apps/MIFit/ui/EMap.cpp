@@ -291,32 +291,3 @@ void EMap::Export()
         SavePhases(path.toAscii().constData(), format);
     }
 }
-
-int EMap::CenterVisibleEdges(float &x, float &y, float &z, ViewPoint *vp)
-{
-    // look thru the edges, find the on-scrren ones abd return their center
-    x = y = z = 0;
-    size_t n = 0;
-    for (size_t i = 0; i < edges.size(); i++)
-    {
-        if (IsOnScreen(edges[i].p1, vp))
-        {
-            x += edges[i].p1.x;
-            y += edges[i].p1.y;
-            z += edges[i].p1.z;
-            n++;
-        }
-        if (IsOnScreen(edges[i].p2, vp))
-        {
-            x += edges[i].p2.x;
-            y += edges[i].p2.y;
-            z += edges[i].p2.z;
-            n++;
-        }
-    }
-    x = x/(float)n;
-    y = y/(float)n;
-    z = z/(float)n;
-    return n;
-}
-

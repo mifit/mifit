@@ -62,12 +62,6 @@ private:
     std::vector<short> savecolors;
     bool undoable;
     CMapHeaderBase *mapheader;
-    int xmin;
-    int ymin;
-    int zmin;
-    int xmax;
-    int ymax;
-    int zmax;
 
     bool drawBox;
     bool symmatoms_visible;
@@ -255,7 +249,7 @@ public:
     long getnribboatomCount();
     void GetPDBInfo(FILE*);
 
-    bool VisibleBounds(ViewPoint*, int&, int&, int&, int&, int&, int&);
+    bool VisibleBounds(ViewPoint*, float&, float&, float&, float&, float&, float&);
 
     void Show();
     void Hide();
@@ -280,8 +274,8 @@ public:
     long SolventSurface(ViewPoint*, float);
     long SurfaceAtom(chemlib::MIAtom*, float, bool ignore_hidden = true);
     long SurfaceAroundAtom(chemlib::MIAtom*, float, float);
-    long SurfaceResidue(chemlib::Residue*, float, ViewPoint *vp, bool ignore_hidden = true);
-    long SurfaceResidues(float, ViewPoint *vp, bool ignore_hidden = true);
+    long SurfaceResidue(chemlib::Residue*, float, bool ignore_hidden = true);
+    long SurfaceResidues(float, bool ignore_hidden = true);
     long Surface(chemlib::MIAtom*, bool ignore_hidden = true, bool send_signal = true);
     void Save(XMLArchive&);
     void Load(FILE *fp);

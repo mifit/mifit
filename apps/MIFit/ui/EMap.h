@@ -45,8 +45,6 @@ public:
 
     void Export();
 
-    int CenterVisibleEdges(float &x, float &y, float &z, ViewPoint *vp);
-
 signals:
     void mapFftRecalculated(EMap*);
 

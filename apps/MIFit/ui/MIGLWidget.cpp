@@ -392,7 +392,6 @@ MIGLWidget::MIGLWidget()
     IsFullScreen = false;
     SelectType = SINGLEATOM;
     Update = 1;
-    NewSize = 1;
     Rock = Roll = 0;
     RockAngle = 0.0F;
     ClockTick = 100;
@@ -869,33 +868,10 @@ void MIGLWidget::draw(QPainter *painter)
                 {
                     std::string resshow;
                     std::string at("*");
-                    //model->Do();
-//                    if (!FittingView)
-//                    {
-//                        model->Select(1, 0, 0, 1, resshow, at, NULL, NULL, 0, 0, 0, 1, 0);
-//                        int xmin, xmax, ymin, ymax, zmin, zmax;
-//                        viewpoint->Center(Models->GetCurrentModel());
-//                        if (Models->CurrentItem()->VisibleBounds(viewpoint, xmin, xmax, ymin, ymax, zmin, zmax))
-//                        {
-//                            float fzmin = (float)zmin/100.0F;
-//                            float fzmax = (float)zmax/100.0F;
-//                            fzmax = (fzmax - fzmin)/2.0F + 2.0F;
-//                            viewpoint->slab(-fzmax, fzmax);
-//                            long sw = 900L*(long)(viewpoint->xmax - viewpoint->xmin)/((long)xmax- (long)xmin+200);
-//                            long sh = 900L*(long)(viewpoint->ymax - viewpoint->ymin)/((long)ymax- (long)ymin+200);
-//                            viewpoint->setscale(std::min(sw, sh));
-//                        }
-//                    }
-//                    else
-//                    {
-                        model->Select(1, 1, 1, 1, resshow, at, NULL, NULL, 0, 0, 0, 0, 1);
-                        int xmin, xmax, ymin, ymax, zmin, zmax;
-                        viewpoint->Center(Models->GetCurrentModel());
-                        Models->CurrentItem()->VisibleBounds(viewpoint, xmin, xmax, ymin, ymax,
-                                                             zmin, zmax);
-                        viewpoint->slab(-3.0F, 3.0F);
-                        viewpoint->setscale(300L);
-//                    }
+                    model->Select(1, 1, 1, 1, resshow, at, NULL, NULL, 0, 0, 0, 0, 1);
+                    viewpoint->Center(Models->GetCurrentModel());
+                    viewpoint->slab(-3.0F, 3.0F);
+                    viewpoint->setscale(300L);
                 }
             }
             PaletteChanged = true;
@@ -1007,7 +983,7 @@ void MIGLWidget::draw(QPainter *painter)
     //  stereoView->render(*annotationPickingRenderable);
 
     // cleanup
-    Update = NewSize = 0;
+    Update = 0;
 
 #if SHOW_RENDER_TIME
     QString framesPerSecond = QString("render in %1 ms")
@@ -2045,12 +2021,7 @@ void MIGLWidget::resizeEvent(QResizeEvent *evt)
         QDeclarativeView::resizeEvent(evt);
         return;
     }
-    // Set the Resize bitmap flag
-    if (sx != viewpoint->xmax || sy != viewpoint->ymax)
-    {
-        NewSize = 1;
-        viewpoint->SetWindow(0, 0, sx, sy);
-    }
+    viewpoint->setSize(sx, sy);
     MIMainWindow::instance()->updateNavigator();
     QDeclarativeView::resizeEvent(evt);
 }
@@ -3725,17 +3696,17 @@ void MIGLWidget::OnGotoFittoscreen()
     Displaylist *Models = GetDisplaylist();
     if (Models->CurrentItem())
     {
-        int xmin, xmax, ymin, ymax, zmin, zmax;
+        float xmin, xmax, ymin, ymax, zmin, zmax;
         viewpoint->Center(Models->GetCurrentModel());
         viewpoint->Do();
         if (Models->CurrentItem()->VisibleBounds(viewpoint, xmin, xmax, ymin, ymax, zmin, zmax) )
         {
-            float fzmin = (float)zmin/100.0F;
-            float fzmax = (float)zmax/100.0F;
+            float fzmin = zmin;
+            float fzmax = zmax;
             fzmax = (fzmax - fzmin)/2.0F + 2.0F;
             viewpoint->slab(-fzmax, fzmax);
-            long sw = 900L*(long)(viewpoint->xmax - viewpoint->xmin)/((long)xmax- (long)xmin+200);
-            long sh = 900L*(long)(viewpoint->ymax - viewpoint->ymin)/((long)ymax- (long)ymin+200);
+            long sw = 900L*width()/(ROUND(xmax*CRS)- ROUND(xmin*CRS)+200);
+            long sh = 900L*height()/(ROUND(ymax*CRS)- ROUND(ymin*CRS)+200);
             viewpoint->setscale(std::min(sw, sh));
         }
         ReDraw();
@@ -5113,7 +5084,7 @@ void MIGLWidget::OnObjectSurfaceresidue()
         if (dotsper >= 1.0f && dotsper <= 10.0f)
         {
             viewpoint->setchanged();
-            node->SurfaceResidue(res, (1.0f/dotsper), viewpoint, ignoreHidden);
+            node->SurfaceResidue(res, (1.0f/dotsper), ignoreHidden);
             PaletteChanged = true;
             ReDraw();
         }
@@ -5168,7 +5139,6 @@ void MIGLWidget::OnObjectSurfaceresidues()
                 res->setFlags(res->flags()|128);
             }
             int numDots = node->SurfaceResidues(1.0f/dotsper,
-                                                  viewpoint,
                                                   ignoreHidden);
             viewpoint->setchanged();
             QString message = QString("Number of dots: %1").arg(numDots);
@@ -7926,8 +7896,7 @@ int MIGLWidget::ScriptCommand(const char *ubuf)
     {
         if (sscanf(buf, "%*s%f", &a) == 1)
         {
-            viewpoint->rotx(a);
-            //incmatrix(a,0.0,0.0,viewmat,viewmat);
+            viewpoint->rotate(a, 0, 0);
             ReDraw();
             return 1;
         }
@@ -7940,7 +7909,7 @@ int MIGLWidget::ScriptCommand(const char *ubuf)
     {
         if (sscanf(buf, "%*s%f", &a) == 1)
         {
-            viewpoint->roty(a);
+            viewpoint->rotate(0, a, 0);
             ReDraw();
             return 1;
         }
@@ -7953,7 +7922,7 @@ int MIGLWidget::ScriptCommand(const char *ubuf)
     {
         if (sscanf(buf, "%*s%f", &a) == 1)
         {
-            viewpoint->rotz(a);
+            viewpoint->rotate(0, 0, a);
             ReDraw();
             return 1;
         }
@@ -8941,23 +8910,6 @@ void MIGLWidget::OnUpdateLabelEveryNth(QAction *action)
     action->setEnabled(GetDisplaylist()->CurrentItem() != NULL);
 }
 
-void MIGLWidget::OnMapCenterVisibleDensity()
-{
-    EMap *currentmap = GetDisplaylist()->GetCurrentMap();
-    if (!currentmap)
-        return;
-    float cx, cy, cz;
-    currentmap->CenterVisibleEdges(cx, cy, cz, viewpoint);
-    viewpoint->moveto(cx, cy, cz);
-    viewpoint->setchanged();
-    ReDraw();
-}
-
-void MIGLWidget::OnUpdateMapCenterVisibleDensity(QAction *action)
-{
-    action->setEnabled(GetDisplaylist()->GetCurrentMap() != NULL);
-}
-
 void MIGLWidget::OnUpdateFindLigandDensity(QAction *action)
 {
     action->setEnabled((GetDisplaylist()->GetCurrentMap() != NULL)
@@ -9535,8 +9487,15 @@ void MIGLWidget::OnGotoFitalltoscreen()
     Displaylist *Models = GetDisplaylist();
     std::list<Molecule*>::iterator node = Models->begin();
     std::list<Molecule*>::iterator end = Models->end();
-    long xmin = INT_MAX, xmax = INT_MIN, ymin = INT_MAX, ymax = INT_MIN, zmin = INT_MAX, zmax = INT_MIN;
-    int mxmin, mxmax, mymin, mymax, mzmin, mzmax, mxc, myc, mzc;
+//    long xmin = INT_MAX, xmax = INT_MIN, ymin = INT_MAX, ymax = INT_MIN, zmin = INT_MAX, zmax = INT_MIN;
+    float xmin = std::numeric_limits<float>::max();
+    float ymin = xmin;
+    float zmin = xmin;
+    float xmax = -std::numeric_limits<float>::max();
+    float ymax = xmax;
+    float zmax = xmax;
+    float mxmin, mxmax, mymin, mymax, mzmin, mzmax;
+    int mxc, myc, mzc;
     long xc = 0, yc = 0, zc = 0;
     int nmodels = 0;
     viewpoint->Do();
@@ -9549,12 +9508,12 @@ void MIGLWidget::OnGotoFitalltoscreen()
             yc += myc;
             zc += mzc;
             nmodels++;
-            xmin = std::min(xmin, (long)mxmin);
-            ymin = std::min(ymin, (long)mymin);
-            zmin = std::min(zmin, (long)mzmin);
-            xmax = std::max(xmax, (long)mxmax);
-            ymax = std::max(ymax, (long)mymax);
-            zmax = std::max(zmax, (long)mzmax);
+            xmin = std::min(xmin, mxmin);
+            ymin = std::min(ymin, mymin);
+            zmin = std::min(zmin, mzmin);
+            xmax = std::max(xmax, mxmax);
+            ymax = std::max(ymax, mymax);
+            zmax = std::max(zmax, mzmax);
         }
         node++;
     }
@@ -9564,12 +9523,12 @@ void MIGLWidget::OnGotoFitalltoscreen()
         yc /= (long)nmodels;
         zc /= (long)nmodels;
         viewpoint->moveto((int)xc, (int)yc, (int)zc);
-        float fzmin = (float)zmin/100.0F;
-        float fzmax = (float)zmax/100.0F;
+        float fzmin = zmin;
+        float fzmax = zmax;
         fzmax = (fzmax - fzmin)/2.0F + 2.0F;
         viewpoint->slab(-fzmax, fzmax);
-        long sw = 900L*(long)(viewpoint->xmax - viewpoint->xmin)/((long)xmax- (long)xmin+200);
-        long sh = 900L*(long)(viewpoint->ymax - viewpoint->ymin)/((long)ymax- (long)ymin+200);
+        long sw = 900L*width()/(ROUND(xmax*CRS)- ROUND(xmin*CRS)+200);
+        long sh = 900L*height()/(ROUND(ymax*CRS)- ROUND(ymin*CRS)+200);
         viewpoint->setscale(std::min(sw, sh));
         ReDraw();
     }
