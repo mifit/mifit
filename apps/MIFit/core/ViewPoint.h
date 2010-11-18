@@ -79,10 +79,6 @@ public:
 
     void Invert(int sx, int sy, int sz, float &x, float &y, float &z);
 
-
-    void Save(CArchive&);
-    void Load(FILE *fp);
-
     bool CenterAtResidue(const chemlib::Residue *res);
     void Center(chemlib::MIMoleculeBase*);
 

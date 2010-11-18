@@ -8,8 +8,6 @@
 
 #include "ViewPoint.h"
 #include "Cfiles.h"
-//#include "Viewpnt.h"
-//#include "macafxwin.h"
 
 using namespace chemlib;
 
@@ -385,110 +383,6 @@ void ViewPoint::slab(float f, float b)
     backclip = (int)b;
     changed = 1;
 }
-
-void ViewPoint::Save(CArchive &ar)
-{
-    std::string s;
-    if (ar.IsStoring())
-    {
-        s = format("translation %0.2f %0.2f %0.2f\n", getcenter(0),
-                   getcenter(1), getcenter(2));
-        ar.Write(s.c_str(), s.size());
-        s = format("rotation %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f\n",
-                   (float)viewmat[0][0], (float)viewmat[0][1], (float)viewmat[0][2],
-                   (float)viewmat[1][0], (float)viewmat[1][1], (float)viewmat[1][2],
-                   (float)viewmat[2][0], (float)viewmat[2][1], (float)viewmat[2][2]);
-        ar.Write(s.c_str(), s.size());
-        s = format("zoom %0.3f\nperspective %0.3f\n", (float)scale/10.F, perspective);
-        ar.Write(s.c_str(), s.size());
-        s = format("frontclip %0.2f\nbackclip %0.2f\n", (float)frontclip/CRS, (float)backclip/CRS);
-        ar.Write(s.c_str(), s.size());
-        s = format("transform\n");
-        ar.Write(s.c_str(), s.size());
-    }
-    else
-    {
-    }
-}
-
-void ViewPoint::Load(FILE *fp)
-{
-    float v1, v2, v3, v4, v5, v6, v7, v8, v9;
-    std::string buf;
-
-    std::auto_ptr<io> ioObj(io::defaultIo());
-    io &file = *ioObj;
-    file.attach(fp);
-    while (file.readLine(buf) != 0)
-    {
-        std::transform(buf.begin(), buf.end(), buf.begin(), tolower);
-        if (!strncmp(buf.c_str(), "rotation", 8))
-        {
-            if (sscanf(buf.c_str(), "%*s%f%f%f%f%f%f%f%f%f", &v1, &v2, &v3, &v4, &v5, &v6, &v7, &v8, &v9) == 9)
-            {
-                viewmat[0][0] = v1;
-                viewmat[0][1] = v2;
-                viewmat[0][2] = v3;
-                viewmat[1][0] = v4;
-                viewmat[1][1] = v5;
-                viewmat[1][2] = v6;
-                viewmat[2][0] = v7;
-                viewmat[2][1] = v8;
-                viewmat[2][2] = v9;
-                orthomatrix(viewmat, viewmat);
-                changed = 1;
-            }
-        }
-        else if (!strncmp(buf.c_str(), "zoom", 4))
-        {
-            if (sscanf(buf.c_str(), "%*s%f", &v1) == 1)
-            {
-                v1 *= 10.0F;
-                scale = ROUND(v1);
-                changed = 1;
-            }
-        }
-        else if (!strncmp(buf.c_str(), "frontclip", 9))
-        {
-            if (sscanf(buf.c_str(), "%*s%f", &v1) == 1)
-            {
-                frontclip = ROUND(v1*CRS);
-                changed = 1;
-            }
-        }
-        else if (!strncmp(buf.c_str(), "backclip", 8))
-        {
-            if (sscanf(buf.c_str(), "%*s%f", &v1) == 1)
-            {
-                backclip = ROUND(v1*CRS);
-                changed = 1;
-            }
-        }
-        else if (!strncmp(buf.c_str(), "perspect", 8))
-        {
-            if (sscanf(buf.c_str(), "%*s%f", &v1) == 1)
-            {
-                setperspective(v1);
-                changed = 1;
-            }
-        }
-        else if (!strncmp(buf.c_str(), "translation", 11))
-        {
-            if (sscanf(buf.c_str(), "%*s%f%f%f", &v1, &v2, &v3) == 3)
-            {
-                center[0] = ROUND(v1 * CRS);
-                center[1] = ROUND(v2 * CRS);
-                center[2] = ROUND(v3 * CRS);
-                changed = 1;
-            }
-        }
-    }
-    if (changed)
-    {
-        clampScale();
-    }
-}
-
 
 void ViewPoint::PutVertical(float x2, float y2, float z2)
 {

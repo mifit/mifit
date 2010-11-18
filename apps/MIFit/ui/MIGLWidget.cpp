@@ -59,6 +59,7 @@
 #include <conflib/conflib.h>
 #include <map/maplib.h>
 #include "core/corelib.h"
+#include "core/ViewPointIO.h"
 #include <util/utillib.h>
 #include "ui/MIColorPickerDlg.h"
 #include "ui/MIDialog.h"
@@ -8760,7 +8761,7 @@ void MIGLWidget::OnViewSave()
     {
         XMLArchive ar(pathname.c_str(), CArchive::store);
         ar.BeginTag("ViewPoint");
-        viewpoint->Save(ar);
+        ViewPointIO::save(*viewpoint, ar);
         ar.EndTag();
     }
 }
@@ -8772,7 +8773,7 @@ void MIGLWidget::OnViewLoad()
     if (pathname.size())
     {
         FILE *fp = fopen(pathname.c_str(), "r");
-        viewpoint->Load(fp);
+        ViewPointIO::load(*viewpoint, fp);
         viewpoint->setchanged();
         ReDraw();
     }
@@ -11238,7 +11239,7 @@ bool MIGLWidget::OnOpenDocument(const std::string &path)
                 return false;
             }
             viewpoint->Do();
-            viewpoint->Load(file.fp());
+            ViewPointIO::load(*viewpoint, file.fp());
             file.rewind();
             // scan for maps
             std::string col_names("");
@@ -11326,7 +11327,7 @@ bool MIGLWidget::OnOpenDocument(const std::string &path)
 
             file.rewind();
             viewpoint->Do();
-            viewpoint->Load(file.fp());
+            ViewPointIO::load(*viewpoint, file.fp());
             file.rewind();
             // scan for maps
 
@@ -11397,7 +11398,7 @@ bool MIGLWidget::OnOpenDocument(const std::string &path)
             // Read the script for general stuff
             file.rewind();
             viewpoint->Do();
-            viewpoint->Load(file.fp());
+            ViewPointIO::load(*viewpoint, file.fp());
             file.rewind();
             while (file.gets(buf, sizeof buf) != NULL)
             {
@@ -11616,7 +11617,7 @@ void MIGLWidget::Serialize(XMLArchive &ar)
         ar.EndTag();  //AtomStack
 
         ar.BeginTag("ViewPoint");
-        viewpoint->Save(ar);
+        ViewPointIO::save(*viewpoint, ar);
         ar.EndTag();  //ViewPoint
 
         ar.EndTag();  //wxFitDocument
