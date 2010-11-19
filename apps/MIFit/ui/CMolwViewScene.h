@@ -12,6 +12,7 @@ class Displaylist;
 class PLINE;
 class Stack;
 class ViewPoint;
+class ViewPointSettings;
 namespace mi
 {
     namespace opengl
@@ -57,6 +58,7 @@ class CMolwViewScene : public mi::opengl::Scene
     Stack *atomStack;
 
     ViewPoint *viewpoint;
+    ViewPointSettings *viewpointSettings;
 
     std::map<void*, mi::opengl::Axes*> axes;
 

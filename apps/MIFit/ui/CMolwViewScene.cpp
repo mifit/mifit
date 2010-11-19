@@ -29,6 +29,7 @@
 #include "GLRenderer.h"
 #include "core/ViewPoint.h"
 #include "surf.h"
+#include "ViewPointSettings.h"
 
 using namespace mi::math;
 using namespace mi::opengl::interact;
@@ -106,7 +107,7 @@ void CMolwViewScene::initializeForRender()
 void CMolwViewScene::preCameraRender()
 {
     renderer->clearPickNames();
-    if (viewpoint->isDepthCuedColors())
+    if (viewpointSettings->isDepthCuedColors())
     {
         float clipDistance = frustum->getFarClipping() - frustum->getNearClipping();
         float fogEnd = frustum->getFarClipping() + clipDistance * 0.25f;
@@ -193,24 +194,24 @@ void CMolwViewScene::render()
 
 
     RenderStyle renderStyle;
-    if (viewpoint->GetBallandStick() == ViewPoint::STICKS)
+    if (viewpointSettings->GetBallandStick() == ViewPointSettings::STICKS)
     {
         renderStyle.set(RenderStyle::getLine());
-        renderStyle.setBondLineWidth(viewpoint->GetLineThickness());
+        renderStyle.setBondLineWidth(viewpointSettings->GetLineThickness());
     }
-    else if (viewpoint->GetBallandStick() == ViewPoint::BALLANDSTICK)
+    else if (viewpointSettings->GetBallandStick() == ViewPointSettings::BALLANDSTICK)
     {
         renderStyle.set(RenderStyle::getBallAndLine());
-        renderStyle.setBallPercent(viewpoint->GetBallSize() / 100.0f);
-        renderStyle.setBondLineWidth(viewpoint->GetLineThickness());
+        renderStyle.setBallPercent(viewpointSettings->GetBallSize() / 100.0f);
+        renderStyle.setBondLineWidth(viewpointSettings->GetLineThickness());
     }
-    else if (viewpoint->GetBallandStick() == ViewPoint::BALLANDCYLINDER)
+    else if (viewpointSettings->GetBallandStick() == ViewPointSettings::BALLANDCYLINDER)
     {
         renderStyle.set(RenderStyle::getBallAndStick());
-        renderStyle.setBallPercent(viewpoint->GetBallSize() / 100.0f);
-        renderStyle.setStickPercent((viewpoint->GetBallSize() / 100.0f) * (viewpoint->GetCylinderSize() / 100.0f));
+        renderStyle.setBallPercent(viewpointSettings->GetBallSize() / 100.0f);
+        renderStyle.setStickPercent((viewpointSettings->GetBallSize() / 100.0f) * (viewpointSettings->GetCylinderSize() / 100.0f));
     }
-    else if (viewpoint->GetBallandStick() == ViewPoint::CPK)
+    else if (viewpointSettings->GetBallandStick() == ViewPointSettings::CPK)
     {
         renderStyle.set(RenderStyle::getBall());
     }

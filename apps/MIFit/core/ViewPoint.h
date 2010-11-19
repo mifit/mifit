@@ -62,7 +62,6 @@ public:
     void setperspective(float);
     float getcenter(int i);
     int getcenteri(int i);
-    void orthomat();
     void setSize(int, int);
     int width();  // in screen coordinates
     int height();  // in screen coordinates
@@ -82,41 +81,6 @@ public:
     bool CenterAtResidue(const chemlib::Residue *res);
     void Center(chemlib::MIMoleculeBase*);
 
-    //definitions for ballandstick
-    static const int STICKS;
-    static const int BALLANDSTICK;
-    static const int CPK;
-    static const int BALLANDCYLINDER;
-
-    void setTopView(int on);
-    int getTopView();
-    void SetRadii();
-    void setDepthCuedLineWidth(bool on);
-    bool isDepthCuedLineWidth();
-    void setDepthCuedColors(bool on);
-    bool isDepthCuedColors();
-    void setDimNonactiveModels(bool on);
-    bool isDimNonactiveModels();
-    void setAmountToDimNonactiveModels(float percent);
-    float getAmountToDimNonactiveModels();
-    void LineThickness(int n);
-    int GetLineThickness();
-    void SetLineThickness(int w);
-    void SetBallandStick();
-    void SetBallandStick(int s);
-    void SetBallandCylinder();
-    void SetSpaceFilling();
-    void SetSticks();
-    void ToggleBallandStick();
-    int GetBallandStick();
-    int GetBallSize();
-    void SetBallSize(int b);
-    int GetBallMode();
-    void SetBallMode(int b);
-    int GetCylinderSize();
-    void SetCylinderSize(int b);
-    int linewidth(int w);
-    int colordepth(int c);
 
 private:
     float viewmat[3][3];
@@ -139,17 +103,6 @@ private:
     std::vector<ViewSave> UndoList;
 
     bool changed;
-
-    bool depthcue_color;
-    bool depthcue_width;
-    bool dimNonactiveModels;
-    float amountToDimNonactiveModels;
-    int ballandstick;
-    int ballsize;
-    int ballmode;
-    int cylindersize;
-    int topview;
-    int lineThickness;
 
     void clampScale();
 };

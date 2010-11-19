@@ -94,6 +94,7 @@
 #include "RefinementOptionsDialog.h"
 #include "ui/LSQFitDialog.h"
 #include "ui/SelectCrystal.h"
+#include "ViewPointSettings.h"
 
 using namespace chemlib;
 using namespace mi::math;
@@ -191,32 +192,32 @@ private:
 
 namespace
 {
-    void readViewPointSettings(ViewPoint *viewpoint)
+    void readViewPointSettings(ViewPoint *viewpoint, ViewPointSettings *viewpointSettings)
     {
         QSettings settings;
         viewpoint->setperspective(settings.value("View Parameters/perspective", 0).toInt() / 100.0f);
-        viewpoint->setDepthCuedLineWidth(settings.value("View Parameters/depthcue_width", true).toBool());
-        viewpoint->setDepthCuedColors(settings.value("View Parameters/depthcue_colors", true).toBool());
-        viewpoint->setDimNonactiveModels(settings.value("View Parameters/dimNonactiveModels", true).toBool());
-        viewpoint->setAmountToDimNonactiveModels(settings.value("View Parameters/amountToDimNonactiveModels", 50).toInt() / 100.0f);
-        viewpoint->SetBallandStick(settings.value("View Parameters/ballandstick", 0).toInt());
-        viewpoint->SetLineThickness(settings.value("View Parameters/lineThickness", 1).toInt());
-        viewpoint->SetBallSize(settings.value("View Parameters/ballsize", 10).toInt());
-        viewpoint->SetCylinderSize(settings.value("View Parameters/cylindersize", 33).toInt());
+        viewpointSettings->setDepthCuedLineWidth(settings.value("View Parameters/depthcue_width", true).toBool());
+        viewpointSettings->setDepthCuedColors(settings.value("View Parameters/depthcue_colors", true).toBool());
+        viewpointSettings->setDimNonactiveModels(settings.value("View Parameters/dimNonactiveModels", true).toBool());
+        viewpointSettings->setAmountToDimNonactiveModels(settings.value("View Parameters/amountToDimNonactiveModels", 50).toInt() / 100.0f);
+        viewpointSettings->SetBallandStick(settings.value("View Parameters/ballandstick", 0).toInt());
+        viewpointSettings->SetLineThickness(settings.value("View Parameters/lineThickness", 1).toInt());
+        viewpointSettings->SetBallSize(settings.value("View Parameters/ballsize", 10).toInt());
+        viewpointSettings->SetCylinderSize(settings.value("View Parameters/cylindersize", 33).toInt());
     }
 
-    void writeViewPointSettings(ViewPoint *viewpoint)
+    void writeViewPointSettings(ViewPoint *viewpoint, ViewPointSettings *viewpointSettings)
     {
         QSettings settings;
         settings.setValue("View Parameters/perspective", static_cast<int>(viewpoint->getperspective()*100.0f));
-        settings.setValue("View Parameters/depthcue_width", viewpoint->isDepthCuedLineWidth());
-        settings.setValue("View Parameters/depthcue_colors", viewpoint->isDepthCuedColors());
-        settings.setValue("View Parameters/dimNonactiveModels", viewpoint->isDimNonactiveModels());
-        settings.setValue("View Parameters/amountToDimNonactiveModels", static_cast<int>(viewpoint->getAmountToDimNonactiveModels()*100.0f));
-        settings.setValue("View Parameters/ballandstick", viewpoint->GetBallandStick());
-        settings.setValue("View Parameters/ballsize", viewpoint->GetBallSize());
-        settings.setValue("View Parameters/cylindersize", viewpoint->GetCylinderSize());
-        settings.setValue("View Parameters/lineThickness", viewpoint->GetLineThickness());
+        settings.setValue("View Parameters/depthcue_width", viewpointSettings->isDepthCuedLineWidth());
+        settings.setValue("View Parameters/depthcue_colors", viewpointSettings->isDepthCuedColors());
+        settings.setValue("View Parameters/dimNonactiveModels", viewpointSettings->isDimNonactiveModels());
+        settings.setValue("View Parameters/amountToDimNonactiveModels", static_cast<int>(viewpointSettings->getAmountToDimNonactiveModels()*100.0f));
+        settings.setValue("View Parameters/ballandstick", viewpointSettings->GetBallandStick());
+        settings.setValue("View Parameters/ballsize", viewpointSettings->GetBallSize());
+        settings.setValue("View Parameters/cylindersize", viewpointSettings->GetCylinderSize());
+        settings.setValue("View Parameters/lineThickness", viewpointSettings->GetLineThickness());
     }
 
 } // anonymous namespace
@@ -346,7 +347,8 @@ MIGLWidget::MIGLWidget()
     Models = new Displaylist;
 
     viewpoint = new ViewPoint;
-    readViewPointSettings(viewpoint);
+    viewpointSettings = new ViewPointSettings;
+    readViewPointSettings(viewpoint, viewpointSettings);
 
     frustum = new Frustum();
     camera = new Camera();
@@ -362,9 +364,9 @@ MIGLWidget::MIGLWidget()
     scene->renderer->setFontSize(12);
     scene->renderer->setFrustum(frustum);
     scene->renderer->setCamera(camera);
-    scene->renderer->setLineWidthDepthCued(viewpoint->isDepthCuedLineWidth());
-    scene->renderer->setDimNonactiveModels(viewpoint->isDimNonactiveModels());
-    scene->renderer->setAmountToDimNonactiveModels(viewpoint->getAmountToDimNonactiveModels());
+    scene->renderer->setLineWidthDepthCued(viewpointSettings->isDepthCuedLineWidth());
+    scene->renderer->setDimNonactiveModels(viewpointSettings->isDimNonactiveModels());
+    scene->renderer->setAmountToDimNonactiveModels(viewpointSettings->getAmountToDimNonactiveModels());
 
     mousePicker = new MousePicker();
     atomPickingRenderable = new CMolwViewAtomPickingRenderable(stereoView);
@@ -560,7 +562,8 @@ MIGLWidget::~MIGLWidget()
     delete scene;
     delete mousePicker;
 
-    writeViewPointSettings(viewpoint);
+    writeViewPointSettings(viewpoint, viewpointSettings);
+    delete viewpointSettings;
     delete viewpoint;
     viewpoint = NULL;
     delete AtomStack;
@@ -963,6 +966,7 @@ void MIGLWidget::draw(QPainter *painter)
     scene->pentamerModel = PentamerModel;
     scene->atomStack = AtomStack;
     scene->viewpoint = viewpoint;
+    scene->viewpointSettings = viewpointSettings;
     scene->torsionArrow = TorsionArrow;
     scene->topView = TopView;
     scene->renderer->setViewVector(camera->getViewVector());
@@ -1312,12 +1316,12 @@ void MIGLWidget::MouseMoveXfit(unsigned short nFlags, CPoint point)
             }
             viewpoint->rotate(xang, yang, zang);
         }
-        int save = viewpoint->GetBallandStick();
-        if (save > ViewPoint::BALLANDSTICK)
+        int save = viewpointSettings->GetBallandStick();
+        if (save > ViewPointSettings::BALLANDSTICK)
         {
-            viewpoint->SetBallandStick(ViewPoint::BALLANDSTICK);
+            viewpointSettings->SetBallandStick(ViewPointSettings::BALLANDSTICK);
             ReDraw();
-            viewpoint->SetBallandStick(save);
+            viewpointSettings->SetBallandStick(save);
         }
         else
         {
@@ -2214,37 +2218,37 @@ void MIGLWidget::OnAnimateRock()
 
 void MIGLWidget::setViewpointLineThickness(int thickness)
 {
-    viewpoint->LineThickness(thickness);
+    viewpointSettings->SetLineThickness(thickness);
     doRefresh();
 }
 
 void MIGLWidget::OnRenderingDepthcuedcolors()
 {
-    viewpoint->setDepthCuedColors(!viewpoint->isDepthCuedColors());
+    viewpointSettings->setDepthCuedColors(!viewpointSettings->isDepthCuedColors());
     doRefresh();
 }
 
 void MIGLWidget::OnRenderingDepthcuedlinewidth()
 {
-    viewpoint->setDepthCuedLineWidth(!viewpoint->isDepthCuedLineWidth());
-    scene->renderer->setLineWidthDepthCued(viewpoint->isDepthCuedLineWidth());
+    viewpointSettings->setDepthCuedLineWidth(!viewpointSettings->isDepthCuedLineWidth());
+    scene->renderer->setLineWidthDepthCued(viewpointSettings->isDepthCuedLineWidth());
     doRefresh();
 }
 
 void MIGLWidget::OnDimNonactiveModels()
 {
-    viewpoint->setDimNonactiveModels(!viewpoint->isDimNonactiveModels());
-    scene->renderer->setDimNonactiveModels(viewpoint->isDimNonactiveModels());
+    viewpointSettings->setDimNonactiveModels(!viewpointSettings->isDimNonactiveModels());
+    scene->renderer->setDimNonactiveModels(viewpointSettings->isDimNonactiveModels());
     doRefresh();
 }
 
 void MIGLWidget::OnAmountToDimNonactiveModels()
 {
     bool ok;
-    double percent = QInputDialog::getDouble(this, "Amount to dim non-active models", "Amount to dim non-active models (0.0 to 1.0)", viewpoint->getAmountToDimNonactiveModels(), 0.0, 1.0, 2, &ok);
+    double percent = QInputDialog::getDouble(this, "Amount to dim non-active models", "Amount to dim non-active models (0.0 to 1.0)", viewpointSettings->getAmountToDimNonactiveModels(), 0.0, 1.0, 2, &ok);
     if (ok)
     {
-        viewpoint->setAmountToDimNonactiveModels(percent);
+        viewpointSettings->setAmountToDimNonactiveModels(percent);
         scene->renderer->setAmountToDimNonactiveModels(percent);
         doRefresh();
     }
@@ -2252,7 +2256,7 @@ void MIGLWidget::OnAmountToDimNonactiveModels()
 
 void MIGLWidget::OnUpdateDimNonactiveModels(QAction *action)
 {
-    action->setChecked(viewpoint->isDimNonactiveModels());
+    action->setChecked(viewpointSettings->isDimNonactiveModels());
 }
 
 void MIGLWidget::OnViewRotatey90()
@@ -2282,42 +2286,42 @@ void MIGLWidget::OnUpdateAnimateRoll(QAction *action)
 
 void MIGLWidget::OnUpdateLinethicknessFour(QAction *action)
 {
-    action->setChecked(viewpoint->GetLineThickness() == 4);
-    action->setEnabled((viewpoint->GetBallandStick() == ViewPoint::BALLANDSTICK
-                   || viewpoint->GetBallandStick() == ViewPoint::STICKS));
+    action->setChecked(viewpointSettings->GetLineThickness() == 4);
+    action->setEnabled((viewpointSettings->GetBallandStick() == ViewPointSettings::BALLANDSTICK
+                   || viewpointSettings->GetBallandStick() == ViewPointSettings::STICKS));
 }
 
 void MIGLWidget::OnUpdateLinethicknessOne(QAction *action)
 {
-    action->setChecked(viewpoint->GetLineThickness() <= 1);
-    action->setEnabled((viewpoint->GetBallandStick() == ViewPoint::BALLANDSTICK
-                   || viewpoint->GetBallandStick() == ViewPoint::STICKS));
+    action->setChecked(viewpointSettings->GetLineThickness() <= 1);
+    action->setEnabled((viewpointSettings->GetBallandStick() == ViewPointSettings::BALLANDSTICK
+                   || viewpointSettings->GetBallandStick() == ViewPointSettings::STICKS));
 }
 
 void MIGLWidget::OnUpdateLinethicknessThree(QAction *action)
 {
-    action->setChecked(viewpoint->GetLineThickness() == 3);
-    action->setEnabled((viewpoint->GetBallandStick() == ViewPoint::BALLANDSTICK
-                   || viewpoint->GetBallandStick() == ViewPoint::STICKS));
+    action->setChecked(viewpointSettings->GetLineThickness() == 3);
+    action->setEnabled((viewpointSettings->GetBallandStick() == ViewPointSettings::BALLANDSTICK
+                   || viewpointSettings->GetBallandStick() == ViewPointSettings::STICKS));
 }
 
 void MIGLWidget::OnUpdateLinethicknessTwo(QAction *action)
 {
-    action->setChecked(viewpoint->GetLineThickness() == 2);
-    action->setEnabled((viewpoint->GetBallandStick() == ViewPoint::BALLANDSTICK
-                   || viewpoint->GetBallandStick() == ViewPoint::STICKS));
+    action->setChecked(viewpointSettings->GetLineThickness() == 2);
+    action->setEnabled((viewpointSettings->GetBallandStick() == ViewPointSettings::BALLANDSTICK
+                   || viewpointSettings->GetBallandStick() == ViewPointSettings::STICKS));
 }
 
 void MIGLWidget::OnUpdateRenderingDepthcuedcolors(QAction *action)
 {
-    action->setChecked(viewpoint->isDepthCuedColors());
+    action->setChecked(viewpointSettings->isDepthCuedColors());
 }
 
 void MIGLWidget::OnUpdateRenderingDepthcuedlinewidth(QAction *action)
 {
-    action->setChecked(viewpoint->isDepthCuedLineWidth());
-    action->setEnabled((viewpoint->GetBallandStick() == ViewPoint::BALLANDSTICK
-                   || viewpoint->GetBallandStick() == ViewPoint::STICKS));
+    action->setChecked(viewpointSettings->isDepthCuedLineWidth());
+    action->setEnabled((viewpointSettings->GetBallandStick() == ViewPointSettings::BALLANDSTICK
+                   || viewpointSettings->GetBallandStick() == ViewPointSettings::STICKS));
 }
 
 void MIGLWidget::OnUpdateStereoToggle(QAction *action)
@@ -2355,13 +2359,13 @@ void MIGLWidget::OnUpdateViewOrthonormal(QAction *action)
 
 void MIGLWidget::OnRenderingBallandstick()
 {
-    viewpoint->SetBallandStick();
+    viewpointSettings->SetBallandStick();
     doRefresh();
 }
 
 void MIGLWidget::OnUpdateRenderingBallandstick(QAction *action)
 {
-    action->setChecked(viewpoint->GetBallandStick() == ViewPoint::BALLANDSTICK);
+    action->setChecked(viewpointSettings->GetBallandStick() == ViewPointSettings::BALLANDSTICK);
 }
 
 void MIGLWidget::OnGotoGotoxyz()
@@ -3531,7 +3535,6 @@ void MIGLWidget::OnObjectsAllatoms()
 void MIGLWidget::OnViewTopview()
 {
     TopView = !TopView;
-    viewpoint->setTopView(TopView);
     if (TopView)
     {
         viewpoint->setscale(viewpoint->getscale()/2);
@@ -3550,24 +3553,24 @@ void MIGLWidget::OnUpdateViewTopview(QAction *action)
 
 void MIGLWidget::OnRenderSpacefilling()
 {
-    viewpoint->SetSpaceFilling();
+    viewpointSettings->SetSpaceFilling();
     doRefresh();
 }
 
 void MIGLWidget::OnUpdateRenderSpacefilling(QAction *action)
 {
-    action->setChecked(viewpoint->GetBallandStick() == ViewPoint::CPK);
+    action->setChecked(viewpointSettings->GetBallandStick() == ViewPointSettings::CPK);
 }
 
 void MIGLWidget::OnRenderSticks()
 {
-    viewpoint->SetSticks();
+    viewpointSettings->SetSticks();
     doRefresh();
 }
 
 void MIGLWidget::OnUpdateRenderSticks(QAction *action)
 {
-    action->setChecked(viewpoint->GetBallandStick() == ViewPoint::STICKS);
+    action->setChecked(viewpointSettings->GetBallandStick() == ViewPointSettings::STICKS);
 }
 
 void MIGLWidget::OnGeomBond()
@@ -3649,13 +3652,13 @@ void MIGLWidget::OnRenderBallsize()
 {
     GenericDataDialog dlg(this);
     dlg.setWindowTitle("Ball/Cylinder Size");
-    dlg.addDoubleField("Ball diameter (% of CPK):", viewpoint->GetBallSize());
-    dlg.addDoubleField("Cylinder diameter (% of ball d):", viewpoint->GetCylinderSize());
+    dlg.addDoubleField("Ball diameter (% of CPK):", viewpointSettings->GetBallSize());
+    dlg.addDoubleField("Cylinder diameter (% of ball d):", viewpointSettings->GetCylinderSize());
 
     if (dlg.exec() == QDialog::Accepted)
     {
-        viewpoint->SetBallSize(dlg.value(0).toDouble());
-        viewpoint->SetCylinderSize(dlg.value(1).toDouble());
+        viewpointSettings->SetBallSize(dlg.value(0).toDouble());
+        viewpointSettings->SetCylinderSize(dlg.value(1).toDouble());
         PaletteChanged = true;
         doRefresh();
     }
@@ -3664,18 +3667,18 @@ void MIGLWidget::OnRenderBallsize()
 void MIGLWidget::OnUpdateRenderBallsize(QAction *action)
 {
     action->setEnabled(true);
-    //action->setEnabled(viewpoint->GetBallandStick()==ViewPoint::BALLANDCYLINDER);
+    //action->setEnabled(viewpoint->GetBallandStick()==ViewPointSettings::BALLANDCYLINDER);
 }
 
 void MIGLWidget::OnRenderBallandcylinder()
 {
-    viewpoint->SetBallandCylinder();
+    viewpointSettings->SetBallandCylinder();
     doRefresh();
 }
 
 void MIGLWidget::OnUpdateRenderBallandcylinder(QAction *action)
 {
-    action->setChecked(viewpoint->GetBallandStick() == ViewPoint::BALLANDCYLINDER);
+    action->setChecked(viewpointSettings->GetBallandStick() == ViewPointSettings::BALLANDCYLINDER);
 }
 
 void MIGLWidget::OnGotoZoomiin()
@@ -9403,13 +9406,13 @@ void MIGLWidget::OnUpdateObjectStackExpandtop2allatomsinrange(QAction *action)
 
 bool MIGLWidget::DoYouWantBallAndCylinder()
 {
-    if (viewpoint->GetBallandStick() != ViewPoint::BALLANDCYLINDER)
+    if (viewpointSettings->GetBallandStick() != ViewPointSettings::BALLANDCYLINDER)
     {
         if (QMessageBox::question(this, "?", "In order to see the effect of this command, the render mode "
                          "needs to be Ball and Cylinder.\n Should I change it for you?",
                          QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
         {
-            viewpoint->SetBallandCylinder();
+            viewpointSettings->SetBallandCylinder();
         }
         return true;
     }
@@ -10771,7 +10774,7 @@ void MIGLWidget::handleMouseRelease(QGraphicsSceneMouseEvent *e)
 
         if (pos.x() != mousestart.x || pos.y() != mousestart.y)
         {
-            if (viewpoint->GetBallandStick() > ViewPoint::BALLANDSTICK)
+            if (viewpointSettings->GetBallandStick() > ViewPointSettings::BALLANDSTICK)
             {
                 ReDraw();
             }
@@ -10870,7 +10873,7 @@ void MIGLWidget::prepareAtomPicking()
 {
     RenderStyle style = RenderStyle::getBallAndLine();
     style.setBondLine(false);
-    style.setBallPercent(viewpoint->GetBallSize() / 100.0f);
+    style.setBallPercent(viewpointSettings->GetBallSize() / 100.0f);
     atomPickingRenderable->setRenderStyle(style);
     atomPickingRenderable->setModels(GetDisplaylist());
 }
@@ -10878,20 +10881,20 @@ void MIGLWidget::prepareAtomPicking()
 void MIGLWidget::prepareBondPicking()
 {
     RenderStyle style;
-    if (viewpoint->GetBallandStick() == ViewPoint::STICKS)
+    if (viewpointSettings->GetBallandStick() == ViewPointSettings::STICKS)
     {
         style.set(RenderStyle::getLine());
-        style.setBondLineWidth(viewpoint->GetLineThickness());
+        style.setBondLineWidth(viewpointSettings->GetLineThickness());
     }
-    else if (viewpoint->GetBallandStick() == ViewPoint::BALLANDSTICK)
+    else if (viewpointSettings->GetBallandStick() == ViewPointSettings::BALLANDSTICK)
     {
         style.set(RenderStyle::getBallAndLine());
-        style.setBondLineWidth(viewpoint->GetLineThickness());
+        style.setBondLineWidth(viewpointSettings->GetLineThickness());
     }
     else
     {
         style.set(RenderStyle::getBallAndStick());
-        style.setStickPercent((viewpoint->GetBallSize() / 100.0f) * (viewpoint->GetCylinderSize() / 100.0f));
+        style.setStickPercent((viewpointSettings->GetBallSize() / 100.0f) * (viewpointSettings->GetCylinderSize() / 100.0f));
     }
     style.setAtomBall(false);
     bondPickingRenderable->setRenderStyle(style);

@@ -11,13 +11,7 @@
 
 using namespace chemlib;
 
-const int ViewPoint::STICKS = 0;
-const int ViewPoint::BALLANDSTICK = 1;
-const int ViewPoint::CPK = 2;
-const int ViewPoint::BALLANDCYLINDER = 3;
-
 ViewPoint::ViewPoint()
-    : lineThickness(1)
 {
     cscale = 100;
     for (int i = 0; i < 3; i++)
@@ -44,8 +38,6 @@ ViewPoint::ViewPoint()
     xcenter = width_/2;
     height_ = 100;
     ycenter = height_/2;
-    topview = 0;
-    ballmode = 0;
 }
 
 void ViewPoint::UnDo()
@@ -99,7 +91,7 @@ void ViewPoint::setmatrix(float mat[3][3])
     viewmat[2][0] = mat[2][0];
     viewmat[2][1] = mat[2][1];
     viewmat[2][2] = mat[2][2];
-    orthomat();
+    orthomatrix(viewmat, viewmat);
     changed = 1;
 }
 
@@ -525,139 +517,6 @@ bool ViewPoint::CenterAtResidue(const Residue *res)
     return true;
 }
 
-int ViewPoint::colordepth(int c)
-{
-    if (c < 0)
-    {
-        return 0;
-    }
-    else if (depthcue_color)
-    {
-        return (c);
-    }
-    else
-    {
-        return (0);
-    }
-}
-
-void ViewPoint::setDepthCuedLineWidth(bool on)
-{
-    depthcue_width = on;
-}
-
-bool ViewPoint::isDepthCuedLineWidth()
-{
-    return depthcue_width;
-}
-
-void ViewPoint::setDepthCuedColors(bool on)
-{
-    depthcue_color = on;
-}
-
-bool ViewPoint::isDepthCuedColors()
-{
-    return depthcue_color;
-}
-
-void ViewPoint::setDimNonactiveModels(bool on)
-{
-    dimNonactiveModels = on;
-}
-
-bool ViewPoint::isDimNonactiveModels()
-{
-    return dimNonactiveModels;
-}
-
-void ViewPoint::setAmountToDimNonactiveModels(float percent)
-{
-    amountToDimNonactiveModels = percent;
-}
-
-float ViewPoint::getAmountToDimNonactiveModels()
-{
-    return amountToDimNonactiveModels;
-}
-
-void ViewPoint::SetBallandStick()
-{
-    ballandstick = BALLANDSTICK;
-}
-
-void ViewPoint::SetBallandStick(int s)
-{
-    ballandstick = s;
-}
-
-void ViewPoint::SetBallandCylinder()
-{
-    ballandstick = BALLANDCYLINDER;
-}
-
-void ViewPoint::SetSpaceFilling()
-{
-    ballandstick = CPK;
-}
-
-void ViewPoint::SetSticks()
-{
-    ballandstick = STICKS;
-}
-
-void ViewPoint::ToggleBallandStick()
-{
-    ballandstick = ballandstick ^ 1;
-}
-
-int ViewPoint::GetBallandStick()
-{
-    return ballandstick;
-}
-
-int ViewPoint::GetBallSize()
-{
-    return ballsize;
-}
-
-void ViewPoint::SetBallSize(int b)
-{
-    ballsize = b;
-}
-
-int ViewPoint::GetBallMode()
-{
-    return ballmode;
-}
-
-void ViewPoint::SetBallMode(int b)
-{
-    ballmode = b;
-}
-
-int ViewPoint::GetCylinderSize()
-{
-    return cylindersize;
-}
-
-void ViewPoint::SetCylinderSize(int b)
-{
-    cylindersize = b;
-}
-
-int ViewPoint::linewidth(int w)
-{
-    if (depthcue_width)
-    {
-        return (w);
-    }
-    else
-    {
-        return (lineThickness);
-    }
-}
-
 void ViewPoint::setscale(long s)
 {
     scale = s;
@@ -749,11 +608,6 @@ int ViewPoint::getcenteri(int i)
     }
 }
 
-void ViewPoint::orthomat()
-{
-    orthomatrix(viewmat, viewmat);
-}
-
 int ViewPoint::width()
 {
     return width_;
@@ -775,25 +629,6 @@ float ViewPoint::getheight()
     return (float)((float)(height_)*(float)CRS/(float)scale/10.0F);
 }
 
-void ViewPoint::LineThickness(int n)
-{
-    if (n < 0)
-    {
-        n = 0;
-    }
-    lineThickness = n;
-}
-
-int ViewPoint::GetLineThickness()
-{
-    return lineThickness;
-}
-
-void ViewPoint::SetLineThickness(int w)
-{
-    lineThickness = w;
-}
-
 bool ViewPoint::ischanged()
 {
     return (changed);
@@ -807,16 +642,6 @@ void ViewPoint::clearchanged()
 void ViewPoint::setchanged()
 {
     changed = true;
-}
-
-void ViewPoint::setTopView(int on)
-{
-    topview = on;
-}
-
-int ViewPoint::getTopView()
-{
-    return topview;
 }
 
 bool ViewPoint::UnDoable()

@@ -46,6 +46,7 @@
 #include "ui/BValueColors.h"
 #include "CurrentMIGLWidgetAction.h"
 #include "script/LocalSocketScript.h"
+#include "ViewPointSettings.h"
 
 #ifdef _WIN32
 #include <images/mifit_icon_32x32.xpm>
@@ -2367,12 +2368,12 @@ void MIMainWindow::updateRenderMenu()
     bool lineThicknessEnabled = false;
     if (currentMIGLWidget())
     {
-        ViewPoint *viewpoint = currentMIGLWidget()->viewpoint;
-        int thickness = viewpoint->GetLineThickness();
+        ViewPointSettings *viewpointSettings = currentMIGLWidget()->viewpointSettings;
+        int thickness = viewpointSettings->GetLineThickness();
         if (thickness > 0 && renderLineThicknessMenu_->actions().size() <= thickness)
         renderLineThicknessMenu_->actions().at(thickness-1)->setChecked(true);
-        lineThicknessEnabled = viewpoint->GetBallandStick() == ViewPoint::BALLANDSTICK
-                  || viewpoint->GetBallandStick() == ViewPoint::STICKS;
+        lineThicknessEnabled = viewpointSettings->GetBallandStick() == ViewPointSettings::BALLANDSTICK
+                  || viewpointSettings->GetBallandStick() == ViewPointSettings::STICKS;
     }
     renderLineThicknessMenu_->setEnabled(lineThicknessEnabled);
 }

@@ -39,6 +39,7 @@ class QResizeEvent;
 class InterpBox;
 class MainItem;
 class NavigatorCanvas;
+class ViewPointSettings;
 namespace mi
 {
     namespace opengl
@@ -377,6 +378,7 @@ public:
      * Created when view is created.
      */
     ViewPoint *viewpoint;
+    ViewPointSettings *viewpointSettings;
     /**
      * Stack of atoms used by the picking operations.
      * Created when view is created.
