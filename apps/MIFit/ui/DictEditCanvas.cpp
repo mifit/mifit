@@ -139,8 +139,8 @@ private:
 
 DictEditCanvas::DictEditCanvas(DictEditDialog *parent)
     : QDeclarativeView(QUrl("qrc:/qml/root.qml")),
-      parent(parent),
       popupMenu(NULL),
+      parent(parent),
       geomrefiner(NULL),
       isRotating(false),
       isZooming(false),

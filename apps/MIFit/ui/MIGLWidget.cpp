@@ -1039,40 +1039,39 @@ static bool IsWindowEnabled()
 static bool DraggingSlab = false;
 static bool DraggingRotate = false;
 
-void MIGLWidget::OnMouseMove(unsigned short nFlags, CPoint point)
+void MIGLWidget::OnMouseMove(QPoint point, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
 {
     MouseStillTime = 0;
     MouseInWindow = true;
     if (Application::instance()->GetXfitMouseMode())
     {
-        MouseMoveXfit(nFlags, point);
+        MouseMoveXfit(point, buttons, modifiers);
         return;
     }
-    CPoint d;
+    QPoint d;
     float xang = 0.0F, yang = 0.0F, zang = 0.0F;
     if (isVisible() && IsWindowEnabled() && MouseCaptured)
     {
-        d.x = point.x - mouse.x;
-        d.y = point.y - mouse.y;
+        d = point - mouse;
     }
     else
     {
-        d.x = d.y = 0;
+        d = QPoint();
     }
 
-    if (nFlags & MK_CONTROL)
+    if (modifiers & Qt::ControlModifier)
     {
         // restrict movement to x or y whichever is greater
-        if (abs(d.x) > abs(d.y))
+        if (abs(d.x()) > abs(d.y()))
         {
-            d.y = 0;
+            d.ry() = 0;
         }
         else
         {
-            d.x = 0;
+            d.rx() = 0;
         }
     }
-    if (d.x != 0 || d.y != 0)
+    if (d.x() != 0 || d.y() != 0)
     {
         if (DragStart == false)
         {
@@ -1080,9 +1079,9 @@ void MIGLWidget::OnMouseMove(unsigned short nFlags, CPoint point)
             DragStart = true;
         }
     }
-    if (nFlags & MK_LBUTTON
-        && !(nFlags&MK_RBUTTON)
-        && (d.x != 0 || d.y != 0))
+    if (buttons & Qt::LeftButton
+        && !(buttons&Qt::RightButton)
+        && (d.x() != 0 || d.y() != 0))
     {
         // Left Mouse Drag
         // 1 pixel to 1 degree mouse movement for now...
@@ -1090,27 +1089,27 @@ void MIGLWidget::OnMouseMove(unsigned short nFlags, CPoint point)
         // Check for clip plane drag if in Top View mode
         if (TopView && !DraggingRotate)
         {
-            doSlabDrag(point.x, point.y, d.x, d.y);
+            doSlabDrag(point.x(), point.y(), d.x(), d.y());
         }
-        if (nFlags & MK_SHIFT && !DraggingSlab)
+        if (modifiers & Qt::ShiftModifier && !DraggingSlab)
         {
             SetCursor(imhScale);
-            zang = 1.0F - (float)d.y*0.01F;
+            zang = 1.0F - (float)d.y()*0.01F;
             viewpoint->zoom(zang);
         }
-        else if (nFlags & MK_LBUTTON && !DraggingSlab)
+        else if (buttons & Qt::LeftButton && !DraggingSlab)
         {
             DraggingRotate = true;
-            if (mousestart.y < 30)
+            if (mousestart.y() < 30)
             {
                 SetCursor(imhZRotate);
                 if (!TopView)
                 {
-                    zang = (float)-d.x;
+                    zang = (float)-d.x();
                 }
                 else
                 {
-                    yang = (float)-d.x;
+                    yang = (float)-d.x();
                 }
             }
             else
@@ -1118,27 +1117,27 @@ void MIGLWidget::OnMouseMove(unsigned short nFlags, CPoint point)
                 SetCursor(imhRotate);
                 if (!TopView)
                 {
-                    xang = (float)d.y;
-                    yang = (float)-d.x;
+                    xang = (float)d.y();
+                    yang = (float)-d.x();
                 }
                 else
                 {
-                    xang = (float)d.y;
-                    zang = (float)-d.x;
+                    xang = (float)d.y();
+                    zang = (float)-d.x();
                 }
             }
             viewpoint->rotate(xang, yang, zang);
         }
         ReDraw();
     }
-    else if (nFlags & MK_RBUTTON && !(nFlags & MK_LBUTTON)
-             && (d.x != 0 || d.y != 0))
+    else if (buttons & Qt::RightButton && !(buttons & Qt::LeftButton)
+             && (d.x() != 0 || d.y() != 0))
     {
         RightMouseDrag(d, xang, yang, zang);
     }
     else
     {
-        if (point.y > 30)
+        if (point.y() > 30)
         {
             SetCursor(imhCross);
         }
@@ -1147,11 +1146,10 @@ void MIGLWidget::OnMouseMove(unsigned short nFlags, CPoint point)
             SetCursor(imhZCursor);
         }
     }
-    mouse.x = point.x;
-    mouse.y = point.y;
+    mouse = point;
 }
 
-void MIGLWidget::RightMouseDrag(CPoint d, float xang, float yang, float zang)
+void MIGLWidget::RightMouseDrag(QPoint d, float xang, float yang, float zang)
 {
     // Right Mouse Drag
     switch (RightMouseMode)
@@ -1162,7 +1160,7 @@ void MIGLWidget::RightMouseDrag(CPoint d, float xang, float yang, float zang)
         {
             int dx, dy, dz;
             float x, y, z;
-            viewpoint->getdirection((int)d.x, (int)d.y, dx, dy, dz);
+            viewpoint->getdirection((int)d.x(), (int)d.y(), dx, dy, dz);
             x = (float)dx/30.0F;
             y = (float)dy/30.0F;
             z = (float)dz/30.0F;
@@ -1175,17 +1173,17 @@ void MIGLWidget::RightMouseDrag(CPoint d, float xang, float yang, float zang)
         SetCursor(imhRotate);
         if (IsFitting())
         {
-            if (mousestart.y < 30)
+            if (mousestart.y() < 30)
             {
-                zang = (float)-d.x;
-                xang = (float)d.y;
+                zang = (float)-d.x();
+                xang = (float)d.y();
                 yang = 0.0F;
             }
             else
             {
-                xang = (float)d.y;
+                xang = (float)d.y();
 
-                yang = (float)-d.x;
+                yang = (float)-d.x();
                 zang = 0.0F;
             }
             fitmol->Rotate(xang/3.0F, yang/3.0F, zang/3.0F, fitcenter.x(),
@@ -1197,7 +1195,7 @@ void MIGLWidget::RightMouseDrag(CPoint d, float xang, float yang, float zang)
         SetCursor(imhTorsion);
         if (Torsioning && IsFitting())
         {
-            fitmol->RotateTorsion((float)d.x);
+            fitmol->RotateTorsion((float)d.x());
             char torval[100];
             if (fitmol->GetTorsionValue(torval, fitres))
             {
@@ -1212,24 +1210,24 @@ void MIGLWidget::RightMouseDrag(CPoint d, float xang, float yang, float zang)
         int x = 0, y = 0, z = 0;
         if (!TopView)
         {
-            if (mousestart.y < 30)
+            if (mousestart.y() < 30)
             {
                 SetCursor(imhSlabDrag);
-                viewpoint->slab(d.x);
+                viewpoint->slab(d.x());
                 break;
             }
             else
             {
                 SetCursor(imhCenter);
-                x = (int)d.x;
-                y = (int)d.y;
+                x = d.x();
+                y = d.y();
             }
         }
         else
         {
             SetCursor(imhCenter);
-            x = (int)d.x;
-            z = -(int)d.y;
+            x = d.x();
+            z = -d.y();
         }
         viewpoint->scroll(x, y, z);
         break;
@@ -1238,33 +1236,32 @@ void MIGLWidget::RightMouseDrag(CPoint d, float xang, float yang, float zang)
     ReDraw();
 }
 
-void MIGLWidget::MouseMoveXfit(unsigned short nFlags, CPoint point)
+void MIGLWidget::MouseMoveXfit(QPoint point, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
 {
-    CPoint d;
+    QPoint d;
     float xang = 0.0F, yang = 0.0F, zang = 0.0F;
     if (isVisible() && IsWindowEnabled() && MouseCaptured)
     {
-        d.x = point.x - mouse.x;
-        d.y = point.y - mouse.y;
+        d = point - mouse;
     }
     else
     {
-        d.x = d.y = 0;
+        d = QPoint();
     }
 
-    if (nFlags & MK_CONTROL)
+    if (modifiers & Qt::ControlModifier)
     {
         // restrict movement to x or y whichever is greater
-        if (abs(d.x) > abs(d.y))
+        if (abs(d.x()) > abs(d.y()))
         {
-            d.y = 0;
+            d.ry() = 0;
         }
         else
         {
-            d.x = 0;
+            d.rx() = 0;
         }
     }
-    if (d.x != 0 || d.y != 0)
+    if (d.x() != 0 || d.y() != 0)
     {
         if (DragStart == false)
         {
@@ -1272,10 +1269,10 @@ void MIGLWidget::MouseMoveXfit(unsigned short nFlags, CPoint point)
             DragStart = true;
         }
     }
-    if (nFlags & MK_LBUTTON
-        && !(nFlags&MK_RBUTTON)
-        && !(nFlags&MK_MBUTTON)
-        && (d.x != 0 || d.y != 0))
+    if (buttons & Qt::LeftButton
+        && !(buttons&Qt::RightButton)
+        && !(buttons&Qt::MiddleButton)
+        && (d.x() != 0 || d.y() != 0))
     {
         // Left Mouse Drag
         // 1 pixel to 1 degree mouse movement for now...
@@ -1283,21 +1280,21 @@ void MIGLWidget::MouseMoveXfit(unsigned short nFlags, CPoint point)
         // Check for clip plane drag if in Top View mode
         if (TopView && !DraggingRotate)
         {
-            doSlabDrag(point.x, point.y, d.x, d.y);
+            doSlabDrag(point.x(), point.y(), d.x(), d.y());
         }
-        if (nFlags & MK_LBUTTON && !DraggingSlab)
+        if (buttons & Qt::LeftButton && !DraggingSlab)
         {
             DraggingRotate = true;
-            if (mousestart.y < 30)
+            if (mousestart.y() < 30)
             {
                 SetCursor(imhZRotate);
                 if (!TopView)
                 {
-                    zang = (float)-d.x;
+                    zang = (float)-d.x();
                 }
                 else
                 {
-                    yang = (float)-d.x;
+                    yang = (float)-d.x();
                 }
             }
             else
@@ -1305,35 +1302,35 @@ void MIGLWidget::MouseMoveXfit(unsigned short nFlags, CPoint point)
                 SetCursor(imhRotate);
                 if (!TopView)
                 {
-                    xang = (float)d.y;
-                    yang = (float)-d.x;
+                    xang = (float)d.y();
+                    yang = (float)-d.x();
                 }
                 else
                 {
-                    xang = (float)d.y;
-                    zang = (float)-d.x;
+                    xang = (float)d.y();
+                    zang = (float)-d.x();
                 }
             }
             viewpoint->rotate(xang, yang, zang);
         }
         ReDraw();
     }
-    else if ((nFlags & MK_MBUTTON) && (nFlags & MK_LBUTTON) && !(nFlags & MK_RBUTTON)
-             && (d.x != 0 || d.y != 0))
+    else if ((buttons & Qt::MiddleButton) && (buttons & Qt::LeftButton) && !(buttons & Qt::RightButton)
+             && (d.x() != 0 || d.y() != 0))
     {
         SetCursor(imhScale);
-        zang = 1.0F - (float)d.y*0.01F;
+        zang = 1.0F - (float)d.y()*0.01F;
         viewpoint->zoom(zang);
         ReDraw();
     }
-    else if ((nFlags & MK_MBUTTON) && !(nFlags & MK_LBUTTON) && !(nFlags & MK_RBUTTON)
-             && (d.x != 0 || d.y != 0))
+    else if ((buttons & Qt::MiddleButton) && !(buttons & Qt::LeftButton) && !(buttons & Qt::RightButton)
+             && (d.x() != 0 || d.y() != 0))
     {
         RightMouseDrag(d, xang, yang, zang);
     }
     else
     {
-        if (point.y > 30)
+        if (point.y() > 30)
         {
             SetCursor(imhCross);
         }
@@ -1342,11 +1339,10 @@ void MIGLWidget::MouseMoveXfit(unsigned short nFlags, CPoint point)
             SetCursor(imhZCursor);
         }
     }
-    mouse.x = point.x;
-    mouse.y = point.y;
+    mouse = point;
 }
 
-void MIGLWidget::OnLButtonDblClk(unsigned short /* nFlags */, CPoint)
+void MIGLWidget::OnLButtonDblClk()
 {
     // Double click - center on double clicked atom
     // Note that two of these atoms are on the stack
@@ -1387,7 +1383,7 @@ void MIGLWidget::recenter(Residue *residue, MIAtom *atom)
     }
 }
 
-bool MIGLWidget::OnKeyDown(unsigned int nChar, unsigned int, unsigned int nFlags)
+bool MIGLWidget::OnKeyDown(unsigned int nChar, Qt::KeyboardModifiers modifiers)
 {
     if (MIBusyManager::instance()->Busy())
     {
@@ -1398,10 +1394,8 @@ bool MIGLWidget::OnKeyDown(unsigned int nChar, unsigned int, unsigned int nFlags
     static float scale = 1.1F;
     static int inc = 0;
     bool handled = false;
-    bool shift = (nFlags & MK_SHIFT) != 0;
-    bool control = (nFlags & MK_CONTROL) != 0;
-    //bool alt = (nFlags & MK_ALT)!=0;
-    //bool meta = (nFlags & MK_META)!=0;
+    bool shift = (modifiers & Qt::ShiftModifier) != 0;
+    bool control = (modifiers & Qt::ControlModifier) != 0;
 
     bool xfit_mouse = Application::instance()->GetXfitMouseMode();
     switch (nChar)
@@ -1700,11 +1694,11 @@ bool MIGLWidget::OnKeyDown(unsigned int nChar, unsigned int, unsigned int nFlags
         {
             if (shift)
             {
-                RightMouseDrag(CPoint(-1, 0), 0.0F, fineangle, 0.0F);
+                RightMouseDrag(QPoint(-1, 0), 0.0F, fineangle, 0.0F);
             }
             else
             {
-                RightMouseDrag(CPoint(-10, 0), 0.0F, angle, 0.0F);
+                RightMouseDrag(QPoint(-10, 0), 0.0F, angle, 0.0F);
             }
         }
         else
@@ -1713,11 +1707,11 @@ bool MIGLWidget::OnKeyDown(unsigned int nChar, unsigned int, unsigned int nFlags
             {
                 if (shift)
                 {
-                    RightMouseDrag(CPoint(-1, 0), 0.0F, fineangle, 0.0F);
+                    RightMouseDrag(QPoint(-1, 0), 0.0F, fineangle, 0.0F);
                 }
                 else
                 {
-                    RightMouseDrag(CPoint(-10, 0), 0.0F, angle, 0.0F);
+                    RightMouseDrag(QPoint(-10, 0), 0.0F, angle, 0.0F);
                 }
             }
             else
@@ -1740,11 +1734,11 @@ bool MIGLWidget::OnKeyDown(unsigned int nChar, unsigned int, unsigned int nFlags
         {
             if (shift)
             {
-                RightMouseDrag(CPoint(0, -2), -fineangle, 0.0F, 0.0F);
+                RightMouseDrag(QPoint(0, -2), -fineangle, 0.0F, 0.0F);
             }
             else
             {
-                RightMouseDrag(CPoint(0, -2), -angle, 0.0F, 0.0F);
+                RightMouseDrag(QPoint(0, -2), -angle, 0.0F, 0.0F);
             }
         }
         else
@@ -1755,7 +1749,7 @@ bool MIGLWidget::OnKeyDown(unsigned int nChar, unsigned int, unsigned int nFlags
             }
             else if (control)
             {
-                RightMouseDrag(CPoint(0, -2), -angle, 0.0F, 0.0F);
+                RightMouseDrag(QPoint(0, -2), -angle, 0.0F, 0.0F);
             }
             else
             {
@@ -1777,11 +1771,11 @@ bool MIGLWidget::OnKeyDown(unsigned int nChar, unsigned int, unsigned int nFlags
         {
             if (shift)
             {
-                RightMouseDrag(CPoint(1, 0), 0.0F, -fineangle, 0.0F);
+                RightMouseDrag(QPoint(1, 0), 0.0F, -fineangle, 0.0F);
             }
             else
             {
-                RightMouseDrag(CPoint(10, 0), 0.0F, -angle, 0.0F);
+                RightMouseDrag(QPoint(10, 0), 0.0F, -angle, 0.0F);
             }
         }
         else
@@ -1790,11 +1784,11 @@ bool MIGLWidget::OnKeyDown(unsigned int nChar, unsigned int, unsigned int nFlags
             {
                 if (shift)
                 {
-                    RightMouseDrag(CPoint(1, 0), 0.0F, -fineangle, 0.0F);
+                    RightMouseDrag(QPoint(1, 0), 0.0F, -fineangle, 0.0F);
                 }
                 else
                 {
-                    RightMouseDrag(CPoint(10, 0), 0.0F, -angle, 0.0F);
+                    RightMouseDrag(QPoint(10, 0), 0.0F, -angle, 0.0F);
                 }
             }
             else
@@ -1817,11 +1811,11 @@ bool MIGLWidget::OnKeyDown(unsigned int nChar, unsigned int, unsigned int nFlags
         {
             if (shift)
             {
-                RightMouseDrag(CPoint(0, 2), fineangle, 0.0F, 0.0F);
+                RightMouseDrag(QPoint(0, 2), fineangle, 0.0F, 0.0F);
             }
             else
             {
-                RightMouseDrag(CPoint(0, 2), angle, 0.0F, 0.0F);
+                RightMouseDrag(QPoint(0, 2), angle, 0.0F, 0.0F);
             }
         }
         else
@@ -1832,7 +1826,7 @@ bool MIGLWidget::OnKeyDown(unsigned int nChar, unsigned int, unsigned int nFlags
             }
             else if (control)
             {
-                RightMouseDrag(CPoint(0, 2), angle, 0.0F, 0.0F);
+                RightMouseDrag(QPoint(0, 2), angle, 0.0F, 0.0F);
             }
             else
             {
@@ -7718,11 +7712,11 @@ void MIGLWidget::OnToolTip()
     MouseStillTime = 0;
     static int oldx = -1;
     static int oldy = -1;
-    if (oldx != mouse.x || oldy != mouse.y)
+    if (oldx != mouse.x() || oldy != mouse.y())
     {
         std::string s;
         prepareAtomPicking();
-        vector<GLuint> ids = mousePicker->pick(mouse.x, mouse.y, frustum, atomPickingRenderable);
+        vector<GLuint> ids = mousePicker->pick(mouse.x(), mouse.y(), frustum, atomPickingRenderable);
         MIAtom *atom = NULL;
         if (ids.size() > 0)
         {
@@ -7744,8 +7738,8 @@ void MIGLWidget::OnToolTip()
                 s = ::format("%s %s_%c (%0.3f,%0.3f,%0.3f) Occ=%0.2f B=%0.1f",
                              resid(res).c_str(), atom->name(), atom->altloc(), atom->x(), atom->y(), atom->z(), atom->occ(), atom->BValue());
             }
-            oldx = mouse.x;
-            oldy = mouse.y;
+            oldx = mouse.x();
+            oldy = mouse.y();
         }
         MIMainWindowMiddleFooter(s.c_str());
     }
@@ -10465,38 +10459,8 @@ void MIGLWidget::OnHideSidechainAtoms()
 
 void MIGLWidget::keyPressEvent(QKeyEvent *e)
 {
-    // convert to MFC style event
-    unsigned int nChar;
-    unsigned int nRepCnt = 1;
-    unsigned int nFlags = 0;
-    // flags for the key states
-    static bool ctrl = false;
-    static bool shift = false;
-    static bool alt = false;
-    static bool meta = false;
-    ctrl = (e->modifiers() & Qt::ControlModifier);
-    shift = (e->modifiers() & Qt::ShiftModifier);
-    alt = (e->modifiers() & Qt::AltModifier);
-    meta = (e->modifiers() & Qt::MetaModifier);
-
-    if (ctrl)
-    {
-        nFlags |= MK_CONTROL;
-    }
-    if (shift)
-    {
-        nFlags |= MK_SHIFT;
-    }
-    if (alt)
-    {
-        nFlags |= MK_ALT;
-    }
-    if (meta)
-    {
-        nFlags |= MK_META;
-    }
-
-    nChar = e->key();
+    unsigned int nChar = e->key();
+    bool shift = e->modifiers() & Qt::ShiftModifier;
     if (nChar <= 256 && isalpha(nChar))
     {
         // key() doesn't distinguish between upper and lower case keys, so we do it here
@@ -10568,7 +10532,7 @@ void MIGLWidget::keyPressEvent(QKeyEvent *e)
     {
         nChar = '}';
     }
-    if (!OnKeyDown(nChar, nRepCnt, nFlags))
+    if (!OnKeyDown(nChar, e->modifiers()))
     {
         QDeclarativeView::keyPressEvent(e); // chain to parent
     }
@@ -10576,45 +10540,17 @@ void MIGLWidget::keyPressEvent(QKeyEvent *e)
     MIMainWindow::instance()->updateToolBar();
 }
 
-
-static void getFlags(QGraphicsSceneMouseEvent *e, unsigned short &flags)
-{
-    // flags for the key states
-    if (e->modifiers() & Qt::ControlModifier)
-    {
-        flags |= MK_CONTROL;
-    }
-    if (e->modifiers() & Qt::ShiftModifier)
-    {
-        flags |= MK_SHIFT;
-    }
-    if (e->modifiers() & Qt::AltModifier)
-    {
-        flags |= MK_ALT;
-    }
-    if (e->modifiers() & Qt::MetaModifier)
-    {
-        flags |= MK_META;
-    }
-    if (e->buttons() & Qt::LeftButton)
-    {
-        flags |= MK_LBUTTON;
-    }
-    if (e->buttons() & Qt::RightButton)
-    {
-        flags |= MK_RBUTTON;
-    }
-    if (e->buttons() & Qt::MidButton)
-    {
-        flags |= MK_MBUTTON;
-    }
-}
-
-
 void MIGLWidget::handleMousePress(QGraphicsSceneMouseEvent *e)
 {
     QPoint pos = mapFromScene(e->scenePos());
-    mouse = CPoint(pos.x(), pos.y());
+
+    OnMousePress(pos, e->buttons(), e->modifiers());
+    e->accept();
+}
+
+void MIGLWidget::OnMousePress(QPoint pos, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
+{
+    mouse = pos;
     mousestart = mouse;
 
     if (!MouseCaptured)
@@ -10630,17 +10566,19 @@ void MIGLWidget::handleMousePress(QGraphicsSceneMouseEvent *e)
     {
         SetCursor(imhZCursor);
     }
-    e->accept();
 }
 
 void MIGLWidget::handleMouseRelease(QGraphicsSceneMouseEvent *e)
 {
-    unsigned short flags = 0;
-    getFlags(e, flags);
-
     QPoint pos = mapFromScene(e->scenePos());
 
-    if (e->button() & Qt::LeftButton)
+    OnMouseRelease(pos, e->buttons(), e->modifiers());
+}
+
+
+void MIGLWidget::OnMouseRelease(QPoint pos, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
+{
+    if (buttons & Qt::LeftButton)
     {
         Displaylist *models = GetDisplaylist();
         Bond bestbond;
@@ -10648,9 +10586,9 @@ void MIGLWidget::handleMouseRelease(QGraphicsSceneMouseEvent *e)
         DraggingSlab = false;
         DraggingRotate = false;
 
-        if (pos.x() == mousestart.x && pos.y() == mousestart.y && !doubleclicked)
+        if (pos.x() == mousestart.x() && pos.y() == mousestart.y() && !doubleclicked)
         {
-            mouse = CPoint(pos.x(), pos.y());
+            mouse = QPoint(pos.x(), pos.y());
             if (!TopView)
             {
                 annotationPickingRenderable->setModels(models);
@@ -10745,12 +10683,12 @@ void MIGLWidget::handleMouseRelease(QGraphicsSceneMouseEvent *e)
         }
     }
 
-    if (e->button() & (Qt::RightButton | Qt::MidButton))
+    if (buttons & (Qt::RightButton | Qt::MidButton))
     {
         // we've been showing drags as ball-and-stick and now we need
         // to redraw
 
-        if (pos.x() != mousestart.x || pos.y() != mousestart.y)
+        if (pos.x() != mousestart.x() || pos.y() != mousestart.y())
         {
             if (viewpointSettings->GetBallandStick() > ViewPointSettings::BALLANDSTICK)
             {
@@ -10784,20 +10722,13 @@ void MIGLWidget::handleMouseRelease(QGraphicsSceneMouseEvent *e)
 
 void MIGLWidget::handleMouseMove(QGraphicsSceneMouseEvent *e)
 {
-    unsigned short flags = 0;
-    getFlags(e, flags);
     QPoint pos = mapFromScene(e->scenePos());
 
     if (e->buttons() == Qt::NoButton)
     {
-        mouse.x = pos.x();
-        mouse.y = pos.y();
-        OnMouseMove(flags, CPoint(pos.x(), pos.y()));
+        mouse = pos;
     }
-    else
-    {
-        OnMouseMove(flags, CPoint(pos.x(), pos.y()));
-    }
+    OnMouseMove(pos, e->buttons(), e->modifiers());
 }
 
 void MIGLWidget::handleMouseDoubleClick(QGraphicsSceneMouseEvent *e)
@@ -10806,13 +10737,9 @@ void MIGLWidget::handleMouseDoubleClick(QGraphicsSceneMouseEvent *e)
 //mousePressEvent() and a mouseReleaseEvent() before the
 //mouseDoubleClickEvent().
 
-    unsigned short flags = 0;
-    getFlags(e, flags);
-    QPoint pos = mapFromScene(e->scenePos());
-
     if (e->button() & Qt::LeftButton)
     {
-        OnLButtonDblClk(flags, CPoint(pos.x(), pos.y()));
+        OnLButtonDblClk();
     }
 }
 

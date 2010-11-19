@@ -10,7 +10,6 @@
 #include <math/Quaternion.h>
 #include "core/corelib.h"
 #include <chemlib/chemlib.h>
-#include "macafxwin.h"
 #include "SaveModel.h"
 
 #include "RamaPlot.h"
@@ -143,7 +142,7 @@ private:
     bool MouseInWindow;
     bool AutoFit;
 
-    CPoint mouse, mousestart;
+    QPoint mouse, mousestart;
 
     QMenu *popup_menu;
     QAction *fitResidueAction;
@@ -499,7 +498,7 @@ public:
     /**
      * Called if the xfit compatible mouse mode is activated.
      */
-    void MouseMoveXfit(unsigned short nFlags, CPoint point);
+    void MouseMoveXfit(QPoint point, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers);
 
     /**
      * Return a pointer to the viewpoint.
@@ -581,7 +580,7 @@ public:
     /**
      * Implement a right mouse drag.
      */
-    void RightMouseDrag(CPoint d, float xang, float yang, float zang);
+    void RightMouseDrag(QPoint d, float xang, float yang, float zang);
 
     bool DraggingRefiAtom;
     bool DontConfirmWater;
@@ -621,18 +620,17 @@ public:
     void InsertMRK(chemlib::Residue *where, Molecule *model, bool after);
     void UpdateCurrent();
 
-    /**
-     * Mouse handler for a mouse movement event.
-     */
-    void OnMouseMove(unsigned short nFlags, CPoint point);
+    void OnMousePress(QPoint pos, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers);
+    void OnMouseMove(QPoint pos, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers);
+    void OnMouseRelease(QPoint pos, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers);
     /**
      * Mouse handler for a mouse left-button double-click event.
      */
-    void OnLButtonDblClk(unsigned short nFlags, CPoint point);
+    void OnLButtonDblClk();
     /**
      * Keyboard event handler.
      */
-    bool OnKeyDown(unsigned int nChar, unsigned int nRepCnt, unsigned int nFlags);
+    bool OnKeyDown(unsigned int nChar, Qt::KeyboardModifiers modifiers);
     /**
      * handler for a window size event.
      */

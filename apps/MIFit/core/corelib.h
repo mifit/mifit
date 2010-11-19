@@ -12,7 +12,6 @@
 #include "corelib.h"
 #include "Helix.h"
 #include "GeomRefiner.h"
-#include "MouseFlags.h"
 #include "mifit_algorithm.h"
 #include "Molecule.h"
 #include "MoleculeType.h"

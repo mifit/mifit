@@ -1,5 +1,4 @@
 #include "MIMolIO.h"
-#include "macafxwin.h"
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QStringList>

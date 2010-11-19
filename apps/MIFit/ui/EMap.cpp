@@ -5,7 +5,6 @@
 #include "GenericDataDialog.h"
 #include "core/corelib.h"
 #include "EMap.h"
-#include "macafxwin.h"
 #include "Application.h"
 
 #include "MapSettings.h"

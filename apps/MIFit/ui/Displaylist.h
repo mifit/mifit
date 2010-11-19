@@ -7,7 +7,6 @@ class Displaylist;
 #include <QObject>
 
 #include "core/corelib.h"
-#include "macafxwin.h"
 #include "Xguicryst.h"
 
 class EMap;

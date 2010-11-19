@@ -26,7 +26,6 @@
 #include "Displaylist.h"
 #include "EMap.h"
 #include "jobs/jobslib.h"
-#include "macafxwin.h"
 #include "MIGLWidget.h"
 #include "MIMainWindow.h"
 #include "PreferencesDialog.h"

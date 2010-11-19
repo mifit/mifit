@@ -13,7 +13,6 @@
 #include <map/maplib.h>
 #include "core/corelib.h"
 
-#include "macafxwin.h"
 #include "Application.h"
 
 WaitCursor::WaitCursor(const char *op)

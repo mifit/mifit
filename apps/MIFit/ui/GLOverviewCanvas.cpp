@@ -318,21 +318,21 @@ void GLOverviewCanvas::mousePressEvent(QMouseEvent *e)
     e->accept();
     if (!GetView())
         return;
-    GetView()->mousePressEvent(e);
+    GetView()->OnMousePress(e->pos(), e->buttons(), e->modifiers());
 }
 void GLOverviewCanvas::mouseReleaseEvent(QMouseEvent *e)
 {
     e->accept();
     if (!GetView())
         return;
-    GetView()->mouseReleaseEvent(e);
+    GetView()->OnMouseRelease(e->pos(), e->buttons(), e->modifiers());
 }
 void GLOverviewCanvas::mouseMoveEvent(QMouseEvent *e)
 {
     e->accept();
     if (!GetView())
         return;
-    GetView()->mouseMoveEvent(e);
+    GetView()->OnMouseMove(e->pos(), e->buttons(), e->modifiers());
 }
 void GLOverviewCanvas::mouseDoubleClickEvent(QMouseEvent *e)
 {
@@ -345,9 +345,6 @@ void GLOverviewCanvas::mouseDoubleClickEvent(QMouseEvent *e)
 void GLOverviewCanvas::keyPressEvent(QKeyEvent *e)
 {
     e->accept();
-
-    unsigned short nRepCnt = 1;
-    unsigned short nFlags = 0;
 
     unsigned short nChar;
     QString s = e->text();
@@ -404,9 +401,7 @@ void GLOverviewCanvas::keyPressEvent(QKeyEvent *e)
         nChar = '}';
     }
 
-    GetView()->OnKeyDown(nChar, nRepCnt, nFlags);
-
-    updateGL();
+    GetView()->OnKeyDown(nChar, e->modifiers());
 }
 
 QSize GLOverviewCanvas::sizeHint() const
