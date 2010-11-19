@@ -67,9 +67,6 @@ public:
     int height();  // in screen coordinates
     float getwidth();  // in ? coordinates
     float getheight();  // in ? coordinates
-    bool ischanged();
-    void clearchanged();
-    void setchanged();
     void getdirection(int, int, int&, int&, int&);
 
     void Do();
@@ -101,8 +98,6 @@ private:
     int backclip;
 
     std::vector<ViewSave> UndoList;
-
-    bool changed;
 
     void clampScale();
 };

@@ -26,10 +26,10 @@ using namespace std;
 Molecule::Molecule(int type)
     : MIMoleculeBase(),
       mapheader(new CMapHeader),
+      symmatoms_visible(false),
       m_pSecondaryStructure(NULL),
       secStruc_ribbon(false),
-      secStruc_schematic(false),
-      symmatoms_visible(false)
+      secStruc_schematic(false)
 
 {
     ModelType = type;
@@ -52,10 +52,10 @@ Molecule::Molecule(int type)
 Molecule::Molecule(Residue *reslist, std::string cmpd, FILE *fp, Bond *conns, int nconns, int type)
     : MIMoleculeBase(reslist, cmpd.c_str(), conns, nconns),
       mapheader(new CMapHeader),
+      symmatoms_visible(false),
       m_pSecondaryStructure(NULL),
       secStruc_ribbon(false),
-      secStruc_schematic(false),
-      symmatoms_visible(false)
+      secStruc_schematic(false)
 {
     ModelType = type;
     visible = dots_visible = labels_visible = annots_visible = 1;

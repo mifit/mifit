@@ -1316,17 +1316,7 @@ void MIGLWidget::MouseMoveXfit(unsigned short nFlags, CPoint point)
             }
             viewpoint->rotate(xang, yang, zang);
         }
-        int save = viewpointSettings->GetBallandStick();
-        if (save > ViewPointSettings::BALLANDSTICK)
-        {
-            viewpointSettings->SetBallandStick(ViewPointSettings::BALLANDSTICK);
-            ReDraw();
-            viewpointSettings->SetBallandStick(save);
-        }
-        else
-        {
-            ReDraw();
-        }
+        ReDraw();
     }
     else if ((nFlags & MK_MBUTTON) && (nFlags & MK_LBUTTON) && !(nFlags & MK_RBUTTON)
              && (d.x != 0 || d.y != 0))
@@ -2468,7 +2458,7 @@ void MIGLWidget::OnVdwDotSurface()
             QString message = QString("Number of dots: %1")
                     .arg(numDots);
             setMessage(message);
-            viewpoint->setchanged();
+            _modified = true;
             Logger::log(message.toAscii().constData());
             PaletteChanged = true;
             doRefresh();
@@ -2500,7 +2490,7 @@ void MIGLWidget::OnSurfaceSolvent()
             QString message = QString("Number of dots: %1")
                     .arg(numDots);
             setMessage(message);
-            viewpoint->setchanged();
+            _modified = true;
             Logger::log(message.toAscii().constData());
             PaletteChanged = true;
             doRefresh();
@@ -2528,7 +2518,7 @@ void MIGLWidget::cancelFitting()
     MIAtomList().swap(CurrentAtoms); // was CurrentAtoms.clear();
     fitres = NULL;
     fitmol = NULL;
-    viewpoint->setchanged();
+    _modified = true;
     RightMouseMode = CENTER;
     doRefresh();
 }
@@ -2551,7 +2541,7 @@ void MIGLWidget::ApplyFit()
         savefits.RestoreColor(FitToken, AtomType::FITATOM);
     }
     FitToken = savefits.Save(CurrentAtoms, fitmol);
-    viewpoint->setchanged();
+    _modified = true;
     fitres = NULL;
     MIAtomList().swap(CurrentAtoms); // was CurrentAtoms.clear();
     GetDisplaylist()->ClearCurrentSurface();
@@ -2615,7 +2605,7 @@ void MIGLWidget::fitResidue()
             SelectType = SINGLERESIDUE;
             if (SetupFit(fitres, fitres, fitmol, a->altloc()))
             {
-                viewpoint->setchanged();
+                _modified = true;
                 fitcenter.copyShallow(*a);
                 fromcenter = a;
                 doRefresh();
@@ -2723,7 +2713,7 @@ void MIGLWidget::OnFitResidues()
     SelectType = RESIDUES;
     if (SetupFit(fit_atoms, fitmol, a->altloc()))
     {
-        viewpoint->setchanged();
+        _modified = true;
         fitcenter.copyShallow(*a);
         fromcenter = a;
         doRefresh();
@@ -2766,7 +2756,7 @@ void MIGLWidget::fitResidueRange()
         if (SetupFit(popres1, popres2, m1, a1->altloc()))
         {
             fitres = popres1;
-            viewpoint->setchanged();
+            _modified = true;
             fitcenter.copyShallow(*a1);
             fromcenter = a1;
             doRefresh();
@@ -2797,7 +2787,7 @@ void MIGLWidget::OnFitSingleatom()
             SelectType = SINGLEATOM;
             if (SetupFit(fit_atoms, fitmol))
             {
-                viewpoint->setchanged();
+                _modified = true;
                 fitcenter.copyShallow(*a);
                 fromcenter = a;
                 RightMouseMode = TRANSLATE;
@@ -2839,7 +2829,7 @@ void MIGLWidget::OnFitAtoms()
     SelectType = ATOMS;
     if (SetupFit(fit_atoms, fitmol))
     {
-        viewpoint->setchanged();
+        _modified = true;
         fitcenter.copyShallow(*afit);
         fromcenter = afit;
         doRefresh();
@@ -4265,7 +4255,7 @@ void MIGLWidget::OnFitFitmolecule()
             SelectType = MOLECULE;
             if (SetupFit(NULL, NULL, fitmol))
             {
-                viewpoint->setchanged();
+                _modified = true;
                 fitcenter.copyShallow(*a);
                 fromcenter = a;
                 ReDraw();
@@ -5087,7 +5077,7 @@ void MIGLWidget::OnObjectSurfaceresidue()
         bool ignoreHidden = dlg->value(1).toBool();
         if (dotsper >= 1.0f && dotsper <= 10.0f)
         {
-            viewpoint->setchanged();
+            _modified = true;
             node->SurfaceResidue(res, (1.0f/dotsper), ignoreHidden);
             PaletteChanged = true;
             ReDraw();
@@ -5108,7 +5098,7 @@ void MIGLWidget::OnObjectSurfaceClearsurface()
     if (node)
     {
         node->FreeDots();
-        viewpoint->setchanged();
+        _modified = true;
         ReDraw();
     }
 }
@@ -5144,7 +5134,7 @@ void MIGLWidget::OnObjectSurfaceresidues()
             }
             int numDots = node->SurfaceResidues(1.0f/dotsper,
                                                   ignoreHidden);
-            viewpoint->setchanged();
+            _modified = true;
             QString message = QString("Number of dots: %1").arg(numDots);
             setMessage(message);
             Logger::log(message.toAscii().constData());
@@ -5188,7 +5178,7 @@ void MIGLWidget::OnObjectSurfaceatom()
             dotsper = newDotsper;
             ignoreHidden = dlg.value(1).toBool();
             int numDots = node->SurfaceAtom(a, 1.0f/dotsper, ignoreHidden);
-            viewpoint->setchanged();
+            _modified = true;
             QString message = QString("Number of dots: %1").arg(numDots);
             setMessage(message);
             Logger::log(message.toAscii().constData());
@@ -5232,7 +5222,7 @@ void MIGLWidget::OnObjectSurfaceAtoms()
                 AtomStack->Pop(a, res, node);
                 numDots += node->SurfaceAtom(a, 1.0f/dotsper, ignoreHidden);
             }
-            viewpoint->setchanged();
+            _modified = true;
             QString message = QString("Number of dots: %1").arg(numDots);
             setMessage(message);
             Logger::log(message.toAscii().constData());
@@ -5509,7 +5499,7 @@ void MIGLWidget::doMapContour(EMapBase *emap)
         center[1] = viewpoint->getcenter(1);
         center[2] = viewpoint->getcenter(2);
         emap->Contour(center, &CurrentAtoms);
-        viewpoint->setchanged();
+        _modified = true;
     }
     doRefresh();
 }
@@ -5799,7 +5789,7 @@ void MIGLWidget::OnMapSFCalc()
             OnMapContour();
         }
     }
-    viewpoint->setchanged();
+    _modified = true;
     ReDraw();
 }
 
@@ -5897,7 +5887,7 @@ void MIGLWidget::OnRefiRegion()
     }
     MIFitGeomRefiner()->Refine();
     UpdateCurrent();
-    viewpoint->setchanged();
+    _modified = true;
     if (!AutoFit)
     {
         ReDraw();
@@ -5935,7 +5925,7 @@ void MIGLWidget::refineRange()
     }
     MIFitGeomRefiner()->Refine();
     UpdateCurrent();
-    viewpoint->setchanged();
+    _modified = true;
     if (!AutoFit)
     {
         ReDraw();
@@ -5949,7 +5939,7 @@ void MIGLWidget::OnRefiUndo()
         return;
     }
     MIFitGeomRefiner()->Undo();
-    viewpoint->setchanged();
+    _modified = true;
     Modify(true);
     ReDraw();
 }
@@ -6040,7 +6030,7 @@ void MIGLWidget::OnRefiMolecule()
         MIFitGeomRefiner()->Refine();
 
     UpdateCurrent();
-    viewpoint->setchanged();
+    _modified = true;
     ReDraw();
 }
 
@@ -6084,7 +6074,7 @@ void MIGLWidget::acceptRefine()
     {
         MIFitGeomRefiner()->SetMapWeightI(10);
     }
-    viewpoint->setchanged();
+    _modified = true;
     Modify(true);
     ReDraw();
 }
@@ -6101,7 +6091,7 @@ void MIGLWidget::cancelRefine()
         return;
     }
     MIFitGeomRefiner()->Cancel();
-    viewpoint->setchanged();
+    _modified = true;
     ReDraw();
 }
 
@@ -6112,7 +6102,7 @@ void MIGLWidget::OnRefiReset()
         return;
     }
     MIFitGeomRefiner()->Reset();
-    viewpoint->setchanged();
+    _modified = true;
     ReDraw();
 }
 
@@ -6139,7 +6129,7 @@ void MIGLWidget::OnRefiReDo()
         return;
     }
     MIFitGeomRefiner()->Redo();
-    viewpoint->setchanged();
+    _modified = true;
     Modify(true);
     ReDraw();
 }
@@ -6235,7 +6225,7 @@ void MIGLWidget::OnFitUndo()
         }
         std::string t = ::format("FitToken is now %d", (int)FitToken);
         Logger::log(t.c_str());
-        viewpoint->setchanged();
+        _modified = true;
         Modify(true);
         ReDraw();
     }
@@ -6257,7 +6247,7 @@ void MIGLWidget::OnFitRedo()
         }
         std::string t = ::format("FitToken is now %d", (int)FitToken);
         Logger::log(t.c_str());
-        viewpoint->setchanged();
+        _modified = true;
         Modify(true);
         ReDraw();
     }
@@ -6283,7 +6273,7 @@ void MIGLWidget::OnRefiRigidBody()
     if (currentmap)
     {
         MIFitGeomRefiner()->RigidOptimize(CurrentAtoms, fitmol, currentmap);
-        viewpoint->setchanged();
+        _modified = true;
         Modify(true);
         UpdateCurrent();
         ReDraw();
@@ -6469,7 +6459,7 @@ void MIGLWidget::InsertMRK(Residue *where, Molecule *model, bool before)
     AutoFit = true;
     // center on where residue
     viewpoint->moveto(where->atom(0)->x(), where->atom(0)->y(), where->atom(0)->z());
-    viewpoint->setchanged();
+    _modified = true;
 
     // rebuild the model bonds
     int nlinks = model->getnlinks();
@@ -6523,7 +6513,7 @@ void MIGLWidget::OnNextBatonPosition()
     batonposition++;
     batonposition %= PList.size();
     batonatom->setPosition(PList[batonposition].x, PList[batonposition].y, PList[batonposition].z);
-    viewpoint->setchanged();
+    _modified = true;
     ReDraw();
 }
 
@@ -6569,7 +6559,7 @@ void MIGLWidget::refineConformer()
     }
 
     geomrefi->TorsionOptimize(CurrentAtoms, fitmol, currentmap, torsions);
-    viewpoint->setchanged();
+    _modified = true;
     Modify(true);
     ReDraw();
 
@@ -6767,7 +6757,7 @@ void MIGLWidget::OnFindPentamer()
         PentamerFrom = model;
         PentamerStart = res;
         PaletteChanged = true;
-        viewpoint->setchanged();
+        _modified = true;
         ReDrawAll();
     }
 }
@@ -6804,7 +6794,7 @@ void MIGLWidget::clearPentamer()
         delete oldPentamerModel;
     }
     PaletteChanged = true;
-    viewpoint->setchanged();
+    _modified = true;
     ReDrawAll();
 }
 
@@ -7071,7 +7061,7 @@ void MIGLWidget::OnFlipPeptide()
     }
     m->SetCoordsChanged();
     Modify(true);
-    viewpoint->setchanged();
+    _modified = true;
     ReDraw();
 }
 
@@ -7461,7 +7451,7 @@ void MIGLWidget::modelReplaceWithSequence()
         }
     }
     PaletteChanged = true;
-    viewpoint->setchanged();
+    _modified = true;
     model->Build();
     model->SetModified();
     Modify(true);
@@ -7519,7 +7509,7 @@ void MIGLWidget::revertToSavedModel(int choice)
         if (MIMoleculeBase::isValid(SaveModels[choice].model))
         {
             PaletteChanged = true;
-            viewpoint->setchanged();
+            _modified = true;
             SaveModels[choice].model->Build();
             SaveModels[choice].model->SetModified();
             SaveModels[choice].model->SetCoordsChanged(false);
@@ -7626,7 +7616,7 @@ void MIGLWidget::OnBuildCBRange()
         OnRefiAccept();
     }
     PaletteChanged = true;
-    viewpoint->setchanged();
+    _modified = true;
     model->SetCoordsChanged();
     Modify(true);
     ReDrawAll();
@@ -7674,7 +7664,7 @@ void MIGLWidget::OnBuildMainchainRange()
         res = res->next();
     }
     PaletteChanged = true;
-    viewpoint->setchanged();
+    _modified = true;
     model->Build();
     model->SetModified();
     Modify(true);
@@ -7850,7 +7840,7 @@ void MIGLWidget::OnAddWater()
             Logger::log(s);
         }
         PaletteChanged = true;
-        viewpoint->setchanged();
+        _modified = true;
         model->Build();
         model->SetCoordsChanged();
         Modify(true);
@@ -8733,7 +8723,7 @@ void MIGLWidget::findLigandFit()
         //      viewpoint, this, *BoundingBox, Refine_Level::Optimize);
         delete BoundingBox;
         BoundingBox = NULL;
-        viewpoint->setchanged();
+        _modified = true;
         Modify(true);
         UpdateCurrent();
         ReDraw();
@@ -8777,7 +8767,7 @@ void MIGLWidget::OnViewLoad()
     {
         FILE *fp = fopen(pathname.c_str(), "r");
         ViewPointIO::load(*viewpoint, fp);
-        viewpoint->setchanged();
+        _modified = true;
         ReDraw();
     }
 }
@@ -8972,7 +8962,7 @@ void MIGLWidget::OnFindLigandDensity()
         {
             model->InsertResidues(end, clusterResidues, 3, 'x');
             PaletteChanged = true;
-            viewpoint->setchanged();
+            _modified = true;
             model->Build();
             model->SetModified();
             Modify(true);
@@ -9076,7 +9066,7 @@ void MIGLWidget::OnFitSplitTorsion()
     {
         fitmol->RotateTorsion(20.0F);
         PaletteChanged = true;
-        viewpoint->setchanged();
+        _modified = true;
         fitmol->Build();
         fitmol->SetModified();
         Modify(true);
@@ -9103,7 +9093,7 @@ void MIGLWidget::OnFitSplitFit()
     {
         fitmol->Translate(0.3F, 0, 0, &CurrentAtoms);
         PaletteChanged = true;
-        viewpoint->setchanged();
+        _modified = true;
         fitmol->Build();
         fitmol->SetModified();
         Modify(true);
@@ -9136,15 +9126,6 @@ void MIGLWidget::OnUpdateMapReindex(QAction *action)
         HasPhases = map->HasPhases();
     }
     action->setEnabled(HasPhases && MIBusyManager::instance()->Busy() == false);
-}
-
-bool MIGLWidget::ViewChanged()
-{
-    if (viewpoint != NULL)
-    {
-        return viewpoint->ischanged();
-    }
-    return false;
 }
 
 void MIGLWidget::ClearAtomStack()
@@ -9771,7 +9752,7 @@ void MIGLWidget::OnObjectAtomColor()
         node->Do();
     }
     a->setColor(WhenShownColor);
-    viewpoint->setchanged();
+    _modified = true;
     ReDraw();
 }
 
@@ -9794,7 +9775,7 @@ void MIGLWidget::OnObjectAtomRadius()
     {
         node->Do();
     }
-    viewpoint->setchanged();
+    _modified = true;
     a->set_radius_type(WhenShownRadius);
     ReDraw();
 }
@@ -9834,7 +9815,7 @@ void MIGLWidget::OnObjectAtomsColor()
         }
         a->setColor(WhenShownColor);
     }
-    viewpoint->setchanged();
+    _modified = true;
     ReDraw();
 }
 
@@ -10090,7 +10071,7 @@ void MIGLWidget::OnShowPickedatomTurnon()
         node->Do();
     }
     a->setColor(abs(a->color()));
-    viewpoint->setchanged();
+    _modified = true;
     ReDraw();
 }
 
@@ -10114,7 +10095,7 @@ void MIGLWidget::OnShowPickedatomTurnoff()
         node->Do();
     }
     a->setColor(-abs(a->color()));
-    viewpoint->setchanged();
+    _modified = true;
     ReDraw();
 }
 
@@ -10273,7 +10254,7 @@ void MIGLWidget::OnObjectSurfaceSpherearoundatom()
         return;
     }
     node->SurfaceAroundAtom(a, dotsper, radius);
-    viewpoint->setchanged();
+    _modified = true;
     PaletteChanged = true;
     ReDraw();
 }
@@ -10337,7 +10318,7 @@ void MIGLWidget::OnShowShowwithinsphere()
             }
         }
     }
-    viewpoint->setchanged();
+    _modified = true;
     PaletteChanged = true;
     ReDraw();
 }
@@ -10591,10 +10572,7 @@ void MIGLWidget::keyPressEvent(QKeyEvent *e)
     {
         QDeclarativeView::keyPressEvent(e); // chain to parent
     }
-    if (ViewChanged())
-    {
-        ReDraw();
-    }
+    ReDraw();
     MIMainWindow::instance()->updateToolBar();
 }
 
@@ -11196,7 +11174,7 @@ void MIGLWidget::handleKey_space(bool spaceKeyDown)
             OnNextBatonPosition();
             MIFitGeomRefiner()->Refine();
             UpdateCurrent();
-            viewpoint->setchanged();
+            _modified = true;
             ReDraw();
         }
     }
@@ -11895,7 +11873,7 @@ void MIGLWidget::OnMoveAnnotationAtom()
     CurrentAnnotation->SetPosition(a->x(), a->y(),
                                    a->z());
     Modify(true);
-    viewpoint->setchanged();
+    _modified = true;
     ReDraw();
 }
 
@@ -11909,7 +11887,7 @@ void MIGLWidget::OnMoveAnnotationCenter()
     CurrentAnnotation->SetPosition(viewpoint->getcenter(0), viewpoint->getcenter(1),
                                    viewpoint->getcenter(2));
     Modify(true);
-    viewpoint->setchanged();
+    _modified = true;
     ReDraw();
 }
 
@@ -12020,36 +11998,17 @@ void MIGLWidget::Modify(bool modify)
     {
         displaylist->SetModified(modify);
     }
-    ViewPoint *viewpoint = GetViewPoint();
-    if (viewpoint != NULL)
-    {
-        if (modify)
-        {
-            viewpoint->setchanged();
-        }
-        else
-        {
-            viewpoint->clearchanged();
-        }
-    }
 }
 
 bool MIGLWidget::IsModified()
 {
     bool models_changed = false;
-    bool viewpoint_changed = false;
     Displaylist *displaylist = GetDisplaylist();
     if (displaylist != NULL)
     {
         models_changed = displaylist->IsModified();
     }
-    ViewPoint *viewpoint = GetViewPoint();
-    if (viewpoint != NULL)
-    {
-        viewpoint_changed = viewpoint->ischanged();
-    }
-
-    return viewpoint_changed || models_changed || _modified;
+    return models_changed || _modified;
 }
 
 bool MIGLWidget::Close()

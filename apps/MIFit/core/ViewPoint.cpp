@@ -29,7 +29,6 @@ ViewPoint::ViewPoint()
         }
     }
     center[0] = center[1] = center[2] = 0;
-    changed = 0;
     zangle = (long)(1000.0*sin(perspective*M_PI/180.0));
     scale = 200;
     frontclip = 500;
@@ -58,7 +57,6 @@ void ViewPoint::UnDo()
         //undoable = false;
         UndoList.pop_back();
         clampScale();
-        changed = 1;
     }
 }
 
@@ -77,7 +75,6 @@ void ViewPoint::Do()
     last.frontclip = frontclip;
     last.backclip = backclip;
     UndoList.push_back(last);
-    changed = 1;
 }
 
 void ViewPoint::setmatrix(float mat[3][3])
@@ -92,7 +89,6 @@ void ViewPoint::setmatrix(float mat[3][3])
     viewmat[2][1] = mat[2][1];
     viewmat[2][2] = mat[2][2];
     orthomatrix(viewmat, viewmat);
-    changed = 1;
 }
 
 void ViewPoint::copymatrix(float mat[3][3])
@@ -115,7 +111,6 @@ void ViewPoint::setSize(int width, int height)
     height_ = height;
     xcenter = width_/2;
     ycenter = height_/2;
-    changed = 1;
 }
 
 void ViewPoint::clampScale()
@@ -123,7 +118,6 @@ void ViewPoint::clampScale()
     if (scale < 1)
     {
         scale = 1;
-        changed = 1;
     }
 }
 
@@ -131,7 +125,6 @@ void ViewPoint::rotate(float rx, float ry, float rz)
 {
     incmatrix(rx, ry, rz, viewmat, viewmat);
     orthomatrix(viewmat, viewmat);
-    changed = 1;
 }
 
 void ViewPoint::translate(int x, int y, int z)
@@ -163,7 +156,6 @@ void ViewPoint::setperspective(float p)
         perspective = 0.0;
     }
     zangle = (long)(1000.0*sin(perspective*M_PI/180.0));
-    changed = 1;
 }
 
 float ViewPoint::x(float x, float y, float z)
@@ -284,7 +276,6 @@ void ViewPoint::Center(MIMoleculeBase *mol)
     center[0] = (long)(xsum/n);
     center[1] = (long)(ysum/n);
     center[2] = (long)(zsum/n);
-    changed = 1;
 }
 
 void ViewPoint::zoom(float ds)
@@ -301,7 +292,6 @@ void ViewPoint::zoom(float ds)
         scale++;
     }
     clampScale();
-    changed = 1;
 }
 
 void ViewPoint::getdirection(int xdrag, int ydrag, int &xdir, int &ydir, int &zdir)
@@ -338,7 +328,6 @@ void ViewPoint::scroll(int xdrag, int ydrag, int zdrag)
                   +ydrag*umat[2][1]
                   +zdrag* umat[2][2])/(float)scale*MSF);
     translate(-xdir, -ydir, -zdir);
-    changed = 1;
 }
 
 void ViewPoint::slab(int s)
@@ -357,7 +346,6 @@ void ViewPoint::slab(int s)
     {
         frontclip = backclip +1;
     }
-    changed = 1;
 }
 
 void ViewPoint::slab(float f, float b)
@@ -373,7 +361,6 @@ void ViewPoint::slab(float f, float b)
     b *= CRS;
     frontclip = (int)f;
     backclip = (int)b;
-    changed = 1;
 }
 
 void ViewPoint::PutVertical(float x2, float y2, float z2)
@@ -513,7 +500,6 @@ bool ViewPoint::CenterAtResidue(const Residue *res)
         z /= (float)res->atomCount();
         moveto(x, y, z);
     }
-    changed = 1;
     return true;
 }
 
@@ -525,7 +511,6 @@ void ViewPoint::setscale(long s)
         scale = 11;
     }
     clampScale();
-    changed = 1;
 }
 
 long ViewPoint::getscale()
@@ -563,7 +548,6 @@ void ViewPoint::setfrontclip(float f)
     {
         frontclip = 0;
     }
-    changed = 1;
 }
 
 void ViewPoint::setbackclip(float b)
@@ -576,7 +560,6 @@ void ViewPoint::setbackclip(float b)
     {
         backclip = 0;
     }
-    changed = 1;
 }
 
 float ViewPoint::getperspective()
@@ -627,21 +610,6 @@ float ViewPoint::getwidth()
 float ViewPoint::getheight()
 {
     return (float)((float)(height_)*(float)CRS/(float)scale/10.0F);
-}
-
-bool ViewPoint::ischanged()
-{
-    return (changed);
-}
-
-void ViewPoint::clearchanged()
-{
-    changed = false;
-}
-
-void ViewPoint::setchanged()
-{
-    changed = true;
 }
 
 bool ViewPoint::UnDoable()

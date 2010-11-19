@@ -319,8 +319,6 @@ void GLOverviewCanvas::mousePressEvent(QMouseEvent *e)
     if (!GetView())
         return;
     GetView()->mousePressEvent(e);
-    if (GetView()->ViewChanged())
-        updateGL();
 }
 void GLOverviewCanvas::mouseReleaseEvent(QMouseEvent *e)
 {
@@ -328,8 +326,6 @@ void GLOverviewCanvas::mouseReleaseEvent(QMouseEvent *e)
     if (!GetView())
         return;
     GetView()->mouseReleaseEvent(e);
-    if (GetView()->ViewChanged())
-        updateGL();
 }
 void GLOverviewCanvas::mouseMoveEvent(QMouseEvent *e)
 {
@@ -337,8 +333,6 @@ void GLOverviewCanvas::mouseMoveEvent(QMouseEvent *e)
     if (!GetView())
         return;
     GetView()->mouseMoveEvent(e);
-    if (GetView()->ViewChanged())
-        updateGL();
 }
 void GLOverviewCanvas::mouseDoubleClickEvent(QMouseEvent *e)
 {
@@ -346,8 +340,6 @@ void GLOverviewCanvas::mouseDoubleClickEvent(QMouseEvent *e)
     if (!GetView())
         return;
     GetView()->mouseDoubleClickEvent(e);
-    if (GetView()->ViewChanged())
-        updateGL();
 }
 
 void GLOverviewCanvas::keyPressEvent(QKeyEvent *e)
@@ -414,10 +406,7 @@ void GLOverviewCanvas::keyPressEvent(QKeyEvent *e)
 
     GetView()->OnKeyDown(nChar, nRepCnt, nFlags);
 
-    if (GetView()->ViewChanged())
-    {
-        updateGL();
-    }
+    updateGL();
 }
 
 QSize GLOverviewCanvas::sizeHint() const

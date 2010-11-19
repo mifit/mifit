@@ -506,10 +506,6 @@ public:
      */
     ViewPoint *GetViewPoint();
     /**
-     * Check whether the viewpoint has benn changed since the last draw.
-     */
-    bool ViewChanged();
-    /**
      * Clear the atom stack.
      */
     void ClearAtomStack();
