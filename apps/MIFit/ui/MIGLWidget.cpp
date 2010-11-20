@@ -10544,7 +10544,7 @@ void MIGLWidget::handleMousePress(QGraphicsSceneMouseEvent *e)
 {
     QPoint pos = mapFromScene(e->scenePos());
 
-    OnMousePress(pos, e->buttons(), e->modifiers());
+    OnMousePress(pos, e->button() | e->buttons(), e->modifiers());
     e->accept();
 }
 
@@ -10572,7 +10572,7 @@ void MIGLWidget::handleMouseRelease(QGraphicsSceneMouseEvent *e)
 {
     QPoint pos = mapFromScene(e->scenePos());
 
-    OnMouseRelease(pos, e->buttons(), e->modifiers());
+    OnMouseRelease(pos, e->button() | e->buttons(), e->modifiers());
 }
 
 
@@ -10728,7 +10728,7 @@ void MIGLWidget::handleMouseMove(QGraphicsSceneMouseEvent *e)
     {
         mouse = pos;
     }
-    OnMouseMove(pos, e->buttons(), e->modifiers());
+    OnMouseMove(pos, e->button() | e->buttons(), e->modifiers());
 }
 
 void MIGLWidget::handleMouseDoubleClick(QGraphicsSceneMouseEvent *e)
@@ -10737,7 +10737,7 @@ void MIGLWidget::handleMouseDoubleClick(QGraphicsSceneMouseEvent *e)
 //mousePressEvent() and a mouseReleaseEvent() before the
 //mouseDoubleClickEvent().
 
-    if (e->button() & Qt::LeftButton)
+    if (e->button() == Qt::LeftButton)
     {
         OnLButtonDblClk();
     }
