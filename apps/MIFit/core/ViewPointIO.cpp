@@ -20,7 +20,7 @@ void ViewPointIO::save(ViewPoint &vp, CArchive &ar)
         ar.Write(s.c_str(), s.size());
         s = format("zoom %0.3f\nperspective %0.3f\n", vp.getscale()/10.F, vp.getperspective());
         ar.Write(s.c_str(), s.size());
-        s = format("frontclip %0.2f\nbackclip %0.2f\n", vp.getfrontclip(), vp.getbackclip());
+        s = format("frontclip %0.2f\nbackclip %0.2f\n", vp.frontClip(), vp.backClip());
         ar.Write(s.c_str(), s.size());
         s = format("transform\n");
         ar.Write(s.c_str(), s.size());
@@ -67,14 +67,14 @@ void ViewPointIO::load(ViewPoint &vp, FILE *fp)
         {
             if (sscanf(buf.c_str(), "%*s%f", &v1) == 1)
             {
-                vp.setfrontclip(v1);
+                vp.setFrontClip(v1);
             }
         }
         else if (!strncmp(buf.c_str(), "backclip", 8))
         {
             if (sscanf(buf.c_str(), "%*s%f", &v1) == 1)
             {
-                vp.setbackclip(v1);
+                vp.setBackClip(v1);
             }
         }
         else if (!strncmp(buf.c_str(), "perspect", 8))

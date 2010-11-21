@@ -13,7 +13,6 @@ using namespace chemlib;
 
 ViewPoint::ViewPoint()
 {
-    cscale = 100;
     for (int i = 0; i < 3; i++)
     {
         for (int j = 0; j < 3; j++)
@@ -31,12 +30,10 @@ ViewPoint::ViewPoint()
     center[0] = center[1] = center[2] = 0;
     zangle = (long)(1000.0*sin(perspective*M_PI/180.0));
     scale = 200;
-    frontclip = 500;
-    backclip = -500;
+    frontClip_ = 500.0 / CRS;
+    backClip_ = -500.0 / CRS;
     width_ = 200;
-    xcenter = width_/2;
     height_ = 100;
-    ycenter = height_/2;
 }
 
 void ViewPoint::UnDo()
@@ -52,8 +49,8 @@ void ViewPoint::UnDo()
             }
         }
         scale = UndoList.back().scale;
-        frontclip = UndoList.back().frontclip;
-        backclip = UndoList.back().backclip;
+        frontClip_ = UndoList.back().frontClip;
+        backClip_ = UndoList.back().backClip;
         //undoable = false;
         UndoList.pop_back();
         clampScale();
@@ -72,8 +69,8 @@ void ViewPoint::Do()
         }
     }
     last.scale = scale;
-    last.frontclip = frontclip;
-    last.backclip = backclip;
+    last.frontClip = frontClip_;
+    last.backClip = backClip_;
     UndoList.push_back(last);
 }
 
@@ -109,16 +106,12 @@ void ViewPoint::setSize(int width, int height)
 {
     width_ = width;
     height_ = height;
-    xcenter = width_/2;
-    ycenter = height_/2;
 }
 
 void ViewPoint::clampScale()
 {
     if (scale < 1)
-    {
         scale = 1;
-    }
 }
 
 void ViewPoint::rotate(float rx, float ry, float rz)
@@ -158,20 +151,16 @@ void ViewPoint::setperspective(float p)
     zangle = (long)(1000.0*sin(perspective*M_PI/180.0));
 }
 
-float ViewPoint::x(float x, float y, float z)
+QVector3D ViewPoint::transform(const QVector3D& point)
 {
-    return (viewmat[0][0]*x+viewmat[0][1]*y+viewmat[0][2]*z);
+    return QVector3D(viewmat[0][0]*point.x() + viewmat[0][1]*point.y()
+                     + viewmat[0][2]*point.z(),
+                     viewmat[1][0]*point.x() + viewmat[1][1]*point.y()
+                     + viewmat[1][2]*point.z(),
+                     viewmat[2][0]*point.x() + viewmat[2][1]*point.y()
+                     + viewmat[2][2]*point.z());
 }
 
-float ViewPoint::y(float x, float y, float z)
-{
-    return (viewmat[1][0]*x+viewmat[1][1]*y+viewmat[1][2]*z);
-}
-
-float ViewPoint::z(float x, float y, float z)
-{
-    return (-(viewmat[2][0]*x+viewmat[2][1]*y+viewmat[2][2]*z));
-}
 
 void ViewPoint::transform(float ix, float iy, float iz, int &xt, int &yt, int &zt)
 {
@@ -201,7 +190,7 @@ void ViewPoint::transform(float ix, float iy, float iz, int &xt, int &yt, int &z
     rx = (rx > 0) ? (rx+50.0F) : (rx-50.0F);
     rx /= cscale;
     xt = (int)rx;
-    xt += xcenter;
+    xt += width_/2;
 
     ry = (viewmat[1][0]*x+viewmat[1][1]*y+viewmat[1][2]*z);
     t = ry*zp/cscale/cscale/10L;
@@ -210,7 +199,7 @@ void ViewPoint::transform(float ix, float iy, float iz, int &xt, int &yt, int &z
     ry = (ry > 0) ? (ry+50L) : (ry-50L);
     ry /= cscale;
     yt = (int)ry;
-    yt += ycenter;
+    yt += height_/2;
 
     rz *= scale/10L;
     rz = (rz > 0) ? (rz+50L) : (rz-50L);
@@ -224,8 +213,8 @@ void ViewPoint::Invert(int sx, int sy, int sz, float &x, float &y, float &z)
     float rx, ry, rz;
     static float cscale = 100.0F;
     uinv(viewmat, umat);
-    sx -= xcenter;
-    sy -= ycenter;
+    sx -= width_/2;
+    sy -= height_/2;
     rx = (float)sx*cscale;
     ry = (float)sy*cscale;
     rz = (float)sz*cscale;
@@ -332,19 +321,19 @@ void ViewPoint::scroll(int xdrag, int ydrag, int zdrag)
 
 void ViewPoint::slab(int s)
 {
-    if (s > 0 || abs(frontclip-backclip) > abs(s))
+    if (s > 0 || abs(frontClip_-backClip_) > abs(s))
     {
-        frontclip += s/2;
-        backclip -= s/2;
+        frontClip_ += s/2.0;
+        backClip_ -= s/2.0;
     }
     else
     {
-        backclip = (frontclip + backclip)/2;
-        frontclip = backclip +1;
+        backClip_ = (frontClip_ + backClip_)/2;
+        frontClip_ = backClip_ + 1;
     }
-    if (frontclip < backclip)
+    if (frontClip_ < backClip_)
     {
-        frontclip = backclip +1;
+        frontClip_ = backClip_ + 1;
     }
 }
 
@@ -352,15 +341,10 @@ void ViewPoint::slab(float f, float b)
 {
     if (f < b)
     {
-        float t;
-        t = f;
-        f = b;
-        b = t;
+        std::swap(f, b);
     }
-    f *= CRS;
-    b *= CRS;
-    frontclip = (int)f;
-    backclip = (int)b;
+    frontClip_ = f;
+    backClip_ = b;
 }
 
 void ViewPoint::PutVertical(float x2, float y2, float z2)
@@ -397,7 +381,7 @@ void ViewPoint::PutVertical(float x2, float y2, float z2)
     rotate(bestx, besty, bestz);
     Do();
     transform(x2, y2, z2, sx2, sy2, sz2);
-    int mindx = abs(sx2 - xcenter)+ abs(sz2);
+    int mindx = abs(sx2 - width_/2)+ abs(sz2);
     int dx;
     bestx = besty = bestz = 0;
     float angle = 10.0F;
@@ -408,7 +392,7 @@ void ViewPoint::PutVertical(float x2, float y2, float z2)
         zrot = frand2(angle)+bestz;
         rotate(xrot, yrot, zrot);
         transform(x2, y2, z2, sx2, sy2, sz2);
-        dx = abs(sx2 - xcenter) + abs(sz2);
+        dx = abs(sx2 - width_/2) + abs(sz2);
         if (dx < mindx)
         {
             mindx = dx;
@@ -518,49 +502,27 @@ long ViewPoint::getscale()
     return (scale);
 }
 
-float ViewPoint::getbackclip()
+qreal ViewPoint::frontClip()
 {
-    return ((float)backclip/(float)CRS);
+    return frontClip_;
 }
 
-float ViewPoint::getfrontclip()
+qreal ViewPoint::backClip()
 {
-    return ((float)frontclip/(float)CRS);
+    return backClip_;
 }
 
-int ViewPoint::getbackclipi()
+void ViewPoint::setFrontClip(qreal f)
 {
-    return (ROUND(backclip*scale/(float)CRS/10.0F));
+    frontClip_ = f;
 }
 
-int ViewPoint::getfrontclipi()
+void ViewPoint::setBackClip(qreal b)
 {
-    return (ROUND(frontclip*scale/(float)CRS/10.0F));
+    backClip_ = b;
 }
 
-void ViewPoint::setfrontclip(float f)
-{
-    if (f > 0.0)
-    {
-        frontclip = (int)(f*CRS);
-    }
-    else
-    {
-        frontclip = 0;
-    }
-}
 
-void ViewPoint::setbackclip(float b)
-{
-    if (b < 0.0)
-    {
-        backclip = (int)(b*CRS);
-    }
-    else
-    {
-        backclip = 0;
-    }
-}
 
 float ViewPoint::getperspective()
 {

@@ -8,7 +8,7 @@
 #include <map>
 #include <util/utillib.h>
 #include <math/mathlib.h>
-
+#include <QtGui/QVector3D>
 #include "MIAtom_fwd.h"
 
 namespace chemlib
@@ -74,9 +74,9 @@ namespace chemlib
         // set the position of this atom
         void setPosition(float x, float y, float z)
         {
-            this->x_ = x;
-            this->y_ = y;
-            this->z_ = z;
+            pos_.setX(x);
+            pos_.setY(y);
+            pos_.setZ(z);
         }
 
         //@{
@@ -90,7 +90,7 @@ namespace chemlib
         // Returns the distance between this atom and atom b.
         double distance(MIAtom *b) const
         {
-            return sqrt((double)((x_ - b->x_) * (x_ - b->x_) + (y_ - b->y_) * (y_ - b->y_) + (z_ - b->z_) * (z_ - b->z_)));
+            return (pos_ - b->pos_).length();
         }
 
         bool isHidden() const
@@ -148,29 +148,35 @@ namespace chemlib
         {
             color_ = c;
         }
+
+        const QVector3D &pos()
+        {
+            return pos_;
+        }
+
         float x() const
         {
-            return x_;
+            return pos_.x();
         }
         void setX(float x)
         {
-            x_ = x;
+            pos_.setX(x);
         }
         float y() const
         {
-            return y_;
+            return pos_.y();
         }
         void setY(float y)
         {
-            y_ = y;
+            pos_.setY(y);
         }
         float z() const
         {
-            return z_;
+            return pos_.z();
         }
         void setZ(float z)
         {
-            z_ = z;
+            pos_.setZ(z);
         }
 
         float dx() const
@@ -367,16 +373,12 @@ namespace chemlib
 
         void translate(float x, float y, float z)
         {
-            x_ += x;
-            y_ += y;
-            z_ += z;
+            pos_ += QVector3D(x, y, z);
         }
 
         void scale(float s)
         {
-            x_ *= s;
-            y_ *= s;
-            z_ *= s;
+            pos_ *= s;
         }
 
 
@@ -432,9 +434,7 @@ namespace chemlib
         float BValue_;
         float occ_;
         short color_;
-        float x_;
-        float y_;
-        float z_;
+        QVector3D pos_;
 
         float dx_;
         float dy_;

@@ -329,15 +329,13 @@ bool Molecule::VisibleBounds(ViewPoint *viewpoint, float &axmin, float &axmax,
             {
                 // changed so that it returns the world coordinates if visible
                 // instead of the screen coordinates
-                float x = viewpoint->x(a->x(), a->y(), a->z());
-                float y = viewpoint->y(a->x(), a->y(), a->z());
-                float z = -viewpoint->z(a->x(), a->y(), a->z());
-                axmin = std::min(axmin, x);
-                aymin = std::min(aymin, y);
-                azmin = std::min(azmin, z);
-                axmax = std::max(axmax, x);
-                aymax = std::max(aymax, y);
-                azmax = std::max(azmax, z);
+                QVector3D pos = viewpoint->transform(a->pos());
+                axmin = std::min(axmin, static_cast<float>(pos.x()));
+                aymin = std::min(aymin, static_cast<float>(pos.y()));
+                azmin = std::min(azmin, static_cast<float>(pos.z()));
+                axmax = std::max(axmax, static_cast<float>(pos.x()));
+                aymax = std::max(aymax, static_cast<float>(pos.y()));
+                azmax = std::max(azmax, static_cast<float>(pos.z()));
             }
             result = true;
         }
@@ -345,15 +343,13 @@ bool Molecule::VisibleBounds(ViewPoint *viewpoint, float &axmin, float &axmax,
     for (size_t i = 0; i < ribbonatoms.size(); i++)
     {
         MIAtom *a = ribbonatoms[i];
-        float x = viewpoint->x(a->x(), a->y(), a->z());
-        float y = viewpoint->y(a->x(), a->y(), a->z());
-        float z = -viewpoint->z(a->x(), a->y(), a->z());
-        axmin = std::min(axmin, x);
-        aymin = std::min(aymin, y);
-        azmin = std::min(azmin, z);
-        axmax = std::max(axmax, x);
-        aymax = std::max(aymax, y);
-        azmax = std::max(azmax, z);
+        QVector3D pos = viewpoint->transform(a->pos());
+        axmin = std::min(axmin, static_cast<float>(pos.x()));
+        aymin = std::min(aymin, static_cast<float>(pos.y()));
+        azmin = std::min(azmin, static_cast<float>(pos.z()));
+        axmax = std::max(axmax, static_cast<float>(pos.x()));
+        aymax = std::max(aymax, static_cast<float>(pos.y()));
+        azmax = std::max(azmax, static_cast<float>(pos.z()));
         result = true;
     }
 

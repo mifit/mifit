@@ -13,10 +13,12 @@ class ViewSave
 public:
     float viewmat[3][3];
     long center[3];
-    int frontclip; // clip in model coords.
-    int backclip;
+    qreal frontClip;
+    qreal backClip;
     long scale; // multiply by this factor.
 };
+
+class QVector3D;
 
 /**
  * The viewpoint contains the current center rotation and all other information about the viewpoint.
@@ -39,9 +41,7 @@ public:
     void setmatrix(float mat[3][3]);
 
     void transform(float x, float y, float z, int &xt, int &yt, int &zt);
-    float x(float, float, float);
-    float y(float, float, float);
-    float z(float, float, float);
+    QVector3D transform(const QVector3D& point);
     void moveto(int, int, int);
     void moveto(float, float, float);
     void translate(int, int, int);
@@ -51,12 +51,10 @@ public:
     void scroll(int, int, int);
     void slab(int);
     void slab(float f, float b);
-    float getbackclip();
-    float getfrontclip();
-    int getbackclipi();
-    int getfrontclipi();
-    void setfrontclip(float f);
-    void setbackclip(float b);
+    qreal frontClip();
+    qreal backClip();
+    void setFrontClip(qreal f);
+    void setBackClip(qreal b);
 
     float getperspective();
     void setperspective(float);
@@ -84,18 +82,15 @@ private:
     float umat[3][3];
     long center[3];
 
-    long width_, height_; // viewport size; screen coords.
-    long xcenter, ycenter; // viewport center in screen coords
-
-    long cscale; // coords are (int)Angstroms *cscale
+    int width_, height_; // viewport size; screen coords.
 
     float perspective;
     long zangle; //sin of perspective angle * 100;
     long scale;   // multiply by this factor.
 
     // clip in model coords.
-    int frontclip;
-    int backclip;
+    qreal frontClip_;
+    qreal backClip_;
 
     std::vector<ViewSave> UndoList;
 

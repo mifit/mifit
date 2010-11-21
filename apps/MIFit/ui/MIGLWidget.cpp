@@ -903,8 +903,8 @@ void MIGLWidget::draw(QPainter *painter)
     double fieldOfView = toDegrees(2.0 * std::atan(viewpoint->getheight() * 0.5 / focalLength));
     frustum->setFieldOfView(fieldOfView);
     frustum->setFocalLength(focalLength);
-    frustum->setNearClipping(focalLength - viewpoint->getfrontclip());
-    frustum->setFarClipping(focalLength - viewpoint->getbackclip());
+    frustum->setNearClipping(focalLength - viewpoint->frontClip());
+    frustum->setFarClipping(focalLength - viewpoint->backClip());
 
     stereoView->setStereo(stereo);
 
@@ -2143,14 +2143,14 @@ void MIGLWidget::OnGeometryTorsion()
 
 void MIGLWidget::OnViewSlabin()
 {
-    viewpoint->slab(-200);
+    viewpoint->slab(-2);
     doRefresh();
 
 }
 
 void MIGLWidget::OnViewSlabout()
 {
-    viewpoint->slab(200);
+    viewpoint->slab(2);
     doRefresh();
 }
 
@@ -2393,8 +2393,8 @@ void MIGLWidget::OnViewClipplanes()
 {
     GenericDataDialog dlg(this);
     dlg.setWindowTitle("Clipping Planes");
-    dlg.addDoubleField("Front", viewpoint->getfrontclip());
-    dlg.addDoubleField("Back", viewpoint->getbackclip());
+    dlg.addDoubleField("Front", viewpoint->frontClip());
+    dlg.addDoubleField("Back", viewpoint->backClip());
     if (dlg.exec() == QDialog::Accepted)
     {
         viewpoint->slab(dlg.value(0).toDouble(), dlg.value(1).toDouble());
@@ -8787,11 +8787,11 @@ void MIGLWidget::OnAddWaterAtCursor()
     if (currentmap)
     {
         // search from -slab to + slab in z
-        int bslab = viewpoint->getbackclipi();
-        int fslab = viewpoint->getfrontclipi();
+        int fslab = ROUND(viewpoint->frontClip() * viewpoint->getscale() / 10.0);
+        int bslab = ROUND(viewpoint->backClip() * viewpoint->getscale() / 10.0);
         float bdens = -9999999.0F, dens;
         // calculate .25 A increments in screen coordinates
-        float interval = (viewpoint->getfrontclip()-viewpoint->getbackclip())/0.25F;
+        float interval = (viewpoint->frontClip()-viewpoint->backClip())/0.25F;
         interval = (float)(fslab-bslab)/interval;
         if ((int)interval <= 0)
         {
@@ -10825,11 +10825,11 @@ void MIGLWidget::doSlabDrag(int x, int y, int /* dx */, int dy)
         float dc = (float) dy * 10.0F / (float) viewpoint->getscale();
         if (draggingFront)
         {
-            viewpoint->setfrontclip(viewpoint->getfrontclip()+dc);
+            viewpoint->setFrontClip(viewpoint->frontClip()+dc);
         }
         else
         {
-            viewpoint->setbackclip(viewpoint->getbackclip()+dc);
+            viewpoint->setBackClip(viewpoint->backClip()+dc);
         }
     }
 }

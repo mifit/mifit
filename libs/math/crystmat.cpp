@@ -87,52 +87,40 @@ orthog(float a, float b, float c, float alpha, float beta, float gamma, float ut
 
 void uinv(float mat[3][3], float imat[3][3])
 {
-    float det;
-    int i, j;
-    imat[0][0] = mat[1][1]*mat[2][2]-mat[2][1]*mat[1][2];
-    imat[1][0] = mat[1][2]*mat[2][0]-mat[1][0]*mat[2][2];
-    imat[2][0] = mat[1][0]*mat[2][1]-mat[1][1]*mat[2][0];
-    imat[0][1] = mat[0][2]*mat[2][1]-mat[0][1]*mat[2][2];
-    imat[1][1] = mat[0][0]*mat[2][2]-mat[0][2]*mat[2][0];
-    imat[2][1] = mat[0][1]*mat[2][0]-mat[0][0]*mat[2][1];
-    imat[0][2] = mat[0][1]*mat[1][2]-mat[0][2]*mat[1][1];
-    imat[1][2] = mat[0][2]*mat[1][0]-mat[0][0]*mat[1][2];
-    imat[2][2] = mat[0][0]*mat[1][1]-mat[0][1]*mat[1][0];
-    det = mat[0][0]*mat[1][1]*mat[2][2]+mat[1][0]*mat[2][1]*mat[0][2]
-          +mat[2][0]*mat[0][1]*mat[1][2]-mat[2][2]*mat[0][1]*mat[1][0]
-          -mat[0][0]*mat[2][1]*mat[1][2]-mat[2][0]*mat[1][1]*mat[0][2];
-    for (i = 0; i < 3; i++)
-    {
-        for (j = 0; j < 3; j++)
-        {
+    float det = mat[0][0]*mat[1][1]*mat[2][2] + mat[1][0]*mat[2][1]*mat[0][2]
+          + mat[2][0]*mat[0][1]*mat[1][2] - mat[2][2]*mat[0][1]*mat[1][0]
+          - mat[0][0]*mat[2][1]*mat[1][2] - mat[2][0]*mat[1][1]*mat[0][2];
+    imat[0][0] = mat[1][1]*mat[2][2] - mat[2][1]*mat[1][2];
+    imat[1][0] = mat[1][2]*mat[2][0] - mat[1][0]*mat[2][2];
+    imat[2][0] = mat[1][0]*mat[2][1] - mat[1][1]*mat[2][0];
+    imat[0][1] = mat[0][2]*mat[2][1] - mat[0][1]*mat[2][2];
+    imat[1][1] = mat[0][0]*mat[2][2] - mat[0][2]*mat[2][0];
+    imat[2][1] = mat[0][1]*mat[2][0] - mat[0][0]*mat[2][1];
+    imat[0][2] = mat[0][1]*mat[1][2] - mat[0][2]*mat[1][1];
+    imat[1][2] = mat[0][2]*mat[1][0] - mat[0][0]*mat[1][2];
+    imat[2][2] = mat[0][0]*mat[1][1] - mat[0][1]*mat[1][0];
+    for (int i = 0; i < 3; ++i)
+        for (int j = 0; j < 3; ++j)
             imat[j][i] = imat[j][i]/det;
-        }
-    }
 }
 
 void uinvd(double mat[3][3], double imat[3][3])
 {
-    double det;
-    int i, j;
-    imat[0][0] = mat[1][1]*mat[2][2]-mat[2][1]*mat[1][2];
-    imat[1][0] = mat[1][2]*mat[2][0]-mat[1][0]*mat[2][2];
-    imat[2][0] = mat[1][0]*mat[2][1]-mat[1][1]*mat[2][0];
-    imat[0][1] = mat[0][2]*mat[2][1]-mat[0][1]*mat[2][2];
-    imat[1][1] = mat[0][0]*mat[2][2]-mat[0][2]*mat[2][0];
-    imat[2][1] = mat[0][1]*mat[2][0]-mat[0][0]*mat[2][1];
-    imat[0][2] = mat[0][1]*mat[1][2]-mat[0][2]*mat[1][1];
-    imat[1][2] = mat[0][2]*mat[1][0]-mat[0][0]*mat[1][2];
-    imat[2][2] = mat[0][0]*mat[1][1]-mat[0][1]*mat[1][0];
-    det = mat[0][0]*mat[1][1]*mat[2][2]+mat[1][0]*mat[2][1]*mat[0][2]
-          +mat[2][0]*mat[0][1]*mat[1][2]-mat[2][2]*mat[0][1]*mat[1][0]
-          -mat[0][0]*mat[2][1]*mat[1][2]-mat[2][0]*mat[1][1]*mat[0][2];
-    for (i = 0; i < 3; i++)
-    {
-        for (j = 0; j < 3; j++)
-        {
+    double det = mat[0][0]*mat[1][1]*mat[2][2] + mat[1][0]*mat[2][1]*mat[0][2]
+          + mat[2][0]*mat[0][1]*mat[1][2] - mat[2][2]*mat[0][1]*mat[1][0]
+          - mat[0][0]*mat[2][1]*mat[1][2] - mat[2][0]*mat[1][1]*mat[0][2];
+    imat[0][0] = mat[1][1]*mat[2][2] - mat[2][1]*mat[1][2];
+    imat[1][0] = mat[1][2]*mat[2][0] - mat[1][0]*mat[2][2];
+    imat[2][0] = mat[1][0]*mat[2][1] - mat[1][1]*mat[2][0];
+    imat[0][1] = mat[0][2]*mat[2][1] - mat[0][1]*mat[2][2];
+    imat[1][1] = mat[0][0]*mat[2][2] - mat[0][2]*mat[2][0];
+    imat[2][1] = mat[0][1]*mat[2][0] - mat[0][0]*mat[2][1];
+    imat[0][2] = mat[0][1]*mat[1][2] - mat[0][2]*mat[1][1];
+    imat[1][2] = mat[0][2]*mat[1][0] - mat[0][0]*mat[1][2];
+    imat[2][2] = mat[0][0]*mat[1][1] - mat[0][1]*mat[1][0];
+    for (int i = 0; i < 3; ++i)
+        for (int j = 0; j < 3; ++j)
             imat[j][i] = imat[j][i]/det;
-        }
-    }
 }
 
 void
@@ -216,7 +204,7 @@ void rotate(float v[3], float mat[4][3])
     v[2] = x*mat[0][2] + y*mat[1][2] + z*mat[2][2] + mat[3][2];
 }
 
-#define dtor(x) ( (x) * (3.1416F/180.0F))
+#define dtor(x) ( (x) * (3.141592653589793F/180.0F))
 
 void buildmatz(float z, float mat[3][3])
 {

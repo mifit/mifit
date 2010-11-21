@@ -73,9 +73,6 @@ MIAtom::MIAtom()
       occ_(1.0F),
       //Default to full occupancy
       color_(0),
-      x_(0.0),
-      y_(0.0),
-      z_(0.0),
       dx_(0.0),
       dy_(0.0),
       dz_(0.0),
@@ -259,23 +256,21 @@ std::string chemlib::MIAtom::chiralClassToString(int chiralClass)
 
 void MIAtom::getPosition(double a[3]) const
 {
-    a[0] = x_;
-    a[1] = y_;
-    a[2] = z_;
+    a[0] = pos_.x();
+    a[1] = pos_.y();
+    a[2] = pos_.z();
 }
 
 void MIAtom::getPosition(float a[3]) const
 {
-    a[0] = x_;
-    a[1] = y_;
-    a[2] = z_;
+    a[0] = pos_.x();
+    a[1] = pos_.y();
+    a[2] = pos_.z();
 }
 
 void MIAtom::copyPosition(const MIAtom &from)
 {
-    x_ = from.x_;
-    y_ = from.y_;
-    z_ = from.z_;
+    pos_ = from.pos_;
 }
 
 void MIAtom::copyChemicalData(const MIAtom &source)
@@ -434,12 +429,12 @@ std::string MIAtom::liststring(const MIAtom *atom)
 {
     if (atom->altloc_ == ' ')
     {
-        return format("%s %0.3f %0.3f %0.3f %0.2f %0.2f %d", atom->name_, atom->x_, atom->y_, atom->z_,
+        return format("%s %0.3f %0.3f %0.3f %0.2f %0.2f %d", atom->name_, atom->pos_.x(), atom->pos_.y(), atom->pos_.z(),
                       atom->BValue_, atom->occ_, (int)atom->atomicnumber_);
     }
     else
     {
-        return format("%s %c %0.3f %0.3f %0.3f %0.2f %0.2f %s", atom->name_, atom->altloc_, atom->x_, atom->y_, atom->z_,
+        return format("%s %c %0.3f %0.3f %0.3f %0.2f %0.2f %s", atom->name_, atom->altloc_, atom->pos_.x(), atom->pos_.y(), atom->pos_.z(),
                       atom->BValue_, atom->occ_, Atomic_Name(atom->atomicnumber_));
     }
 }
