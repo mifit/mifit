@@ -45,8 +45,8 @@ public:
     void moveto(int, int, int);
     void moveto(float, float, float);
     void translate(int, int, int);
-    void setscale(long s);
-    long getscale();
+    void setscale(qreal s);
+    qreal getscale();
     void zoom(float ds);
     void scroll(int, int, int);
     void slab(int);
@@ -86,7 +86,7 @@ private:
 
     float perspective;
     long zangle; //sin of perspective angle * 100;
-    long scale;   // multiply by this factor.
+    qreal scale;   // multiply by this factor.
 
     // clip in model coords.
     qreal frontClip_;

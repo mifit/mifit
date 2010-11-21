@@ -53,7 +53,6 @@ void ViewPoint::UnDo()
         backClip_ = UndoList.back().backClip;
         //undoable = false;
         UndoList.pop_back();
-        clampScale();
     }
 }
 
@@ -106,12 +105,6 @@ void ViewPoint::setSize(int width, int height)
 {
     width_ = width;
     height_ = height;
-}
-
-void ViewPoint::clampScale()
-{
-    if (scale < 1)
-        scale = 1;
 }
 
 void ViewPoint::rotate(float rx, float ry, float rz)
@@ -169,7 +162,7 @@ void ViewPoint::transform(float ix, float iy, float iz, int &xt, int &yt, int &z
     iz *= (float)CRS;
 
     static float rx, ry, rz, x, y, z, zp, t;
-    static const float cscale = 100.0F;
+    static const float cscale = 100.0;
 
     x = ix - center[0];
     y = iy - center[1];
@@ -183,26 +176,26 @@ void ViewPoint::transform(float ix, float iy, float iz, int &xt, int &yt, int &z
     zp = rz*zangle;
 
     rx = (viewmat[0][0]*x+viewmat[0][1]*y+viewmat[0][2]*z);
-    t = rx*zp/cscale/cscale/10.0F;
+    t = rx*zp/cscale/cscale/10.0;
 
     rx += t;
-    rx = rx * scale/10.0F;
-    rx = (rx > 0) ? (rx+50.0F) : (rx-50.0F);
+    rx = rx * scale/10.0;
+    rx = (rx > 0) ? (rx+50.0) : (rx-50.0);
     rx /= cscale;
     xt = (int)rx;
     xt += width_/2;
 
     ry = (viewmat[1][0]*x+viewmat[1][1]*y+viewmat[1][2]*z);
-    t = ry*zp/cscale/cscale/10L;
+    t = ry*zp/cscale/cscale/10.0;
     ry += t;
-    ry = ry * scale/10L;
-    ry = (ry > 0) ? (ry+50L) : (ry-50L);
+    ry = ry * scale/10.0;
+    ry = (ry > 0) ? (ry+50.0) : (ry-50.0);
     ry /= cscale;
     yt = (int)ry;
     yt += height_/2;
 
-    rz *= scale/10L;
-    rz = (rz > 0) ? (rz+50L) : (rz-50L);
+    rz *= scale/10.0;
+    rz = (rz > 0) ? (rz+50.0) : (rz-50.0);
     rz /= cscale;
     zt = (int)rz;
 }
@@ -280,7 +273,8 @@ void ViewPoint::zoom(float ds)
     {
         scale++;
     }
-    clampScale();
+    if (scale < 1)
+        scale = 1;
 }
 
 void ViewPoint::getdirection(int xdrag, int ydrag, int &xdir, int &ydir, int &zdir)
@@ -487,19 +481,18 @@ bool ViewPoint::CenterAtResidue(const Residue *res)
     return true;
 }
 
-void ViewPoint::setscale(long s)
+void ViewPoint::setscale(qreal s)
 {
     scale = s;
-    if (scale < 11)
+    if (scale < 11.0)
     {
-        scale = 11;
+        scale = 11.0;
     }
-    clampScale();
 }
 
-long ViewPoint::getscale()
+qreal ViewPoint::getscale()
 {
-    return (scale);
+    return scale;
 }
 
 qreal ViewPoint::frontClip()

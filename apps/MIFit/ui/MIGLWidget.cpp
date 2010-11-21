@@ -875,7 +875,7 @@ void MIGLWidget::draw(QPainter *painter)
                     model->Select(1, 1, 1, 1, resshow, at, NULL, NULL, 0, 0, 0, 0, 1);
                     viewpoint->Center(Models->GetCurrentModel());
                     viewpoint->slab(-3.0F, 3.0F);
-                    viewpoint->setscale(300L);
+                    viewpoint->setscale(300);
                 }
             }
             PaletteChanged = true;
@@ -3521,11 +3521,11 @@ void MIGLWidget::OnViewTopview()
     TopView = !TopView;
     if (TopView)
     {
-        viewpoint->setscale(viewpoint->getscale()/2);
+        viewpoint->setscale(viewpoint->getscale()/2.0);
     }
     else
     {
-        viewpoint->setscale(viewpoint->getscale()*2);
+        viewpoint->setscale(viewpoint->getscale()*2.0);
     }
     ReDraw();
 }
@@ -3693,8 +3693,8 @@ void MIGLWidget::OnGotoFittoscreen()
             float fzmax = zmax;
             fzmax = (fzmax - fzmin)/2.0F + 2.0F;
             viewpoint->slab(-fzmax, fzmax);
-            long sw = 900L*width()/(ROUND(xmax*CRS)- ROUND(xmin*CRS)+200);
-            long sh = 900L*height()/(ROUND(ymax*CRS)- ROUND(ymin*CRS)+200);
+            qreal sw = 900*width()/(ROUND(xmax*CRS)- ROUND(xmin*CRS)+200);
+            qreal sh = 900*height()/(ROUND(ymax*CRS)- ROUND(ymin*CRS)+200);
             viewpoint->setscale(std::min(sw, sh));
         }
         ReDraw();
@@ -9506,8 +9506,8 @@ void MIGLWidget::OnGotoFitalltoscreen()
         float fzmax = zmax;
         fzmax = (fzmax - fzmin)/2.0F + 2.0F;
         viewpoint->slab(-fzmax, fzmax);
-        long sw = 900L*width()/(ROUND(xmax*CRS)- ROUND(xmin*CRS)+200);
-        long sh = 900L*height()/(ROUND(ymax*CRS)- ROUND(ymin*CRS)+200);
+        qreal sw = 900*width()/(ROUND(xmax*CRS)- ROUND(xmin*CRS)+200);
+        qreal sh = 900*height()/(ROUND(ymax*CRS)- ROUND(ymin*CRS)+200);
         viewpoint->setscale(std::min(sw, sh));
         ReDraw();
     }

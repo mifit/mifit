@@ -141,10 +141,10 @@ DictEditCanvas::DictEditCanvas(DictEditDialog *parent)
     : QDeclarativeView(QUrl("qrc:/qml/root.qml")),
       popupMenu(NULL),
       geomrefiner(NULL),
-      parent(parent),
       isRotating(false),
       isZooming(false),
-      isPanning(false)
+      isPanning(false),
+      parent(parent)
 {
     setViewport(new QGLWidget);
     setViewportUpdateMode(FullViewportUpdate);
