@@ -11,7 +11,16 @@
 
 using namespace chemlib;
 
+namespace
+{
+    const float CRS = 100.0f;
+}
+
 ViewPoint::ViewPoint()
+    : width_(200), height_(100),
+      scale(20),
+      frontClip_(5.0), backClip_(-5.0)
+
 {
     for (int i = 0; i < 3; i++)
     {
@@ -29,11 +38,6 @@ ViewPoint::ViewPoint()
     }
     center[0] = center[1] = center[2] = 0;
     zangle = (long)(1000.0*sin(perspective*M_PI/180.0));
-    scale = 20;
-    frontClip_ = 500.0 / CRS;
-    backClip_ = -500.0 / CRS;
-    width_ = 200;
-    height_ = 100;
 }
 
 void ViewPoint::UnDo()
@@ -157,26 +161,25 @@ QVector3D ViewPoint::transform(const QVector3D& point)
 
 void ViewPoint::transform(float ix, float iy, float iz, int &xt, int &yt, int &zt)
 {
-    ix *= (float)CRS;
-    iy *= (float)CRS;
-    iz *= (float)CRS;
+    ix *= CRS;
+    iy *= CRS;
+    iz *= CRS;
 
-    static float rx, ry, rz, x, y, z, zp, t;
     static const float cscale = 100.0;
 
-    x = ix - center[0];
-    y = iy - center[1];
-    z = iz - center[2];
+    float x = ix - center[0];
+    float y = iy - center[1];
+    float z = iz - center[2];
 
-    rz = -(viewmat[2][0]*x+viewmat[2][1]*y+viewmat[2][2]*z);
+    float rz = -(viewmat[2][0]*x+viewmat[2][1]*y+viewmat[2][2]*z);
 
     // z is reversed to keep system righthanded
     // if x is across from left to right and y is down
     // then z points into the screen
-    zp = rz*zangle;
+    float zp = rz*zangle;
 
-    rx = (viewmat[0][0]*x+viewmat[0][1]*y+viewmat[0][2]*z);
-    t = rx*zp/cscale/cscale/10.0;
+    float rx = (viewmat[0][0]*x+viewmat[0][1]*y+viewmat[0][2]*z);
+    float t = rx*zp/cscale/cscale/10.0;
 
     rx += t;
     rx = rx * scale;
@@ -185,7 +188,7 @@ void ViewPoint::transform(float ix, float iy, float iz, int &xt, int &yt, int &z
     xt = (int)rx;
     xt += width_/2;
 
-    ry = (viewmat[1][0]*x+viewmat[1][1]*y+viewmat[1][2]*z);
+    float ry = (viewmat[1][0]*x+viewmat[1][1]*y+viewmat[1][2]*z);
     t = ry*zp/cscale/cscale/10.0;
     ry += t;
     ry = ry * scale;
@@ -204,13 +207,13 @@ void ViewPoint::Invert(int sx, int sy, int sz, float &x, float &y, float &z)
 {
     float xdir, ydir, zdir, zp, t;
     float rx, ry, rz;
-    static float cscale = 100.0F;
+    static const float cscale = 100.0F;
     uinv(viewmat, umat);
     sx -= width_/2;
     sy -= height_/2;
-    rx = (float)sx*cscale;
-    ry = (float)sy*cscale;
-    rz = (float)sz*cscale;
+    rx = sx*cscale;
+    ry = sy*cscale;
+    rz = sz*cscale;
     zp = rz*zangle;
     rx = rx/scale;
     ry = ry/scale;
@@ -225,39 +228,35 @@ void ViewPoint::Invert(int sx, int sy, int sz, float &x, float &y, float &z)
     xdir += center[0];
     ydir += center[1];
     zdir += center[2];
-    x = xdir/(float)CRS;
-    y = ydir/(float)CRS;
-    z = zdir/(float)CRS;
+    x = xdir/CRS;
+    y = ydir/CRS;
+    z = zdir/CRS;
 }
 
 void ViewPoint::Center(MIMoleculeBase *mol)
 {
+    if (!mol)
+        return;
+
     float xsum = 0, ysum = 0, zsum = 0;
     float n = 0;
-    int i;
-
-    if (!mol)
-    {
-        return;
-    }
     ResidueListIterator res = mol->residuesBegin();
     for (; res != mol->residuesEnd(); ++res)
     {
-        for (i = 0; i < res->atomCount(); i++)
+        for (int i = 0; i < res->atomCount(); ++i)
         {
-            xsum += res->atom(i)->x()*CRS;
-            ysum += res->atom(i)->y()*CRS;
-            zsum += res->atom(i)->z()*CRS;
+            xsum += res->atom(i)->x();
+            ysum += res->atom(i)->y();
+            zsum += res->atom(i)->z();
             n++;
         }
     }
     if (n == 0)
-    {
         return;
-    }
-    center[0] = (long)(xsum/n);
-    center[1] = (long)(ysum/n);
-    center[2] = (long)(zsum/n);
+
+    center[0] = (long)(xsum/n * CRS);
+    center[1] = (long)(ysum/n * CRS);
+    center[2] = (long)(zsum/n * CRS);
 }
 
 void ViewPoint::zoom(float ds)
@@ -461,9 +460,9 @@ bool ViewPoint::CenterAtResidue(const Residue *res)
             y += res->atom(i)->y();
             z += res->atom(i)->z();
         }
-        x /= (float)res->atomCount();
-        y /= (float)res->atomCount();
-        z /= (float)res->atomCount();
+        x /= res->atomCount();
+        y /= res->atomCount();
+        z /= res->atomCount();
         moveto(x, y, z);
     }
     return true;
@@ -514,23 +513,11 @@ float ViewPoint::getcenter(int i)
 {
     if (i >= 0 && i < 3)
     {
-        return ((float)center[i]/100.0F);
+        return center[i]/CRS;
     }
     else
     {
-        return (0.0F);
-    }
-}
-
-int ViewPoint::getcenteri(int i)
-{
-    if (i >= 0 && 1 < 3)
-    {
-        return (center[i]);
-    }
-    else
-    {
-        return (0);
+        return 0.0;
     }
 }
 

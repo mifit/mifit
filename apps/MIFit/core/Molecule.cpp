@@ -2107,37 +2107,27 @@ void Molecule::ShowHydrogens(bool Show)
 
 long Molecule::SurfaceCenter(ViewPoint *viewpoint, float dotsper, float boxsize, bool ignore_hidden)
 {
-    long cx = (long)viewpoint->getcenteri(0);
-    long cy = (long)viewpoint->getcenteri(1);
-    long cz = (long)viewpoint->getcenteri(2);
-    long x, y, z;
-    long radius;
-    int i;
+    float cx = viewpoint->getcenter(0);
+    float cy = viewpoint->getcenter(1);
+    float cz = viewpoint->getcenter(2);
     extern int SurfResult;
     SurfResult = 1;
     srfdotsper = dotsper;
     srfboxsize = boxsize;
-    boxsize *= (float)(CRS*CRS*boxsize);
-    radius = (long)boxsize;
-    std::vector<SURFDOT>().swap(dots); // was dots.clear();
+    boxsize *= boxsize;
+    std::vector<SURFDOT>().swap(dots);
     for (ResidueListIterator res = residuesBegin(); res != residuesEnd() && SurfResult != 0; ++res)
     {
-        for (i = 0; i < res->atomCount(); i++)
+        for (int i = 0; i < res->atomCount(); ++i)
         {
-            x = ROUND(res->atom(i)->x()*CRS);
-            y = ROUND(res->atom(i)->y()*CRS);
-            z = ROUND(res->atom(i)->z()*CRS);
-            x -= cx;
-            y -= cy;
-            z -= cz;
-            if (x*x + y*y + z*z < radius)
-            {
+            float x = res->atom(i)->x() - cx;
+            float y = res->atom(i)->y() - cy;
+            float z = res->atom(i)->z() - cz;
+            if (x*x + y*y + z*z < boxsize)
                 Surface(res->atom(i), ignore_hidden, false);
-            }
+
             if (SurfResult == 0)
-            {
                 break;
-            }
         }
     }
     surfaceChanged(this);
@@ -2889,48 +2879,29 @@ int Molecule::SaveSymmMolecule(MIAtom *symatom, FILE *fp)
     return nres;
 }
 
-void Molecule::Center(int &x, int &y, int &z)
+void Molecule::Center(float &x, float &y, float &z)
 {
 
-    int xmin = INT_MAX;
-    int xmax = INT_MIN;
-    int ymin = INT_MAX;
-    int ymax = INT_MIN;
-    int zmin = INT_MAX;
-    int zmax = INT_MIN;
-    int ix, iy, iz, i;
+    float xmin = std::numeric_limits<float>::max();
+    float xmax = -std::numeric_limits<float>::max();
+    float ymin = xmin;
+    float ymax = xmax;
+    float zmin = xmin;
+    float zmax = xmax;
 
     for (ResidueListIterator res = residuesBegin(); res != residuesEnd(); ++res)
     {
-        for (i = 0; i < res->atomCount(); i++)
+        for (int i = 0; i < res->atomCount(); ++i)
         {
-            ix = ROUND(res->atom(i)->x()*CRS);
-            iy = ROUND(res->atom(i)->y()*CRS);
-            iz = ROUND(res->atom(i)->z()*CRS);
-            if (ix > xmax)
-            {
-                xmax = ix;
-            }
-            if (iy > ymax)
-            {
-                ymax = iy;
-            }
-            if (iz > zmax)
-            {
-                zmax = iz;
-            }
-            if (ix < xmin)
-            {
-                xmin = ix;
-            }
-            if (iy < ymin)
-            {
-                ymin = iy;
-            }
-            if (iz < zmin)
-            {
-                zmin = iz;
-            }
+            float ix = res->atom(i)->x();
+            float iy = res->atom(i)->y();
+            float iz = res->atom(i)->z();
+            xmax = std::max(ix, xmax);
+            ymax = std::max(iy, ymax);
+            zmax = std::max(iz, zmax);
+            xmin = std::min(ix, xmin);
+            ymin = std::min(iy, ymin);
+            zmin = std::min(iz, zmin);
         }
     }
 

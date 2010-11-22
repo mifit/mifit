@@ -24,7 +24,6 @@ class QVector3D;
  * The viewpoint contains the current center rotation and all other information about the viewpoint.
  */
 const unsigned int NTYPES = 9;
-const float CRS = 100.0f;
 
 class ViewPoint
 {
@@ -59,7 +58,6 @@ public:
     float getperspective();
     void setperspective(float);
     float getcenter(int i);
-    int getcenteri(int i);
     void setSize(int, int);
     int width();  // in screen coordinates
     int height();  // in screen coordinates

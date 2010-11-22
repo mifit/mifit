@@ -1387,34 +1387,27 @@ bool MIMoleculeBase::GetTorsionValue(char *str, Residue *res)
 
 void MIMoleculeBase::RotateTorsion(float alpha)
 {
-    float mat[4][3];
-    long i;
-    float x, y, z;
     if (!Tatom1 || !Tatom2)
-    {
         return;
-    }
-    //long intmat[3][4];
+
+    float mat[4][3];
     initrotate(
-        (float)Tatom1->x(),
-        (float)Tatom1->y(),
-        (float)Tatom1->z(),
-        (float)(Tatom2->x()-Tatom1->x()),
-        (float)(Tatom2->y()-Tatom1->y()),
-        (float)(Tatom2->z()-Tatom1->z()),
+        Tatom1->x(),
+        Tatom1->y(),
+        Tatom1->z(),
+        (Tatom2->x()-Tatom1->x()),
+        (Tatom2->y()-Tatom1->y()),
+        (Tatom2->z()-Tatom1->z()),
         alpha, mat);
     for (Residue *res = residues; res; res = res->next())
     {
-        for (i = 0; i < res->atomCount(); i++)
+        for (int i = 0; i < res->atomCount(); ++i)
         {
             if (res->atom(i)->type() & AtomType::TORSIONATOM)
             {
-                x = (float)res->atom(i)->x();
-                y = (float)res->atom(i)->y();
-                z = (float)res->atom(i)->z();
-                //x /= CRS;
-                //y /= CRS;
-                //z /= CRS;
+                float x = res->atom(i)->x();
+                float y = res->atom(i)->y();
+                float z = res->atom(i)->z();
                 rotate(&x, &y, &z, mat);
                 res->atom(i)->setPosition(x, y, z);
             }

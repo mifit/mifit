@@ -283,7 +283,7 @@ public:
     void Translate(float, float, float, std::vector<chemlib::MIAtom*> *atoms); // need this b/c parent version is hidden by override below
     void Translate(float, float, float, std::vector<chemlib::MIAtom*> *atoms, SurfaceDots *dots);
 
-    void Center(int &x, int &y, int &z);
+    void Center(float &x, float &y, float &z);
     void Rotate(float rx, float ry, float rz, float cx, float cy, float cz, ViewPoint*, std::vector<chemlib::MIAtom*> *atoms, SurfaceDots *dots = NULL);
 
     int SaveSymmMolecule(chemlib::MIAtom *symatom, FILE *fp);

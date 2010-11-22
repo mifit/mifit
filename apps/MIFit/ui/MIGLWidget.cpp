@@ -3693,8 +3693,8 @@ void MIGLWidget::OnGotoFittoscreen()
             float fzmax = zmax;
             fzmax = (fzmax - fzmin)/2.0F + 2.0F;
             viewpoint->slab(-fzmax, fzmax);
-            qreal sw = 90*width()/(ROUND(xmax*CRS)- ROUND(xmin*CRS)+200);
-            qreal sh = 90*height()/(ROUND(ymax*CRS)- ROUND(ymin*CRS)+200);
+            qreal sw = 0.9*width()/(xmax - xmin + 2);
+            qreal sh = 0.9*height()/(ymax - ymin + 2);
             viewpoint->setscale(std::min(sw, sh));
         }
         ReDraw();
@@ -9466,7 +9466,6 @@ void MIGLWidget::OnGotoFitalltoscreen()
     Displaylist *Models = GetDisplaylist();
     std::list<Molecule*>::iterator node = Models->begin();
     std::list<Molecule*>::iterator end = Models->end();
-//    long xmin = INT_MAX, xmax = INT_MIN, ymin = INT_MAX, ymax = INT_MIN, zmin = INT_MAX, zmax = INT_MIN;
     float xmin = std::numeric_limits<float>::max();
     float ymin = xmin;
     float zmin = xmin;
@@ -9474,8 +9473,8 @@ void MIGLWidget::OnGotoFitalltoscreen()
     float ymax = xmax;
     float zmax = xmax;
     float mxmin, mxmax, mymin, mymax, mzmin, mzmax;
-    int mxc, myc, mzc;
-    long xc = 0, yc = 0, zc = 0;
+    float mxc, myc, mzc;
+    float xc = 0, yc = 0, zc = 0;
     int nmodels = 0;
     viewpoint->Do();
     while (node != end)
@@ -9498,16 +9497,16 @@ void MIGLWidget::OnGotoFitalltoscreen()
     }
     if (nmodels > 0)
     {
-        xc /= (long)nmodels;
-        yc /= (long)nmodels;
-        zc /= (long)nmodels;
-        viewpoint->moveto((int)xc, (int)yc, (int)zc);
+        xc /= nmodels;
+        yc /= nmodels;
+        zc /= nmodels;
+        viewpoint->moveto(xc, yc, zc);
         float fzmin = zmin;
         float fzmax = zmax;
         fzmax = (fzmax - fzmin)/2.0F + 2.0F;
         viewpoint->slab(-fzmax, fzmax);
-        qreal sw = 90*width()/(ROUND(xmax*CRS)- ROUND(xmin*CRS)+200);
-        qreal sh = 90*height()/(ROUND(ymax*CRS)- ROUND(ymin*CRS)+200);
+        qreal sw = 0.9*width()/(xmax - xmin + 2);
+        qreal sh = 0.9*height()/(ymax - ymin + 2);
         viewpoint->setscale(std::min(sw, sh));
         ReDraw();
     }
