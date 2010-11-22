@@ -29,7 +29,7 @@ ViewPoint::ViewPoint()
     }
     center[0] = center[1] = center[2] = 0;
     zangle = (long)(1000.0*sin(perspective*M_PI/180.0));
-    scale = 200;
+    scale = 20;
     frontClip_ = 500.0 / CRS;
     backClip_ = -500.0 / CRS;
     width_ = 200;
@@ -179,7 +179,7 @@ void ViewPoint::transform(float ix, float iy, float iz, int &xt, int &yt, int &z
     t = rx*zp/cscale/cscale/10.0;
 
     rx += t;
-    rx = rx * scale/10.0;
+    rx = rx * scale;
     rx = (rx > 0) ? (rx+50.0) : (rx-50.0);
     rx /= cscale;
     xt = (int)rx;
@@ -188,13 +188,13 @@ void ViewPoint::transform(float ix, float iy, float iz, int &xt, int &yt, int &z
     ry = (viewmat[1][0]*x+viewmat[1][1]*y+viewmat[1][2]*z);
     t = ry*zp/cscale/cscale/10.0;
     ry += t;
-    ry = ry * scale/10.0;
+    ry = ry * scale;
     ry = (ry > 0) ? (ry+50.0) : (ry-50.0);
     ry /= cscale;
     yt = (int)ry;
     yt += height_/2;
 
-    rz *= scale/10.0;
+    rz *= scale;
     rz = (rz > 0) ? (rz+50.0) : (rz-50.0);
     rz /= cscale;
     zt = (int)rz;
@@ -212,9 +212,9 @@ void ViewPoint::Invert(int sx, int sy, int sz, float &x, float &y, float &z)
     ry = (float)sy*cscale;
     rz = (float)sz*cscale;
     zp = rz*zangle;
-    rx = rx/scale*10.0F;
-    ry = ry/scale*10.0F;
-    rz = -rz/scale*10.0F;
+    rx = rx/scale;
+    ry = ry/scale;
+    rz = -rz/scale;
     t = rx*zp/cscale/cscale/10.0F;
     rx -= t;
     t = ry*zp/cscale/cscale/10.0F;
@@ -262,19 +262,7 @@ void ViewPoint::Center(MIMoleculeBase *mol)
 
 void ViewPoint::zoom(float ds)
 {
-    long s = scale;
-    scale = (long)((float)scale*ds);
-    // make sure that integer roundoff did not cause scale not to change
-    if (ds < 1.0 && s == scale)
-    {
-        scale--;
-    }
-    if (ds > 1.0 && s == scale)
-    {
-        scale++;
-    }
-    if (scale < 1)
-        scale = 1;
+    scale *= ds;
 }
 
 void ViewPoint::getdirection(int xdrag, int ydrag, int &xdir, int &ydir, int &zdir)
@@ -286,11 +274,11 @@ void ViewPoint::getdirection(int xdrag, int ydrag, int &xdir, int &ydir, int &zd
 
     uinv(viewmat, umat);
     xdir = ROUND((xdrag* umat[0][0]
-                  +ydrag*umat[0][1])/(float)scale*MSF);
+                  +ydrag*umat[0][1])/scale*CRS);
     ydir = ROUND((xdrag* umat[1][0]
-                  +ydrag*umat[1][1])/(float)scale*MSF);
+                  +ydrag*umat[1][1])/scale*CRS);
     zdir = ROUND((xdrag* umat[2][0]
-                  +ydrag*umat[2][1])/(float)scale*MSF);
+                  +ydrag*umat[2][1])/scale*CRS);
 }
 
 void ViewPoint::scroll(int xdrag, int ydrag, int zdrag)
@@ -303,13 +291,13 @@ void ViewPoint::scroll(int xdrag, int ydrag, int zdrag)
     uinv(viewmat, umat);
     xdir = ROUND((xdrag* umat[0][0]
                   +ydrag*umat[0][1]
-                  +zdrag*umat[0][2])/(float)scale*MSF);
+                  +zdrag*umat[0][2])/scale*CRS);
     ydir = ROUND((xdrag* umat[1][0]
                   +ydrag*umat[1][1]
-                  +zdrag*umat[1][2])/(float)scale*MSF);
+                  +zdrag*umat[1][2])/scale*CRS);
     zdir = ROUND((xdrag* umat[2][0]
                   +ydrag*umat[2][1]
-                  +zdrag* umat[2][2])/(float)scale*MSF);
+                  +zdrag* umat[2][2])/scale*CRS);
     translate(-xdir, -ydir, -zdir);
 }
 
@@ -484,9 +472,9 @@ bool ViewPoint::CenterAtResidue(const Residue *res)
 void ViewPoint::setscale(qreal s)
 {
     scale = s;
-    if (scale < 11.0)
+    if (scale < 1.1)
     {
-        scale = 11.0;
+        scale = 1.1;
     }
 }
 
@@ -559,12 +547,12 @@ int ViewPoint::height()
 
 float ViewPoint::getwidth()
 {
-    return (float)((float)(width_)*(float)CRS/(float)scale/10.0F);
+    return width_ / scale;
 }
 
 float ViewPoint::getheight()
 {
-    return (float)((float)(height_)*(float)CRS/(float)scale/10.0F);
+    return height_ / scale;
 }
 
 bool ViewPoint::UnDoable()

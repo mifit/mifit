@@ -875,7 +875,7 @@ void MIGLWidget::draw(QPainter *painter)
                     model->Select(1, 1, 1, 1, resshow, at, NULL, NULL, 0, 0, 0, 0, 1);
                     viewpoint->Center(Models->GetCurrentModel());
                     viewpoint->slab(-3.0F, 3.0F);
-                    viewpoint->setscale(300);
+                    viewpoint->setscale(30);
                 }
             }
             PaletteChanged = true;
@@ -3693,8 +3693,8 @@ void MIGLWidget::OnGotoFittoscreen()
             float fzmax = zmax;
             fzmax = (fzmax - fzmin)/2.0F + 2.0F;
             viewpoint->slab(-fzmax, fzmax);
-            qreal sw = 900*width()/(ROUND(xmax*CRS)- ROUND(xmin*CRS)+200);
-            qreal sh = 900*height()/(ROUND(ymax*CRS)- ROUND(ymin*CRS)+200);
+            qreal sw = 90*width()/(ROUND(xmax*CRS)- ROUND(xmin*CRS)+200);
+            qreal sh = 90*height()/(ROUND(ymax*CRS)- ROUND(ymin*CRS)+200);
             viewpoint->setscale(std::min(sw, sh));
         }
         ReDraw();
@@ -8787,8 +8787,8 @@ void MIGLWidget::OnAddWaterAtCursor()
     if (currentmap)
     {
         // search from -slab to + slab in z
-        int fslab = ROUND(viewpoint->frontClip() * viewpoint->getscale() / 10.0);
-        int bslab = ROUND(viewpoint->backClip() * viewpoint->getscale() / 10.0);
+        int fslab = ROUND(viewpoint->frontClip() * viewpoint->getscale());
+        int bslab = ROUND(viewpoint->backClip() * viewpoint->getscale());
         float bdens = -9999999.0F, dens;
         // calculate .25 A increments in screen coordinates
         float interval = (viewpoint->frontClip()-viewpoint->backClip())/0.25F;
@@ -9506,8 +9506,8 @@ void MIGLWidget::OnGotoFitalltoscreen()
         float fzmax = zmax;
         fzmax = (fzmax - fzmin)/2.0F + 2.0F;
         viewpoint->slab(-fzmax, fzmax);
-        qreal sw = 900*width()/(ROUND(xmax*CRS)- ROUND(xmin*CRS)+200);
-        qreal sh = 900*height()/(ROUND(ymax*CRS)- ROUND(ymin*CRS)+200);
+        qreal sw = 90*width()/(ROUND(xmax*CRS)- ROUND(xmin*CRS)+200);
+        qreal sh = 90*height()/(ROUND(ymax*CRS)- ROUND(ymin*CRS)+200);
         viewpoint->setscale(std::min(sw, sh));
         ReDraw();
     }
@@ -10822,7 +10822,7 @@ void MIGLWidget::doSlabDrag(int x, int y, int /* dx */, int dy)
     }
     if (DraggingSlab)
     {
-        float dc = (float) dy * 10.0F / (float) viewpoint->getscale();
+        float dc = (float) dy / (float) viewpoint->getscale();
         if (draggingFront)
         {
             viewpoint->setFrontClip(viewpoint->frontClip()+dc);

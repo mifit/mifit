@@ -1074,7 +1074,7 @@ void Molecule::GenSymmAtoms(ViewPoint *viewpoint)
     symm_center[1] = viewpoint->getcenter(1);
     symm_center[2] = viewpoint->getcenter(2);
     ClearSymmList();
-    symm_radius = (float)viewpoint->width()/((float)viewpoint->getscale()/10.0F)*0.7F;
+    symm_radius = (float)viewpoint->width()/viewpoint->getscale()*0.7F;
     SymmResidues = SymmResidue(residuesBegin(), mapheader, symm_center, symm_radius);
     if (SymmResidues != NULL)
     {
