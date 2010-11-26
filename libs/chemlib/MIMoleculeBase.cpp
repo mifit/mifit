@@ -2352,4 +2352,36 @@ void MIMoleculeBase::InitSeqPos()
     }
 }
 
+void MIMoleculeBase::Center(float &x, float &y, float &z)
+{
+
+    float xmin = std::numeric_limits<float>::max();
+    float xmax = -std::numeric_limits<float>::max();
+    float ymin = xmin;
+    float ymax = xmax;
+    float zmin = xmin;
+    float zmax = xmax;
+
+    for (ResidueListIterator res = residuesBegin(); res != residuesEnd(); ++res)
+    {
+        for (int i = 0; i < res->atomCount(); ++i)
+        {
+            float ix = res->atom(i)->x();
+            float iy = res->atom(i)->y();
+            float iz = res->atom(i)->z();
+            xmax = std::max(ix, xmax);
+            ymax = std::max(iy, ymax);
+            zmax = std::max(iz, zmax);
+            xmin = std::min(ix, xmin);
+            ymin = std::min(iy, ymin);
+            zmin = std::min(iz, zmin);
+        }
+    }
+
+    x = (xmin+xmax)/2;
+    y = (ymin+ymax)/2;
+    z = (zmin+zmax)/2;
+}
+
+
 }

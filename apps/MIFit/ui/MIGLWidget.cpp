@@ -1158,12 +1158,8 @@ void MIGLWidget::RightMouseDrag(QPoint d, float xang, float yang, float zang)
         SetCursor(imhTranslate);
         if (IsFitting())
         {
-            int dx, dy, dz;
             float x, y, z;
-            viewpoint->getdirection((int)d.x(), (int)d.y(), dx, dy, dz);
-            x = (float)dx/30.0F;
-            y = (float)dy/30.0F;
-            z = (float)dz/30.0F;
+            viewpoint->getdirection((int)d.x(), (int)d.y(), x, y, z);
             fitmol->Translate(x, y, z, &CurrentAtoms);
             UpdateCurrent();
             fitcenter.translate(x, y, z);
@@ -1429,24 +1425,9 @@ void MIGLWidget::Center(MIMoleculeBase *mol)
 {
     if (!mol)
         return;
-
-    float xsum = 0, ysum = 0, zsum = 0;
-    float n = 0;
-    ResidueListIterator res = mol->residuesBegin();
-    for (; res != mol->residuesEnd(); ++res)
-    {
-        for (int i = 0; i < res->atomCount(); ++i)
-        {
-            xsum += res->atom(i)->x();
-            ysum += res->atom(i)->y();
-            zsum += res->atom(i)->z();
-            n++;
-        }
-    }
-    if (n == 0)
-        return;
-
-    viewpoint->moveto(xsum/n, ysum/n, zsum/n);
+    float x, y, z;
+    mol->Center(x, y, z);
+    viewpoint->moveto(x, y, z);
 }
 
 

@@ -58,7 +58,7 @@ public:
     int height() const;  // in screen coordinates
     float getwidth() const;  // in ? coordinates
     float getheight() const;  // in ? coordinates
-    void getdirection(int, int, int&, int&, int&);
+    void getdirection(int, int, float&, float&, float&);
 
     void Do();
     void UnDo();
@@ -74,7 +74,7 @@ private:
     int width_, height_; // viewport size; screen coords.
 
     float perspective_;
-    long zangle; //sin of perspective angle * 1000;
+    float zangle; //sin of perspective angle;
     qreal scale_;   // multiply by this factor.
 
     // clip in model coords.

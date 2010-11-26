@@ -101,6 +101,8 @@ namespace chemlib
         void Translate(float, float, float, MIAtomList *atoms);
         bool Contains(Residue *res);
 
+        void Center(float &x, float &y, float &z);
+
         std::string compound;
 
         void ReplaceRes(Residue *oldres, Residue *dictres);

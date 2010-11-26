@@ -1,20 +1,15 @@
+#include "ViewPoint.h"
+
 #include <cmath>
 #include <cstdio>
-
-#include <math/mathlib.h>
 #include <chemlib/chemlib.h>
 #include <chemlib/Monomer.h>
 #include <chemlib/MIMoleculeBase.h>
+#include <math/mathlib.h>
 
-#include "ViewPoint.h"
 #include "Cfiles.h"
 
 using namespace chemlib;
-
-namespace
-{
-    const float CRS = 100.0f;
-}
 
 ViewPoint::ViewPoint()
     : width_(200), height_(100),
@@ -38,7 +33,7 @@ ViewPoint::ViewPoint()
         }
     }
     center[0] = center[1] = center[2] = 0;
-    zangle = (long)(1000.0 * sin(perspective_ * M_PI/180.0));
+    zangle = sin(perspective_ * M_PI/180.0);
 }
 
 void ViewPoint::UnDo()
@@ -132,8 +127,8 @@ float ViewPoint::perspective() const
 
 void ViewPoint::setPerspective(float p)
 {
-    perspective_ = std::min(0.0f, p);
-    zangle = (long)(1000.0*sin(perspective_*M_PI/180.0));
+    perspective_ = std::max(0.0f, p);
+    zangle = sin(perspective_*M_PI/180.0);
 }
 
 QVector3D ViewPoint::transform(const QVector3D& point) const
@@ -149,11 +144,9 @@ QVector3D ViewPoint::transform(const QVector3D& point) const
 
 void ViewPoint::transform(const QVector3D& point, int &xt, int &yt, int &zt) const
 {
-    static const float cscale = 100.0;
-
-    float x = (point.x() - center[0])*CRS;
-    float y = (point.y() - center[1])*CRS;
-    float z = (point.z() - center[2])*CRS;
+    float x = point.x() - center[0];
+    float y = point.y() - center[1];
+    float z = point.z() - center[2];
 
     float rz = -(viewmat[2][0]*x + viewmat[2][1]*y + viewmat[2][2]*z);
 
@@ -163,48 +156,39 @@ void ViewPoint::transform(const QVector3D& point, int &xt, int &yt, int &zt) con
     float zp = rz*zangle;
 
     float rx = (viewmat[0][0]*x + viewmat[0][1]*y + viewmat[0][2]*z);
-    float t = rx*zp/cscale/cscale/10.0;
+    float t = rx*zp;
 
     rx += t;
-    rx = rx * scale_;
-    rx = (rx > 0) ? (rx+50.0) : (rx-50.0);
-    rx /= cscale;
-    xt = (int)rx;
-    xt += width_/2;
+    rx *= scale_;
+    xt = (int)rx + width_/2;
 
     float ry = (viewmat[1][0]*x + viewmat[1][1]*y + viewmat[1][2]*z);
-    t = ry*zp/cscale/cscale/10.0;
+    t = ry*zp;
     ry += t;
-    ry = ry * scale_;
-    ry = (ry > 0) ? (ry+50.0) : (ry-50.0);
-    ry /= cscale;
-    yt = (int)ry;
-    yt += height_/2;
+    ry *= scale_;
+    yt = (int)ry + height_/2;
 
     rz *= scale_;
-    rz = (rz > 0) ? (rz+50.0) : (rz-50.0);
-    rz /= cscale;
     zt = (int)rz;
 }
 
 QVector3D ViewPoint::Invert(int sx, int sy, int sz)
 {
-    static const float cscale = 100.0F;
     uinv(viewmat, umat);
     sx -= width_/2;
     sy -= height_/2;
-    float rx = sx*cscale;
-    float ry = sy*cscale;
-    float rz = sz*cscale;
+    float rx = sx;
+    float ry = sy;
+    float rz = sz;
     float zp = rz*zangle;
     rx /= scale_;
     ry /= scale_;
     rz /= -scale_;
-    rx -= rx*zp/cscale/cscale/10.0F;
-    ry -= ry*zp/cscale/cscale/10.0F;
-    return QVector3D((rx*umat[0][0] + ry*umat[0][1] + rz*umat[0][2]) / CRS + center[0],
-                     (rx*umat[1][0] + ry*umat[1][1] + rz*umat[1][2]) / CRS + center[1],
-                     (rx*umat[2][0] + ry*umat[2][1] + rz*umat[2][2]) / CRS + center[2]);
+    rx -= rx*zp;
+    ry -= ry*zp;
+    return QVector3D((rx*umat[0][0] + ry*umat[0][1] + rz*umat[0][2]) + center[0],
+                     (rx*umat[1][0] + ry*umat[1][1] + rz*umat[1][2]) + center[1],
+                     (rx*umat[2][0] + ry*umat[2][1] + rz*umat[2][2]) + center[2]);
 }
 
 void ViewPoint::zoom(float ds)
@@ -212,7 +196,7 @@ void ViewPoint::zoom(float ds)
     scale_ *= ds;
 }
 
-void ViewPoint::getdirection(int xdrag, int ydrag, int &xdir, int &ydir, int &zdir)
+void ViewPoint::getdirection(int xdrag, int ydrag, float &xdir, float &ydir, float &zdir)
 {
     //Scroll view
     //determine direction relative to molecule axes
@@ -220,12 +204,12 @@ void ViewPoint::getdirection(int xdrag, int ydrag, int &xdir, int &ydir, int &zd
     //int xdir, ydir, zdir;
 
     uinv(viewmat, umat);
-    xdir = ROUND((xdrag* umat[0][0]
-                  +ydrag*umat[0][1])/scale_*CRS);
-    ydir = ROUND((xdrag* umat[1][0]
-                  +ydrag*umat[1][1])/scale_*CRS);
-    zdir = ROUND((xdrag* umat[2][0]
-                  +ydrag*umat[2][1])/scale_*CRS);
+    xdir = (xdrag* umat[0][0]
+            + ydrag*umat[0][1]) / scale_;
+    ydir = (xdrag* umat[1][0]
+            + ydrag*umat[1][1]) / scale_;
+    zdir = (xdrag* umat[2][0]
+            + ydrag*umat[2][1]) / scale_;
 }
 
 void ViewPoint::scroll(int xdrag, int ydrag, int zdrag)
