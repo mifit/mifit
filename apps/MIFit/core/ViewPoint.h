@@ -12,10 +12,10 @@ class ViewSave
 {
 public:
     float viewmat[3][3];
-    long center[3];
+    float center[3];
     qreal frontClip;
     qreal backClip;
-    long scale; // multiply by this factor.
+    qreal scale;
 };
 
 class QVector3D;
@@ -23,68 +23,59 @@ class QVector3D;
 /**
  * The viewpoint contains the current center rotation and all other information about the viewpoint.
  */
-const unsigned int NTYPES = 9;
-
 class ViewPoint
 {
 public:
 
     ViewPoint();
 
-    void PutOnLeft(float x, float y, float z);
-    void PutVertical(float x, float y, float z);
+    void PutOnLeft(const QVector3D& point);
+    void PutVertical(const QVector3D& point);
 
     void rotate(float rx, float ry, float rz);
 
     void copymatrix(float mat[3][3]);
     void setmatrix(float mat[3][3]);
 
-    void transform(float x, float y, float z, int &xt, int &yt, int &zt);
-    QVector3D transform(const QVector3D& point);
-    void moveto(int, int, int);
+    QVector3D transform(const QVector3D& point) const;
     void moveto(float, float, float);
-    void translate(int, int, int);
-    void setscale(qreal s);
-    qreal getscale();
+    void setScale(qreal s);
+    qreal scale() const;
     void zoom(float ds);
     void scroll(int, int, int);
-    void slab(int);
-    void slab(float f, float b);
-    qreal frontClip();
-    qreal backClip();
+    void changeSlab(float delta);
+    void setSlab(float frontClip, float backClip);
+    qreal frontClip() const;
+    qreal backClip() const;
     void setFrontClip(qreal f);
     void setBackClip(qreal b);
 
-    float getperspective();
-    void setperspective(float);
-    float getcenter(int i);
+    float perspective() const;
+    void setPerspective(float);
+    float getcenter(int i) const;
     void setSize(int, int);
-    int width();  // in screen coordinates
-    int height();  // in screen coordinates
-    float getwidth();  // in ? coordinates
-    float getheight();  // in ? coordinates
+    int width() const;  // in screen coordinates
+    int height() const;  // in screen coordinates
+    float getwidth() const;  // in ? coordinates
+    float getheight() const;  // in ? coordinates
     void getdirection(int, int, int&, int&, int&);
 
     void Do();
     void UnDo();
-    bool UnDoable();
+    bool UnDoable() const;
 
-    void Invert(int sx, int sy, int sz, float &x, float &y, float &z);
-
-    bool CenterAtResidue(const chemlib::Residue *res);
-    void Center(chemlib::MIMoleculeBase*);
-
+    QVector3D Invert(int sx, int sy, int sz);
 
 private:
     float viewmat[3][3];
     float umat[3][3];
-    long center[3];
+    float center[3];
 
     int width_, height_; // viewport size; screen coords.
 
-    float perspective;
-    long zangle; //sin of perspective angle * 100;
-    qreal scale;   // multiply by this factor.
+    float perspective_;
+    long zangle; //sin of perspective angle * 1000;
+    qreal scale_;   // multiply by this factor.
 
     // clip in model coords.
     qreal frontClip_;
@@ -92,7 +83,7 @@ private:
 
     std::vector<ViewSave> UndoList;
 
-    void clampScale();
+    void transform(const QVector3D& point, int &xt, int &yt, int &zt) const;
 };
 
 #endif // ifndef MIFIT_VIEWPOINT_H_

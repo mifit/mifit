@@ -1129,7 +1129,7 @@ static int greaterthan(Residue *res1, Residue *res2)
     return (atoi(res1->name().c_str()) > atoi(res2->name().c_str()));
 }
 
-Residue*MIMoleculeBase::AddWater(float x, float y, float z, bool rebuild)
+Residue *MIMoleculeBase::AddWater(float x, float y, float z, bool rebuild)
 {
     // adds a water to end of model
     Residue *res = residuesBegin();

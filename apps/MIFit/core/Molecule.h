@@ -35,6 +35,7 @@ public:
 };
 void MISetMolPrefsHandler(MolPrefsHandler *mph);
 
+const unsigned int NTYPES = 9;
 
 class Molecule : public chemlib::MIMoleculeBase
 {

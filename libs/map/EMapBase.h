@@ -268,7 +268,7 @@ public:
     }
 
     void RecalcResolution();
-    float Rho(float x, float y, float z);
+    float Rho(const QVector3D &pos);
 
     static bool IsCif(const char *pathname);
     static bool IsCCP4MTZFile(const char *pathname);

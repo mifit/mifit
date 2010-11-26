@@ -18,7 +18,8 @@ namespace
 
 ViewPoint::ViewPoint()
     : width_(200), height_(100),
-      scale(20),
+      perspective_(0),
+      scale_(20),
       frontClip_(5.0), backClip_(-5.0)
 
 {
@@ -37,7 +38,7 @@ ViewPoint::ViewPoint()
         }
     }
     center[0] = center[1] = center[2] = 0;
-    zangle = (long)(1000.0*sin(perspective*M_PI/180.0));
+    zangle = (long)(1000.0 * sin(perspective_ * M_PI/180.0));
 }
 
 void ViewPoint::UnDo()
@@ -52,7 +53,7 @@ void ViewPoint::UnDo()
                 viewmat[i][j] = UndoList.back().viewmat[i][j];
             }
         }
-        scale = UndoList.back().scale;
+        scale_ = UndoList.back().scale;
         frontClip_ = UndoList.back().frontClip;
         backClip_ = UndoList.back().backClip;
         //undoable = false;
@@ -71,7 +72,7 @@ void ViewPoint::Do()
             last.viewmat[i][j] = viewmat[i][j];
         }
     }
-    last.scale = scale;
+    last.scale = scale_;
     last.frontClip = frontClip_;
     last.backClip = backClip_;
     UndoList.push_back(last);
@@ -117,38 +118,25 @@ void ViewPoint::rotate(float rx, float ry, float rz)
     orthomatrix(viewmat, viewmat);
 }
 
-void ViewPoint::translate(int x, int y, int z)
-{
-    center[0] += x;
-    center[1] += y;
-    center[2] += z;
-}
-
-void ViewPoint::moveto(int x, int y, int z)
+void ViewPoint::moveto(float x, float y, float z)
 {
     center[0] = x;
     center[1] = y;
     center[2] = z;
 }
 
-void ViewPoint::moveto(float x, float y, float z)
+float ViewPoint::perspective() const
 {
-    center[0] = ROUND(x*CRS);
-    center[1] = ROUND(y*CRS);
-    center[2] = ROUND(z*CRS);
+    return perspective_;
 }
 
-void ViewPoint::setperspective(float p)
+void ViewPoint::setPerspective(float p)
 {
-    perspective = p;
-    if (p < 0.0)
-    {
-        perspective = 0.0;
-    }
-    zangle = (long)(1000.0*sin(perspective*M_PI/180.0));
+    perspective_ = std::min(0.0f, p);
+    zangle = (long)(1000.0*sin(perspective_*M_PI/180.0));
 }
 
-QVector3D ViewPoint::transform(const QVector3D& point)
+QVector3D ViewPoint::transform(const QVector3D& point) const
 {
     return QVector3D(viewmat[0][0]*point.x() + viewmat[0][1]*point.y()
                      + viewmat[0][2]*point.z(),
@@ -159,109 +147,69 @@ QVector3D ViewPoint::transform(const QVector3D& point)
 }
 
 
-void ViewPoint::transform(float ix, float iy, float iz, int &xt, int &yt, int &zt)
+void ViewPoint::transform(const QVector3D& point, int &xt, int &yt, int &zt) const
 {
-    ix *= CRS;
-    iy *= CRS;
-    iz *= CRS;
-
     static const float cscale = 100.0;
 
-    float x = ix - center[0];
-    float y = iy - center[1];
-    float z = iz - center[2];
+    float x = (point.x() - center[0])*CRS;
+    float y = (point.y() - center[1])*CRS;
+    float z = (point.z() - center[2])*CRS;
 
-    float rz = -(viewmat[2][0]*x+viewmat[2][1]*y+viewmat[2][2]*z);
+    float rz = -(viewmat[2][0]*x + viewmat[2][1]*y + viewmat[2][2]*z);
 
     // z is reversed to keep system righthanded
     // if x is across from left to right and y is down
     // then z points into the screen
     float zp = rz*zangle;
 
-    float rx = (viewmat[0][0]*x+viewmat[0][1]*y+viewmat[0][2]*z);
+    float rx = (viewmat[0][0]*x + viewmat[0][1]*y + viewmat[0][2]*z);
     float t = rx*zp/cscale/cscale/10.0;
 
     rx += t;
-    rx = rx * scale;
+    rx = rx * scale_;
     rx = (rx > 0) ? (rx+50.0) : (rx-50.0);
     rx /= cscale;
     xt = (int)rx;
     xt += width_/2;
 
-    float ry = (viewmat[1][0]*x+viewmat[1][1]*y+viewmat[1][2]*z);
+    float ry = (viewmat[1][0]*x + viewmat[1][1]*y + viewmat[1][2]*z);
     t = ry*zp/cscale/cscale/10.0;
     ry += t;
-    ry = ry * scale;
+    ry = ry * scale_;
     ry = (ry > 0) ? (ry+50.0) : (ry-50.0);
     ry /= cscale;
     yt = (int)ry;
     yt += height_/2;
 
-    rz *= scale;
+    rz *= scale_;
     rz = (rz > 0) ? (rz+50.0) : (rz-50.0);
     rz /= cscale;
     zt = (int)rz;
 }
 
-void ViewPoint::Invert(int sx, int sy, int sz, float &x, float &y, float &z)
+QVector3D ViewPoint::Invert(int sx, int sy, int sz)
 {
-    float xdir, ydir, zdir, zp, t;
-    float rx, ry, rz;
     static const float cscale = 100.0F;
     uinv(viewmat, umat);
     sx -= width_/2;
     sy -= height_/2;
-    rx = sx*cscale;
-    ry = sy*cscale;
-    rz = sz*cscale;
-    zp = rz*zangle;
-    rx = rx/scale;
-    ry = ry/scale;
-    rz = -rz/scale;
-    t = rx*zp/cscale/cscale/10.0F;
-    rx -= t;
-    t = ry*zp/cscale/cscale/10.0F;
-    ry -= t;
-    xdir = rx* umat[0][0] + ry*umat[0][1] + rz*umat[0][2];
-    ydir = rx* umat[1][0] + ry*umat[1][1] + rz*umat[1][2];
-    zdir = rx* umat[2][0] + ry*umat[2][1] + rz*umat[2][2];
-    xdir += center[0];
-    ydir += center[1];
-    zdir += center[2];
-    x = xdir/CRS;
-    y = ydir/CRS;
-    z = zdir/CRS;
-}
-
-void ViewPoint::Center(MIMoleculeBase *mol)
-{
-    if (!mol)
-        return;
-
-    float xsum = 0, ysum = 0, zsum = 0;
-    float n = 0;
-    ResidueListIterator res = mol->residuesBegin();
-    for (; res != mol->residuesEnd(); ++res)
-    {
-        for (int i = 0; i < res->atomCount(); ++i)
-        {
-            xsum += res->atom(i)->x();
-            ysum += res->atom(i)->y();
-            zsum += res->atom(i)->z();
-            n++;
-        }
-    }
-    if (n == 0)
-        return;
-
-    center[0] = (long)(xsum/n * CRS);
-    center[1] = (long)(ysum/n * CRS);
-    center[2] = (long)(zsum/n * CRS);
+    float rx = sx*cscale;
+    float ry = sy*cscale;
+    float rz = sz*cscale;
+    float zp = rz*zangle;
+    rx /= scale_;
+    ry /= scale_;
+    rz /= -scale_;
+    rx -= rx*zp/cscale/cscale/10.0F;
+    ry -= ry*zp/cscale/cscale/10.0F;
+    return QVector3D((rx*umat[0][0] + ry*umat[0][1] + rz*umat[0][2]) / CRS + center[0],
+                     (rx*umat[1][0] + ry*umat[1][1] + rz*umat[1][2]) / CRS + center[1],
+                     (rx*umat[2][0] + ry*umat[2][1] + rz*umat[2][2]) / CRS + center[2]);
 }
 
 void ViewPoint::zoom(float ds)
 {
-    scale *= ds;
+    scale_ *= ds;
 }
 
 void ViewPoint::getdirection(int xdrag, int ydrag, int &xdir, int &ydir, int &zdir)
@@ -273,11 +221,11 @@ void ViewPoint::getdirection(int xdrag, int ydrag, int &xdir, int &ydir, int &zd
 
     uinv(viewmat, umat);
     xdir = ROUND((xdrag* umat[0][0]
-                  +ydrag*umat[0][1])/scale*CRS);
+                  +ydrag*umat[0][1])/scale_*CRS);
     ydir = ROUND((xdrag* umat[1][0]
-                  +ydrag*umat[1][1])/scale*CRS);
+                  +ydrag*umat[1][1])/scale_*CRS);
     zdir = ROUND((xdrag* umat[2][0]
-                  +ydrag*umat[2][1])/scale*CRS);
+                  +ydrag*umat[2][1])/scale_*CRS);
 }
 
 void ViewPoint::scroll(int xdrag, int ydrag, int zdrag)
@@ -285,50 +233,40 @@ void ViewPoint::scroll(int xdrag, int ydrag, int zdrag)
     //Scroll view
     //determine direction relative to molecule axes
     //by inverting matrix
-    int xdir, ydir, zdir;
-
     uinv(viewmat, umat);
-    xdir = ROUND((xdrag* umat[0][0]
-                  +ydrag*umat[0][1]
-                  +zdrag*umat[0][2])/scale*CRS);
-    ydir = ROUND((xdrag* umat[1][0]
-                  +ydrag*umat[1][1]
-                  +zdrag*umat[1][2])/scale*CRS);
-    zdir = ROUND((xdrag* umat[2][0]
-                  +ydrag*umat[2][1]
-                  +zdrag* umat[2][2])/scale*CRS);
-    translate(-xdir, -ydir, -zdir);
+    float xdir = (xdrag*umat[0][0]
+                  + ydrag*umat[0][1]
+                  + zdrag*umat[0][2]) / scale_;
+    float ydir = (xdrag*umat[1][0]
+                  + ydrag*umat[1][1]
+                  + zdrag*umat[1][2]) / scale_;
+    float zdir = (xdrag*umat[2][0]
+                  + ydrag*umat[2][1]
+                  + zdrag*umat[2][2]) / scale_;
+    center[0] += -xdir;
+    center[1] += -ydir;
+    center[2] += -zdir;
 }
 
-void ViewPoint::slab(int s)
+void ViewPoint::changeSlab(float delta)
 {
-    if (s > 0 || abs(frontClip_-backClip_) > abs(s))
-    {
-        frontClip_ += s/2.0;
-        backClip_ -= s/2.0;
-    }
-    else
-    {
-        backClip_ = (frontClip_ + backClip_)/2;
-        frontClip_ = backClip_ + 1;
-    }
+    frontClip_ += delta/2.0;
+    backClip_ -= delta/2.0;
     if (frontClip_ < backClip_)
     {
         frontClip_ = backClip_ + 1;
     }
 }
 
-void ViewPoint::slab(float f, float b)
+void ViewPoint::setSlab(float frontClip, float backClip)
 {
-    if (f < b)
-    {
-        std::swap(f, b);
-    }
-    frontClip_ = f;
-    backClip_ = b;
+    frontClip_ = frontClip;
+    backClip_ = backClip;
+    if (frontClip_ < backClip_)
+        std::swap(frontClip_, backClip_);
 }
 
-void ViewPoint::PutVertical(float x2, float y2, float z2)
+void ViewPoint::PutVertical(const QVector3D& point)
 {
     // puts the vector x1 -> x2 vertical on the screen
     // first point is the center of the screen
@@ -338,7 +276,7 @@ void ViewPoint::PutVertical(float x2, float y2, float z2)
     float bestx = 0, besty = 0, bestz = 0;
     float xrot, yrot, zrot;
     Do();  // this saves the starting viewpoint
-    transform(x2, y2, z2, sx2, sy2, sz2);
+    transform(point, sx2, sy2, sz2);
     minsy = sy2;
     size_t i;
     for (i = 0; i < 300; i++)
@@ -347,7 +285,7 @@ void ViewPoint::PutVertical(float x2, float y2, float z2)
         yrot = frand2(180.0F);
         zrot = frand2(180.0F);
         rotate(xrot, yrot, zrot);
-        transform(x2, y2, z2, sx2, sy2, sz2);
+        transform(point, sx2, sy2, sz2);
         if (sy2 < minsy)
         {
             minsy = sy2;
@@ -361,18 +299,18 @@ void ViewPoint::PutVertical(float x2, float y2, float z2)
     UnDo();
     rotate(bestx, besty, bestz);
     Do();
-    transform(x2, y2, z2, sx2, sy2, sz2);
+    transform(point, sx2, sy2, sz2);
     int mindx = abs(sx2 - width_/2)+ abs(sz2);
     int dx;
     bestx = besty = bestz = 0;
     float angle = 10.0F;
     for (i = 0; i < 50; i++)
     {
-        xrot = frand2(angle)+bestx;
-        yrot = frand2(angle)+besty;
-        zrot = frand2(angle)+bestz;
+        xrot = frand2(angle) + bestx;
+        yrot = frand2(angle) + besty;
+        zrot = frand2(angle) + bestz;
         rotate(xrot, yrot, zrot);
-        transform(x2, y2, z2, sx2, sy2, sz2);
+        transform(point, sx2, sy2, sz2);
         dx = abs(sx2 - width_/2) + abs(sz2);
         if (dx < mindx)
         {
@@ -380,20 +318,18 @@ void ViewPoint::PutVertical(float x2, float y2, float z2)
             bestx = xrot;
             besty = yrot;
             bestz = zrot;
-            angle = angle * 0.80F;
+            angle *= 0.80F;
         }
         UnDo();
         Do();
         if (dx == 0)
-        {
             break;
-        }
     }
     UnDo();
     rotate(bestx, besty, bestz);
 }
 
-void ViewPoint::PutOnLeft(float x2, float y2, float z2)
+void ViewPoint::PutOnLeft(const QVector3D& point)
 {
     // puts the point on the leftmost (min x) with only y axis rotation
     int sx2, sy2, sz2;
@@ -401,7 +337,7 @@ void ViewPoint::PutOnLeft(float x2, float y2, float z2)
     float bestx = 0, besty = 0, bestz = 0;
     float xrot, yrot, zrot;
     Do();  // this saves the starting viewpoint
-    transform(x2, y2, z2, sx2, sy2, sz2);
+    transform(point, sx2, sy2, sz2);
     minsx = sx2;
     for (size_t i = 0; i < 100; i++)
     {
@@ -409,7 +345,7 @@ void ViewPoint::PutOnLeft(float x2, float y2, float z2)
         yrot = frand2(180.0F);
         zrot = 0;
         rotate(xrot, yrot, zrot);
-        transform(x2, y2, z2, sx2, sy2, sz2);
+        transform(point, sx2, sy2, sz2);
         if (sx2 < minsx)
         {
             minsx = sx2;
@@ -424,70 +360,26 @@ void ViewPoint::PutOnLeft(float x2, float y2, float z2)
     rotate(bestx, besty, bestz);
 }
 
-bool ViewPoint::CenterAtResidue(const Residue *res)
+void ViewPoint::setScale(qreal s)
 {
-    if (!Monomer::isValid(res))
+    scale_ = s;
+    if (scale_ < 1.1)
     {
-        return false;
-    }
-    MIAtom *CA = atom_from_name("CA", *res);
-    Do();
-    if (CA)
-    {
-        MIAtom *a2 = atom_from_name("CB", *res);
-        if (!a2)
-        {
-            a2 = atom_from_name("HA1", *res);
-        }
-        MIAtom *N = atom_from_name("N", *res);
-        moveto(CA->x(), CA->y(), CA->z());
-        if (a2)
-        {
-            PutVertical(a2->x(), a2->y(), a2->z());
-            if (N)
-            {
-                PutOnLeft(N->x(), N->y(), N->z());
-                PutVertical(a2->x(), a2->y(), a2->z());
-            }
-        }
-    }
-    else
-    {
-        float x = 0, y = 0, z = 0;
-        for (int i = 0; i < res->atomCount(); i++)
-        {
-            x += res->atom(i)->x();
-            y += res->atom(i)->y();
-            z += res->atom(i)->z();
-        }
-        x /= res->atomCount();
-        y /= res->atomCount();
-        z /= res->atomCount();
-        moveto(x, y, z);
-    }
-    return true;
-}
-
-void ViewPoint::setscale(qreal s)
-{
-    scale = s;
-    if (scale < 1.1)
-    {
-        scale = 1.1;
+        scale_ = 1.1;
     }
 }
 
-qreal ViewPoint::getscale()
+qreal ViewPoint::scale() const
 {
-    return scale;
+    return scale_;
 }
 
-qreal ViewPoint::frontClip()
+qreal ViewPoint::frontClip() const
 {
     return frontClip_;
 }
 
-qreal ViewPoint::backClip()
+qreal ViewPoint::backClip() const
 {
     return backClip_;
 }
@@ -502,47 +394,36 @@ void ViewPoint::setBackClip(qreal b)
     backClip_ = b;
 }
 
-
-
-float ViewPoint::getperspective()
-{
-    return perspective;
-}
-
-float ViewPoint::getcenter(int i)
+float ViewPoint::getcenter(int i) const
 {
     if (i >= 0 && i < 3)
-    {
-        return center[i]/CRS;
-    }
+        return center[i];
     else
-    {
         return 0.0;
-    }
 }
 
-int ViewPoint::width()
+int ViewPoint::width() const
 {
     return width_;
 }
 
-int ViewPoint::height()
+int ViewPoint::height() const
 {
     return height_;
 }
 
 
-float ViewPoint::getwidth()
+float ViewPoint::getwidth() const
 {
-    return width_ / scale;
+    return width_ / scale_;
 }
 
-float ViewPoint::getheight()
+float ViewPoint::getheight() const
 {
-    return height_ / scale;
+    return height_ / scale_;
 }
 
-bool ViewPoint::UnDoable()
+bool ViewPoint::UnDoable() const
 {
     return UndoList.size() > 0;
 }

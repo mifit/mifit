@@ -195,7 +195,7 @@ namespace
     void readViewPointSettings(ViewPoint *viewpoint, ViewPointSettings *viewpointSettings)
     {
         QSettings settings;
-        viewpoint->setperspective(settings.value("View Parameters/perspective", 0).toInt() / 100.0f);
+        viewpoint->setPerspective(settings.value("View Parameters/perspective", 0).toInt() / 100.0f);
         viewpointSettings->setDepthCuedLineWidth(settings.value("View Parameters/depthcue_width", true).toBool());
         viewpointSettings->setDepthCuedColors(settings.value("View Parameters/depthcue_colors", true).toBool());
         viewpointSettings->setDimNonactiveModels(settings.value("View Parameters/dimNonactiveModels", true).toBool());
@@ -209,7 +209,7 @@ namespace
     void writeViewPointSettings(ViewPoint *viewpoint, ViewPointSettings *viewpointSettings)
     {
         QSettings settings;
-        settings.setValue("View Parameters/perspective", static_cast<int>(viewpoint->getperspective()*100.0f));
+        settings.setValue("View Parameters/perspective", static_cast<int>(viewpoint->perspective()*100.0f));
         settings.setValue("View Parameters/depthcue_width", viewpointSettings->isDepthCuedLineWidth());
         settings.setValue("View Parameters/depthcue_colors", viewpointSettings->isDepthCuedColors());
         settings.setValue("View Parameters/dimNonactiveModels", viewpointSettings->isDimNonactiveModels());
@@ -873,9 +873,9 @@ void MIGLWidget::draw(QPainter *painter)
                     std::string resshow;
                     std::string at("*");
                     model->Select(1, 1, 1, 1, resshow, at, NULL, NULL, 0, 0, 0, 0, 1);
-                    viewpoint->Center(Models->GetCurrentModel());
-                    viewpoint->slab(-3.0F, 3.0F);
-                    viewpoint->setscale(30);
+                    Center(Models->GetCurrentModel());
+                    viewpoint->setSlab(-3.0F, 3.0F);
+                    viewpoint->setScale(30);
                 }
             }
             PaletteChanged = true;
@@ -891,14 +891,14 @@ void MIGLWidget::draw(QPainter *painter)
 
     QSettings settings;
     bool stereo = settings.value("View Parameters/stereo", false).toBool();
-    if (!stereo && equals(viewpoint->getperspective(), 0.0f))
+    if (!stereo && equals(viewpoint->perspective(), 0.0f))
     {
         frustum->setPerspective(false);
     }
     else
     {
         frustum->setPerspective(true);
-        focalLength -= 10.0f * viewpoint->getperspective();
+        focalLength -= 10.0f * viewpoint->perspective();
     }
     double fieldOfView = toDegrees(2.0 * std::atan(viewpoint->getheight() * 0.5 / focalLength));
     frustum->setFieldOfView(fieldOfView);
@@ -1213,7 +1213,7 @@ void MIGLWidget::RightMouseDrag(QPoint d, float xang, float yang, float zang)
             if (mousestart.y() < 30)
             {
                 SetCursor(imhSlabDrag);
-                viewpoint->slab(d.x());
+                viewpoint->changeSlab(d.x());
                 break;
             }
             else
@@ -1366,7 +1366,8 @@ void MIGLWidget::recenter(Residue *residue, MIAtom *atom)
         {
             if (atom == atom_from_name("CA", *residue))
             {
-                viewpoint->CenterAtResidue(residue);
+                viewpoint->Do();
+                CenterAtResidue(residue);
             }
             else
             {
@@ -1376,12 +1377,78 @@ void MIGLWidget::recenter(Residue *residue, MIAtom *atom)
         }
         else
         {
-            viewpoint->CenterAtResidue(residue);
+            viewpoint->Do();
+            CenterAtResidue(residue);
         }
         setFocusResidue(residue, false);
         doRefresh();
     }
 }
+
+void MIGLWidget::CenterAtResidue(const Residue *res)
+{
+    if (!Monomer::isValid(res))
+        return;
+
+    MIAtom *CA = atom_from_name("CA", *res);
+    if (CA)
+    {
+        MIAtom *a2 = atom_from_name("CB", *res);
+        if (!a2)
+            a2 = atom_from_name("HA1", *res);
+
+        MIAtom *N = atom_from_name("N", *res);
+        viewpoint->moveto(CA->x(), CA->y(), CA->z());
+        if (a2)
+        {
+            viewpoint->PutVertical(a2->pos());
+            if (N)
+            {
+                viewpoint->PutOnLeft(N->pos());
+                viewpoint->PutVertical(a2->pos());
+            }
+        }
+    }
+    else
+    {
+        float x = 0, y = 0, z = 0;
+        for (int i = 0; i < res->atomCount(); i++)
+        {
+            x += res->atom(i)->x();
+            y += res->atom(i)->y();
+            z += res->atom(i)->z();
+        }
+        x /= res->atomCount();
+        y /= res->atomCount();
+        z /= res->atomCount();
+        viewpoint->moveto(x, y, z);
+    }
+}
+
+void MIGLWidget::Center(MIMoleculeBase *mol)
+{
+    if (!mol)
+        return;
+
+    float xsum = 0, ysum = 0, zsum = 0;
+    float n = 0;
+    ResidueListIterator res = mol->residuesBegin();
+    for (; res != mol->residuesEnd(); ++res)
+    {
+        for (int i = 0; i < res->atomCount(); ++i)
+        {
+            xsum += res->atom(i)->x();
+            ysum += res->atom(i)->y();
+            zsum += res->atom(i)->z();
+            n++;
+        }
+    }
+    if (n == 0)
+        return;
+
+    viewpoint->moveto(xsum/n, ysum/n, zsum/n);
+}
+
 
 bool MIGLWidget::OnKeyDown(unsigned int nChar, Qt::KeyboardModifiers modifiers)
 {
@@ -2055,25 +2122,25 @@ void MIGLWidget::OnHardwareStereo()
 
 void MIGLWidget::OnDecreasePersp()
 {
-    viewpoint->setperspective(viewpoint->getperspective()-0.1F);
+    viewpoint->setPerspective(viewpoint->perspective()-0.1F);
     doRefresh();
 }
 
 void MIGLWidget::OnIncreasePersp()
 {
-    viewpoint->setperspective(viewpoint->getperspective()+0.1F);
+    viewpoint->setPerspective(viewpoint->perspective()+0.1F);
     doRefresh();
 }
 
 void MIGLWidget::OnViewOrthonormal()
 {
-    viewpoint->setperspective(0.0F);
+    viewpoint->setPerspective(0.0F);
     doRefresh();
 }
 
 void MIGLWidget::OnUpdateDecreasePersp(QAction *action)
 {
-    action->setEnabled( ( viewpoint->getperspective() > 0.001F));
+    action->setEnabled( ( viewpoint->perspective() > 0.001F));
 }
 
 void MIGLWidget::OnGeometryAngle()
@@ -2143,14 +2210,14 @@ void MIGLWidget::OnGeometryTorsion()
 
 void MIGLWidget::OnViewSlabin()
 {
-    viewpoint->slab(-2);
+    viewpoint->changeSlab(-2);
     doRefresh();
 
 }
 
 void MIGLWidget::OnViewSlabout()
 {
-    viewpoint->slab(2);
+    viewpoint->changeSlab(2);
     doRefresh();
 }
 
@@ -2338,7 +2405,7 @@ void MIGLWidget::OnUpdateViewUnitCell(QAction *action)
 
 void MIGLWidget::OnUpdateViewOrthonormal(QAction *action)
 {
-    action->setChecked(viewpoint->getperspective() == 0.0);
+    action->setChecked(viewpoint->perspective() == 0.0);
 }
 
 void MIGLWidget::OnRenderingBallandstick()
@@ -2397,7 +2464,7 @@ void MIGLWidget::OnViewClipplanes()
     dlg.addDoubleField("Back", viewpoint->backClip());
     if (dlg.exec() == QDialog::Accepted)
     {
-        viewpoint->slab(dlg.value(0).toDouble(), dlg.value(1).toDouble());
+        viewpoint->setSlab(dlg.value(0).toDouble(), dlg.value(1).toDouble());
         PaletteChanged = true;
         doRefresh();
     }
@@ -3521,11 +3588,11 @@ void MIGLWidget::OnViewTopview()
     TopView = !TopView;
     if (TopView)
     {
-        viewpoint->setscale(viewpoint->getscale()/2.0);
+        viewpoint->setScale(viewpoint->scale()/2.0);
     }
     else
     {
-        viewpoint->setscale(viewpoint->getscale()*2.0);
+        viewpoint->setScale(viewpoint->scale()*2.0);
     }
     ReDraw();
 }
@@ -3685,17 +3752,17 @@ void MIGLWidget::OnGotoFittoscreen()
     if (Models->CurrentItem())
     {
         float xmin, xmax, ymin, ymax, zmin, zmax;
-        viewpoint->Center(Models->GetCurrentModel());
+        Center(Models->GetCurrentModel());
         viewpoint->Do();
         if (Models->CurrentItem()->VisibleBounds(viewpoint, xmin, xmax, ymin, ymax, zmin, zmax) )
         {
             float fzmin = zmin;
             float fzmax = zmax;
             fzmax = (fzmax - fzmin)/2.0F + 2.0F;
-            viewpoint->slab(-fzmax, fzmax);
+            viewpoint->setSlab(-fzmax, fzmax);
             qreal sw = 0.9*width()/(xmax - xmin + 2);
             qreal sh = 0.9*height()/(ymax - ymin + 2);
-            viewpoint->setscale(std::min(sw, sh));
+            viewpoint->setScale(std::min(sw, sh));
         }
         ReDraw();
     }
@@ -8769,9 +8836,8 @@ void MIGLWidget::OnViewLoad()
 void MIGLWidget::OnAddWaterAtCursor()
 {
     if (MIBusyManager::instance()->Busy())
-    {
         return;
-    }
+
     EMap *currentmap = GetDisplaylist()->GetCurrentMap();
     Molecule *model = GetDisplaylist()->CurrentItem();
     if (!model)
@@ -8780,47 +8846,40 @@ void MIGLWidget::OnAddWaterAtCursor()
         return;
     }
 
-    float x, y, z;
-    float bx, by, bz;
     QPoint p = mapFromGlobal(QCursor::pos());
-    viewpoint->Invert(p.x(), p.y(), 0, bx, by, bz);
+    QVector3D bPoint = viewpoint->Invert(p.x(), p.y(), 0);
     if (currentmap)
     {
         // search from -slab to + slab in z
-        int fslab = ROUND(viewpoint->frontClip() * viewpoint->getscale());
-        int bslab = ROUND(viewpoint->backClip() * viewpoint->getscale());
+        int fslab = ROUND(viewpoint->frontClip() * viewpoint->scale());
+        int bslab = ROUND(viewpoint->backClip() * viewpoint->scale());
         float bdens = -9999999.0F, dens;
         // calculate .25 A increments in screen coordinates
         float interval = (viewpoint->frontClip()-viewpoint->backClip())/0.25F;
         interval = (float)(fslab-bslab)/interval;
         if ((int)interval <= 0)
-        {
             interval = 1.0F;
-        }
+
         for (int is = bslab; is < fslab; is += (int)interval)
         {
-            viewpoint->Invert(p.x(), p.y(), is, x, y, z);
-            if ((dens = currentmap->Rho(x, y, z)) > bdens)
+            QVector3D point = viewpoint->Invert(p.x(), p.y(), is);
+            if ((dens = currentmap->Rho(point)) > bdens)
             {
-                bx = x;
-                by = y;
-                bz = z;
+                bPoint = point;
                 bdens = dens;
             }
         }
     }
     // save model
     if (!SaveModelFile(model, "before adding water"))
-    {
         Logger::message("Warning: Unable to save model - will not be able to Undo");
-    }
-    model->AddWater(bx, by, bz);
+
+    model->AddWater(bPoint.x(), bPoint.y(), bPoint.z());
     int nlinks = model->getnlinks();
     model->Build();
     if (nlinks > 0)
-    {
         model->BuildLinks();
-    }
+
     // Mark the model as dirty
     Modify(true);
     model->SetModified();
@@ -9504,10 +9563,10 @@ void MIGLWidget::OnGotoFitalltoscreen()
         float fzmin = zmin;
         float fzmax = zmax;
         fzmax = (fzmax - fzmin)/2.0F + 2.0F;
-        viewpoint->slab(-fzmax, fzmax);
+        viewpoint->setSlab(-fzmax, fzmax);
         qreal sw = 0.9*width()/(xmax - xmin + 2);
         qreal sh = 0.9*height()/(ymax - ymin + 2);
-        viewpoint->setscale(std::min(sw, sh));
+        viewpoint->setScale(std::min(sw, sh));
         ReDraw();
     }
 }
@@ -10821,7 +10880,7 @@ void MIGLWidget::doSlabDrag(int x, int y, int /* dx */, int dy)
     }
     if (DraggingSlab)
     {
-        float dc = (float) dy / (float) viewpoint->getscale();
+        float dc = (float) dy / (float) viewpoint->scale();
         if (draggingFront)
         {
             viewpoint->setFrontClip(viewpoint->frontClip()+dc);
@@ -10999,12 +11058,11 @@ void MIGLWidget::setFocusResidue(Residue *res, bool recenter, bool deleted)
         AtomStack->Push(models->GetPickedAtom(), focusres, mol);
         if (recenter)
         {
-            viewpoint->CenterAtResidue(focusres);
+            CenterAtResidue(focusres);
             EMap *map = GetDisplaylist()->GetCurrentMap();
             if (map != NULL)
-            {
                 doMapContour(map);
-            }
+
             doRefresh();
         }
     }
@@ -11013,9 +11071,8 @@ void MIGLWidget::setFocusResidue(Residue *res, bool recenter, bool deleted)
 void MIGLWidget::doSetFocusResidue(Residue *res)
 {
     if (focusres == res)
-    {
         return;
-    }
+
     focusres = res;
     focusResidueChanged(focusres);
 }
@@ -11036,25 +11093,20 @@ void MIGLWidget::select(Molecule *model, Residue *residue, MIAtom *atom, bool la
 {
     Displaylist *models = GetDisplaylist();
     if (!MIMoleculeBase::isValid(model))
-    {
         model = models->GetPickedMolecule();
-    }
+
     if (!MIMoleculeBase::isValid(model))
-    {
         model = models->CurrentItem();
-    }
+
     if (!Monomer::isValid(residue))
-    {
         residue = models->GetPickedResidue();
-    }
+
     if (!MIAtom::isValid(atom))
-    {
         atom = atom_from_name("CA", *residue);
-    }
+
     if (!MIAtom::isValid(atom) && Monomer::isValid(residue) && residue->atomCount() > 0)
-    {
         atom = residue->atom(0);
-    }
+
 
     if (!MIAtom::isValid(atom) || !Monomer::isValid(residue) || !MIMoleculeBase::isValid(model))
     {
@@ -11066,9 +11118,8 @@ void MIGLWidget::select(Molecule *model, Residue *residue, MIAtom *atom, bool la
     doSetFocusResidue(models->GetPickedResidue());
     focusnode = models->GetPickedMolecule();
     if (label && Application::instance()->LabelPicks)
-    {
         models->LabelPick(Application::instance()->LabelToggle);
-    }
+
     doRefresh();
 }
 
@@ -11079,9 +11130,8 @@ void MIGLWidget::OnRenderTargetSize()
     float size = scene->getTargetSize();
     size = QInputDialog::getDouble(this, "Edit view target size", "Edit view target size", size, 0.0, FLT_MAX, 2, &ok);
     if (!ok)
-    {
         return;
-    }
+
     scene->setTargetSize(size);
 }
 
@@ -11109,13 +11159,10 @@ void MIGLWidget::handleKey_space(bool spaceKeyDown)
         if (focusres != NULL)
         {
             if (focusresDeleted)
-            {
                 setFocusResidue(focusres);
-            }
+
             else if (focusres->next() != NULL)
-            {
                 setFocusResidue(focusres->next());
-            }
         }
     }
 }
@@ -11271,14 +11318,10 @@ bool MIGLWidget::OnOpenDocument(const std::string &path)
                                 GetDisplaylist()->AddMap(map);
                                 map->Read(pathname);
                                 if (map->FFTMap())
-                                {
                                     doMapContour(map);
-                                }
                             }
                             else
-                            {
                                 delete map;
-                            }
                         }
                         else
                         {
@@ -11290,15 +11333,11 @@ bool MIGLWidget::OnOpenDocument(const std::string &path)
                                 doMapContour(map);
                             }
                             else
-                            {
                                 delete map;
-                            }
                         }
                     }
                     else
-                    {
                         delete map;
-                    }
                 }
             }
 
@@ -11308,9 +11347,8 @@ bool MIGLWidget::OnOpenDocument(const std::string &path)
             ViewPointIO::load(*viewpoint, file.fp());
             file.rewind();
             while (file.gets(buf, sizeof buf) != NULL)
-            {
                 ScriptCommand(buf);
-            }
+
             Application::instance()->SetSilentMode(false);
             file.close();
             ReadStack(pathname, false);

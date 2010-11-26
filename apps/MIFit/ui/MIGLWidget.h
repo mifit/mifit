@@ -211,6 +211,9 @@ private:
      */
     std::vector<SaveModel> SaveModels;
 
+    void CenterAtResidue(const chemlib::Residue *res);
+    void Center(chemlib::MIMoleculeBase *mol);
+
 public:
     MIGLWidget();
     virtual ~MIGLWidget();
@@ -695,7 +698,6 @@ public slots:
 
 public:
     void recenter(chemlib::Residue *residue, chemlib::MIAtom *atom);
-
     void select(Molecule *model, chemlib::Residue *residue, chemlib::MIAtom *atom, bool label = true);
 
 signals:
