@@ -4,6 +4,7 @@
 #include <math/Tuple3.h>
 #include <math/mi_math.h>
 #include <cmath>
+#include <QtCore/QDebug>
 
 namespace mi
 {
@@ -167,8 +168,21 @@ namespace mi
             scale(length);
         }
 
-    }
-}
+        template<class Type>
+        QDebug& operator<<(QDebug &debug, const Vector3<Type> &vector)
+        {
+            debug.nospace();
+            debug << "Vector3("
+                  << vector.getX() << ", "
+                  << vector.getY() << ", "
+                  << vector.getZ()
+                  << ")";
+            debug.space();
+            return debug;
+        }
+
+    } // namespace math
+} // namespace mi
 
 
-#endif // ifndef mi_math_Vector3_h
+#endif // mi_math_Vector3_h

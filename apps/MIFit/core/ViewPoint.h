@@ -29,9 +29,6 @@ public:
 
     ViewPoint();
 
-    void PutOnLeft(const QVector3D& point);
-    void PutVertical(const QVector3D& point);
-
     void rotate(float rx, float ry, float rz);
 
     void copymatrix(float mat[3][3]);

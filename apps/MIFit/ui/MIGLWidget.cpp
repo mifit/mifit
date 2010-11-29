@@ -1397,12 +1397,39 @@ void MIGLWidget::CenterAtResidue(const Residue *res)
         viewpoint->moveto(CA->x(), CA->y(), CA->z());
         if (a2)
         {
-            viewpoint->PutVertical(a2->pos());
+            Quaternion<float> orientation;
+            Vector3<float> vector1(a2->pos().x() - viewpoint->getcenter(0),
+                                   a2->pos().y() - viewpoint->getcenter(1),
+                                   a2->pos().z() - viewpoint->getcenter(2));
             if (N)
             {
-                viewpoint->PutOnLeft(N->pos());
-                viewpoint->PutVertical(a2->pos());
-            }
+                // Orient CB to top and N to left
+                Vector3<float> vector2(N->pos().x() - viewpoint->getcenter(0),
+                                       N->pos().y() - viewpoint->getcenter(1),
+                                       N->pos().z() - viewpoint->getcenter(2));
+                Vector3<float> normalToCBAndN;
+                normalToCBAndN.cross(vector1, vector2);
+                Quaternion<float> viewQuat = QuatUtil::alignVectors(normalToCBAndN, Vector3<float>(0.0, 0.0, -1.0));
+                Vector3<float> vector1b = viewQuat.rotate(vector1);
+                orientation = QuatUtil::alignVectors(vector1b, Vector3<float>(0.0, -1.0, 0.0));
+                orientation.multiply(viewQuat);
+            } else
+                // Orient CB to top
+                orientation = QuatUtil::alignVectors(vector1, Vector3<float>(0.0, -1.0, 0.0));
+
+            Matrix3<float> matrix;
+            matrix.set(orientation);
+            float viewmat[3][3];
+            viewmat[0][0] = matrix.getElement(0, 0);
+            viewmat[0][1] = matrix.getElement(0, 1);
+            viewmat[0][2] = matrix.getElement(0, 2);
+            viewmat[1][0] = matrix.getElement(1, 0);
+            viewmat[1][1] = matrix.getElement(1, 1);
+            viewmat[1][2] = matrix.getElement(1, 2);
+            viewmat[2][0] = matrix.getElement(2, 0);
+            viewmat[2][1] = matrix.getElement(2, 1);
+            viewmat[2][2] = matrix.getElement(2, 2);
+            viewpoint->setmatrix(viewmat);
         }
     }
     else

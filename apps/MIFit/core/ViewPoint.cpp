@@ -6,10 +6,15 @@
 #include <chemlib/Monomer.h>
 #include <chemlib/MIMoleculeBase.h>
 #include <math/mathlib.h>
+#include <math/Quaternion.h>
+#include <math/Vector3.h>
+#include <opengl/QuatUtil.h>
 
 #include "Cfiles.h"
 
 using namespace chemlib;
+using namespace mi::math;
+using namespace mi::opengl;
 
 ViewPoint::ViewPoint()
     : width_(200), height_(100),
@@ -248,100 +253,6 @@ void ViewPoint::setSlab(float frontClip, float backClip)
     backClip_ = backClip;
     if (frontClip_ < backClip_)
         std::swap(frontClip_, backClip_);
-}
-
-void ViewPoint::PutVertical(const QVector3D& point)
-{
-    // puts the vector x1 -> x2 vertical on the screen
-    // first point is the center of the screen
-    // second should be vertical (minimum sy)
-    int sx2, sy2, sz2;
-    int minsy;
-    float bestx = 0, besty = 0, bestz = 0;
-    float xrot, yrot, zrot;
-    Do();  // this saves the starting viewpoint
-    transform(point, sx2, sy2, sz2);
-    minsy = sy2;
-    size_t i;
-    for (i = 0; i < 300; i++)
-    {
-        xrot = frand2(180.0F);
-        yrot = frand2(180.0F);
-        zrot = frand2(180.0F);
-        rotate(xrot, yrot, zrot);
-        transform(point, sx2, sy2, sz2);
-        if (sy2 < minsy)
-        {
-            minsy = sy2;
-            bestx = xrot;
-            besty = yrot;
-            bestz = zrot;
-        }
-        UnDo();
-        Do();
-    }
-    UnDo();
-    rotate(bestx, besty, bestz);
-    Do();
-    transform(point, sx2, sy2, sz2);
-    int mindx = abs(sx2 - width_/2)+ abs(sz2);
-    int dx;
-    bestx = besty = bestz = 0;
-    float angle = 10.0F;
-    for (i = 0; i < 50; i++)
-    {
-        xrot = frand2(angle) + bestx;
-        yrot = frand2(angle) + besty;
-        zrot = frand2(angle) + bestz;
-        rotate(xrot, yrot, zrot);
-        transform(point, sx2, sy2, sz2);
-        dx = abs(sx2 - width_/2) + abs(sz2);
-        if (dx < mindx)
-        {
-            mindx = dx;
-            bestx = xrot;
-            besty = yrot;
-            bestz = zrot;
-            angle *= 0.80F;
-        }
-        UnDo();
-        Do();
-        if (dx == 0)
-            break;
-    }
-    UnDo();
-    rotate(bestx, besty, bestz);
-}
-
-void ViewPoint::PutOnLeft(const QVector3D& point)
-{
-    // puts the point on the leftmost (min x) with only y axis rotation
-    int sx2, sy2, sz2;
-    int minsx;
-    float bestx = 0, besty = 0, bestz = 0;
-    float xrot, yrot, zrot;
-    Do();  // this saves the starting viewpoint
-    transform(point, sx2, sy2, sz2);
-    minsx = sx2;
-    for (size_t i = 0; i < 100; i++)
-    {
-        xrot = 0;
-        yrot = frand2(180.0F);
-        zrot = 0;
-        rotate(xrot, yrot, zrot);
-        transform(point, sx2, sy2, sz2);
-        if (sx2 < minsx)
-        {
-            minsx = sx2;
-            bestx = xrot;
-            besty = yrot;
-            bestz = zrot;
-        }
-        UnDo();
-        Do();
-    }
-    UnDo();
-    rotate(bestx, besty, bestz);
 }
 
 void ViewPoint::setScale(qreal s)
