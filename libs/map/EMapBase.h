@@ -5,6 +5,7 @@
 #include <string>
 
 #include <math/mathlib.h> // for PLINE
+#include <math/Vector3.h>
 
 #include "CMapHeaderBase.h"
 #include "MapSettingsBase.h"
@@ -268,7 +269,7 @@ public:
     }
 
     void RecalcResolution();
-    float Rho(const QVector3D &pos);
+    float Rho(const mi::math::Vector3<float> &pos);
 
     static bool IsCif(const char *pathname);
     static bool IsCCP4MTZFile(const char *pathname);

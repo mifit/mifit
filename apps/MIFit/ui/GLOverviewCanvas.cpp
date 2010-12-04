@@ -3,6 +3,7 @@
 #include <opengl/Camera.h>
 #include <opengl/Frustum.h>
 #include <opengl/OpenGL.h>
+#include <opengl/QuatUtil.h>
 #include <opengl/Viewport.h>
 
 #include "core/corelib.h"
@@ -192,29 +193,24 @@ void GLOverviewCanvas::paintGL()
 
     camera->render();
 
+    glPushMatrix();
+
     glTranslatef(viewpoint->getcenter(0), viewpoint->getcenter(1), viewpoint->getcenter(2));
 
     float rotation[16];
     setIdentity(rotation);
     for (int i = 0; i < 3; ++i)
-    {
         for (int j = 0; j < 3; ++j)
-        {
             rotation[i + j*4] = viewmat[i][j];
-        }
-    }
-    glMultMatrixf(rotation);
 
-    glPushMatrix();
+    glMultMatrixf(rotation);
 
     glTranslatef(-viewpoint->getcenter(0), -viewpoint->getcenter(1), -viewpoint->getcenter(2));
 
     const Residue *res = GetView()->getFocusResidue();
     MIAtom *focusedResidueAlphaCarbon = NULL;
     if (res != NULL)
-    {
         focusedResidueAlphaCarbon = atom_from_name("CA", *res);
-    }
 
     vector<Bond>::iterator bondIter = bonds.begin();
     while (bondIter != bonds.end())
@@ -241,19 +237,12 @@ void GLOverviewCanvas::paintGL()
         bondIter++;
     }
 
+    glPopMatrix();
+
+    glPushMatrix();
+
     // Draw bounding box of view
     glTranslatef(viewpoint->getcenter(0), viewpoint->getcenter(1), viewpoint->getcenter(2));
-
-    // Apply inverse rotation to keep elements aligned with camera.
-    setIdentity(rotation);
-    for (int i2 = 0; i2 < 3; ++i2)
-    {
-        for (int j2 = 0; j2 < 3; ++j2)
-        {
-            rotation[i2 + j2*4] = viewmat[j2][i2];
-        }
-    }
-    glMultMatrixf(rotation);
 
     // Disable depth test to render on top of other elements.
     glDisable(GL_DEPTH_TEST);

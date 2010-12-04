@@ -12,6 +12,7 @@
 
 #include <chemlib/MIMoleculeBase.h>
 #include <chemlib/chemlib.h>
+#include <opengl/Viewpoint.h>
 
 class Molecule;
 
@@ -250,7 +251,7 @@ public:
     long getnribboatomCount();
     void GetPDBInfo(FILE*);
 
-    bool VisibleBounds(ViewPoint*, float&, float&, float&, float&, float&, float&);
+    bool VisibleBounds(mi::opengl::Viewpoint *camera, float&, float&, float&, float&, float&, float&);
 
     void Show();
     void Hide();

@@ -307,7 +307,7 @@ Molecule::~Molecule()
     }
 }
 
-bool Molecule::VisibleBounds(ViewPoint *viewpoint, float &axmin, float &axmax,
+bool Molecule::VisibleBounds(mi::opengl::Viewpoint *camera, float &axmin, float &axmax,
                              float &aymin, float &aymax, float &azmin, float &azmax)
 {
     axmin = std::numeric_limits<float>::max();
@@ -329,7 +329,9 @@ bool Molecule::VisibleBounds(ViewPoint *viewpoint, float &axmin, float &axmax,
             {
                 // changed so that it returns the world coordinates if visible
                 // instead of the screen coordinates
-                QVector3D pos = viewpoint->transform(a->pos());
+                mi::math::Vector3<float> av(a->pos().x(), a->pos().y(), a->pos().z());
+                camera->untransformVector(av);
+                QVector3D pos(av.x, -av.y, -av.z);
                 axmin = std::min(axmin, static_cast<float>(pos.x()));
                 aymin = std::min(aymin, static_cast<float>(pos.y()));
                 azmin = std::min(azmin, static_cast<float>(pos.z()));
@@ -343,7 +345,9 @@ bool Molecule::VisibleBounds(ViewPoint *viewpoint, float &axmin, float &axmax,
     for (size_t i = 0; i < ribbonatoms.size(); i++)
     {
         MIAtom *a = ribbonatoms[i];
-        QVector3D pos = viewpoint->transform(a->pos());
+        mi::math::Vector3<float> av(a->pos().x(), a->pos().y(), a->pos().z());
+        camera->untransformVector(av);
+        QVector3D pos(av.x, -av.y, -av.z);
         axmin = std::min(axmin, static_cast<float>(pos.x()));
         aymin = std::min(aymin, static_cast<float>(pos.y()));
         azmin = std::min(azmin, static_cast<float>(pos.z()));

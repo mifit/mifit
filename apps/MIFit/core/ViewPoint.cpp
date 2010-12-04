@@ -125,6 +125,14 @@ void ViewPoint::moveto(float x, float y, float z)
     center[2] = z;
 }
 
+void ViewPoint::moveBy(const mi::math::Vector3<float> &delta)
+{
+    center[0] += delta.x;
+    center[1] += delta.y;
+    center[2] += delta.z;
+}
+
+
 float ViewPoint::perspective() const
 {
     return perspective_;
@@ -136,105 +144,9 @@ void ViewPoint::setPerspective(float p)
     zangle = sin(perspective_*M_PI/180.0);
 }
 
-QVector3D ViewPoint::transform(const QVector3D& point) const
-{
-    return QVector3D(viewmat[0][0]*point.x() + viewmat[0][1]*point.y()
-                     + viewmat[0][2]*point.z(),
-                     viewmat[1][0]*point.x() + viewmat[1][1]*point.y()
-                     + viewmat[1][2]*point.z(),
-                     viewmat[2][0]*point.x() + viewmat[2][1]*point.y()
-                     + viewmat[2][2]*point.z());
-}
-
-
-void ViewPoint::transform(const QVector3D& point, int &xt, int &yt, int &zt) const
-{
-    float x = point.x() - center[0];
-    float y = point.y() - center[1];
-    float z = point.z() - center[2];
-
-    float rz = -(viewmat[2][0]*x + viewmat[2][1]*y + viewmat[2][2]*z);
-
-    // z is reversed to keep system righthanded
-    // if x is across from left to right and y is down
-    // then z points into the screen
-    float zp = rz*zangle;
-
-    float rx = (viewmat[0][0]*x + viewmat[0][1]*y + viewmat[0][2]*z);
-    float t = rx*zp;
-
-    rx += t;
-    rx *= scale_;
-    xt = (int)rx + width_/2;
-
-    float ry = (viewmat[1][0]*x + viewmat[1][1]*y + viewmat[1][2]*z);
-    t = ry*zp;
-    ry += t;
-    ry *= scale_;
-    yt = (int)ry + height_/2;
-
-    rz *= scale_;
-    zt = (int)rz;
-}
-
-QVector3D ViewPoint::Invert(int sx, int sy, int sz)
-{
-    uinv(viewmat, umat);
-    sx -= width_/2;
-    sy -= height_/2;
-    float rx = sx;
-    float ry = sy;
-    float rz = sz;
-    float zp = rz*zangle;
-    rx /= scale_;
-    ry /= scale_;
-    rz /= -scale_;
-    rx -= rx*zp;
-    ry -= ry*zp;
-    return QVector3D((rx*umat[0][0] + ry*umat[0][1] + rz*umat[0][2]) + center[0],
-                     (rx*umat[1][0] + ry*umat[1][1] + rz*umat[1][2]) + center[1],
-                     (rx*umat[2][0] + ry*umat[2][1] + rz*umat[2][2]) + center[2]);
-}
-
 void ViewPoint::zoom(float ds)
 {
     scale_ *= ds;
-}
-
-void ViewPoint::getdirection(int xdrag, int ydrag, float &xdir, float &ydir, float &zdir)
-{
-    //Scroll view
-    //determine direction relative to molecule axes
-    //by inverting matrix
-    //int xdir, ydir, zdir;
-
-    uinv(viewmat, umat);
-    xdir = (xdrag* umat[0][0]
-            + ydrag*umat[0][1]) / scale_;
-    ydir = (xdrag* umat[1][0]
-            + ydrag*umat[1][1]) / scale_;
-    zdir = (xdrag* umat[2][0]
-            + ydrag*umat[2][1]) / scale_;
-}
-
-void ViewPoint::scroll(int xdrag, int ydrag, int zdrag)
-{
-    //Scroll view
-    //determine direction relative to molecule axes
-    //by inverting matrix
-    uinv(viewmat, umat);
-    float xdir = (xdrag*umat[0][0]
-                  + ydrag*umat[0][1]
-                  + zdrag*umat[0][2]) / scale_;
-    float ydir = (xdrag*umat[1][0]
-                  + ydrag*umat[1][1]
-                  + zdrag*umat[1][2]) / scale_;
-    float zdir = (xdrag*umat[2][0]
-                  + ydrag*umat[2][1]
-                  + zdrag*umat[2][2]) / scale_;
-    center[0] += -xdir;
-    center[1] += -ydir;
-    center[2] += -zdir;
 }
 
 void ViewPoint::changeSlab(float delta)

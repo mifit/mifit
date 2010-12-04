@@ -214,6 +214,9 @@ private:
     void CenterAtResidue(const chemlib::Residue *res);
     void Center(chemlib::MIMoleculeBase *mol);
 
+    mi::math::Vector3<float> mapToView(const QPoint &point, int z = 0);
+    mi::math::Vector3<float> mapToCamera(const QPoint &point, int z = 0);
+
 public:
     MIGLWidget();
     virtual ~MIGLWidget();
@@ -380,6 +383,7 @@ public:
      * Created when view is created.
      */
     ViewPoint *viewpoint;
+    const mi::opengl::Camera *getCamera() const;
     ViewPointSettings *viewpointSettings;
     /**
      * Stack of atoms used by the picking operations.

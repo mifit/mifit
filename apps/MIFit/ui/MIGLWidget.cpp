@@ -854,8 +854,6 @@ void MIGLWidget::draw(QPainter *painter)
 
     is_drawing = true;
     Displaylist *Models = GetDisplaylist();
-//    bool FittingView = true;
-
 
     if (NewFile())
     {
@@ -892,9 +890,7 @@ void MIGLWidget::draw(QPainter *painter)
     QSettings settings;
     bool stereo = settings.value("View Parameters/stereo", false).toBool();
     if (!stereo && equals(viewpoint->perspective(), 0.0f))
-    {
         frustum->setPerspective(false);
-    }
     else
     {
         frustum->setPerspective(true);
@@ -947,9 +943,7 @@ void MIGLWidget::draw(QPainter *painter)
         q.multiply(topQuat);
     }
     else
-    {
         q.multiply(frontQuat);
-    }
 
     camera->setEye(target);
     camera->setRotation(q);
@@ -1051,25 +1045,17 @@ void MIGLWidget::OnMouseMove(QPoint point, Qt::MouseButtons buttons, Qt::Keyboar
     QPoint d;
     float xang = 0.0F, yang = 0.0F, zang = 0.0F;
     if (isVisible() && IsWindowEnabled() && MouseCaptured)
-    {
         d = point - mouse;
-    }
     else
-    {
         d = QPoint();
-    }
 
     if (modifiers & Qt::ControlModifier)
     {
         // restrict movement to x or y whichever is greater
         if (abs(d.x()) > abs(d.y()))
-        {
             d.ry() = 0;
-        }
         else
-        {
             d.rx() = 0;
-        }
     }
     if (d.x() != 0 || d.y() != 0)
     {
@@ -1104,13 +1090,9 @@ void MIGLWidget::OnMouseMove(QPoint point, Qt::MouseButtons buttons, Qt::Keyboar
             {
                 SetCursor(imhZRotate);
                 if (!TopView)
-                {
                     zang = (float)-d.x();
-                }
                 else
-                {
                     yang = (float)-d.x();
-                }
             }
             else
             {
@@ -1132,19 +1114,13 @@ void MIGLWidget::OnMouseMove(QPoint point, Qt::MouseButtons buttons, Qt::Keyboar
     }
     else if (buttons & Qt::RightButton && !(buttons & Qt::LeftButton)
              && (d.x() != 0 || d.y() != 0))
-    {
         RightMouseDrag(d, xang, yang, zang);
-    }
     else
     {
         if (point.y() > 30)
-        {
             SetCursor(imhCross);
-        }
         else
-        {
             SetCursor(imhZCursor);
-        }
     }
     mouse = point;
 }
@@ -1158,11 +1134,10 @@ void MIGLWidget::RightMouseDrag(QPoint d, float xang, float yang, float zang)
         SetCursor(imhTranslate);
         if (IsFitting())
         {
-            float x, y, z;
-            viewpoint->getdirection((int)d.x(), (int)d.y(), x, y, z);
-            fitmol->Translate(x, y, z, &CurrentAtoms);
+            Vector3<float> dir(mapToCamera(d));
+            fitmol->Translate(dir.x, dir.y, dir.z, &CurrentAtoms);
             UpdateCurrent();
-            fitcenter.translate(x, y, z);
+            fitcenter.translate(dir.x, dir.y, dir.z);
         }
         break;
     case ROTATE:
@@ -1194,9 +1169,7 @@ void MIGLWidget::RightMouseDrag(QPoint d, float xang, float yang, float zang)
             fitmol->RotateTorsion((float)d.x());
             char torval[100];
             if (fitmol->GetTorsionValue(torval, fitres))
-            {
                 setMessage(torval);
-            }
             UpdateCurrent();
         }
         break;
@@ -1225,7 +1198,7 @@ void MIGLWidget::RightMouseDrag(QPoint d, float xang, float yang, float zang)
             x = d.x();
             z = -d.y();
         }
-        viewpoint->scroll(x, y, z);
+        viewpoint->moveBy(-mapToCamera(QPoint(x, y), z));
         break;
     }
     }
@@ -1237,25 +1210,17 @@ void MIGLWidget::MouseMoveXfit(QPoint point, Qt::MouseButtons buttons, Qt::Keybo
     QPoint d;
     float xang = 0.0F, yang = 0.0F, zang = 0.0F;
     if (isVisible() && IsWindowEnabled() && MouseCaptured)
-    {
         d = point - mouse;
-    }
     else
-    {
         d = QPoint();
-    }
 
     if (modifiers & Qt::ControlModifier)
     {
         // restrict movement to x or y whichever is greater
         if (abs(d.x()) > abs(d.y()))
-        {
             d.ry() = 0;
-        }
         else
-        {
             d.rx() = 0;
-        }
     }
     if (d.x() != 0 || d.y() != 0)
     {
@@ -1285,13 +1250,9 @@ void MIGLWidget::MouseMoveXfit(QPoint point, Qt::MouseButtons buttons, Qt::Keybo
             {
                 SetCursor(imhZRotate);
                 if (!TopView)
-                {
                     zang = (float)-d.x();
-                }
                 else
-                {
                     yang = (float)-d.x();
-                }
             }
             else
             {
@@ -1321,19 +1282,13 @@ void MIGLWidget::MouseMoveXfit(QPoint point, Qt::MouseButtons buttons, Qt::Keybo
     }
     else if ((buttons & Qt::MiddleButton) && !(buttons & Qt::LeftButton) && !(buttons & Qt::RightButton)
              && (d.x() != 0 || d.y() != 0))
-    {
         RightMouseDrag(d, xang, yang, zang);
-    }
     else
     {
         if (point.y() > 30)
-        {
             SetCursor(imhCross);
-        }
         else
-        {
             SetCursor(imhZCursor);
-        }
     }
     mouse = point;
 }
@@ -3762,7 +3717,7 @@ void MIGLWidget::OnGotoFittoscreen()
         float xmin, xmax, ymin, ymax, zmin, zmax;
         Center(Models->GetCurrentModel());
         viewpoint->Do();
-        if (Models->CurrentItem()->VisibleBounds(viewpoint, xmin, xmax, ymin, ymax, zmin, zmax) )
+        if (Models->CurrentItem()->VisibleBounds(camera, xmin, xmax, ymin, ymax, zmin, zmax) )
         {
             float fzmin = zmin;
             float fzmax = zmax;
@@ -8841,6 +8796,27 @@ void MIGLWidget::OnViewLoad()
     }
 }
 
+Vector3<float> MIGLWidget::mapToCamera(const QPoint &point, int z)
+{
+    float scale = viewpoint->scale();
+    Vector3<float> viewVector(point.x()/scale, -point.y()/scale, z/scale);
+    camera->transformVector(viewVector);
+    return viewVector;
+}
+
+Vector3<float> MIGLWidget::mapToView(const QPoint &point, int z)
+{
+    float scale = viewpoint->scale();
+    Vector3<float> viewVector((point.x() - width()/2.0)/scale,
+                              -(point.y() - height()/2.0)/scale,
+                              z/scale);
+    viewVector += Vector3<float>(viewpoint->getcenter(0),
+                                 viewpoint->getcenter(1),
+                                 viewpoint->getcenter(2));
+    return viewVector;
+}
+
+
 void MIGLWidget::OnAddWaterAtCursor()
 {
     if (MIBusyManager::instance()->Busy())
@@ -8855,22 +8831,23 @@ void MIGLWidget::OnAddWaterAtCursor()
     }
 
     QPoint p = mapFromGlobal(QCursor::pos());
-    QVector3D bPoint = viewpoint->Invert(p.x(), p.y(), 0);
+    Vector3<float> bPoint(mapToView(p));
     if (currentmap)
     {
         // search from -slab to + slab in z
-        int fslab = ROUND(viewpoint->frontClip() * viewpoint->scale());
-        int bslab = ROUND(viewpoint->backClip() * viewpoint->scale());
-        float bdens = -9999999.0F, dens;
+        qreal fslab = viewpoint->frontClip() * viewpoint->scale();
+        qreal bslab = viewpoint->backClip() * viewpoint->scale();
+        float bdens = -std::numeric_limits<float>::max();
+        float dens;
         // calculate .25 A increments in screen coordinates
         float interval = (viewpoint->frontClip()-viewpoint->backClip())/0.25F;
-        interval = (float)(fslab-bslab)/interval;
+        interval = (fslab - bslab)/interval;
         if ((int)interval <= 0)
             interval = 1.0F;
 
-        for (int is = bslab; is < fslab; is += (int)interval)
+        for (int is = bslab; is < fslab; is += interval)
         {
-            QVector3D point = viewpoint->Invert(p.x(), p.y(), is);
+            Vector3<float> point = mapToView(p, is);
             if ((dens = currentmap->Rho(point)) > bdens)
             {
                 bPoint = point;
@@ -8882,7 +8859,7 @@ void MIGLWidget::OnAddWaterAtCursor()
     if (!SaveModelFile(model, "before adding water"))
         Logger::message("Warning: Unable to save model - will not be able to Undo");
 
-    model->AddWater(bPoint.x(), bPoint.y(), bPoint.z());
+    model->AddWater(bPoint.getX(), bPoint.getY(), bPoint.getZ());
     int nlinks = model->getnlinks();
     model->Build();
     if (nlinks > 0)
@@ -9546,7 +9523,7 @@ void MIGLWidget::OnGotoFitalltoscreen()
     viewpoint->Do();
     while (node != end)
     {
-        if ((*node)->VisibleBounds(viewpoint, mxmin, mxmax, mymin, mymax, mzmin, mzmax))
+        if ((*node)->VisibleBounds(camera, mxmin, mxmax, mymin, mymax, mzmin, mzmax))
         {
             (*node)->Center(mxc, myc, mzc);
             xc += mxc;
@@ -12478,4 +12455,9 @@ void MIGLWidget::setMessage(const QString &message)
     rootContext()->setContextProperty("messageVisible", !message.isEmpty());
     if (!message.isEmpty())
         rootContext()->setContextProperty("message", message);
+}
+
+const mi::opengl::Camera *MIGLWidget::getCamera() const
+{
+    return camera;
 }

@@ -4,6 +4,7 @@
 class ViewPoint;
 
 #include <math/mathlib.h>
+#include <math/Vector3.h>
 #include <chemlib/chemlib.h>
 
 class CArchive;
@@ -34,12 +35,12 @@ public:
     void copymatrix(float mat[3][3]);
     void setmatrix(float mat[3][3]);
 
-    QVector3D transform(const QVector3D& point) const;
     void moveto(float, float, float);
+    void moveBy(const mi::math::Vector3<float> &delta);
+
     void setScale(qreal s);
     qreal scale() const;
     void zoom(float ds);
-    void scroll(int, int, int);
     void changeSlab(float delta);
     void setSlab(float frontClip, float backClip);
     qreal frontClip() const;
@@ -55,17 +56,13 @@ public:
     int height() const;  // in screen coordinates
     float getwidth() const;  // in ? coordinates
     float getheight() const;  // in ? coordinates
-    void getdirection(int, int, float&, float&, float&);
 
     void Do();
     void UnDo();
     bool UnDoable() const;
 
-    QVector3D Invert(int sx, int sy, int sz);
-
 private:
     float viewmat[3][3];
-    float umat[3][3];
     float center[3];
 
     int width_, height_; // viewport size; screen coords.
@@ -79,8 +76,6 @@ private:
     qreal backClip_;
 
     std::vector<ViewSave> UndoList;
-
-    void transform(const QVector3D& point, int &xt, int &yt, int &zt) const;
 };
 
 #endif // ifndef MIFIT_VIEWPOINT_H_

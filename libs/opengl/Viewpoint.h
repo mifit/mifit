@@ -17,8 +17,6 @@ namespace mi
 
         protected:
 
-            void transformVector(mi::math::Vector3<float> &vector);
-
             mi::math::Vector3<float> getTargetVector(float focalLength);
 
         public:
@@ -51,6 +49,9 @@ namespace mi
             mi::math::Vector3<float> getRightVector();
 
             mi::math::Vector3<float> getUpVector();
+
+            void transformVector(mi::math::Vector3<float> &vector);
+            void untransformVector(mi::math::Vector3<float> &vector);
 
         };
     }

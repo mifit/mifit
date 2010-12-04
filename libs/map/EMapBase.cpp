@@ -3961,16 +3961,16 @@ void EMapBase::CheckCenter(float x, float y, float z)
     }
 }
 
-float EMapBase::Rho(const QVector3D &pos)
+float EMapBase::Rho(const mi::math::Vector3<float> &pos)
 {
     if (!HasDensity())
     {
         return 0.0;
     }
     float fx, fy, fz;
-    fx = pos.x();
-    fy = pos.y();
-    fz = pos.z();
+    fx = pos.getX();
+    fy = pos.getY();
+    fz = pos.getZ();
     transform(mapheader->ctof, &fx, &fy, &fz);
     return avgrho(fx, fy, fz);
 }

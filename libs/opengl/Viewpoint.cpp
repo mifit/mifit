@@ -65,6 +65,13 @@ void Viewpoint::transformVector(Vector3<float> &vector)
     QuatUtil::rotateVector(rotation, vector);
 }
 
+void Viewpoint::untransformVector(Vector3<float> &vector)
+{
+    Quaternion<float> reverseRotation(rotation);
+    reverseRotation.conjugate();
+    QuatUtil::rotateVector(reverseRotation, vector);
+}
+
 Vector3<float> Viewpoint::getTargetVector(float focalLength)
 {
     Vector3<float> targetVector(0.0f, 0.0f, -focalLength);
