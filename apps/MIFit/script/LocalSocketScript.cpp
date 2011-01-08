@@ -94,7 +94,7 @@ void LocalSocketScript::handleConnection()
         out << quint32(0) << result;
 
         out.device()->seek(0);
-        out << data.size() - sizeof(quint32);
+        out << quint32(data.size() - sizeof(quint32));
         connection->write(data);
         connection->flush();
         connection->waitForDisconnected();
