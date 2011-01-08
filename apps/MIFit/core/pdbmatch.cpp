@@ -1,4 +1,3 @@
-#include <nongui/nonguilib.h>
 #include <chemlib/chemlib.h>
 #include <chemlib/Monomer.h>
 #include "corelib.h"

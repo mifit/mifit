@@ -22,7 +22,6 @@
 #include <opengl/ViewportRelativeViewpoint.h>
 #include <opengl/interact/TargetFeedback.h>
 
-#include <nongui/nonguilib.h>
 #include "Displaylist.h"
 #include "CMolwViewScene.h"
 #include "Application.h"

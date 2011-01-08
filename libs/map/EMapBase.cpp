@@ -1,6 +1,5 @@
 #include <algorithm>
 
-#include <nongui/nonguilib.h>
 #include <chemlib/chemlib.h>
 #include <chemlib/Residue.h>
 #include <chemlib/MIMoleculeBase.h>

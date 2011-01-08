@@ -1,4 +1,3 @@
-#include <nongui/nonguilib.h>
 #include <vector>
 #include "SaveAtom.h"
 #include "model.h"

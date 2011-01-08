@@ -8,7 +8,6 @@
 #include <vector>
 #include <map>
 
-#include <nongui/nonguilib.h>
 #include "jobs/jobslib.h"
 
 #include "MIMainWindow.h"

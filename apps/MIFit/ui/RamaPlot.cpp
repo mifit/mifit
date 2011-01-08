@@ -2,7 +2,6 @@
 #include <cmath>
 
 #include <math/mathlib.h>
-#include <nongui/nonguilib.h>
 #include <chemlib/Monomer.h>
 
 #include "MIMainWindow.h"

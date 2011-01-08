@@ -5,7 +5,6 @@
 #include <values.h>
 #endif
 
-#include <nongui/nonguilib.h>
 #include "maplib.h"
 
 

@@ -12,7 +12,6 @@
 #include <core/corelib.h>
 #include <ligand/ligandlib.h>
 #include <map/maplib.h>
-#include <nongui/nonguilib.h>
 
 #include "JobsView.h"
 #include "DictEditCanvas.h"

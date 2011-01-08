@@ -5,7 +5,6 @@
 #include <math/mathlib.h>
 #include <math/Quaternion.h>
 #include <math/Vector3.h>
-#include <nongui/nonguilib.h>
 #include <opengl/QuatUtil.h>
 #include <utility>
 #include <vector>

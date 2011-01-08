@@ -1,11 +1,11 @@
 #include "LocalSocketScript.h"
-#include <nongui/nonguilib.h>
 #include <QBuffer>
 #include <QDataStream>
 #include <QLocalServer>
 #include <QLocalSocket>
 #include <QScriptEngine>
 #include <QStringList>
+#include <ui/Logger.h>
 #include "MIFitScriptObject.h"
 
 #ifdef _WIN32

@@ -1,4 +1,3 @@
-#include <nongui/nonguilib.h>
 #include <chemlib/chemlib.h>
 
 #include "Molecule.h"

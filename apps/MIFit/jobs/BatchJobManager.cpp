@@ -1,4 +1,3 @@
-#include <nongui/nonguilib.h>
 #include <QAction>
 #include <QDir>
 #include <QFile>

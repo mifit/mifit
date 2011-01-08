@@ -1,4 +1,3 @@
-#include <nongui/nonguilib.h>
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QDir>

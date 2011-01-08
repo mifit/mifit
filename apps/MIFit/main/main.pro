@@ -26,7 +26,7 @@ for(l, appLibs) {
 INCLUDEPATH *= $$OUT_PWD/../../../libs
 LIBS *= -L$$OUT_PWD/../../../libs
 
-otherLibs = nongui ligand map molopt conflib chemlib miopengl mimath miutil jacgrid umtz
+otherLibs = ligand map molopt conflib chemlib miopengl mimath miutil jacgrid umtz
 for(l, otherLibs) {
   LIBS *= -l$$qtLibraryTarget($${l})
   PRE_TARGETDEPS += $$OUT_PWD/../../../libs/lib$$qtLibraryTarget($${l})$$LIB_EXTENSION

@@ -4,7 +4,6 @@
 #include <cstring>
 #include <QInputDialog>
 #include <QSettings>
-#include <nongui/nonguilib.h>
 #include <chemlib/chemlib.h>
 #include <chemlib/Monomer.h>
 #include <map/maplib.h>

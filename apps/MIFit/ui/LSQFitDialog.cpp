@@ -1,4 +1,3 @@
-#include <nongui/nonguilib.h>
 #include "LSQFitDialog.h"
 #include <QFileDialog>
 #include "core/corelib.h"

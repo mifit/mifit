@@ -1,3 +1,3 @@
 include(../common.pri)
-INCLUDEPATH *= $$PWD
+INCLUDEPATH *= $$PWD $$PWD/../apps/MIFit
 DESTDIR = $$OUT_PWD/..

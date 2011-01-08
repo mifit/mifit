@@ -1,4 +1,3 @@
-#include <nongui/nonguilib.h>
 #include "Cfiles.h"
 
 CArchive::CArchive(const char *pathname, int m)

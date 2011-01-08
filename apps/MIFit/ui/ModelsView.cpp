@@ -19,7 +19,6 @@
 
 #include <map/maplib.h>
 #include "core/corelib.h"
-#include <nongui/nonguilib.h>
 #include <chemlib/Monomer.h>
 
 #include "ModelsView.h"

@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <cfloat>
 
-#include <nongui/nonguilib.h>
 #include <math/mathlib.h>
 #include <chemlib/chemlib.h>
 #include <chemlib/Monomer.h>

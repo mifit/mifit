@@ -1,4 +1,3 @@
-#include <nongui/nonguilib.h>
 
 #include "CMapHeader.h"
 #include "Application.h"

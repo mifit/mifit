@@ -3,8 +3,6 @@
 #include <errno.h>
 
 
-#include <nongui/nonguilib.h>
-
 #include <chemlib/chemlib.h>
 #include <chemlib/Monomer.h>
 #include <conflib/conflib.h>
@@ -840,7 +838,7 @@ void Application::WriteSecStr()
 void Application::WriteAtomTypes()
 {
     QSettings settings;
-    settings.setValue("Atom Colors/NoEntries", Colors::atomcolors.size());
+    settings.setValue("Atom Colors/NoEntries", static_cast<int>(Colors::atomcolors.size()));
     for (unsigned int i = 0; i < Colors::atomcolors.size(); i++)
     {
         std::string b = format("Color%d", i);

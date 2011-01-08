@@ -1,7 +1,6 @@
 #include <vector>
 #include <algorithm>
 
-#include <nongui/nonguilib.h>
 #include <math/mathlib.h>
 
 #include <util/system.h>
@@ -12,6 +11,7 @@
 #include "mol_util_private.h"
 #include "DictResidue.h"
 #include "mmCIF.h"
+#include <ui/Logger.h>
 
 namespace chemlib
 {

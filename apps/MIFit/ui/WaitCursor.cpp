@@ -1,3 +1,5 @@
+#include "WaitCursor.h"
+
 #ifndef _WIN32
 #include <unistd.h>
 #include <pwd.h>
@@ -9,7 +11,6 @@
 #include <string.h>
 #include <limits.h>
 
-#include <nongui/nonguilib.h>
 #include <map/maplib.h>
 #include "core/corelib.h"
 

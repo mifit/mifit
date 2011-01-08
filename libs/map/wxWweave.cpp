@@ -1,4 +1,3 @@
-#include <nongui/nonguilib.h>
 #include <cmath>
 #include <cstdio>
 

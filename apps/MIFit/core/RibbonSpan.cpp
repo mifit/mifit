@@ -1,7 +1,7 @@
 #include <cmath>
 #include <cstdio>
 #include <math/mathlib.h>
-#include <nongui/nonguilib.h>
+#include <ui/Logger.h>
 
 #include "RibbonSpan.h"
 

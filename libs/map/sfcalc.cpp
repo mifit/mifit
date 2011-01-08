@@ -3,7 +3,6 @@
 #include <cstring>
 #include <ctype.h>
 
-#include <nongui/nonguilib.h>
 #include <math/mathlib.h>
 #include <chemlib/chemlib.h>
 #include <chemlib/Monomer.h>

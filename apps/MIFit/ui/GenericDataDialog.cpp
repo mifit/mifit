@@ -12,7 +12,6 @@
 #include <QComboBox>
 #include <QFormLayout>
 
-#include <nongui/nongui.h>
 #include <util/utillib.h>
 #include "core/corelib.h"
 #include "ui/uilib.h"

@@ -5,7 +5,6 @@
 #include <chemlib/Monomer.h>
 #include <conflib/conflib.h>
 #include <map/maplib.h>
-#include <nongui/nonguilib.h>
 #include <math/mathlib.h>
 #include <QFile>
 #include <QProcess>

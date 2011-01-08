@@ -7,7 +7,6 @@
 #include <opengl/OpenGL.h>
 #include <opengl/Text.h>
 
-#include <nongui/nonguilib.h>
 #include <map/maplib.h>
 #include "core/corelib.h"
 #include <chemlib/Monomer.h>

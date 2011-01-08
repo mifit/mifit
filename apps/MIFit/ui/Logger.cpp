@@ -1,7 +1,8 @@
+#include "Logger.h"
+
 #include <cstdarg>
 #include <string>
 
-#include <nongui/nonguilib.h>
 #include <util/utillib.h>
 
 #include "MIMainWindow.h"

@@ -1,4 +1,3 @@
-#include <nongui/nonguilib.h>
 #include <math/mathlib.h>
 
 #include "maplib_private.h"

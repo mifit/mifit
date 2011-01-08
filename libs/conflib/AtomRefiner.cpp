@@ -1,4 +1,3 @@
-#include <nongui/nonguilib.h>
 #include <vector>
 #include <fstream>
 #include <sstream>

@@ -7,7 +7,6 @@
 #include <vector>
 #include <functional>
 #include <algorithm>
-#include <nongui/nonguilib.h>
 
 namespace TNT
 {
