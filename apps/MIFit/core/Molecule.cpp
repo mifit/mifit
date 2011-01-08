@@ -1,8 +1,14 @@
-#include <nongui/nonguilib.h>
-#include <math/mathlib.h>
+#include <climits>
 #include <chemlib/chemlib.h>
 #include <chemlib/Residue.h>
 #include <map/maplib.h>
+#include <math/mathlib.h>
+#include <math/Quaternion.h>
+#include <math/Vector3.h>
+#include <nongui/nonguilib.h>
+#include <opengl/QuatUtil.h>
+#include <utility>
+#include <vector>
 
 
 #include "Molecule.h"
@@ -12,11 +18,9 @@
 #include "ViewPoint.h"
 #include "ui/CMapHeader.h"
 
-#include <climits>
-#include <vector>
-#include <utility>
-
 using namespace chemlib;
+using namespace mi::math;
+using namespace mi::opengl;
 using namespace std;
 
 #define X 0
@@ -398,48 +402,59 @@ void Molecule::Translate(float x, float y, float z, MIAtomList *atoms, SurfaceDo
 void Molecule::Rotate(float rx, float ry, float rz, float cx, float cy, float cz, ViewPoint *viewpoint,
                       MIAtomList *atoms, SurfaceDots *dots)
 {
-    float rotmat[3][3], viewmat[3][3];
-    float umat[3][3], mat[3][3];
+
+    float matrix[3][3];
+    viewpoint->copymatrix(matrix);
+    Matrix4<float> m(matrix[0][0], matrix[0][1], matrix[0][2], 0.0f,
+                     matrix[1][0], matrix[1][1], matrix[1][2], 0.0f,
+                     matrix[2][0], matrix[2][1], matrix[2][2], 0.0f,
+                     0.0f, 0.0f, 0.0f, 1.0f);
+    Quaternion<float> qv;
+    qv.set(m);
+    Quaternion<float> qvi;
+    qvi.set(m);
+    qvi.inverse();
+
+    float rotmat[3][3];
     buildmat(rx, ry, rz, rotmat);
-    orthomatrix(rotmat, rotmat);
-    viewpoint->copymatrix(viewmat);
-    uinv(viewmat, umat);
-    matmul(umat, rotmat, mat);
-    matmul(mat, viewmat, mat);
-    orthomatrix(mat, mat);
-    long i;
-    float xrot, yrot, zrot, xdir, ydir, zdir;
-    SURFDOT *dot;
-    MIAtom *a;
+    Matrix4<float> rm(rotmat[0][0], rotmat[0][1], rotmat[0][2], 0.0f,
+                      rotmat[1][0], rotmat[1][1], rotmat[1][2], 0.0f,
+                      rotmat[2][0], rotmat[2][1], rotmat[2][2], 0.0f,
+                      0.0f, 0.0f, 0.0f, 1.0f);
+    Quaternion<float> qr;
+    qr.set(rm);
+    Quaternion<float> q(qvi);
+    q.multiply(qr);
+    q.multiply(qv);
+
+    float xdir, ydir, zdir;
     if (atoms)
     {
-        for (i = 0; (unsigned int) i < atoms->size(); i++)
+        for (size_t i = 0; i < atoms->size(); ++i)
         {
-            a = (*atoms)[i];
+            MIAtom *a = (*atoms)[i];
             xdir = a->x() - cx;
             ydir = a->y() - cy;
             zdir = a->z() - cz;
-            xrot =  (xdir*mat[X][X]+ydir*mat[X][Y]+zdir*mat[X][Z]);
-            yrot =  (xdir*mat[Y][X]+ydir*mat[Y][Y]+zdir*mat[Y][Z]);
-            zrot =  (xdir*mat[Z][X]+ydir*mat[Z][Y]+zdir*mat[Z][Z]);
-            a->setPosition(xrot + cx, yrot + cy, zrot + cz);
+            Vector3<float> vector(xdir, ydir, zdir);
+            QuatUtil::rotateVector(q, vector);
+            a->setPosition(vector.x + cx, vector.y + cy, vector.z + cz);
         }
     }
     // now move the surface if any
     if (dots)
     {
-        for (i = 0; (unsigned int) i < dots->size(); i++)
+        for (size_t i = 0; i < dots->size(); ++i)
         {
-            dot = &(*dots)[i];
+            SURFDOT *dot = &(*dots)[i];
             xdir = dot->x - cx;
             ydir = dot->y - cy;
             zdir = dot->z - cz;
-            xrot =  (xdir*mat[X][X]+ydir*mat[X][Y]+zdir*mat[X][Z]);
-            yrot =  (xdir*mat[Y][X]+ydir*mat[Y][Y]+zdir*mat[Y][Z]);
-            zrot =  (xdir*mat[Z][X]+ydir*mat[Z][Y]+zdir*mat[Z][Z]);
-            dot->x = xrot + cx;
-            dot->y = yrot + cy;
-            dot->z = zrot + cz;
+            Vector3<float> vector(xdir, ydir, zdir);
+            QuatUtil::rotateVector(q, vector);
+            dot->x = vector.x + cx;
+            dot->y = vector.y + cy;
+            dot->z = vector.z + cz;
         }
     }
     SetCoordsChanged(true);
