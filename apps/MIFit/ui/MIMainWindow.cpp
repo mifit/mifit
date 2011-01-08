@@ -192,8 +192,10 @@ MIMainWindow::MIMainWindow()
     tabifyDockWidget(displayDock, jobsDock);
     modelsDock->raise();
 
+#ifndef MIFIT_NO_RAMAPLOT
     tabifyDockWidget(navigatorDock, ramaDock);
     navigatorDock->raise();
+#endif
 
     std::string title = "MIFit ";
     title += MIFit_version;
@@ -1021,9 +1023,11 @@ void MIMainWindow::createDockWindows()
     //  logWindow->document()->setMaximumBlockCount(1000);
     logDock = AddAsDockWidget(logWindow, "Log", Qt::BottomDockWidgetArea);
 
+#ifndef MIFIT_NO_RAMAPLOT
     // add rama plot
     QWidget *graphwin = RamaPlotMgr::instance()->getGraphWin();
     ramaDock = AddAsDockWidget(graphwin, "Ramachandran plot", Qt::BottomDockWidgetArea);
+#endif
 
     //add Models tree
     modelsView = new ModelsView(modelsDock);

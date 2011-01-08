@@ -697,11 +697,10 @@ void MIGLWidget::doRefresh()
     MIMainWindow::instance()->updateToolBar();
     MIMainWindow::instance()->updateNavigator();
 
+#ifndef MIFIT_NO_RAMAPLOT
     if (RamaPlotMgr::instance()->IsShown())
-    {
         updateRamachandranPlot();
-    }
-
+#endif
 }
 
 void MIGLWidget::modelChanged(MIMoleculeBase*)
@@ -790,7 +789,9 @@ void MIGLWidget::OnActivated()
     }
 
     MIMainWindow::instance()->updateNavigator();
+#ifndef MIFIT_NO_RAMAPLOT
     updateRamachandranPlot();
+#endif
 
     //NOTE: viewDeactivated is no longer sent (now handled by OnClose)
 }
@@ -6330,10 +6331,10 @@ void MIGLWidget::UpdateCurrent()
 
     Displaylist *displaylist = GetDisplaylist();
 
+#ifndef MIFIT_NO_RAMAPLOT
     if (RamaPlotMgr::instance()->IsShown())
-    {
         RamaPlotMgr::instance()->Update(fitres, SelectType);
-    }
+#endif
 
     if (CurrentAtoms.size() == 0)
     {

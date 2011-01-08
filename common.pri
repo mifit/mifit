@@ -71,8 +71,10 @@ unix {
 }
 
 mac {
+  # Workaround for Issue 47: Mac build of MIFit crashes in Ramachandran plot
+  DEFINES += MIFIT_NO_RAMAPLOT
+
   QMAKE_LFLAGS_SHLIB += -undefined dynamic_lookup
   QMAKE_CXXFLAGS_WARN_ON += -Wno-unknown-pragmas
   QMAKE_CFLAGS_WARN_ON += -Wno-unknown-pragmas
 }
-  

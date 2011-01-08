@@ -688,9 +688,11 @@ RamaPlotMgr::RamaPlotMgr(bool allowed)
 
 RamaPlotMgr*RamaPlotMgr::instance()
 {
+#ifndef MIFIT_NO_RAMAPLOT
     if (_instance)
         return _instance;
     new RamaPlotMgr(); // sets _instance
+#endif
     return _instance;
 }
 
