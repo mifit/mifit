@@ -4,6 +4,8 @@
 class ViewPoint;
 
 #include <math/mathlib.h>
+#include <math/Matrix4.h>
+#include <math/Quaternion.h>
 #include <math/Vector3.h>
 #include <chemlib/chemlib.h>
 
@@ -13,6 +15,7 @@ class ViewSave
 {
 public:
     float viewmat[3][3];
+    mi::math::Quaternion<float> view;
     float center[3];
     qreal frontClip;
     qreal backClip;
@@ -34,6 +37,9 @@ public:
 
     void copymatrix(float mat[3][3]);
     void setmatrix(float mat[3][3]);
+    void set(const mi::math::Quaternion<float> &q);
+    void set(const mi::math::Matrix4<float> &mat);
+    const mi::math::Quaternion<float> &orientation() const;
 
     void moveto(float, float, float);
     void moveBy(const mi::math::Vector3<float> &delta);
@@ -62,7 +68,7 @@ public:
     bool UnDoable() const;
 
 private:
-    float viewmat[3][3];
+    mi::math::Quaternion<float> view;
     float center[3];
 
     int width_, height_; // viewport size; screen coords.

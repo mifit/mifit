@@ -2,6 +2,9 @@
 
 #include "Cfiles.h"
 #include "ViewPoint.h"
+#include <math/Matrix4.h>
+
+using namespace mi::math;
 
 void ViewPointIO::save(ViewPoint &vp, CArchive &ar)
 {

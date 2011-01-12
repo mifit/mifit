@@ -17,26 +17,13 @@ using namespace mi::math;
 using namespace mi::opengl;
 
 ViewPoint::ViewPoint()
-    : width_(200), height_(100),
+    : view(Vector3<float>(0, 0, 1), 0),
+      width_(200), height_(100),
       perspective_(0),
       scale_(20),
       frontClip_(5.0), backClip_(-5.0)
 
 {
-    for (int i = 0; i < 3; i++)
-    {
-        for (int j = 0; j < 3; j++)
-        {
-            if (i == j)
-            {
-                viewmat[i][j] = 1.0;
-            }
-            else
-            {
-                viewmat[i][j] = 0;
-            }
-        }
-    }
     center[0] = center[1] = center[2] = 0;
     zangle = sin(perspective_ * M_PI/180.0);
 }
@@ -46,13 +33,9 @@ void ViewPoint::UnDo()
     if (UndoList.size() > 0)
     {
         for (int i = 0; i < 3; i++)
-        {
             center[i] = UndoList.back().center[i];
-            for (int j = 0; j < 3; j++)
-            {
-                viewmat[i][j] = UndoList.back().viewmat[i][j];
-            }
-        }
+
+        view = UndoList.back().view;
         scale_ = UndoList.back().scale;
         frontClip_ = UndoList.back().frontClip;
         backClip_ = UndoList.back().backClip;
@@ -65,46 +48,52 @@ void ViewPoint::Do()
 {
     ViewSave last;
     for (int i = 0; i < 3; i++)
-    {
         last.center[i] = center[i];
-        for (int j = 0; j < 3; j++)
-        {
-            last.viewmat[i][j] = viewmat[i][j];
-        }
-    }
+    last.view = view;
     last.scale = scale_;
     last.frontClip = frontClip_;
     last.backClip = backClip_;
     UndoList.push_back(last);
 }
 
+void ViewPoint::set(const Quaternion<float> &q)
+{
+    view = q;
+}
+
+void ViewPoint::set(const Matrix4<float> &m)
+{
+    view.set(m);
+}
+
 void ViewPoint::setmatrix(float mat[3][3])
 {
-    viewmat[0][0] = mat[0][0];
-    viewmat[0][1] = mat[0][1];
-    viewmat[0][2] = mat[0][2];
-    viewmat[1][0] = mat[1][0];
-    viewmat[1][1] = mat[1][1];
-    viewmat[1][2] = mat[1][2];
-    viewmat[2][0] = mat[2][0];
-    viewmat[2][1] = mat[2][1];
-    viewmat[2][2] = mat[2][2];
-    orthomatrix(viewmat, viewmat);
+    Matrix4<float> m(mat[0][0], mat[0][1], mat[0][2], 0.0f,
+                     mat[0][0], mat[0][1], mat[0][2], 0.0f,
+                     mat[0][0], mat[0][1], mat[0][2], 0.0f,
+                     0.0f, 0.0f, 0.0f, 1.0f);
+    view.set(m);
 }
 
 void ViewPoint::copymatrix(float mat[3][3])
 {
-    //float msf = MSF;
-    mat[0][0] = viewmat[0][0];
-    mat[0][1] = viewmat[0][1];
-    mat[0][2] = viewmat[0][2];
-    mat[1][0] = viewmat[1][0];
-    mat[1][1] = viewmat[1][1];
-    mat[1][2] = viewmat[1][2];
-    mat[2][0] = viewmat[2][0];
-    mat[2][1] = viewmat[2][1];
-    mat[2][2] = viewmat[2][2];
+    Matrix4<float> viewmat(view);
+    mat[0][0] = viewmat.m00;
+    mat[0][1] = viewmat.m01;
+    mat[0][2] = viewmat.m02;
+    mat[1][0] = viewmat.m10;
+    mat[1][1] = viewmat.m11;
+    mat[1][2] = viewmat.m12;
+    mat[2][0] = viewmat.m20;
+    mat[2][1] = viewmat.m21;
+    mat[2][2] = viewmat.m22;
 }
+
+const mi::math::Quaternion<float> &ViewPoint::orientation() const
+{
+    return view;
+}
+
 
 void ViewPoint::setSize(int width, int height)
 {
@@ -114,8 +103,8 @@ void ViewPoint::setSize(int width, int height)
 
 void ViewPoint::rotate(float rx, float ry, float rz)
 {
-    incmatrix(rx, ry, rz, viewmat, viewmat);
-    orthomatrix(viewmat, viewmat);
+    Quaternion<float> q(rx/2 * DEG2RAD, ry/2 * DEG2RAD, rz/2 * DEG2RAD, 1.0);
+    view = q * view;
 }
 
 void ViewPoint::moveto(float x, float y, float z)
