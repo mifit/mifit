@@ -64,29 +64,7 @@ void ViewPoint::set(const Quaternion<float> &q)
 void ViewPoint::set(const Matrix4<float> &m)
 {
     view.set(m);
-}
-
-void ViewPoint::setmatrix(float mat[3][3])
-{
-    Matrix4<float> m(mat[0][0], mat[0][1], mat[0][2], 0.0f,
-                     mat[0][0], mat[0][1], mat[0][2], 0.0f,
-                     mat[0][0], mat[0][1], mat[0][2], 0.0f,
-                     0.0f, 0.0f, 0.0f, 1.0f);
-    view.set(m);
-}
-
-void ViewPoint::copymatrix(float mat[3][3])
-{
-    Matrix4<float> viewmat(view);
-    mat[0][0] = viewmat.m00;
-    mat[0][1] = viewmat.m01;
-    mat[0][2] = viewmat.m02;
-    mat[1][0] = viewmat.m10;
-    mat[1][1] = viewmat.m11;
-    mat[1][2] = viewmat.m12;
-    mat[2][0] = viewmat.m20;
-    mat[2][1] = viewmat.m21;
-    mat[2][2] = viewmat.m22;
+    view.normalize();
 }
 
 const mi::math::Quaternion<float> &ViewPoint::orientation() const

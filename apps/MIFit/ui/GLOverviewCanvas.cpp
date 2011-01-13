@@ -168,8 +168,7 @@ void GLOverviewCanvas::paintGL()
 
     ViewPoint *viewpoint = GetView()->viewpoint;
 
-    float viewmat[3][3];
-    viewpoint->copymatrix(viewmat);
+    Quaternion<float> viewmat(viewpoint->orientation());
 
     Vector3<float> target(viewpoint->getcenter(0), viewpoint->getcenter(1), viewpoint->getcenter(2));
     Vector3<float> eye(target);
@@ -198,11 +197,7 @@ void GLOverviewCanvas::paintGL()
     glTranslatef(viewpoint->getcenter(0), viewpoint->getcenter(1), viewpoint->getcenter(2));
 
     float rotation[16];
-    setIdentity(rotation);
-    for (int i = 0; i < 3; ++i)
-        for (int j = 0; j < 3; ++j)
-            rotation[i + j*4] = viewmat[i][j];
-
+    QuatUtil::store(viewmat, rotation);
     glMultMatrixf(rotation);
 
     glTranslatef(-viewpoint->getcenter(0), -viewpoint->getcenter(1), -viewpoint->getcenter(2));

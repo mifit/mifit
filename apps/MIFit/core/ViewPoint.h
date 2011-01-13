@@ -35,8 +35,6 @@ public:
 
     void rotate(float rx, float ry, float rz);
 
-    void copymatrix(float mat[3][3]);
-    void setmatrix(float mat[3][3]);
     void set(const mi::math::Quaternion<float> &q);
     void set(const mi::math::Matrix4<float> &mat);
     const mi::math::Quaternion<float> &orientation() const;

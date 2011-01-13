@@ -401,27 +401,15 @@ void Molecule::Translate(float x, float y, float z, MIAtomList *atoms, SurfaceDo
 void Molecule::Rotate(float rx, float ry, float rz, float cx, float cy, float cz, ViewPoint *viewpoint,
                       MIAtomList *atoms, SurfaceDots *dots)
 {
+    Quaternion<float> qv(viewpoint->orientation());
+    qv.normalize();
 
-    float matrix[3][3];
-    viewpoint->copymatrix(matrix);
-    Matrix4<float> m(matrix[0][0], matrix[0][1], matrix[0][2], 0.0f,
-                     matrix[1][0], matrix[1][1], matrix[1][2], 0.0f,
-                     matrix[2][0], matrix[2][1], matrix[2][2], 0.0f,
-                     0.0f, 0.0f, 0.0f, 1.0f);
-    Quaternion<float> qv;
-    qv.set(m);
-    Quaternion<float> qvi;
-    qvi.set(m);
+    Quaternion<float> qvi(viewpoint->orientation());
+    qvi.normalize();
     qvi.inverse();
 
-    float rotmat[3][3];
-    buildmat(rx, ry, rz, rotmat);
-    Matrix4<float> rm(rotmat[0][0], rotmat[0][1], rotmat[0][2], 0.0f,
-                      rotmat[1][0], rotmat[1][1], rotmat[1][2], 0.0f,
-                      rotmat[2][0], rotmat[2][1], rotmat[2][2], 0.0f,
-                      0.0f, 0.0f, 0.0f, 1.0f);
-    Quaternion<float> qr;
-    qr.set(rm);
+    Quaternion<float> qr(rx/2 * DEG2RAD, ry/2 * DEG2RAD, rz/2 * DEG2RAD, 1.0);
+
     Quaternion<float> q(qvi);
     q.multiply(qr);
     q.multiply(qv);

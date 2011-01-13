@@ -14,12 +14,11 @@ void ViewPointIO::save(ViewPoint &vp, CArchive &ar)
         s = format("translation %0.2f %0.2f %0.2f\n",
                    vp.getcenter(0), vp.getcenter(1), vp.getcenter(2));
         ar.Write(s.c_str(), s.size());
-        float viewmat[3][3];
-        vp.copymatrix(viewmat);
+        Matrix4<float> viewmat(vp.orientation());
         s = format("rotation %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f\n",
-                   viewmat[0][0], viewmat[0][1], viewmat[0][2],
-                   viewmat[1][0], viewmat[1][1], viewmat[1][2],
-                   viewmat[2][0], viewmat[2][1], viewmat[2][2]);
+                   viewmat.m00, viewmat.m01, viewmat.m02,
+                   viewmat.m10, viewmat.m11, viewmat.m12,
+                   viewmat.m20, viewmat.m21, viewmat.m22);
         ar.Write(s.c_str(), s.size());
         s = format("zoom %0.3f\nperspective %0.3f\n", vp.scale(), vp.perspective());
         ar.Write(s.c_str(), s.size());
@@ -45,17 +44,10 @@ void ViewPointIO::load(ViewPoint &vp, FILE *fp)
         {
             if (sscanf(buf.c_str(), "%*s%f%f%f%f%f%f%f%f%f", &v1, &v2, &v3, &v4, &v5, &v6, &v7, &v8, &v9) == 9)
             {
-                float viewmat[3][3];
-                viewmat[0][0] = v1;
-                viewmat[0][1] = v2;
-                viewmat[0][2] = v3;
-                viewmat[1][0] = v4;
-                viewmat[1][1] = v5;
-                viewmat[1][2] = v6;
-                viewmat[2][0] = v7;
-                viewmat[2][1] = v8;
-                viewmat[2][2] = v9;
-                vp.setmatrix(viewmat);
+                vp.set(Matrix4<float>(v1, v2, v3, 0.0f,
+                                      v4, v5, v6, 0.0f,
+                                      v7, v8, v9, 0.0f,
+                                      0.0f, 0.0f, 0.0f, 1.0f));
             }
         }
         else if (!strncmp(buf.c_str(), "zoom", 4))

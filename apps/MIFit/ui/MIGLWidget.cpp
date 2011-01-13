@@ -919,15 +919,9 @@ void MIGLWidget::draw(QPainter *painter)
     }
 
     Vector3<float> target(viewpoint->getcenter(0), viewpoint->getcenter(1), viewpoint->getcenter(2));
-    float matrix[3][3];
-    viewpoint->copymatrix(matrix);
-    Matrix4<float> m(matrix[0][0], matrix[0][1], matrix[0][2], 0.0f,
-                     matrix[1][0], matrix[1][1], matrix[1][2], 0.0f,
-                     matrix[2][0], matrix[2][1], matrix[2][2], 0.0f,
-                     0.0f, 0.0f, 0.0f, 1.0f);
-
     Quaternion<float> q;
-    q.set(m);
+    q.set(viewpoint->orientation());
+    q.normalize();
     q.inverse();
     static Quaternion<float> frontQuat(Vector3<float>(1.0f, 0.0f, 0.0f), toRadians(180.0f));
     static Quaternion<float> topQuat(Vector3<float>(1.0f, 0.0f, 0.0f), toRadians(90.0f));
@@ -1372,19 +1366,7 @@ void MIGLWidget::CenterAtResidue(const Residue *res)
                 // Orient CB to top
                 orientation = QuatUtil::alignVectors(vector1, Vector3<float>(0.0, -1.0, 0.0));
 
-            Matrix3<float> matrix;
-            matrix.set(orientation);
-            float viewmat[3][3];
-            viewmat[0][0] = matrix.getElement(0, 0);
-            viewmat[0][1] = matrix.getElement(0, 1);
-            viewmat[0][2] = matrix.getElement(0, 2);
-            viewmat[1][0] = matrix.getElement(1, 0);
-            viewmat[1][1] = matrix.getElement(1, 1);
-            viewmat[1][2] = matrix.getElement(1, 2);
-            viewmat[2][0] = matrix.getElement(2, 0);
-            viewmat[2][1] = matrix.getElement(2, 1);
-            viewmat[2][2] = matrix.getElement(2, 2);
-            viewpoint->setmatrix(viewmat);
+            viewpoint->set(orientation);
         }
     }
     else
@@ -1664,20 +1646,19 @@ bool MIGLWidget::OnKeyDown(unsigned int nChar, Qt::KeyboardModifiers modifiers)
         handled = true;
         break;
     case 'x': {
-        float mat[3][3] = {{0, 0, 1.0F}, {0, 1.0F, 0}, {1.0F, 0, 0}};
-        viewpoint->setmatrix(mat);
+        const float halfSqrt2 = std::sqrt(2)/2;
+        viewpoint->set(Quaternion<float>(0, -halfSqrt2, 0, halfSqrt2));
         handled = true;
     }
     break;
     case 'y': {
-        float mat[3][3] = {{1.0F, 0, 0}, {0, 0, 1.0F}, {0, 1.0F, 0}};
-        viewpoint->setmatrix(mat);
+        const float halfSqrt2 = std::sqrt(2)/2;
+        viewpoint->set(Quaternion<float>(halfSqrt2, 0, 0, halfSqrt2));
         handled = true;
     }
     break;
     case 'z': {
-        float mat[3][3] = {{1.0F, 0, 0}, {0, 1.0F, 0}, {0, 0, 1.0F}};
-        viewpoint->setmatrix(mat);
+        viewpoint->set(Quaternion<float>(0.0f, 0.0f, 0.0f, 1.0f));
         handled = true;
     }
     break;
