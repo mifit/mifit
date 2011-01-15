@@ -1887,9 +1887,12 @@ void MIMainWindow::createMenus()
                                 analyze_menu,
                                 SLOT(OnGeometryTorsion()),
                                 SLOT(OnUpdateGeometryTorsion(QAction*)));
+#ifndef MIFIT_NO_RAMAPLOT
     analyze_menu->addSeparator();
     miGLWidgetAction = new CurrentMIGLWidgetAction("Detailed Ramachandran plot", "Show allowed regions in Ramachandran plot, too", analyze_menu, SLOT(OnRamachandranPlotShowAllowed()), SLOT(OnUpdateRamachandranPlotShowAllowed(QAction*)));
     miGLWidgetAction->setCheckable(true);
+#endif
+
     analyze_menu->addSeparator();
     new CurrentMIGLWidgetAction("A&nalyze Geometry Errors",
                                 "Find all the geometry errors above a threshold in the model",
