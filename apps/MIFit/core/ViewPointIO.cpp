@@ -12,7 +12,7 @@ void ViewPointIO::save(ViewPoint &vp, CArchive &ar)
     {
         std::string s;
         s = format("translation %0.2f %0.2f %0.2f\n",
-                   vp.getcenter(0), vp.getcenter(1), vp.getcenter(2));
+                   vp.center()[0], vp.center()[0], vp.center()[2]);
         ar.Write(s.c_str(), s.size());
         Matrix4<float> viewmat(vp.orientation());
         s = format("rotation %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f\n",
@@ -82,7 +82,7 @@ void ViewPointIO::load(ViewPoint &vp, FILE *fp)
         {
             if (sscanf(buf.c_str(), "%*s%f%f%f", &v1, &v2, &v3) == 3)
             {
-                vp.moveto(v1, v2, v3);
+                vp.setCenter(mi::math::Vector3<float>(v1, v2, v3));
             }
         }
     }

@@ -170,7 +170,7 @@ void GLOverviewCanvas::paintGL()
 
     Quaternion<float> viewmat(viewpoint->orientation());
 
-    Vector3<float> target(viewpoint->getcenter(0), viewpoint->getcenter(1), viewpoint->getcenter(2));
+    Vector3<float> target(viewpoint->center()[0], viewpoint->center()[1], viewpoint->center()[2]);
     Vector3<float> eye(target);
     eye.add(cameraOffset);
     camera->setEye(eye);
@@ -194,13 +194,13 @@ void GLOverviewCanvas::paintGL()
 
     glPushMatrix();
 
-    glTranslatef(viewpoint->getcenter(0), viewpoint->getcenter(1), viewpoint->getcenter(2));
+    glTranslatef(viewpoint->center()[0], viewpoint->center()[1], viewpoint->center()[2]);
 
     float rotation[16];
     QuatUtil::store(viewmat, rotation);
     glMultMatrixf(rotation);
 
-    glTranslatef(-viewpoint->getcenter(0), -viewpoint->getcenter(1), -viewpoint->getcenter(2));
+    glTranslatef(-viewpoint->center()[0], -viewpoint->center()[1], -viewpoint->center()[2]);
 
     const Residue *res = GetView()->getFocusResidue();
     MIAtom *focusedResidueAlphaCarbon = NULL;
@@ -237,7 +237,7 @@ void GLOverviewCanvas::paintGL()
     glPushMatrix();
 
     // Draw bounding box of view
-    glTranslatef(viewpoint->getcenter(0), viewpoint->getcenter(1), viewpoint->getcenter(2));
+    glTranslatef(viewpoint->center()[0], viewpoint->center()[1], viewpoint->center()[2]);
 
     // Disable depth test to render on top of other elements.
     glDisable(GL_DEPTH_TEST);

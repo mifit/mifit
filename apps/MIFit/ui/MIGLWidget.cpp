@@ -819,13 +819,13 @@ void MIGLWidget::CheckCenter()
     }
     for (int i = 0; i < Models->MapCount(); i++)
     {
-        Models->GetMap(i)->CheckCenter(viewpoint->getcenter(0), viewpoint->getcenter(1), viewpoint->getcenter(2));
+        Models->GetMap(i)->CheckCenter(viewpoint->center()[0], viewpoint->center()[1], viewpoint->center()[2]);
     }
     std::list<Molecule*>::iterator node = Models->begin();
     std::list<Molecule*>::iterator end = Models->end();
     while (node != end)
     {
-        if ((*node)->CheckCenter(viewpoint->getcenter(0), viewpoint->getcenter(1), viewpoint->getcenter(2)))
+        if ((*node)->CheckCenter(viewpoint->center()[0], viewpoint->center()[1], viewpoint->center()[2]))
         {
             if ((*node)->symmResiduesBegin() != (*node)->symmResiduesEnd())
             {
@@ -918,7 +918,7 @@ void MIGLWidget::draw(QPainter *painter)
         frustum->setFarClipping(focalLength + frustum->getFrustumHeight(focalLength));
     }
 
-    Vector3<float> target(viewpoint->getcenter(0), viewpoint->getcenter(1), viewpoint->getcenter(2));
+    Vector3<float> target(viewpoint->center()[0], viewpoint->center()[1], viewpoint->center()[2]);
     Quaternion<float> q;
     q.set(viewpoint->orientation());
     q.normalize();
@@ -1317,7 +1317,7 @@ void MIGLWidget::recenter(Residue *residue, MIAtom *atom)
             else
             {
                 viewpoint->Do();
-                viewpoint->moveto(atom->x(), atom->y(), atom->z());
+                viewpoint->setCenter(atom->position());
             }
         }
         else
@@ -1343,19 +1343,15 @@ void MIGLWidget::CenterAtResidue(const Residue *res)
             a2 = atom_from_name("HA1", *res);
 
         MIAtom *N = atom_from_name("N", *res);
-        viewpoint->moveto(CA->x(), CA->y(), CA->z());
+        viewpoint->setCenter(CA->position());
         if (a2)
         {
             Quaternion<float> orientation;
-            Vector3<float> vector1(a2->pos().x() - viewpoint->getcenter(0),
-                                   a2->pos().y() - viewpoint->getcenter(1),
-                                   a2->pos().z() - viewpoint->getcenter(2));
+            Vector3<float> vector1(a2->position() - viewpoint->center());
             if (N)
             {
                 // Orient CB to top and N to left
-                Vector3<float> vector2(N->pos().x() - viewpoint->getcenter(0),
-                                       N->pos().y() - viewpoint->getcenter(1),
-                                       N->pos().z() - viewpoint->getcenter(2));
+                Vector3<float> vector2(N->position() - viewpoint->center());
                 Vector3<float> normalToCBAndN;
                 normalToCBAndN.cross(vector1, vector2);
                 Quaternion<float> viewQuat = QuatUtil::alignVectors(normalToCBAndN, Vector3<float>(0.0, 0.0, -1.0));
@@ -1381,7 +1377,7 @@ void MIGLWidget::CenterAtResidue(const Residue *res)
         x /= res->atomCount();
         y /= res->atomCount();
         z /= res->atomCount();
-        viewpoint->moveto(x, y, z);
+        viewpoint->setCenter(mi::math::Vector3<float>(x, y, z));
     }
 }
 
@@ -1391,7 +1387,7 @@ void MIGLWidget::Center(MIMoleculeBase *mol)
         return;
     float x, y, z;
     mol->Center(x, y, z);
-    viewpoint->moveto(x, y, z);
+    viewpoint->setCenter(mi::math::Vector3<float>(x, y, z));
 }
 
 
@@ -2370,9 +2366,9 @@ void MIGLWidget::OnGotoGotoxyz()
 
 void MIGLWidget::gotoXyzWithPrompt()
 {
-    float m_x = viewpoint->getcenter(0);
-    float m_y = viewpoint->getcenter(1);
-    float m_z = viewpoint->getcenter(2);
+    float m_x = viewpoint->center()[0];
+    float m_y = viewpoint->center()[1];
+    float m_z = viewpoint->center()[2];
 
     char buf[1024];
     sprintf(buf, "%0.2f %0.2f %0.2f", m_x, m_y, m_z);
@@ -2395,7 +2391,7 @@ void MIGLWidget::gotoXyzWithPrompt()
 
 void MIGLWidget::gotoXyz(float x, float y, float z)
 {
-    viewpoint->moveto(x, y, z);
+    viewpoint->setCenter(mi::math::Vector3<float>(x, y, z));
     PaletteChanged = true;
     ReDraw();
 }
@@ -4569,9 +4565,9 @@ void MIGLWidget::addResidueWithPrompt()
     if (m_phipsi == 0 || rtemp == NULL)
     {
         // translate the new residue to the center
-        float cx = viewpoint->getcenter(0);
-        float cy = viewpoint->getcenter(1);
-        float cz = viewpoint->getcenter(2);
+        float cx = viewpoint->center()[0];
+        float cy = viewpoint->center()[1];
+        float cz = viewpoint->center()[2];
         float dx = 0, dy = 0, dz = 0;
         int i;
         for (i = 0; i < newres->atomCount(); i++)
@@ -5500,9 +5496,9 @@ void MIGLWidget::doMapContour(EMapBase *emap)
     if (emap->Visible())
     {
         float center[3];
-        center[0] = viewpoint->getcenter(0);
-        center[1] = viewpoint->getcenter(1);
-        center[2] = viewpoint->getcenter(2);
+        center[0] = viewpoint->center()[0];
+        center[1] = viewpoint->center()[1];
+        center[2] = viewpoint->center()[2];
         emap->Contour(center, &CurrentAtoms);
         _modified = true;
     }
@@ -6463,7 +6459,7 @@ void MIGLWidget::InsertMRK(Residue *where, Molecule *model, bool before)
     }
     AutoFit = true;
     // center on where residue
-    viewpoint->moveto(where->atom(0)->x(), where->atom(0)->y(), where->atom(0)->z());
+    viewpoint->setCenter(where->atom(0)->position());
     _modified = true;
 
     // rebuild the model bonds
@@ -8629,9 +8625,9 @@ int MIGLWidget::ScriptCommand(const char *ubuf)
 
 static void GetScreenCenter(float *center, ViewPoint *vp)
 {
-    center[0] = vp->getcenter(0);
-    center[1] = vp->getcenter(1);
-    center[2] = vp->getcenter(2);
+    center[0] = vp->center()[0];
+    center[1] = vp->center()[1];
+    center[2] = vp->center()[2];
 }
 
 void MIGLWidget::OnRefiLigandFit()
@@ -8791,9 +8787,9 @@ Vector3<float> MIGLWidget::mapToView(const QPoint &point, int z)
     Vector3<float> viewVector((point.x() - width()/2.0)/scale,
                               -(point.y() - height()/2.0)/scale,
                               z/scale);
-    viewVector += Vector3<float>(viewpoint->getcenter(0),
-                                 viewpoint->getcenter(1),
-                                 viewpoint->getcenter(2));
+    viewVector += Vector3<float>(viewpoint->center()[0],
+                                 viewpoint->center()[1],
+                                 viewpoint->center()[2]);
     return viewVector;
 }
 
@@ -9525,7 +9521,7 @@ void MIGLWidget::OnGotoFitalltoscreen()
         xc /= nmodels;
         yc /= nmodels;
         zc /= nmodels;
-        viewpoint->moveto(xc, yc, zc);
+        viewpoint->setCenter(mi::math::Vector3<float>(xc, yc, zc));
         float fzmin = zmin;
         float fzmax = zmax;
         fzmax = (fzmax - fzmin)/2.0F + 2.0F;
@@ -10305,9 +10301,9 @@ void MIGLWidget::OnShowShowwithinsphere()
     double dx, dy, dz;
     double cx, cy, cz;
     double r2 = (double)r * r;
-    cx = (double)viewpoint->getcenter(0);
-    cy = (double)viewpoint->getcenter(1);
-    cz = (double)viewpoint->getcenter(2);
+    cx = (double)viewpoint->center()[0];
+    cy = (double)viewpoint->center()[1];
+    cz = (double)viewpoint->center()[2];
     for (ResidueListIterator res = node->residuesBegin();
          res != node->residuesEnd(); ++res)
     {
@@ -10993,7 +10989,7 @@ void MIGLWidget::OnContourListFile()
 
 void MIGLWidget::moveTo(float x, float y, float z)
 {
-    viewpoint->moveto(x, y, z);
+    viewpoint->setCenter(mi::math::Vector3<float>(x, y, z));
     ReDraw();
 }
 
@@ -11623,7 +11619,7 @@ void MIGLWidget::OnAnnotation()
     }
 
     ViewPoint *viewpoint = GetViewPoint();
-    node->addAnnotation(str.toAscii().constData(), viewpoint->getcenter(0), viewpoint->getcenter(1), viewpoint->getcenter(2));
+    node->addAnnotation(str.toAscii().constData(), viewpoint->center()[0], viewpoint->center()[1], viewpoint->center()[2]);
     // make most recently added annotation the CurrentAnnotation
     CurrentAnnotation = node->getAnnotations().back();
 }
@@ -11814,8 +11810,8 @@ void MIGLWidget::OnUpdateMoveAnnotationAtom(QAction *action)
 
 void MIGLWidget::OnMoveAnnotationCenter()
 {
-    CurrentAnnotation->SetPosition(viewpoint->getcenter(0), viewpoint->getcenter(1),
-                                   viewpoint->getcenter(2));
+    CurrentAnnotation->SetPosition(viewpoint->center()[0], viewpoint->center()[1],
+                                   viewpoint->center()[2]);
     Modify(true);
     _modified = true;
     ReDraw();

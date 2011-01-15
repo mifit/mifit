@@ -332,15 +332,15 @@ bool Molecule::VisibleBounds(mi::opengl::Viewpoint *camera, float &axmin, float 
             {
                 // changed so that it returns the world coordinates if visible
                 // instead of the screen coordinates
-                mi::math::Vector3<float> av(a->pos().x(), a->pos().y(), a->pos().z());
+                mi::math::Vector3<float> av(a->position());
                 camera->untransformVector(av);
-                QVector3D pos(av.x, -av.y, -av.z);
-                axmin = std::min(axmin, static_cast<float>(pos.x()));
-                aymin = std::min(aymin, static_cast<float>(pos.y()));
-                azmin = std::min(azmin, static_cast<float>(pos.z()));
-                axmax = std::max(axmax, static_cast<float>(pos.x()));
-                aymax = std::max(aymax, static_cast<float>(pos.y()));
-                azmax = std::max(azmax, static_cast<float>(pos.z()));
+                mi::math::Vector3<float> pos(av.x, -av.y, -av.z);
+                axmin = std::min(axmin, static_cast<float>(pos.x));
+                aymin = std::min(aymin, static_cast<float>(pos.y));
+                azmin = std::min(azmin, static_cast<float>(pos.z));
+                axmax = std::max(axmax, static_cast<float>(pos.x));
+                aymax = std::max(aymax, static_cast<float>(pos.y));
+                azmax = std::max(azmax, static_cast<float>(pos.z));
             }
             result = true;
         }
@@ -348,15 +348,15 @@ bool Molecule::VisibleBounds(mi::opengl::Viewpoint *camera, float &axmin, float 
     for (size_t i = 0; i < ribbonatoms.size(); i++)
     {
         MIAtom *a = ribbonatoms[i];
-        mi::math::Vector3<float> av(a->pos().x(), a->pos().y(), a->pos().z());
+        mi::math::Vector3<float> av(a->position());
         camera->untransformVector(av);
-        QVector3D pos(av.x, -av.y, -av.z);
-        axmin = std::min(axmin, static_cast<float>(pos.x()));
-        aymin = std::min(aymin, static_cast<float>(pos.y()));
-        azmin = std::min(azmin, static_cast<float>(pos.z()));
-        axmax = std::max(axmax, static_cast<float>(pos.x()));
-        aymax = std::max(aymax, static_cast<float>(pos.y()));
-        azmax = std::max(azmax, static_cast<float>(pos.z()));
+        mi::math::Vector3<float> pos(av.x, -av.y, -av.z);
+        axmin = std::min(axmin, static_cast<float>(pos.x));
+        aymin = std::min(aymin, static_cast<float>(pos.y));
+        azmin = std::min(azmin, static_cast<float>(pos.z));
+        axmax = std::max(axmax, static_cast<float>(pos.x));
+        aymax = std::max(aymax, static_cast<float>(pos.y));
+        azmax = std::max(azmax, static_cast<float>(pos.z));
         result = true;
     }
 
@@ -1076,9 +1076,9 @@ void Molecule::Select(int clear, int main, int sides, int nonprotein,
 
 void Molecule::GenSymmAtoms(ViewPoint *viewpoint)
 {
-    symm_center[0] = viewpoint->getcenter(0);
-    symm_center[1] = viewpoint->getcenter(1);
-    symm_center[2] = viewpoint->getcenter(2);
+    symm_center[0] = viewpoint->center()[0];
+    symm_center[1] = viewpoint->center()[1];
+    symm_center[2] = viewpoint->center()[2];
     ClearSymmList();
     symm_radius = (float)viewpoint->width()/viewpoint->scale()*0.7F;
     SymmResidues = SymmResidue(residuesBegin(), mapheader, symm_center, symm_radius);
@@ -1172,9 +1172,9 @@ Residue*Molecule::MatchPentamer(std::string &pentdir, Residue *start)
 
 void Molecule::TranslateResidueToCenter(Residue *res, ViewPoint *viewpoint)
 {
-    float cx = viewpoint->getcenter(0);
-    float cy = viewpoint->getcenter(1);
-    float cz = viewpoint->getcenter(2);
+    float cx = viewpoint->center()[0];
+    float cy = viewpoint->center()[1];
+    float cz = viewpoint->center()[2];
     float dx = 0, dy = 0, dz = 0;
     int i;
     for (i = 0; i < res->atomCount(); i++)
@@ -1195,9 +1195,9 @@ void Molecule::TranslateResidueToCenter(Residue *res, ViewPoint *viewpoint)
 
 void Molecule::TranslateAtomsToCenter(MIAtomList &atoms, ViewPoint *viewpoint)
 {
-    float cx = viewpoint->getcenter(0);
-    float cy = viewpoint->getcenter(1);
-    float cz = viewpoint->getcenter(2);
+    float cx = viewpoint->center()[0];
+    float cy = viewpoint->center()[1];
+    float cz = viewpoint->center()[2];
     float dx = 0, dy = 0, dz = 0;
     unsigned int i;
     for (i = 0; i < atoms.size(); i++)
@@ -2113,9 +2113,9 @@ void Molecule::ShowHydrogens(bool Show)
 
 long Molecule::SurfaceCenter(ViewPoint *viewpoint, float dotsper, float boxsize, bool ignore_hidden)
 {
-    float cx = viewpoint->getcenter(0);
-    float cy = viewpoint->getcenter(1);
-    float cz = viewpoint->getcenter(2);
+    float cx = viewpoint->center()[0];
+    float cy = viewpoint->center()[1];
+    float cz = viewpoint->center()[2];
     extern int SurfResult;
     SurfResult = 1;
     srfdotsper = dotsper;

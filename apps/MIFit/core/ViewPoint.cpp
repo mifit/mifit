@@ -24,7 +24,6 @@ ViewPoint::ViewPoint()
       frontClip_(5.0), backClip_(-5.0)
 
 {
-    center[0] = center[1] = center[2] = 0;
     zangle = sin(perspective_ * M_PI/180.0);
 }
 
@@ -32,9 +31,7 @@ void ViewPoint::UnDo()
 {
     if (UndoList.size() > 0)
     {
-        for (int i = 0; i < 3; i++)
-            center[i] = UndoList.back().center[i];
-
+        center_ = UndoList.back().center;
         view = UndoList.back().view;
         scale_ = UndoList.back().scale;
         frontClip_ = UndoList.back().frontClip;
@@ -47,8 +44,7 @@ void ViewPoint::UnDo()
 void ViewPoint::Do()
 {
     ViewSave last;
-    for (int i = 0; i < 3; i++)
-        last.center[i] = center[i];
+    last.center = center_;
     last.view = view;
     last.scale = scale_;
     last.frontClip = frontClip_;
@@ -85,18 +81,19 @@ void ViewPoint::rotate(float rx, float ry, float rz)
     view = q * view;
 }
 
-void ViewPoint::moveto(float x, float y, float z)
+const mi::math::Vector3<float> &ViewPoint::center() const
 {
-    center[0] = x;
-    center[1] = y;
-    center[2] = z;
+    return center_;
+}
+
+void ViewPoint::setCenter(const mi::math::Vector3<float> &pos)
+{
+    center_ = pos;
 }
 
 void ViewPoint::moveBy(const mi::math::Vector3<float> &delta)
 {
-    center[0] += delta.x;
-    center[1] += delta.y;
-    center[2] += delta.z;
+    center_ += delta;
 }
 
 
@@ -166,14 +163,6 @@ void ViewPoint::setFrontClip(qreal f)
 void ViewPoint::setBackClip(qreal b)
 {
     backClip_ = b;
-}
-
-float ViewPoint::getcenter(int i) const
-{
-    if (i >= 0 && i < 3)
-        return center[i];
-    else
-        return 0.0;
 }
 
 int ViewPoint::width() const

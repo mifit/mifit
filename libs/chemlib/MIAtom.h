@@ -8,7 +8,7 @@
 #include <map>
 #include <util/utillib.h>
 #include <math/mathlib.h>
-#include <QtGui/QVector3D>
+#include <math/Vector3.h>
 #include "MIAtom_fwd.h"
 
 namespace chemlib
@@ -74,9 +74,7 @@ namespace chemlib
         // set the position of this atom
         void setPosition(float x, float y, float z)
         {
-            pos_.setX(x);
-            pos_.setY(y);
-            pos_.setZ(z);
+            pos_.set(x, y, z);
         }
 
         //@{
@@ -90,7 +88,7 @@ namespace chemlib
         // Returns the distance between this atom and atom b.
         double distance(MIAtom *b) const
         {
-            return (pos_ - b->pos_).length();
+            return mi::math::Vector3<float>(pos_ - b->pos_).length();
         }
 
         bool isHidden() const
@@ -149,14 +147,14 @@ namespace chemlib
             color_ = c;
         }
 
-        const QVector3D &pos()
+        const mi::math::Vector3<float> &position()
         {
             return pos_;
         }
 
         float x() const
         {
-            return pos_.x();
+            return pos_.x;
         }
         void setX(float x)
         {
@@ -164,7 +162,7 @@ namespace chemlib
         }
         float y() const
         {
-            return pos_.y();
+            return pos_.y;
         }
         void setY(float y)
         {
@@ -172,7 +170,7 @@ namespace chemlib
         }
         float z() const
         {
-            return pos_.z();
+            return pos_.z;
         }
         void setZ(float z)
         {
@@ -373,7 +371,7 @@ namespace chemlib
 
         void translate(float x, float y, float z)
         {
-            pos_ += QVector3D(x, y, z);
+            pos_ += mi::math::Vector3<float>(x, y, z);
         }
 
         void scale(float s)
@@ -434,7 +432,7 @@ namespace chemlib
         float BValue_;
         float occ_;
         short color_;
-        QVector3D pos_;
+        mi::math::Vector3<float> pos_;
 
         float dx_;
         float dy_;

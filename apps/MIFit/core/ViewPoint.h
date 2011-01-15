@@ -14,15 +14,12 @@ class CArchive;
 class ViewSave
 {
 public:
-    float viewmat[3][3];
+    mi::math::Vector3<float> center;
     mi::math::Quaternion<float> view;
-    float center[3];
-    qreal frontClip;
     qreal backClip;
+    qreal frontClip;
     qreal scale;
 };
-
-class QVector3D;
 
 /**
  * The viewpoint contains the current center rotation and all other information about the viewpoint.
@@ -39,7 +36,9 @@ public:
     void set(const mi::math::Matrix4<float> &mat);
     const mi::math::Quaternion<float> &orientation() const;
 
-    void moveto(float, float, float);
+    const mi::math::Vector3<float> &center() const;
+    void setCenter(const mi::math::Vector3<float> &pos);
+
     void moveBy(const mi::math::Vector3<float> &delta);
 
     void setScale(qreal s);
@@ -54,7 +53,6 @@ public:
 
     float perspective() const;
     void setPerspective(float);
-    float getcenter(int i) const;
     void setSize(int, int);
     int width() const;  // in screen coordinates
     int height() const;  // in screen coordinates
@@ -66,8 +64,8 @@ public:
     bool UnDoable() const;
 
 private:
+    mi::math::Vector3<float> center_;
     mi::math::Quaternion<float> view;
-    float center[3];
 
     int width_, height_; // viewport size; screen coords.
 
