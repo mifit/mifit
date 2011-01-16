@@ -8,6 +8,7 @@
 #include "core/corelib.h"
 #include <chemlib/chemlib.h>
 #include <chemlib/Residue.h>
+#include <math/Vector3.h>
 
 #include "Displaylist.h"
 #include "DisplayView.h"
@@ -176,12 +177,12 @@ void DisplayTree::OnItemActivated(QTreeWidgetItem *item, int)
     if (data->annotation != NULL)
     {
         Annotation *annotation = data->annotation;
-        view->moveTo(annotation->GetX(), annotation->GetY(), annotation->GetZ());
+        view->moveTo(mi::math::Vector3<float>(annotation->GetX(), annotation->GetY(), annotation->GetZ()));
     }
     else if (data->atomLabel != NULL)
     {
         ATOMLABEL *label = data->atomLabel;
-        view->moveTo(label->atom()->x(), label->atom()->y(), label->atom()->z());
+        view->moveTo(label->atom()->position());
     }
 }
 

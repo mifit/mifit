@@ -32,8 +32,8 @@ public:
 
     void rotate(float rx, float ry, float rz);
 
-    void set(const mi::math::Quaternion<float> &q);
-    void set(const mi::math::Matrix4<float> &mat);
+    void setView(const mi::math::Quaternion<float> &q);
+    void setView(const mi::math::Matrix4<float> &mat);
     const mi::math::Quaternion<float> &orientation() const;
 
     const mi::math::Vector3<float> &center() const;

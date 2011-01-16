@@ -359,14 +359,9 @@ void AtomsTree::OnItemActivated(QTreeWidgetItem *item, int)
 {
     TreeData *data = (TreeData*) GetItemData(item);
     if (data == NULL || !validTreeData(data))
-    {
         return;
-    }
     if (data->atom != NULL)
-    {
-        MIAtom *atom = data->atom;
-        view->moveTo(atom->x(), atom->y(), atom->z());
-    }
+        view->moveTo(data->atom->position());
 }
 
 void AtomsTree::contextMenuEvent(QContextMenuEvent *event)

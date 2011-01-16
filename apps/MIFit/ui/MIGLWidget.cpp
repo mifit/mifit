@@ -26,6 +26,7 @@
 #define strncasecmp strnicmp
 #endif
 
+#include <QAbstractAnimation>
 #include <QDialog>
 #include <QDir>
 #include <QString>
@@ -162,6 +163,89 @@ namespace {
         a->setData(actionId);
         group->addAction(a);
         return a;
+    }
+
+
+    class ViewPointAnimation : public QAbstractAnimation
+    {
+    public:
+        ViewPointAnimation(ViewPoint *viewpoint, MIGLWidget *parent);
+        virtual ~ViewPointAnimation();
+        virtual int duration() const;
+        void setCenterEnd(const Vector3<float> &center);
+        void setViewEnd(const Quaternion<float> &view);
+        void setScaleEnd(qreal scale);
+    protected:
+        virtual void updateCurrentTime(int currentTime);
+    private:
+        MIGLWidget *glWidget;
+        ViewPoint *viewpoint;
+        Vector3<float> centerStart;
+        Vector3<float> centerEnd;
+        Vector3<float> centerVector;
+        Quaternion<float> viewStart;
+        Quaternion<float> viewEnd;
+        qreal scaleStart;
+        qreal scaleEnd;
+    };
+
+    ViewPointAnimation::ViewPointAnimation(ViewPoint *viewpoint, MIGLWidget *parent)
+        : QAbstractAnimation(parent), glWidget(parent), viewpoint(viewpoint),
+          scaleStart(1), scaleEnd(1)
+    {
+        if (viewpoint)
+        {
+            centerStart = viewpoint->center();
+            centerEnd = centerStart;
+            viewStart = viewpoint->orientation();
+            viewEnd = viewStart;
+            scaleStart = viewpoint->scale();
+            scaleEnd = scaleStart;
+        }
+        centerVector = centerEnd - centerStart;
+    }
+
+    ViewPointAnimation::~ViewPointAnimation()
+    {
+        viewpoint->setCenter(centerEnd);
+        viewpoint->setView(viewEnd);
+        viewpoint->setScale(scaleEnd);
+        glWidget->doRefresh();
+    }
+
+    int ViewPointAnimation::duration() const
+    {
+        return 500;
+    }
+
+    void ViewPointAnimation::setCenterEnd(const Vector3<float> &center)
+    {
+        centerEnd = center;
+        centerVector = centerEnd - centerStart;
+    }
+
+    void ViewPointAnimation::setViewEnd(const Quaternion<float> &view)
+    {
+        viewEnd = view;
+    }
+
+    void ViewPointAnimation::setScaleEnd(qreal scale)
+    {
+        scaleEnd = scale;
+    }
+
+    void ViewPointAnimation::updateCurrentTime(int currentTime)
+    {
+        float percent = static_cast<float>(currentTime) / duration();
+        Vector3<float> delta(centerVector);
+        delta *= percent;
+        Quaternion<float> q(viewStart);
+        q.interpolate(viewEnd, percent);
+        qreal scale = scaleStart + (scaleEnd - scaleStart) * percent;
+        viewpoint->setCenter(centerStart + delta);
+        viewpoint->setView(q);
+        viewpoint->setScale(scale);
+        glWidget->doRefresh();
     }
 }
 
@@ -687,8 +771,6 @@ void MIGLWidget::moleculeToBeDeleted(MIMoleculeBase *model)
     AtomStack->moleculeToBeDeleted(model);
 }
 
-
-
 void MIGLWidget::doRefresh()
 {
     QDeclarativeView::scene()->invalidate();
@@ -871,7 +953,9 @@ void MIGLWidget::draw(QPainter *painter)
                     std::string resshow;
                     std::string at("*");
                     model->Select(1, 1, 1, 1, resshow, at, NULL, NULL, 0, 0, 0, 0, 1);
-                    Center(Models->GetCurrentModel());
+                    float x, y, z;
+                    Models->GetCurrentModel()->Center(x, y, z);
+                    viewpoint->setCenter(Vector3<float>(x, y, z));
                     viewpoint->setSlab(-3.0F, 3.0F);
                     viewpoint->setScale(30);
                 }
@@ -1317,7 +1401,9 @@ void MIGLWidget::recenter(Residue *residue, MIAtom *atom)
             else
             {
                 viewpoint->Do();
-                viewpoint->setCenter(atom->position());
+                ViewPointAnimation *animation = new ViewPointAnimation(viewpoint, this);
+                animation->setCenterEnd(atom->position());
+                animation->start(QAbstractAnimation::DeleteWhenStopped);
             }
         }
         else
@@ -1335,6 +1421,7 @@ void MIGLWidget::CenterAtResidue(const Residue *res)
     if (!Monomer::isValid(res))
         return;
 
+    ViewPointAnimation *animation = new ViewPointAnimation(viewpoint, this);
     MIAtom *CA = atom_from_name("CA", *res);
     if (CA)
     {
@@ -1343,15 +1430,15 @@ void MIGLWidget::CenterAtResidue(const Residue *res)
             a2 = atom_from_name("HA1", *res);
 
         MIAtom *N = atom_from_name("N", *res);
-        viewpoint->setCenter(CA->position());
+        animation->setCenterEnd(CA->position());
         if (a2)
         {
             Quaternion<float> orientation;
-            Vector3<float> vector1(a2->position() - viewpoint->center());
+            Vector3<float> vector1(a2->position() - CA->position());
             if (N)
             {
                 // Orient CB to top and N to left
-                Vector3<float> vector2(N->position() - viewpoint->center());
+                Vector3<float> vector2(N->position() - CA->position());
                 Vector3<float> normalToCBAndN;
                 normalToCBAndN.cross(vector1, vector2);
                 Quaternion<float> viewQuat = QuatUtil::alignVectors(normalToCBAndN, Vector3<float>(0.0, 0.0, -1.0));
@@ -1362,7 +1449,7 @@ void MIGLWidget::CenterAtResidue(const Residue *res)
                 // Orient CB to top
                 orientation = QuatUtil::alignVectors(vector1, Vector3<float>(0.0, -1.0, 0.0));
 
-            viewpoint->set(orientation);
+            animation->setViewEnd(orientation);
         }
     }
     else
@@ -1377,19 +1464,10 @@ void MIGLWidget::CenterAtResidue(const Residue *res)
         x /= res->atomCount();
         y /= res->atomCount();
         z /= res->atomCount();
-        viewpoint->setCenter(mi::math::Vector3<float>(x, y, z));
+        animation->setCenterEnd(Vector3<float>(x, y, z));
     }
+    animation->start(QAbstractAnimation::DeleteWhenStopped);
 }
-
-void MIGLWidget::Center(MIMoleculeBase *mol)
-{
-    if (!mol)
-        return;
-    float x, y, z;
-    mol->Center(x, y, z);
-    viewpoint->setCenter(mi::math::Vector3<float>(x, y, z));
-}
-
 
 bool MIGLWidget::OnKeyDown(unsigned int nChar, Qt::KeyboardModifiers modifiers)
 {
@@ -1643,18 +1721,18 @@ bool MIGLWidget::OnKeyDown(unsigned int nChar, Qt::KeyboardModifiers modifiers)
         break;
     case 'x': {
         const float halfSqrt2 = std::sqrt(2)/2;
-        viewpoint->set(Quaternion<float>(0, -halfSqrt2, 0, halfSqrt2));
+        viewpoint->setView(Quaternion<float>(0, -halfSqrt2, 0, halfSqrt2));
         handled = true;
     }
     break;
     case 'y': {
         const float halfSqrt2 = std::sqrt(2)/2;
-        viewpoint->set(Quaternion<float>(halfSqrt2, 0, 0, halfSqrt2));
+        viewpoint->setView(Quaternion<float>(halfSqrt2, 0, 0, halfSqrt2));
         handled = true;
     }
     break;
     case 'z': {
-        viewpoint->set(Quaternion<float>(0.0f, 0.0f, 0.0f, 1.0f));
+        viewpoint->setView(Quaternion<float>(0.0f, 0.0f, 0.0f, 1.0f));
         handled = true;
     }
     break;
@@ -2385,15 +2463,15 @@ void MIGLWidget::gotoXyzWithPrompt()
     viewpoint->Do();
     if (sscanf(str.toAscii().constData(), "%f%f%f", &m_x, &m_y, &m_z) == 3)
     {
-        gotoXyz(m_x, m_y, m_z);
+        moveTo(Vector3<float>(m_x, m_y, m_z));
     }
 }
 
-void MIGLWidget::gotoXyz(float x, float y, float z)
+void MIGLWidget::moveTo(const Vector3<float> &pos)
 {
-    viewpoint->setCenter(mi::math::Vector3<float>(x, y, z));
-    PaletteChanged = true;
-    ReDraw();
+    ViewPointAnimation *animation = new ViewPointAnimation(viewpoint, this);
+    animation->setCenterEnd(pos);
+    animation->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
 void MIGLWidget::OnViewClipplanes()
@@ -3691,9 +3769,12 @@ void MIGLWidget::OnGotoFittoscreen()
     Displaylist *Models = GetDisplaylist();
     if (Models->CurrentItem())
     {
-        float xmin, xmax, ymin, ymax, zmin, zmax;
-        Center(Models->GetCurrentModel());
+        ViewPointAnimation *animation = new ViewPointAnimation(viewpoint, this);
+        float x, y, z;
+        Models->CurrentItem()->Center(x, y, z);
         viewpoint->Do();
+        animation->setCenterEnd(Vector3<float>(x, y, z));
+        float xmin, xmax, ymin, ymax, zmin, zmax;
         if (Models->CurrentItem()->VisibleBounds(camera, xmin, xmax, ymin, ymax, zmin, zmax) )
         {
             float fzmin = zmin;
@@ -3702,9 +3783,9 @@ void MIGLWidget::OnGotoFittoscreen()
             viewpoint->setSlab(-fzmax, fzmax);
             qreal sw = 0.9*width()/(xmax - xmin + 2);
             qreal sh = 0.9*height()/(ymax - ymin + 2);
-            viewpoint->setScale(std::min(sw, sh));
+            animation->setScaleEnd(std::min(sw, sh));
         }
-        ReDraw();
+        animation->start(QAbstractAnimation::DeleteWhenStopped);
     }
 }
 
@@ -9521,15 +9602,16 @@ void MIGLWidget::OnGotoFitalltoscreen()
         xc /= nmodels;
         yc /= nmodels;
         zc /= nmodels;
-        viewpoint->setCenter(mi::math::Vector3<float>(xc, yc, zc));
         float fzmin = zmin;
         float fzmax = zmax;
         fzmax = (fzmax - fzmin)/2.0F + 2.0F;
         viewpoint->setSlab(-fzmax, fzmax);
         qreal sw = 0.9*width()/(xmax - xmin + 2);
         qreal sh = 0.9*height()/(ymax - ymin + 2);
-        viewpoint->setScale(std::min(sw, sh));
-        ReDraw();
+        ViewPointAnimation *animation = new ViewPointAnimation(viewpoint, this);
+        animation->setCenterEnd(Vector3<float>(xc, yc, zc));
+        animation->setScaleEnd(std::min(sw, sh));
+        animation->start(QAbstractAnimation::DeleteWhenStopped);
     }
 }
 
@@ -10985,12 +11067,6 @@ void MIGLWidget::OnContourListFile()
         }
         fclose(listFile);
     }
-}
-
-void MIGLWidget::moveTo(float x, float y, float z)
-{
-    viewpoint->setCenter(mi::math::Vector3<float>(x, y, z));
-    ReDraw();
 }
 
 const Residue*MIGLWidget::getFocusResidue()

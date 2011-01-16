@@ -44,7 +44,7 @@ void ViewPointIO::load(ViewPoint &vp, FILE *fp)
         {
             if (sscanf(buf.c_str(), "%*s%f%f%f%f%f%f%f%f%f", &v1, &v2, &v3, &v4, &v5, &v6, &v7, &v8, &v9) == 9)
             {
-                vp.set(Matrix4<float>(v1, v2, v3, 0.0f,
+                vp.setView(Matrix4<float>(v1, v2, v3, 0.0f,
                                       v4, v5, v6, 0.0f,
                                       v7, v8, v9, 0.0f,
                                       0.0f, 0.0f, 0.0f, 1.0f));

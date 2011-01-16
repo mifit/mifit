@@ -2,19 +2,10 @@
 
 #include <cmath>
 #include <cstdio>
-#include <chemlib/chemlib.h>
-#include <chemlib/Monomer.h>
-#include <chemlib/MIMoleculeBase.h>
-#include <math/mathlib.h>
 #include <math/Quaternion.h>
 #include <math/Vector3.h>
-#include <opengl/QuatUtil.h>
 
-#include "Cfiles.h"
-
-using namespace chemlib;
 using namespace mi::math;
-using namespace mi::opengl;
 
 ViewPoint::ViewPoint()
     : view(Vector3<float>(0, 0, 1), 0),
@@ -36,7 +27,6 @@ void ViewPoint::UnDo()
         scale_ = UndoList.back().scale;
         frontClip_ = UndoList.back().frontClip;
         backClip_ = UndoList.back().backClip;
-        //undoable = false;
         UndoList.pop_back();
     }
 }
@@ -52,12 +42,12 @@ void ViewPoint::Do()
     UndoList.push_back(last);
 }
 
-void ViewPoint::set(const Quaternion<float> &q)
+void ViewPoint::setView(const Quaternion<float> &q)
 {
     view = q;
 }
 
-void ViewPoint::set(const Matrix4<float> &m)
+void ViewPoint::setView(const Matrix4<float> &m)
 {
     view.set(m);
     view.normalize();
@@ -118,9 +108,7 @@ void ViewPoint::changeSlab(float delta)
     frontClip_ += delta/2.0;
     backClip_ -= delta/2.0;
     if (frontClip_ < backClip_)
-    {
         frontClip_ = backClip_ + 1;
-    }
 }
 
 void ViewPoint::setSlab(float frontClip, float backClip)
@@ -135,9 +123,7 @@ void ViewPoint::setScale(qreal s)
 {
     scale_ = s;
     if (scale_ < 1.1)
-    {
         scale_ = 1.1;
-    }
 }
 
 qreal ViewPoint::scale() const

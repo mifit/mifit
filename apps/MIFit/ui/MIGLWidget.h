@@ -212,7 +212,6 @@ private:
     std::vector<SaveModel> SaveModels;
 
     void CenterAtResidue(const chemlib::Residue *res);
-    void Center(chemlib::MIMoleculeBase *mol);
 
     mi::math::Vector3<float> mapToView(const QPoint &point, int z = 0);
     mi::math::Vector3<float> mapToCamera(const QPoint &point, int z = 0);
@@ -675,7 +674,7 @@ public:
 
     void deleteAtom();
 
-    void moveTo(float x, float y, float z);
+    void moveTo(const mi::math::Vector3<float> &pos);
 
 public slots:
     void connectToModel(Molecule *model);
@@ -700,16 +699,16 @@ public slots:
 
     void symmetryToBeCleared(chemlib::MIMoleculeBase *mol);
 
+    void doRefresh();
+
 public:
     void recenter(chemlib::Residue *residue, chemlib::MIAtom *atom);
     void select(Molecule *model, chemlib::Residue *residue, chemlib::MIAtom *atom, bool label = true);
 
 signals:
     void focusResidueChanged(chemlib::Residue*);
+
 public:
-
-    void doRefresh();
-
     void acceptRefine();
     void cancelRefine();
 
@@ -744,7 +743,6 @@ public:
     bool promptForReplaceResidue(std::string &value);
 
     void gotoXyzWithPrompt();
-    void gotoXyz(float x, float y, float z);
     void addResidueWithPrompt();
     void findLigandFit();
     float densityForCurrentAtoms();

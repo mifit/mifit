@@ -147,7 +147,7 @@ namespace chemlib
             color_ = c;
         }
 
-        const mi::math::Vector3<float> &position()
+        const mi::math::Vector3<float> &position() const
         {
             return pos_;
         }
