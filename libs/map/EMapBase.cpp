@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cfloat>
 
 #include <chemlib/chemlib.h>
 #include <chemlib/Residue.h>
