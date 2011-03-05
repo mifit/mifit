@@ -1,4 +1,6 @@
-include(conf.pri)
+exists(conf.pri) {
+    include(conf.pri)
+}
 include(common.pri)
 
 TEMPLATE = subdirs
