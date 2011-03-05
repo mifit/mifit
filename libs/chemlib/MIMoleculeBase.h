@@ -30,13 +30,8 @@ namespace chemlib
          */
         static MoleculeRefCountMap refCounts;
 
-        MIMoleculeBase(const MIMoleculeBase& /* mol */)
-        {
-        }
-        MIMoleculeBase&operator=(const MIMoleculeBase& /* mol */)
-        {
-            return *((MIMoleculeBase*)0);
-        }                                                                                      // NOTE: broken implementation just to avoid compiler warning, do not use!
+        MIMoleculeBase(const MIMoleculeBase &);
+        MIMoleculeBase &operator=(const MIMoleculeBase &);
 
     public:
 

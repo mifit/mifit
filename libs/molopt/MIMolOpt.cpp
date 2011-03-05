@@ -1893,6 +1893,7 @@ long MIMolOpt::SetRefiRes(Residue *res1, Residue *res2, MIMoleculeBase *node, EM
 
 void MIMolOpt::moleculeDeleted(MIMoleculeBase *molecule)
 {
+    Q_UNUSED(molecule)
 }
 
 void MIMolOpt::moleculeToBeDeleted(MIMoleculeBase *molecule)

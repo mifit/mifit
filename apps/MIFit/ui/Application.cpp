@@ -1280,6 +1280,7 @@ QString Application::getOpenFileName(QWidget *parent, const QString &caption, co
 
 QString Application::getExistingDirectory(QWidget *parent, const QString &caption, const QString &filter)
 {
+    Q_UNUSED(filter)
     QString dir = Application::instance()->latestFileBrowseDirectory("");
     dir = QFileDialog::getExistingDirectory(parent, caption, dir);
     if (!dir.isEmpty())

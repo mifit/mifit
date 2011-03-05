@@ -52,8 +52,9 @@ public:
     float N_Coefficient;
 
     CMapHeaderBase();
+    // TODO fix copy, since QObjects can't be copied
     CMapHeaderBase(const CMapHeaderBase &rhs);
-    CMapHeaderBase&operator=(const CMapHeaderBase &rhs);
+    CMapHeaderBase &operator=(const CMapHeaderBase &rhs);
     CMapHeaderBase(const std::string &from_label);
     virtual ~CMapHeaderBase()
     {

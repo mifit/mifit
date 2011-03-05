@@ -2566,7 +2566,7 @@ void DictEditCanvas::OnRenameAtom()
     }
 
     //Check size < chemlib::MAXATOMNAME
-    if (newname.size() > chemlib::MAXATOMNAME)
+    if (newname.size() > static_cast<int>(chemlib::MAXATOMNAME))
     {
         QMessageBox::warning(this, "Error", "Atom name too long!");
         return;

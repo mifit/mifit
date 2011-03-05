@@ -198,7 +198,7 @@ void BatchJobManager::setupJobMenu(QMenu *menu)
 {
     QSettings settings;
     _customJobIndex = settings.beginReadArray("customJobs");
-    for (int i = 0; i < _customJobIndex; ++i)
+    for (int i = 0; i < static_cast<int>(_customJobIndex); ++i)
     {
         settings.setArrayIndex(i);
         CustomJob job = settings.value("job").value<CustomJob>();

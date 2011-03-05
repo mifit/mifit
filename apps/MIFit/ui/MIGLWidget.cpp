@@ -525,8 +525,8 @@ MIGLWidget::MIGLWidget()
     if (stackItem)
         stackItem->setParentItem(rootObject());
 
-    rootContext()->setContextProperty("messageVisible", false);
-    rootContext()->setContextProperty("message", "");
+    rootContext()->setContextProperty("messageVisible", QVariant(false));
+    rootContext()->setContextProperty("message", QVariant(""));
     QDeclarativeComponent messageComponent(engine(), QUrl("qrc:/qml/message.qml"));
     messageItem = qobject_cast<QGraphicsObject *>(messageComponent.create());
     if (messageItem)
@@ -10652,6 +10652,8 @@ void MIGLWidget::handleMousePress(QGraphicsSceneMouseEvent *e)
 
 void MIGLWidget::OnMousePress(QPoint pos, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
 {
+    Q_UNUSED(buttons)
+    Q_UNUSED(modifiers)
     mouse = pos;
     mousestart = mouse;
 
@@ -10680,6 +10682,7 @@ void MIGLWidget::handleMouseRelease(QGraphicsSceneMouseEvent *e)
 
 void MIGLWidget::OnMouseRelease(QPoint pos, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
 {
+    Q_UNUSED(modifiers)
     if (buttons & Qt::LeftButton)
     {
         Displaylist *models = GetDisplaylist();
