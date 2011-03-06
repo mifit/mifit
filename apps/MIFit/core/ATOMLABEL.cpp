@@ -264,11 +264,6 @@ std::string ATOMLABEL::labelString(const Monomer *res, const MIAtom *atom, int s
 {
 
     static char id[128];
-    if (!Monomer::isValid(res) || !MIAtom::isValid(atom))
-    {
-        strcpy(id, "???");
-        return (id);
-    }
     const std::string &t = res->type();
     const std::string &r = res->name();
     const std::string &a = atom->name();
@@ -276,7 +271,7 @@ std::string ATOMLABEL::labelString(const Monomer *res, const MIAtom *atom, int s
     char c = (char)(res->chain_id()&255);
     char s;
 
-    if (t.length() == 0 || r.length() == 0 || a.length() == 0)
+    if (t.length() == 0 && r.length() == 0 && a.length() == 0)
     {
         strcpy(id, "???");
         return (id);

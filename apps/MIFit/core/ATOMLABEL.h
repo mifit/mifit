@@ -79,7 +79,7 @@ public:
 
     void visible(bool on);
 
-    const std::string&label() const;
+    const std::string &label() const;
     void label(const char *text);
 
     int xOffset() const;
