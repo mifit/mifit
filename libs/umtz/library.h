@@ -517,6 +517,20 @@ struct Str_Desc
 #    endif
 #  endif
 #endif
+
+#if !defined(NATIVEFT) && defined(Q_BYTE_ORDER)
+/* Assume Intel byte order for 2's compl */
+/* Assume IEEE format and use Qt for endianness */
+#if Q_BYTE_ORDER == Q_BIG_ENDIAN
+#  define NATIVEFT DFNTF_BEIEEE
+#  define NATIVEIT DFNTI_IBO
+#endif
+#if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
+#  define NATIVEFT DFNTF_LEIEEE
+#  define NATIVEIT DFNTI_IBO
+#endif
+#endif
+
 #ifndef NATIVEFT
 #  error "Can't determine machine number format"
 #endif
