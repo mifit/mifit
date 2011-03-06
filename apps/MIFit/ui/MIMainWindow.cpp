@@ -1234,6 +1234,8 @@ void MIMainWindow::Debug(const std::string &msg)
 {
 #ifdef DEBUG
     Log(msg);
+#else
+    Q_UNUSED(msg)
 #endif
 }
 

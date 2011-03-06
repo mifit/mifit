@@ -356,6 +356,9 @@ void RamaPlotMgr::GraphResidue(ResidueListIterator prev,
         case 2:
             symbol = asplib::GR_SMALLCIRCLE;
             break;
+        default:
+            symbol = asplib::GR_POINT;
+            break;
         }
 
         if (isgly)

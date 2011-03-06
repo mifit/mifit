@@ -3978,7 +3978,7 @@ void EMapBase::CheckCenter(float x, float y, float z)
     double dy = center[1] - map_center[1];
     double dz = center[2] - map_center[2];
     double d = (dx*dx + dy*dy + dz*dz);
-    float r = (0.05*settings->Radius);
+    float r = (0.5*settings->Radius);
     if (d > r*r)
     {
         Contour(center, CurrentAtoms);

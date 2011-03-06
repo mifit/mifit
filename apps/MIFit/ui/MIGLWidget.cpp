@@ -1404,6 +1404,7 @@ void MIGLWidget::recenter(Residue *residue, MIAtom *atom)
                 ViewPointAnimation *animation = new ViewPointAnimation(viewpoint, this);
                 animation->setCenterEnd(atom->position());
                 animation->start(QAbstractAnimation::DeleteWhenStopped);
+                connect(animation, SIGNAL(finished()), this, SLOT(CheckCenter()));
             }
         }
         else
@@ -1466,6 +1467,7 @@ void MIGLWidget::CenterAtResidue(const Residue *res)
         z /= res->atomCount();
         animation->setCenterEnd(Vector3<float>(x, y, z));
     }
+    connect(animation, SIGNAL(finished()), this, SLOT(CheckCenter()));
     animation->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
@@ -2472,6 +2474,7 @@ void MIGLWidget::moveTo(const Vector3<float> &pos)
     ViewPointAnimation *animation = new ViewPointAnimation(viewpoint, this);
     animation->setCenterEnd(pos);
     animation->start(QAbstractAnimation::DeleteWhenStopped);
+    connect(animation, SIGNAL(finished()), this, SLOT(CheckCenter()));
 }
 
 void MIGLWidget::OnViewClipplanes()
@@ -3785,6 +3788,7 @@ void MIGLWidget::OnGotoFittoscreen()
             qreal sh = 0.9*height()/(ymax - ymin + 2);
             animation->setScaleEnd(std::min(sw, sh));
         }
+        connect(animation, SIGNAL(finished()), this, SLOT(CheckCenter()));
         animation->start(QAbstractAnimation::DeleteWhenStopped);
     }
 }
@@ -9611,6 +9615,7 @@ void MIGLWidget::OnGotoFitalltoscreen()
         ViewPointAnimation *animation = new ViewPointAnimation(viewpoint, this);
         animation->setCenterEnd(Vector3<float>(xc, yc, zc));
         animation->setScaleEnd(std::min(sw, sh));
+        connect(animation, SIGNAL(finished()), this, SLOT(CheckCenter()));
         animation->start(QAbstractAnimation::DeleteWhenStopped);
     }
 }

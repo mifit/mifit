@@ -592,8 +592,6 @@ public:
     bool DontConfirmWater;
     void ColorModel(Molecule *model);
 
-    void CheckCenter();
-
     bool AutoSave;
     /**
      * Parse and execute a script command.
@@ -700,6 +698,7 @@ public slots:
     void symmetryToBeCleared(chemlib::MIMoleculeBase *mol);
 
     void doRefresh();
+    void CheckCenter();
 
 public:
     void recenter(chemlib::Residue *residue, chemlib::MIAtom *atom);

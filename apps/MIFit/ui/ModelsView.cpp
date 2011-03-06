@@ -2781,7 +2781,7 @@ void ModelsTree::addChains(Molecule *model)
     }
     std::set<TreeData*> currentChainDataSet;
     int chain_id = -9999;
-    QTreeWidgetItem *previousChainItem;
+    QTreeWidgetItem *previousChainItem = 0;
     for (Residue *res = model->residuesBegin(); res != NULL; res = res->next())
     {
         if (res->chain_id() != chain_id)
