@@ -7,7 +7,6 @@
 
 class CArchive;
 class XMLArchive;
-struct mmtz_column_;
 class ViewPoint;
 
 class EMap : public EMapBase
@@ -32,9 +31,6 @@ public:
     virtual long LoadCIFMap(const char *pathname, int datablock);
 
     bool PromptForCrystal();
-    bool PromptForColumnLabels(unsigned int num_cols, mmtz_column_ *col,
-                               int &foindex, int &fcindex, int &fomindex,
-                               int &phsindex, int &sigfindex, int &freeRindex);
 
     //@{
     // FFT the map.

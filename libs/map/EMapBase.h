@@ -24,8 +24,6 @@ namespace chemlib
 typedef enum {MAP_CUBE = 0, MAP_SPHERE, MAP_BBLOB, MAP_BOX} CONTOUR_METHOD_TYPE;
 
 
-struct mmtz_column_;
-
 //@{
 // Electron density map class.
 // Holds the map data, cell and spacegroup information, as well as methods
@@ -75,10 +73,6 @@ protected:
 
     MapSettingsBase *settings;
     std::string version_string;
-
-    bool GetIndicesFromDefaults(unsigned int num_cols,
-                                mmtz_column_ *col,
-                                int&, int&, int&, int&, int&, int&);
 
     /**
      * Whether the map is predicted as a difference map.
@@ -627,13 +621,6 @@ public:
     void UseColumnLabels(const std::string &fostr, const std::string &fcstr,
                          const std::string &fomstr, const std::string &phistr,
                          const std::string &sigfstr, const std::string &freeRstr);
-
-    virtual bool PromptForColumnLabels(unsigned int /* num_cols */,
-                                       mmtz_column_* /* col */,
-                                       int&, int&, int&, int&, int&, int&)
-    {
-        return false;
-    }
 
 signals:
     void mapContourLevelsChanged(EMapBase*);

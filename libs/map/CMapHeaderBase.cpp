@@ -5,17 +5,6 @@
 #include "fft.h"
 #include <util/utillib.h>
 
-#ifdef _WIN32
-#define _MVS
-#ifndef i386
-#define i386
-#endif
-#include <umtz/mmtzlib.h>
-#undef _MVS
-#else
-#include <umtz/mmtzlib.h>
-#endif
-
 extern char syminfo[][28];
 extern char hmsymbol[][14];
 
@@ -805,42 +794,6 @@ void CMapHeaderBase::ScanSymops()
             SymopsString.push_back(std::string(opstring[i]));
         }
     }
-}
-
-bool CMapHeaderBase::WriteSymmOpsMTZ(mmtzfile file)
-{
-    if (!GetSymInfo())
-    {
-        return false;
-    }
-
-    char hdr[80];
-    int i;
-    std::string hm = GetHMSymbol();
-    hm = std::string("'") + hm;
-    hm += "\'";
-    sprintf(hdr, "SYMINF %3i %2i %c %5i            %-11s %s",
-            nsym, npg_ops, hm[1U], spgpno, hm.c_str(), PG_symbol.c_str() );
-    umtz_add_head(file, hdr);
-    for (i = 0; i < nsym; i++)
-    {
-        std::string s = SymopsString[i];
-        std::string x, y, z;
-        x = MIBeforeFirst(s, ',');
-        y = MIAfterFirst(s, ',');
-        y = MIBeforeFirst(y, ',');
-        z = MIAfterLast(s, ',');
-
-        //these are not needed since we switched to CCP4 style symops dem 9/05
-        //z = z.RemoveLast();
-        //x = fixop(x);
-        //y = fixop(y);
-        //z = fixop(z);
-
-        sprintf(hdr, "SYMM %s,  %s,  %s", x.c_str(), y.c_str(), z.c_str() );
-        umtz_add_head(file, hdr);
-    }
-    return true;
 }
 
 bool MapHeaderOK(CMapHeaderBase *mh)

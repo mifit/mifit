@@ -1708,7 +1708,36 @@ long EMapBase::SaveCCP4Phase(const char *pathname)
 
     if (mapheader->nsym > 0)
     {
-        if (!mapheader->WriteSymmOpsMTZ(fileout))
+        if (mapheader->GetSymInfo())
+        {
+            char hdr[80];
+            int i;
+            std::string hm = mapheader->GetHMSymbol();
+            hm = std::string("'") + hm;
+            hm += "\'";
+            sprintf(hdr, "SYMINF %3i %2i %c %5i            %-11s %s",
+                    mapheader->nsym, mapheader->npg_ops, hm[1U], mapheader->spgpno, hm.c_str(), mapheader->PG_symbol.c_str() );
+            umtz_add_head(fileout, hdr);
+            for (i = 0; i < mapheader->nsym; i++)
+            {
+                std::string s = mapheader->SymopsString[i];
+                std::string x, y, z;
+                x = MIBeforeFirst(s, ',');
+                y = MIAfterFirst(s, ',');
+                y = MIBeforeFirst(y, ',');
+                z = MIAfterLast(s, ',');
+
+                //these are not needed since we switched to CCP4 style symops dem 9/05
+                //z = z.RemoveLast();
+                //x = fixop(x);
+                //y = fixop(y);
+                //z = fixop(z);
+
+                sprintf(hdr, "SYMM %s,  %s,  %s", x.c_str(), y.c_str(), z.c_str() );
+                umtz_add_head(fileout, hdr);
+            }
+        }
+        else
         {
             Logger::log("Write MTZ header failed - aborting");
             mmtz_close(fileout);
@@ -1914,34 +1943,6 @@ bool EMapBase::HasColumnLabels(const std::string &fname,
     return true;
 }
 
-bool EMapBase::GetIndicesFromDefaults(unsigned int num_cols,
-                                      mmtz_column_ *col,
-                                      int &foindex, int &fcindex, int &fomindex,
-                                      int &phsindex, int &sigfindex, int &freeRindex)
-{
-    if (!_fostr.size() && !_fcstr.size() && !_fomstr.size() && !_phistr.size() && !_sigfstr.size() && !_freeRstr.size())
-        return false;
-
-    for (unsigned int i = 0; i<num_cols; ++i)
-    {
-        std::string label(col[i].label);
-        if (label==_fostr)
-            foindex = i;
-        if (label==_fcstr)
-            fcindex = i;
-        if (label==_fomstr)
-            fomindex = i;
-        if (label==_phistr)
-            phsindex = i;
-        if (label==_sigfstr)
-            sigfindex = i;
-        if (label==_freeRstr)
-            freeRindex = i;
-    }
-    return true;
-}
-
-
 // use the given values for defaults for column labels
 void EMapBase::UseColumnLabels(const std::string &fostr, const std::string &fcstr,
                                const std::string &fomstr, const std::string &phistr,
@@ -2133,8 +2134,31 @@ long EMapBase::LoadMTZMap(const char *pathname, bool require_fo)
         return 0;
     }
 
-    if (!GetIndicesFromDefaults(num_cols, col, foindex, fcindex, fomindex, phsindex, sigfindex, freeRindex)
-        && !PromptForColumnLabels(num_cols, col, foindex, fcindex, fomindex, phsindex, sigfindex, freeRindex))
+    bool indicesFromDefaults;
+    if (!_fostr.size() && !_fcstr.size() && !_fomstr.size() && !_phistr.size() && !_sigfstr.size() && !_freeRstr.size())
+        indicesFromDefaults = false;
+    else
+    {
+        indicesFromDefaults = true;
+        for (unsigned int i = 0; i<num_cols; ++i)
+        {
+            std::string label(col[i].label);
+            if (label==_fostr)
+                foindex = i;
+            if (label==_fcstr)
+                fcindex = i;
+            if (label==_fomstr)
+                fomindex = i;
+            if (label==_phistr)
+                phsindex = i;
+            if (label==_sigfstr)
+                sigfindex = i;
+            if (label==_freeRstr)
+                freeRindex = i;
+        }
+
+    }
+    if (!indicesFromDefaults)
     {
         Logger::message("MtzMapFile: Unable to get label indices for reflection loop - must abort");
         mmtz_close(filein);

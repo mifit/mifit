@@ -13,24 +13,6 @@
 #include <QDialogButtonBox>
 #include <QFileDialog>
 
-struct mmtz_column_;
-
-#ifdef _WIN32
-#define _MVS
-#ifndef i386
-#define i386
-#endif
-#include <umtz/mmtzlib.h>
-#undef _MVS
-#else
-#include <umtz/mmtzlib.h>
-#endif
-
-
-
-
-
-
 void EMap::Save(CArchive &ar, int i)
 {
     char tmpbuf[1000];
@@ -169,13 +151,6 @@ bool EMap::PromptForCrystal()
     mapheader->updateSymmetryAndCell(mh);
     RecalcResolution();
     return true;
-}
-
-bool EMap::PromptForColumnLabels(unsigned int, mmtz_column_*,
-                                 int&, int&, int&, int&, int&, int&)
-{
-    // no longer used, as column labels are now set in advance.
-    return false;
 }
 
 EMap::EMap()

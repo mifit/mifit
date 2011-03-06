@@ -18,8 +18,6 @@ namespace MISymmop
 //@{
 // class encapsulating map header information such as unit cell, spacegroup.
 //@}
-struct umtzfile_;
-
 class CMapHeaderBase : public QObject
 {
     Q_OBJECT
@@ -91,7 +89,6 @@ public:
     }
 
     bool GetSymInfo();
-    bool WriteSymmOpsMTZ(umtzfile_*);
     void ScanSymops();
 
     /* non-crystallographic symmops */
