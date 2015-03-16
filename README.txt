@@ -3,16 +3,15 @@ MIFit is a cross-platform interactive graphics application
 for molecular modeling, fitting, and refinement of protein
 structures from x-ray crystallography.
 
-MIFit project web site: http://code.google.com/p/mifit
-
 MIFit is licensed under the GNU GPL. See the license.txt
 file for details.
+
+MIFit source code repository: http://github.com/mifit/mifit
 
 Installation from binaries
 
   Binary distributions may be available for your operating
-  system. Check the MIFit project web site for more
-  information.
+  system. Check the MIFit binaries repository: http://github.com/mifit/mifit-binaries
 
 Installation from source code
 
