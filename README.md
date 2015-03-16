@@ -8,7 +8,7 @@ MIFit has the following features:
   * Developed with Qt 4.7 (http://qt.nokia.com).
   * Cross platform – supports Windows and Linux.  Building on MacOS should be possible.
 
-![http://github.com/mifit/wiki/images/image95.png](http://github.com/mifit/wiki/images/image95.png)
+![Screenshot](https://raw.githubusercontent.com/mifit/wiki/master/images/image95.png)
 
 ## News
 
