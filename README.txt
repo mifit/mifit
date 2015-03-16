@@ -11,7 +11,8 @@ MIFit source code repository: http://github.com/mifit/mifit
 Installation from binaries
 
   Binary distributions may be available for your operating
-  system. Check the MIFit binaries repository: http://github.com/mifit/mifit-binaries
+  system. Check the MIFit binaries repository:
+  http://github.com/mifit/mifit-binaries
 
 Installation from source code
 
