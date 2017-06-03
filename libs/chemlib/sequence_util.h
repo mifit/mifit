@@ -30,7 +30,7 @@ namespace chemlib
     }
 
     template<typename T>
-    void InitializeArray(T *array, size_t size, T value)
+    void InitializeArray(T *array, std::size_t size, T value)
     {
         for (unsigned int i = 0; i < size; ++i)
         {
