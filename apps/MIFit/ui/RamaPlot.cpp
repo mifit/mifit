@@ -73,25 +73,25 @@ RichardsonRamaData::RichardsonRamaData(unsigned int type, bool preferred)
         switch (type)
         {
         case RamaPlotType::General:
-            _line_count = sizeof(richardson_general_preferred_x)/sizeof(float);
+            _line_count = sizeof(richardson_general_preferred_x)/sizeof(richardson_general_preferred_x[0]);
             _x = richardson_general_preferred_x;
             _y = richardson_general_preferred_y;
             _seg_count = richardson_general_preferred_sizes;
             break;
         case RamaPlotType::Gly:
-            _line_count = sizeof(richardson_gly_preferred_x)/sizeof(float);
+            _line_count = sizeof(richardson_gly_preferred_x)/sizeof(richardson_gly_preferred_x[0]);
             _x = richardson_gly_preferred_x;
             _y = richardson_gly_preferred_y;
             _seg_count = richardson_gly_preferred_sizes;
             break;
         case RamaPlotType::Pro:
-            _line_count = sizeof(richardson_pro_preferred_x)/sizeof(float);
+            _line_count = sizeof(richardson_pro_preferred_x)/sizeof(richardson_pro_preferred_x[0]);
             _x = richardson_pro_preferred_x;
             _y = richardson_pro_preferred_y;
             _seg_count = richardson_pro_preferred_sizes;
             break;
         case RamaPlotType::PrePro:
-            _line_count = sizeof(richardson_prepro_preferred_x)/sizeof(float);
+            _line_count = sizeof(richardson_prepro_preferred_x)/sizeof(richardson_prepro_preferred_x[0]);
             _x = richardson_prepro_preferred_x;
             _y = richardson_prepro_preferred_y;
             _seg_count = richardson_prepro_preferred_sizes;
@@ -107,25 +107,25 @@ RichardsonRamaData::RichardsonRamaData(unsigned int type, bool preferred)
         switch (type)
         {
         case RamaPlotType::General:
-            _line_count = sizeof(richardson_general_allowed_x)/sizeof(float);
+            _line_count = sizeof(richardson_general_allowed_x)/sizeof(richardson_general_allowed_x[0]);
             _x = richardson_general_allowed_x;
             _y = richardson_general_allowed_y;
             _seg_count = richardson_general_allowed_sizes;
             break;
         case RamaPlotType::Gly:
-            _line_count = sizeof(richardson_gly_allowed_x)/sizeof(float);
+            _line_count = sizeof(richardson_gly_allowed_x)/sizeof(richardson_gly_allowed_x[0]);
             _x = richardson_gly_allowed_x;
             _y = richardson_gly_allowed_y;
             _seg_count = richardson_gly_allowed_sizes;
             break;
         case RamaPlotType::Pro:
-            _line_count = sizeof(richardson_pro_allowed_x)/sizeof(float);
+            _line_count = sizeof(richardson_pro_allowed_x)/sizeof(richardson_pro_allowed_x[0]);
             _x = richardson_pro_allowed_x;
             _y = richardson_pro_allowed_y;
             _seg_count = richardson_pro_allowed_sizes;
             break;
         case RamaPlotType::PrePro:
-            _line_count = sizeof(richardson_prepro_allowed_x)/sizeof(float);
+            _line_count = sizeof(richardson_prepro_allowed_x)/sizeof(richardson_prepro_allowed_x[0]);
             _x = richardson_prepro_allowed_x;
             _y = richardson_prepro_allowed_y;
             _seg_count = richardson_prepro_allowed_sizes;

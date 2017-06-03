@@ -1,6 +1,7 @@
 #ifndef mifit_math_math_h
 #define mifit_math_math_h
 
+#include <cmath>
 #include <limits>
 
 #ifndef M_PI
@@ -178,7 +179,7 @@ const char *ftoa(int);
 template<typename T>
 inline bool equals(T a, T b)
 {
-    return abs(a - b) <= std::numeric_limits<T>::epsilon();
+    return std::abs(a - b) <= std::numeric_limits<T>::epsilon();
 }
 
 inline double toRadians(double degrees)

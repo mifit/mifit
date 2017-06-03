@@ -1415,7 +1415,7 @@ L1300:
     return 0;
 
 L1400:
-    fprintf(stderr, "largest factor exceeds %ld.  n = %ld\n", (long int)pmax, (long int)*pts);
+    fprintf(stderr, "largest factor exceeds %ld.  n = %ld\n", (long int)*pmax, (long int)*pts);
     *error = true;
     goto L1300;
 
