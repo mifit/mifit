@@ -3,6 +3,7 @@
 
 #include <cstdlib>
 #include <cassert>
+#include <cstring>
 #include <sstream>
 #include <vector>
 #include <functional>

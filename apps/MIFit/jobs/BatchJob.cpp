@@ -16,6 +16,8 @@
 #ifdef _WIN32
 #include <process.h>
 #include <time.h>
+#else
+#include <unistd.h>
 #endif
 
 BatchJob::BatchJob()
