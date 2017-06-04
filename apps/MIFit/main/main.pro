@@ -37,6 +37,10 @@ win32 {
   LIBS += -lglu32 -lopengl32
 }
 
+unix {
+  LIBS += -lGLU
+}
+
 include(../../../rpath.pri)
 
 SOURCES += $$files(*.cpp)
