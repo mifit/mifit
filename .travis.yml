@@ -1,0 +1,11 @@
+language: cpp
+
+install:
+  - sudo apt-get install -y libqt4-dev libboost-dev
+
+os:
+  - linux
+
+script:
+  - qmake -r MI.pro
+  - make
