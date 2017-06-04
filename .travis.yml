@@ -9,3 +9,22 @@ os:
 script:
   - qmake -r MI.pro
   - make
+
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "SJWieexDyviO2AS7WrI5EPMCU51Q9tP2e2prGElKhRbiyvoelvcjfgckjbtJZmC/VRo0qsOMUCAb58Brcj4l/HlC1m7/EJ7p8SvJN8hyjYW3pQPOhqGJAF/kRtG5xrLUjOTrznsTmeoqGGl5DVZ7QuvXk9TTKjRUPcxxzDplRfBKp40pqkUpG7Y4gsaI1IilsHzhwrNvpDTUaynAByFYmgtOti1FgZcV3BRrpdkzV9mHb2RsfBQ4ctO632Kykx59kUZ0r9a47JhDm2pqN6IGY5M+GFtV3OFiLWLfQAkt0siom4Vvo7lPpkcSMRvtBQ8LmgIuQ8/tEqSv+rkteMW0Cxe2l18h2qCKHGKhIbux4Ralyzh5kqoZsItGY7MJ9CS6dVyUbbkHeBPp3XqT3PH4PuBSy5IrOe3qEueOXCboV7CJRXZu1TTcW3qM6FGkfM/Q59hWwiI/KjGuNVE/RUnlHLEZJtPEXitngbOt1NYnjLrvuY0XRWEiW4k0n43uDOgZoHhl469R36uKVjZCUnIYCP4Amg0U5aBrqwYqVZw2IixPK1NbTroWB7uVwk3TgosO7ahQU39PZewBNI4SuJH+Vxg7J6XmsbInmmISfzrxDgL8PR6cLBmSA3jt3kF0ZrcD7g88KecCd9ZMU1yP3L16BXD0MvwJ8cy68G9CkmDxfMc="
+
+before_install:
+  - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+
+addons:
+  coverity_scan:
+    project:
+      name: "mifit/mifit"
+      description: "Build submitted via Travis CI"
+    notification_email: bradley@baysmith.com
+    build_command_prepend: "qmake -r MI.pro"
+    build_command:   "make -j 4"
+    branch_pattern: coverity_scan
