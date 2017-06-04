@@ -68,6 +68,7 @@ unix {
   QMAKE_CXXFLAGS_WARN_ON += -Wall -Wno-unknown-pragmas
   QMAKE_CFLAGS_WARN_ON += -Wno-unknown-pragmas
   INCLUDEPATH += /usr/include/X11
+  LIBS += -lGLU
 }
 
 mac {
