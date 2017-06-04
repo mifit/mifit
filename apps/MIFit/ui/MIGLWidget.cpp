@@ -30,8 +30,6 @@
 #include <QCloseEvent>
 #include <QApplication>
 #include <QClipboard>
-#include <QPrinter>
-#include <QPrintDialog>
 #include <QPainter>
 #include <QRect>
 #include <QVBoxLayout>
@@ -240,7 +238,7 @@ static bool checkmappath(char *file)
         std::string origPath = file;
         SplitPath(origPath, &path, &name, &ext);
         QFileInfo newFile(QDir::currentPath(), QString((ext.size() ? name + '.' + ext : name).c_str()));
-        sprintf(file, "%s", newFile.absoluteFilePath().toAscii().constData());
+        sprintf(file, "%s", newFile.absoluteFilePath().toUtf8().constData());
     }
     //check against new path if it was updated
     if (QFileInfo(file).exists())
@@ -927,7 +925,7 @@ void MIGLWidget::paintGL()
 #if SHOW_RENDER_TIME
     QString framesPerSecond = QString("render in %1 ms")
                               .arg(elapsedTime);
-    Logger::debug(framesPerSecond.toAscii().constData());
+    Logger::debug(framesPerSecond.toUtf8().constData());
 #endif
 
     is_drawing = false;
@@ -938,6 +936,7 @@ void MIGLWidget::paintGL()
 
 void MIGLWidget::OnPrint()
 {
+#if 0
     scene->renderer->setPickingEnabled(true);
     QPixmap imageToPrint = renderPixmap(); //TODO: could alter canvas size here
     scene->renderer->setPickingEnabled(false);
@@ -955,6 +954,7 @@ void MIGLWidget::OnPrint()
         painter.setWindow( imageToPrint.rect( ) );
         painter.drawImage( 0, 0, imageToPrint.toImage( ) );
     }
+#endif
 }
 
 static bool IsWindowEnabled()
@@ -2320,7 +2320,7 @@ void MIGLWidget::gotoXyzWithPrompt()
 
     str.replace(',', " ");
     viewpoint->Do();
-    if (sscanf(str.toAscii().constData(), "%f%f%f", &m_x, &m_y, &m_z) == 3)
+    if (sscanf(str.toUtf8().constData(), "%f%f%f", &m_x, &m_y, &m_z) == 3)
     {
         gotoXyz(m_x, m_y, m_z);
     }
@@ -4454,7 +4454,7 @@ void MIGLWidget::addResidueWithPrompt()
     unsigned short chainId = static_cast<unsigned short>(addResidueDialog.chainId());
     unsigned int where = static_cast<unsigned int>(addResidueDialog.modelLocation());
     unsigned int m_phipsi = static_cast<unsigned int>(addResidueDialog.residueOffset());
-    Residue *m_res = GetDictRes(addResidueDialog.residueType().toAscii().constData());
+    Residue *m_res = GetDictRes(addResidueDialog.residueType().toUtf8().constData());
 
     if (m_res == NULL)
     {
@@ -5473,7 +5473,7 @@ void MIGLWidget::OnSequenceEnter()
     layout->addWidget(new QDialogButtonBox(&dlg));
     if (dlg.exec() == QDialog::Accepted)
     {
-        Models->CurrentItem()->SetSequence(text->toPlainText().toAscii().constData());
+        Models->CurrentItem()->SetSequence(text->toPlainText().toUtf8().constData());
         PaletteChanged = true;
         ReDraw();
     }
@@ -7475,7 +7475,7 @@ void MIGLWidget::OnCheckpointModel()
         return;
     }
 
-    if (!SaveModelFile(model, newname.toAscii().constData()))
+    if (!SaveModelFile(model, newname.toUtf8().constData()))
     {
         Logger::message("Warning: Unable to save model - will not be able to Undo");
     }
@@ -10394,7 +10394,7 @@ void MIGLWidget::keyPressEvent(QKeyEvent *e)
         {
             return;
         }
-        nChar = s[0].toAscii();
+        nChar = s[0].toLatin1();
     }
 
     if (nChar <= 256 && isupper(nChar) && !shift)
@@ -10862,7 +10862,7 @@ void MIGLWidget::OnExportImage()
     else if (selectedFilter.startsWith("TIFF"))
         defaultExt = ".tif";
 
-    std::string ext(file_extension(path.toAscii().constData()));
+    std::string ext(file_extension(path.toUtf8().constData()));
     if (ext.empty())
     {
         path += defaultExt;
@@ -11602,7 +11602,7 @@ void MIGLWidget::OnAnnotation()
     }
 
     ViewPoint *viewpoint = GetViewPoint();
-    node->addAnnotation(str.toAscii().constData(), viewpoint->getcenter(0), viewpoint->getcenter(1), viewpoint->getcenter(2));
+    node->addAnnotation(str.toUtf8().constData(), viewpoint->getcenter(0), viewpoint->getcenter(1), viewpoint->getcenter(2));
     // make most recently added annotation the CurrentAnnotation
     CurrentAnnotation = node->getAnnotations().back();
 }
@@ -11623,7 +11623,7 @@ void MIGLWidget::OnNewModel()
     }
 
     vector<Bond> connects;
-    Models->AddItem(NULL, compound.toAscii().constData(), NULL, &connects, MoleculeType::New);
+    Models->AddItem(NULL, compound.toUtf8().constData(), NULL, &connects, MoleculeType::New);
     //OnFitInsertresidue();
     Modify(true);
     ReDrawAll();
@@ -11828,7 +11828,7 @@ bool MIGLWidget::LoadMap(const char *buf, const char *pathname, const std::strin
             std::string strPath(pathname);
             SplitPath(origPath, &path, &name, &ext);
             QFileInfo newFile(QFileInfo(strPath.c_str()).path(), QString((ext.size() ? name + '.' + ext : name).c_str()));
-            sprintf(file, "%s", newFile.absoluteFilePath().toAscii().constData());
+            sprintf(file, "%s", newFile.absoluteFilePath().toUtf8().constData());
         }
         if (checkmappath(file))
         {

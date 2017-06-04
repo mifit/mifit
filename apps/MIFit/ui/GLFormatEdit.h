@@ -1,7 +1,7 @@
 #ifndef GLFORMATEDIT_H
 #define GLFORMATEDIT_H
 
-#include <QtGui/QDialog>
+#include <QtWidgets/QDialog>
 #include <QtOpenGL/QGLFormat>
 
 namespace Ui

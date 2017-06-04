@@ -16,8 +16,8 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QSettings>
-#include <QScriptEngine>
-#include <script/MIFitScriptObject.h>
+// #include <QScriptEngine>
+// #include <script/MIFitScriptObject.h>
 #include <util/utillib.h>
 #include <vector>
 
@@ -31,7 +31,7 @@
 #include "MIMainWindow.h"
 #include "PreferencesDialog.h"
 #include "molw.h"
-#include <script/LocalSocketScript.h>
+// #include <script/LocalSocketScript.h>
 
 using namespace chemlib;
 
@@ -114,7 +114,7 @@ void Tools::OnCustom()
             if (model)
             {
                 QString modelFile = dir.absoluteFilePath(QString("mifit_%1.pdb").arg(job->jobId()));
-                model->SavePDBFile(modelFile.toAscii().constData());
+                model->SavePDBFile(modelFile.toUtf8().constData());
                 subs["MODEL"] = modelFile;
             }
         }

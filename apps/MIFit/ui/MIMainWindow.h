@@ -2,10 +2,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QMdiArea>
 
 class QAction;
 class QMenu;
-class QMdiArea;
 class QMdiSubWindow;
 class MIGLWidget;
 class QSignalMapper;

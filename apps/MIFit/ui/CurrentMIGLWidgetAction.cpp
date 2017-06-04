@@ -40,7 +40,7 @@ namespace
 
             if (!invoked)
                 qWarning("CurrentMIGLWidgetAction: Unable to invoke slot %s on %s",
-                         method.signature(), meta->className());
+                         method.methodSignature().data(), meta->className());
         }
     }
 

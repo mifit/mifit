@@ -30,7 +30,7 @@ QString AddResidueDialog::residueType() const
 char AddResidueDialog::chainId() const
 {
     if (!ui->chainId->text().isEmpty())
-        return ui->chainId->text().at(0).toAscii();
+        return ui->chainId->text().at(0).toLatin1();
     return '\0';
 }
 

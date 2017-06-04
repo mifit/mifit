@@ -5,10 +5,10 @@
 #include <QLabel>
 #include <QObject>
 #include <QProcess>
+#include <QStatusBar>
 #include <QString>
 #include <QStringList>
 
-class QStatusBar;
 
 class BatchJob : public QObject
 {

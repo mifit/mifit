@@ -2,7 +2,7 @@ include(MIFit.pri)
 
 TEMPLATE = subdirs
 
-SUBDIRS += part_core part_script part_jobs part_ui part_main
+SUBDIRS += part_core part_jobs part_ui part_main
 
 part_core.subdir = core
 

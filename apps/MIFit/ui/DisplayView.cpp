@@ -490,7 +490,7 @@ void DisplayTree::EditItem()
             {
                 label = iter->first;
                 Molecule *model = iter->second;
-                model->setAtomLabelText(label, dlg.value(0).toString().toAscii().constData());
+                model->setAtomLabelText(label, dlg.value(0).toString().toUtf8().constData());
                 QColor color = dlg.value(1).value<QColor>();
                 model->setAtomLabelColor(label,
                                          (unsigned char)color.red(),
@@ -564,7 +564,7 @@ void DisplayTree::ImportErrors()
     {
         return;
     }
-    FILE *errorFile = fopen(file.toAscii().constData(), "r");
+    FILE *errorFile = fopen(file.toUtf8().constData(), "r");
     Displaylist *models = displaylist();
     if (models == NULL)
     {

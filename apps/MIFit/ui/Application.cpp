@@ -743,7 +743,7 @@ void Application::saveDict()
                                           fi.filePath(), "Dictionary files (*.pdb);;All files (*.*)");
     if (!s.isEmpty())
     {
-        if (MIFitDictionary()->SaveDictionary(s.toAscii().constData()) )
+        if (MIFitDictionary()->SaveDictionary(s.toUtf8().constData()) )
         {
             if (s.toStdString() != Application::instance()->XFitDictSetting)
             {

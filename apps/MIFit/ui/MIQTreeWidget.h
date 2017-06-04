@@ -8,7 +8,7 @@
 #include <vector>
 #include <string>
 
-class TreeData;
+#include "TreeData.h"
 
 class MIQTreeWidget : public QTreeWidget
 {

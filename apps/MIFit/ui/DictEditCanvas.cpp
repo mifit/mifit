@@ -1035,7 +1035,7 @@ void DictEditCanvas::on_changeNameButton_clicked()
 
         // Finalize rename
         model->residuesBegin()->setType(s.toStdString());
-        std::string t = ::format("Dictionary Editor - %s", s.toAscii().constData());
+        std::string t = ::format("Dictionary Editor - %s", s.toUtf8().constData());
         parent->setWindowTitle(t.c_str());
         ReDraw();
     }
@@ -2051,7 +2051,7 @@ void DictEditCanvas::OnChangeAtomType()
     {
         oldname++;
     }
-    newname = choice_vec.at(choice).toAscii().constData();
+    newname = choice_vec.at(choice).toUtf8().constData();
     newname += oldname;
     tatom.setName(newname.c_str());
     tatom.setAtomicnumber(choice);
@@ -2508,7 +2508,7 @@ void DictEditCanvas::OnRenameAtom()
     MIStringTrim(oldname, false);
     MIStringTrim(oldname); //Trim from both sides
     on = oldname.c_str();
-    nn = newname.toAscii().constData();
+    nn = newname.toUtf8().constData();
     while (*on != '\0' && *nn != '\0')
     {
         if (*on == *nn)
@@ -2528,7 +2528,7 @@ void DictEditCanvas::OnRenameAtom()
         }
     }
 
-    atom->setName(newname.toAscii().constData());
+    atom->setName(newname.toUtf8().constData());
     UpdateGeom();
 }
 

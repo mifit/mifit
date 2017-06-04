@@ -363,7 +363,7 @@ void GLOverviewCanvas::keyPressEvent(QKeyEvent *e)
     {
         return;
     }
-    nChar = s[0].toAscii();
+    nChar = s[0].toLatin1();
 
     bool shift = (e->modifiers() & Qt::ShiftModifier);
     if (nChar <= 256 && isupper(nChar) && !shift)

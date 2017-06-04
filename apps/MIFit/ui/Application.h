@@ -7,7 +7,7 @@
 
 #include <map/maplib.h>
 #include <QtCore/QDir>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 #include "core/corelib.h"
 
 class MISingleInstanceChecker;

@@ -532,7 +532,7 @@ void AtomsTree::EditItem()
     QString str = QInputDialog::getText(this, "Edit atom", "Edit B-Value and occupancy", QLineEdit::Normal, s.c_str());
     if (!str.isEmpty())
     {
-        sscanf(str.toAscii().constData(), "%f%f", &bvalue, &occ);
+        sscanf(str.toUtf8().constData(), "%f%f", &bvalue, &occ);
     }
     else
     {
@@ -1192,7 +1192,7 @@ void ResiduesTree::EditItemAtoms()
     QString str = QInputDialog::getText(this, "Edit atom", "Edit B-Value and occupancy", QLineEdit::Normal, s.c_str());
     if (!str.isEmpty())
     {
-        sscanf(str.toAscii().constData(), "%f%f", &bvalue, &occ);
+        sscanf(str.toUtf8().constData(), "%f%f", &bvalue, &occ);
     }
     else
     {
@@ -2199,7 +2199,7 @@ void ModelsTree::EditItem()
             QString s = QInputDialog::getText(this, "Chain ID", "Enter Chain ID (single char)", QLineEdit::Normal, QString(chainid));
             if (!s.isEmpty())
             {
-                unsigned char c = s.toAscii().at(0);
+                unsigned char c = s.toUtf8().at(0);
                 model->setChainId(chain, c);
                 chainsModified.insert(model);
             }
@@ -2344,7 +2344,7 @@ void ModelsTree::InsertItem()
             {
                 return;
             }
-            unsigned char c = chainId.toAscii().at(0);
+            unsigned char c = chainId.toUtf8().at(0);
             Residue *buffer = Application::instance()->GetResidueBuffer();
             model->InsertResidues(model->residuesBegin(), buffer, 3, (c&255) + 1*256);
             model->Build();
@@ -2452,7 +2452,7 @@ void ModelsTree::ModelExport()
                                                   "PDB file (*.pdb);;All files (*.*)");
             if (!s.isEmpty())
             {
-                model->SavePDBFile(s.toAscii().constData());
+                model->SavePDBFile(s.toUtf8().constData());
             }
         }
     }

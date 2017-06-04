@@ -17,7 +17,7 @@ mac {
 
 INCLUDEPATH *= $$OUT_PWD/..
 LIBS *= -L$$OUT_PWD/..
-appLibs = ui jobs script core
+appLibs = ui jobs core
 for(l, appLibs) {
   LIBS *= -l$$qtLibraryTarget($${l})
   PRE_TARGETDEPS += $$OUT_PWD/../lib$$qtLibraryTarget($${l})$$LIB_EXTENSION

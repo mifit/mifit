@@ -129,7 +129,7 @@ void BatchJob::doJobFinished()
 
     JobFinishedStatusLabel *messageLabel = new JobFinishedStatusLabel(message, 3000, MIMainWindow::instance()->statusBar());
     messageLabel->setStyleSheet(isSuccess() ? "QLabel { background: springgreen; }" : "QLabel { color: white; font: bold; background: red; }");
-    Logger::log("%s", message.toAscii().constData());
+    Logger::log("%s", message.toUtf8().constData());
 }
 
 void BatchJob::AbortJob()
@@ -147,12 +147,12 @@ QString BatchJob::Info()
                    "Job directory: %6\n"
                    "Running: %7\n"
                    "Success: %8\n")
-           .arg(jobName_.toAscii().constData())
+           .arg(jobName_.toUtf8().constData())
            .arg(jobId_)
-           .arg(program_.toAscii().constData())
-           .arg(arguments_.join("\" \"").toAscii().constData())
-           .arg(logFile.toAscii().constData())
-           .arg(workingDirectory_.toAscii().constData())
+           .arg(program_.toUtf8().constData())
+           .arg(arguments_.join("\" \"").toUtf8().constData())
+           .arg(logFile.toUtf8().constData())
+           .arg(workingDirectory_.toUtf8().constData())
            .arg(isRunning() ? "true" : "false")
            .arg(isSuccess() ? "true" : "false");
 }

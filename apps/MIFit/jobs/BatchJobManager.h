@@ -1,6 +1,7 @@
 #ifndef mifit_jobs_BatchJobManager_h
 #define mifit_jobs_BatchJobManager_h
 
+#include <QMenu>
 #include <QObject>
 #include <QTimer>
 #include <string>
@@ -8,7 +9,6 @@
 
 class BatchJob;
 class QAction;
-class QMenu;
 
 /**
  * Runs a batch job in the background.

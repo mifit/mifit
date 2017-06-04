@@ -382,6 +382,7 @@ static void stringSplit(std::string str, std::string delim, std::vector<std::str
 //taken from Qt 4.2.3 to avoid assertion failure with faulty glx driver(s) from xorg 6.9/7.0 on linux.
 void GraphWindow::myRenderText(int x, int y, const QString &str, const QFont &font, int listBase)
 {
+#if 0
 #ifdef __linux__
     static bool use_alternate_rendering = false;
     static bool firsttime = true;
@@ -431,13 +432,15 @@ void GraphWindow::myRenderText(int x, int y, const QString &str, const QFont &fo
         return;
     }
 #endif // ifdef __linux__
-    renderText(x, y, str, font, listBase);
+#endif
+    renderText(x, y, str, font);
 }
 
 //taken from Qt 4.2.3 to avoid assertion failure with faulty glx driver(s) from xorg 6.9/7.0 on linux.
 void GraphWindow::myRenderText(double x, double y, double z, const QString &str, const QFont &font,
                                int listBase)
 {
+#if 0
 #ifdef __linux__
     static bool use_alternate_rendering = false;
     static bool firsttime = true;
@@ -470,7 +473,8 @@ void GraphWindow::myRenderText(double x, double y, double z, const QString &str,
         return;
     }
 #endif // ifdef __linux__
-    renderText(x, y, z, str, font, listBase);
+#endif
+    renderText(x, y, z, str, font);
 }
 
 

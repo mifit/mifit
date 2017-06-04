@@ -3,6 +3,7 @@
 #include <sys/types.h>
 #include <ctype.h> // for alanum
 #include <QtGui>
+#include <QtWidgets>
 #include <core/Version.h>
 #include <chemlib/chemlib.h>
 #include <chemlib/Residue.h>
@@ -521,7 +522,7 @@ void MIMainWindow::OnLoadDictReplace()
                                           "Dictionary files (*.pdb *.cif *.ent);;All files (*.*)");
     if (!s.isEmpty())
     {
-        MIFitDictionary()->LoadDictionary(s.toAscii().constData(), false, true);
+        MIFitDictionary()->LoadDictionary(s.toUtf8().constData(), false, true);
     }
 }
 
@@ -544,7 +545,7 @@ void MIMainWindow::OnLoadDictAppend()
                                           "Dictionary files (*.pdb *.cif *.ent);;All files (*.*)");
     if (!s.isEmpty())
     {
-        MIFitDictionary()->LoadDictionary(s.toAscii().constData(), true);
+        MIFitDictionary()->LoadDictionary(s.toUtf8().constData(), true);
     }
 }
 
@@ -618,7 +619,7 @@ void MIMainWindow::OnLoadLigMol()
             break;
         }
     }
-    OnLoadLigand("*.mol", filename.toAscii().constData(), "", code.c_str());
+    OnLoadLigand("*.mol", filename.toUtf8().constData(), "", code.c_str());
     ShowDictEditor(code.c_str());
 }
 
@@ -629,7 +630,7 @@ void MIMainWindow::OnLoadLigPdb()
     {
         return;
     }
-    std::string code = OnLoadLigand("*.pdb", filename.toAscii().constData(), "", "");
+    std::string code = OnLoadLigand("*.pdb", filename.toUtf8().constData(), "", "");
     if (code.size())
     {
         ShowDictEditor(code.c_str());
@@ -708,7 +709,7 @@ void MIMainWindow::OnLoadLigCif()
     {
         return;
     }
-    std::string code = OnLoadLigand("*.cif", filename.toAscii().constData(), "", "");
+    std::string code = OnLoadLigand("*.cif", filename.toUtf8().constData(), "", "");
     if (code.size())
     {
         ShowDictEditor(code.c_str());
@@ -1531,15 +1532,15 @@ void MIMainWindow::createMenus()
     updateRecentFileActions();
 
     //TODO: use disabled icon specialization for QIcons?
-    fileNewAction->setIcon(QIcon(new_xpm));
+    fileNewAction->setIcon(QIcon(QPixmap(new_xpm)));
     toolBarActions += fileNewAction;
-    fileOpenAction->setIcon(QIcon(open_xpm));
+    fileOpenAction->setIcon(QIcon(QPixmap(open_xpm)));
     toolBarActions += fileOpenAction;
-    fileSaveAction->setIcon(QIcon(save_xpm));
+    fileSaveAction->setIcon(QIcon(QPixmap(save_xpm)));
     toolBarActions += fileSaveAction;
-    filePrintAction->setIcon(QIcon(print_xpm));
+    filePrintAction->setIcon(QIcon(QPixmap(print_xpm)));
     toolBarActions += filePrintAction;
-    copyCanvasAction->setIcon(QIcon(copy_xpm));
+    copyCanvasAction->setIcon(QIcon(QPixmap(copy_xpm)));
     toolBarActions += copyCanvasAction;
     toolBarActions += 0;
 
@@ -1791,7 +1792,7 @@ void MIMainWindow::createMenus()
                                 annotation_menu,
                                 SLOT(OnAnnotation()),
                                 SLOT(OnUpdateAnnotation(QAction*)));
-    miGLWidgetAction->setIcon(QIcon(annotate_xpm));
+    miGLWidgetAction->setIcon(QIcon(QPixmap(annotate_xpm)));
     toolBarActions += miGLWidgetAction;
 
     new CurrentMIGLWidgetAction("Move annotation to &picked atom",
@@ -1815,7 +1816,7 @@ void MIMainWindow::createMenus()
     view_menu->addSeparator();
     miGLWidgetAction = new CurrentMIGLWidgetAction("&Top view", "View from top and drag clipping planes", view_menu, SLOT(OnViewTopview()), SLOT(OnUpdateViewTopview(QAction*)));
     miGLWidgetAction->setCheckable(true);
-    miGLWidgetAction->setIcon(QIcon(topview_xpm));
+    miGLWidgetAction->setIcon(QIcon(QPixmap(topview_xpm)));
     toolBarActions += miGLWidgetAction;
     miGLWidgetAction = new CurrentMIGLWidgetAction("&Fullscreen\tESC", "Canvas fills the entire screen", view_menu, SLOT(OnFullScreen()), SLOT(OnUpdateFullScreen(QAction*)));
     miGLWidgetAction->setCheckable(true);
@@ -1830,34 +1831,34 @@ void MIMainWindow::createMenus()
 
     view_menu->addSeparator();
     miGLWidgetAction = new CurrentMIGLWidgetAction("Slab In\tShift+I", "Decrease the distance beteween the front and back clipping planes", view_menu, SLOT(OnViewSlabin()));
-    miGLWidgetAction->setIcon(QIcon(slabin_xpm));
+    miGLWidgetAction->setIcon(QIcon(QPixmap(slabin_xpm)));
     toolBarActions.insert(toolBarActions.size()-1, miGLWidgetAction);
 
     miGLWidgetAction = new CurrentMIGLWidgetAction("Slab Out\tShift+O", "Increase the distance beteween the front and back clipping planes", view_menu, SLOT(OnViewSlabout()));
-    miGLWidgetAction->setIcon(QIcon(slabout_xpm));
+    miGLWidgetAction->setIcon(QIcon(QPixmap(slabout_xpm)));
     toolBarActions.insert(toolBarActions.size()-1, miGLWidgetAction);
 
     new CurrentMIGLWidgetAction("Set s&lab...", "Set the values of the front and back clipping planes", view_menu, SLOT(OnViewClipplanes()));
     miGLWidgetAction = new CurrentMIGLWidgetAction("Zoom In\tI", "Zoom viewpoint in by 20%", view_menu, SLOT(OnGotoZoomiin()));
-    miGLWidgetAction->setIcon(QIcon(zoomin_xpm));
+    miGLWidgetAction->setIcon(QIcon(QPixmap(zoomin_xpm)));
     toolBarActions.insert(toolBarActions.size()-1, miGLWidgetAction);
     miGLWidgetAction = new CurrentMIGLWidgetAction("Zoom Out\tO", "Zoom viewpoint in by 20%", view_menu, SLOT(OnGotoZoomout()));
-    miGLWidgetAction->setIcon(QIcon(zoomout_xpm));
+    miGLWidgetAction->setIcon(QIcon(QPixmap(zoomout_xpm)));
     toolBarActions.insert(toolBarActions.size()-1, miGLWidgetAction);
     miGLWidgetAction = new CurrentMIGLWidgetAction("Rotate View &+90", "Use this command (and -90) to center objects", view_menu, SLOT(OnViewRotatey90()));
-    miGLWidgetAction->setIcon(QIcon(roty90_xpm));
+    miGLWidgetAction->setIcon(QIcon(QPixmap(roty90_xpm)));
     toolBarActions += miGLWidgetAction;
 
     miGLWidgetAction = new CurrentMIGLWidgetAction("Rotate View &-90", "Use this command to center objects", view_menu, SLOT(OnViewRotateyminus()));
-    miGLWidgetAction->setIcon(QIcon(rotym90_xpm));
+    miGLWidgetAction->setIcon(QIcon(QPixmap(rotym90_xpm)));
     toolBarActions += miGLWidgetAction;
     miGLWidgetAction = new CurrentMIGLWidgetAction("Orthonor&mal", "Set perspective to 0 (infinite viewpoint)", view_menu, SLOT(OnViewOrthonormal()), SLOT(OnUpdateViewOrthonormal(QAction*)));
     miGLWidgetAction->setCheckable(true);
     miGLWidgetAction = new CurrentMIGLWidgetAction("I&ncrease Perspective", "Increase perspective +20%", view_menu, SLOT(OnIncreasePersp()));
-    miGLWidgetAction->setIcon(QIcon(incrper_xpm));
+    miGLWidgetAction->setIcon(QIcon(QPixmap(incrper_xpm)));
     toolBarActions += miGLWidgetAction;
     miGLWidgetAction = new CurrentMIGLWidgetAction("&Decrease Perspective", "Decrease perspective -20%", view_menu, SLOT(OnDecreasePersp()), SLOT(OnUpdateDecreasePersp(QAction*)));
-    miGLWidgetAction->setIcon(QIcon(decrper_xpm));
+    miGLWidgetAction->setIcon(QIcon(QPixmap(decrper_xpm)));
     toolBarActions.insert(toolBarActions.size()-1, miGLWidgetAction);
     toolBarActions += 0;
 
@@ -1976,7 +1977,7 @@ void MIMainWindow::createMenus()
 
     miGLWidgetAction = new CurrentMIGLWidgetAction("Fit R&esidue\tF", "Set the last picked residue for fitting", fit_menu, SLOT(OnFitResidue()), SLOT(OnUpdateFitResidue(QAction*)));
     miGLWidgetAction->setCheckable(true);
-    miGLWidgetAction->setIcon(QIcon(fit_xpm));
+    miGLWidgetAction->setIcon(QIcon(QPixmap(fit_xpm)));
     toolBarActions += miGLWidgetAction;
 
     miGLWidgetAction = new CurrentMIGLWidgetAction("Fit A&tom", "Set the last picked atom for fitting", fit_menu, SLOT(OnFitSingleatom()), SLOT(OnUpdateFitSingleatom(QAction*)));
@@ -1996,31 +1997,31 @@ void MIMainWindow::createMenus()
 
     fit_menu->addSeparator();
     miGLWidgetAction = new CurrentMIGLWidgetAction("&Accept Fit\t;", "Accept fitting, leave atoms at new positions", fit_menu, SLOT(OnFitApply()), SLOT(OnUpdateFitApply(QAction*)));
-    miGLWidgetAction->setIcon(QIcon(apply_xpm));
+    miGLWidgetAction->setIcon(QIcon(QPixmap(apply_xpm)));
     toolBarActions += miGLWidgetAction;
 
     new CurrentMIGLWidgetAction("&Reset Fit", "Put atoms back to start and continue fitting", fit_menu, SLOT(OnFitReset()), SLOT(OnUpdateFitReset(QAction*)));
 
     miGLWidgetAction = new CurrentMIGLWidgetAction("&Cancel Fit", "Stop fitting and put atoms back to starting positions", fit_menu, SLOT(OnFitCancel()), SLOT(OnUpdateFitCancel(QAction*)));
-    miGLWidgetAction->setIcon(QIcon(cancel_xpm));
+    miGLWidgetAction->setIcon(QIcon(QPixmap(cancel_xpm)));
     toolBarActions += miGLWidgetAction;
 
     fit_menu->addSeparator();
     miGLWidgetAction = new CurrentMIGLWidgetAction("&Rotate", "Set right mouse to rotate mode", fit_menu, SLOT(OnFitRotate()), SLOT(OnUpdateFitRotate(QAction*)));
     miGLWidgetAction->setCheckable(true);
-    miGLWidgetAction->setIcon(QIcon(rotate_xpm));
+    miGLWidgetAction->setIcon(QIcon(QPixmap(rotate_xpm)));
     toolBarActions += miGLWidgetAction;
     miGLWidgetAction = new CurrentMIGLWidgetAction("&Translate", "Set right mouse to translate mode", fit_menu, SLOT(OnFitTranslate()), SLOT(OnUpdateFitTranslate(QAction*)));
     miGLWidgetAction->setCheckable(true);
-    miGLWidgetAction->setIcon(QIcon(translate_xpm));
+    miGLWidgetAction->setIcon(QIcon(QPixmap(translate_xpm)));
     toolBarActions += miGLWidgetAction;
     miGLWidgetAction = new CurrentMIGLWidgetAction("&Torsion", "Set right mouse to torsion mode", fit_menu, SLOT(OnFitTorsion()), SLOT(OnUpdateFitTorsion(QAction*)));
     miGLWidgetAction->setCheckable(true);
-    miGLWidgetAction->setIcon(QIcon(torsion_xpm));
+    miGLWidgetAction->setIcon(QIcon(QPixmap(torsion_xpm)));
     toolBarActions += miGLWidgetAction;
     miGLWidgetAction = new CurrentMIGLWidgetAction("C&enter", "Set right mouse to move screen center (default mode)", fit_menu, SLOT(OnFitCentermode()), SLOT(OnUpdateFitCentermode(QAction*)));
     miGLWidgetAction->setCheckable(true);
-    miGLWidgetAction->setIcon(QIcon(center_xpm));
+    miGLWidgetAction->setIcon(QIcon(QPixmap(center_xpm)));
     toolBarActions += miGLWidgetAction;
     fit_menu->addSeparator();
     new CurrentMIGLWidgetAction("&Set Up Torsion", "Torsion about last two atoms picked, second end moves", fit_menu, SLOT(OnFitSetuptorsion()), SLOT(OnUpdateFitSetuptorsion(QAction*)));
@@ -2100,7 +2101,7 @@ void MIMainWindow::createMenus()
     new CurrentMIGLWidgetAction("Go To &C-terminus\t]", "Follows the current chain to its C-terminal end", model_menu, SLOT(OnGotoCter()), SLOT(OnUpdateGotoCter(QAction*)));
     model_menu->addSeparator();
     miGLWidgetAction = new CurrentMIGLWidgetAction("&Checkpoint Model", "Checkpoints the model - use to save before", model_menu, SLOT(OnCheckpointModel()), SLOT(OnUpdateCheckpointModel(QAction*)));
-    miGLWidgetAction->setIcon(QIcon(chekpoin_xpm));
+    miGLWidgetAction->setIcon(QIcon(QPixmap(chekpoin_xpm)));
     toolBarActions.insert(7, miGLWidgetAction);
 
     new CurrentMIGLWidgetAction("&Revert Model...", "Reverts the model to an earlier version saved", model_menu, SLOT(OnRevertModel()), SLOT(OnUpdateRevertModel(QAction*)));
@@ -2184,10 +2185,10 @@ void MIMainWindow::createMenus()
     displayToolBar->setObjectName("Display Tools");
     displayToolBar->setIconSize(QSize(20, 20));
 
-    addToolMenuButton(displayToolBar, color_menu, QIcon(colortool_xpm));
-    addToolMenuButton(displayToolBar, show_menu, QIcon(showtool_xpm));
-    addToolMenuButton(displayToolBar, side_menu, QIcon(sidetool_xpm));
-    addToolMenuButton(displayToolBar, hide_menu, QIcon(hidetool_xpm));
+    addToolMenuButton(displayToolBar, color_menu, QIcon(QPixmap(colortool_xpm)));
+    addToolMenuButton(displayToolBar, show_menu, QIcon(QPixmap(showtool_xpm)));
+    addToolMenuButton(displayToolBar, side_menu, QIcon(QPixmap(sidetool_xpm)));
+    addToolMenuButton(displayToolBar, hide_menu, QIcon(QPixmap(hidetool_xpm)));
 }
 
 
@@ -2407,13 +2408,13 @@ void MIMainWindow::saveJobMenu()
 
 void MIMainWindow::createLocalSocketScript()
 {
-    _scriptSocket = new LocalSocketScript(this);
+    // _scriptSocket = new LocalSocketScript(this);
 }
 
 QString MIMainWindow::scriptPort() const
 {
-    if (_scriptSocket)
-        return _scriptSocket->name();
+    // if (_scriptSocket)
+    //     return _scriptSocket->name();
     return QString::null;
 }
 

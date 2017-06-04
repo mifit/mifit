@@ -288,7 +288,7 @@ void EMap::Export()
             format = mmCIF_phase;
         else if (selectedFilter == "Xtalview phase file (*.phs)")
             format = XtalView_phase;
-        SavePhases(path.toAscii().constData(), format);
+        SavePhases(path.toUtf8().constData(), format);
     }
 }
 
