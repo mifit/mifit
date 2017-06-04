@@ -1,7 +1,7 @@
 language: cpp
 
 install:
-  - sudo apt-get install -y libqt4-dev libboost-dev
+  - sudo apt-get install -y libqt4-dev libqt4-opengl-dev libboost-dev
 
 os:
   - linux
