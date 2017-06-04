@@ -835,7 +835,7 @@ void Application::WriteSecStr()
 void Application::WriteAtomTypes()
 {
     QSettings settings;
-    settings.setValue("Atom Colors/NoEntries", Colors::atomcolors.size());
+    settings.setValue("Atom Colors/NoEntries", (unsigned int)Colors::atomcolors.size());
     for (unsigned int i = 0; i < Colors::atomcolors.size(); i++)
     {
         std::string b = format("Color%d", i);
