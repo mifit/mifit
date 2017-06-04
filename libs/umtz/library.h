@@ -459,7 +459,7 @@ struct Str_Desc
 /* other \idx{Intel} chips like \idx{PCs} and \idx{Alpha} (sometimes!).     */
 /*                                                                          */
 /* <[[#define]]s>=                                                          */
-#if defined(MIPSEL) || defined(alliant) || defined(i386) || defined(i860) || defined(__i386__)
+#if defined(MIPSEL) || defined(alliant) || defined(i386) || defined(i860) || defined(__i386__) || defined(__x86_64)
 #  define NATIVEIT DFNTI_IBO
 #  define NATIVEFT DFNTF_LEIEEE
 #endif
