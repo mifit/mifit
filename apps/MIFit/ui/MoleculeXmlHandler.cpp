@@ -315,10 +315,13 @@ bool MoleculeXmlHandler::startElement(const QString &namespaceURI,
     if (name == "Label")
     {
         MIAtom *atom = NULL;
-        char labelString[128];
-        int xo, yo;
-        int visible;
-        unsigned char red, green, blue;
+        char labelString[128] = { 0 };
+        int xo = 0;
+        int yo = 0;
+        int visible = 0;
+        unsigned char red = 0;
+        unsigned char green = 0;
+        unsigned char blue = 0;
         for (int i = 0; i < attributes.length(); i++)
         {
             if (attributes.localName(i) == "atom")

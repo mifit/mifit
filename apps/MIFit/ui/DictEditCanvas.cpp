@@ -2411,7 +2411,7 @@ void DictEditCanvas::OnOk()
     geomrefiner->unlockRefineTarget();
 
     //This needs to push all the results in the the actual dictionary
-    const char *restype = model->residuesBegin()->type().c_str();
+    auto restype = model->residuesBegin()->type();
 
     // Adding the residue in append mode will blast out the other entires for it
     // in the other dictionaries (i.e. the PlaneDict)
@@ -2462,7 +2462,7 @@ void DictEditCanvas::OnOk()
         {
             if (i->flags != CHIRAL_DELETED)
             {
-                if (geomrefiner->dict.AddChiral(*i, restype) != 1)
+                if (geomrefiner->dict.AddChiral(*i, restype.c_str()) != 1)
                 {
                     Logger::log("Chiral was NOT saved!!\n");
                 }

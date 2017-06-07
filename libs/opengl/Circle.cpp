@@ -10,14 +10,14 @@ namespace mi
 namespace opengl
 {
 
-Circle::Circle(float radius)
+Circle::Circle(float radius) : radius(0), detail(0), angle(0)
 {
     setRadius(radius);
     setAngle((float) (2.0 * M_PI));
     setDetail(80);
 }
 
-Circle::Circle(float radius, float angle)
+Circle::Circle(float radius, float angle) : radius(0), detail(0), angle(0)
 {
     setRadius(radius);
     setAngle(angle);
