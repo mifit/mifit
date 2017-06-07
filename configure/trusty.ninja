@@ -1,0 +1,1 @@
+libs = -lboost_filesystem -lboost_system

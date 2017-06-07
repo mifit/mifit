@@ -32,6 +32,16 @@ int main(int argc, char *argv[])
     try {
         vector<string> args { argv+1, argv+argc };
 
+        if (args.empty())
+        {
+            cerr << "Usage: configure <platform>\n"
+                 << "\n"
+                 << "  platform   mingw or trusty\n"
+                 << endl;
+            return EXIT_FAILURE;
+        }
+        auto platform = args.front();
+
         static set<string> ignoredDirs {
             ".git", "o", "data", "docs", "examples", "packaging", "configure",
             "apps/MIFit/python", "apps/MIFit/script", "apps/MIFlex", "libs/nongui"
@@ -48,7 +58,7 @@ int main(int argc, char *argv[])
 
         static set<fs::path> results;
 
-        static auto outputFile = [&](auto entry) {
+        static auto outputFile = [&](fs::directory_entry entry) {
             auto relative_path = make_relative(fs::current_path(), entry.path()).generic_string();
             if (fs::is_regular_file(entry))
             {
@@ -56,7 +66,7 @@ int main(int argc, char *argv[])
                     results.insert(relative_path);
             }
         };
-        static auto isIgnoredDir = [&](auto entry) {
+        static auto isIgnoredDir = [&](fs::directory_entry entry) {
             if (!fs::is_directory(entry))
                 return false;
             auto relative_path = make_relative(fs::current_path(), entry.path()).generic_string();
@@ -84,7 +94,7 @@ int main(int argc, char *argv[])
         });
 
         nb::ninja_file ninjas { "build.ninja", 160 };
-        ninjas.include("qt.ninja");
+        ninjas.include(platform + ".ninja");
         ninjas.include("common.ninja");
         ninjas.variable("o_dir", "o");
         ninjas.variable("base_dir", base_path.generic_string());

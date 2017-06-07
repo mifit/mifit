@@ -1,0 +1,13 @@
+include mingw-qt.ninja
+
+## For release build
+compile_flags =
+link_flags = -static
+
+## For debug build
+#compile_flags = -g
+#link_flags =
+
+
+libs = -lglu32 -lopengl32
+

@@ -1,0 +1,13 @@
+include trusty-qt.ninja
+
+## For release build
+compile_flags = -fPIC
+link_flags =
+
+## For debug build
+#compile_flags = -g -fPIC
+#link_flags =
+
+
+libs = -lGLU -lGL
+

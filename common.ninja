@@ -1,34 +1,19 @@
 cc = gcc
 cxx = g++
 link = g++
-rc = rc.exe
-
-## For release build
-compile_flags =
-link_flags = -static
-
-## For debug build
-#compile_flags = -g
-#link_flags =
 
 commonflags = $compile_flags $common_flags -Ilibs -Iapps -Iapps/MIFit
 
 cflags = $commonflags $c_flags -D_MVS -Di386 -DWINVER=0x400
 
-cxxflags = $commonflags $qtcxxflags $cxx_flags
+cxxflags = --std=c++11 $commonflags $qtcxxflags $cxx_flags
 
 linkflags = $link_flags $qtlinkflags
 
 
-libs = -lglu32 -lopengl32
-
 rule cc
   command = $cc -MMD $cflags -c $in -o $out
   description = CC $out
-
-rule rc
-  command = $rc $in
-  description = RC $in
 
 rule cxx
   command = $cxx -MMD $cxxflags -c $in -o $out

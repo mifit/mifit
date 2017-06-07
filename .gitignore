@@ -24,3 +24,5 @@ build.ninja
 .ninja_*
 *.d
 *.obj
+
+configure/platform.ninja
