@@ -14,8 +14,8 @@ namespace opengl
 
 int Axes::labelsFontSize = 16;
 
-Axes::Axes(std::auto_ptr<GLFont> font)
-    : labelsFont(font)
+Axes::Axes(std::unique_ptr<GLFont> font)
+    : labelsFont(std::move(font))
 {
 
 }

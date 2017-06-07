@@ -11110,7 +11110,7 @@ bool MIGLWidget::OnOpenDocument(const std::string &path)
     const char *pathname = (const char*)path.c_str();
     char buf[2000];
     char fileBuf[2000];
-    std::auto_ptr<io> ioObj(io::defaultIo());
+    std::unique_ptr<io> ioObj(io::defaultIo());
     io &file = *ioObj;
     int nmap;
     std::string initPath = QDir::currentPath().toStdString();
@@ -11336,7 +11336,7 @@ bool MIGLWidget::LoadPDBFile(const char *pathname)
     //std::deque<MIAtom> *atoms= new std::deque<MIAtom>;
     std::vector<Bond> connects;
     std::string compound;
-    std::auto_ptr<io> ioObj(io::defaultIo());
+    std::unique_ptr<io> ioObj(io::defaultIo());
     io &file = *ioObj;
     if (!file.open(pathname, "r"))
     {
@@ -11725,7 +11725,7 @@ bool MIGLWidget::IsXMLMolecule(io &file)
 
 bool MIGLWidget::IsXMLDocument(const char *pathname)
 {
-    std::auto_ptr<io> ioObj(io::defaultIo());
+    std::unique_ptr<io> ioObj(io::defaultIo());
     io &file = *ioObj;
     file.open(pathname, "r");
     if (!file.isOpen())

@@ -52,7 +52,7 @@ bool IsXML(FILE *fp)
     bool found_xml = false;
     int count = 0;
     std::string buf;
-    std::auto_ptr<io> ioObj(io::defaultIo());
+    std::unique_ptr<io> ioObj(io::defaultIo());
     io &file = *ioObj;
     file.attach(fp);
     file.rewind();

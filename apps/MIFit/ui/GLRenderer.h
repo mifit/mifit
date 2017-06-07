@@ -48,8 +48,8 @@ class GLRenderer
     int width;
     int height;
     float xyDisplayRange;
-    std::auto_ptr<mi::opengl::GLFont> labelsFont_;
-    std::auto_ptr<mi::opengl::GLFont> stackFont_;
+    std::unique_ptr<mi::opengl::GLFont> labelsFont_;
+    std::unique_ptr<mi::opengl::GLFont> stackFont_;
     TargaImage *popStackImage;
     TargaImage *minimizeStackImage;
     TargaImage *unminimizeStackImage;
@@ -257,7 +257,7 @@ public:
 
     void setPickingEnabled(bool value);
 
-    std::auto_ptr<mi::opengl::GLFont> createGLFont();
+    std::unique_ptr<mi::opengl::GLFont> createGLFont();
 
 };
 

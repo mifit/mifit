@@ -13,17 +13,14 @@ class io
 
 protected:
 
-    // Give auto_ptr<> access to destructor
-    friend class std::auto_ptr<io>;
-
     static void setDefaultIo(io *defaultIo);
 
     io();
-    virtual ~io();
 
     virtual io *create() = 0;
 
 public:
+    virtual ~io();
 
     static io *defaultIo();
     virtual bool open(const char *file, const char *mode) = 0;

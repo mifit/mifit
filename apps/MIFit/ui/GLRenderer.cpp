@@ -588,9 +588,9 @@ void GLRenderer::drawText(const char *text, float x, float y, float z)
     drawText(text, x, y, z, 0.0f, labelsTextScale, inverseRotation, false, 0, white);
 }
 
-std::auto_ptr<mi::opengl::GLFont> GLRenderer::createGLFont()
+std::unique_ptr<mi::opengl::GLFont> GLRenderer::createGLFont()
 {
-    return std::auto_ptr<mi::opengl::GLFont>(new GLFont(qcanvas_win));
+    return std::unique_ptr<mi::opengl::GLFont>(new GLFont(qcanvas_win));
 }
 
 void GLRenderer::drawText(const char *text, float x, float y, float z, float offset, float scale, float inverseRotation[16], bool displayNumber, int number, float foreground[4])
