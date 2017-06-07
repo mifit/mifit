@@ -1,0 +1,22 @@
+qt_dir = Z:/tools/git-sdk-64/mingw64
+qt_include = -I$qt_dir/include/QtCore -I$qt_dir/include/QtGui -I$qt_dir/include/QtWidgets $
+    -I$qt_dir/include/QtOpenGL -I$qt_dir/include/QtXml
+
+qtcxxflags = -DQT_CLEAN_NAMESPACE -DQT_NO_DEBUG $qt_include -DQT_OPENGL_LIB -DQT_WIDGETS_LIB $
+    -DQT_GUI_LIB -DQT_XML_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB
+
+qtlibs = -lQt5Core.dll -lQt5Gui.dll -lQt5Widgets.dll -lQt5OpenGL.dll -lQt5Xml.dll
+qtlibs_debug =
+
+rule moc
+  command = $qt_dir/bin/moc $in -o $out
+  description = MOC $out
+
+rule uic
+  command = $qt_dir/bin/uic $in -o $out
+  description = UIC $out
+
+rule qrc
+  command = qrc_gen.exe $qt_dir/bin/rcc src $base $base.qrc ${base}_qrc.cpp ${base}_qrc.d
+  depfile = src/${base}_qrc.d
+  description = QRC $out

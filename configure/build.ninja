@@ -1,0 +1,13 @@
+include ../common.ninja
+libs = -lboost_filesystem-mt -lboost_system-mt
+
+build configure.obj: cxx configure.cpp
+build ninja_file.obj: cxx ninja_file.cpp
+build paths.obj: cxx paths.cpp
+build strings.obj: cxx strings.cpp
+
+build buildtray.obj: cxx src/buildtray.cpp | src/version.h
+build ../configure.exe: link configure.obj ninja_file.obj paths.obj strings.obj
+
+build all: phony ../configure.exe
+default all

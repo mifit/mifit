@@ -19,3 +19,9 @@ apps/MIFit/core/Version.cpp
 MIFit
 MIFit.exe
 *~
+o/
+configure.exe
+build.ninja
+.ninja_*
+*.d
+*.obj
