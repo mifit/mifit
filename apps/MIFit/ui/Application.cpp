@@ -38,7 +38,6 @@
 #include <sys/stat.h>
 #else
 #include <process.h>
-#define strncasecmp strnicmp
 #endif
 
 #include "core/Version.h"
@@ -882,8 +881,8 @@ void Application::SetMolimageHome(bool reset)
     if (reset || MolimageHome.empty())
     {
         MolimageHome = findMIFitBin();
-        if (strncasecmp(MolimageHome.c_str(), "/bin", 4) == 0
-            || strncasecmp(MolimageHome.c_str(), "\\bin", 4) == 0)
+        if (mi_strncasecmp(MolimageHome.c_str(), "/bin", 4) == 0
+            || mi_strncasecmp(MolimageHome.c_str(), "\\bin", 4) == 0)
         {
             MolimageHome.erase(MolimageHome.size()-4);
         }

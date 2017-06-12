@@ -11,10 +11,6 @@
 #include "valence.h"
 #include "mol_util_private.h"
 
-#ifdef _WIN32
-#define strncasecmp strnicmp
-#endif
-
 using namespace std;
 
 namespace chemlib
@@ -1245,7 +1241,7 @@ bool IsNucleic(Residue *res)
     };
     for (unsigned int i = 0; i < sizeof(type3)/4; i++)
     {
-        if (!strncasecmp(res->type().c_str(), type3[i], strlen(type3[i])))
+        if (!mi_strncasecmp(res->type().c_str(), type3[i], strlen(type3[i])))
         {
             /* require that it have at least P o3* o4* c4* */
             if (atom_from_name("P", *res)

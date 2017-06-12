@@ -8,21 +8,6 @@
 #include "ColorUtil.h"
 
 
-#if !defined (_WIN32)
-static
-int
-strnicmp(const char *s1, const char *s2, int n)
-{
-    std::string c1, c2;
-    c1 = (char*)s1;
-    c2 = (char*)s2;
-    c1 = MIToUpper(c1);
-    c2 = MIToUpper(c2);
-    return strncmp(c1.c_str(), c2.c_str(), n);
-}
-
-#endif
-
 void init_colornames()
 {
     Colors::atomcolors.clear();
@@ -65,7 +50,7 @@ short color_by_name(const char *name)
     short color = Colors::WHITE; // default atom color
     for (unsigned int i = 0; i < Colors::atomnames.size(); i++)
     {
-        if (!strnicmp(name, Colors::atomnames[i].c_str(), Colors::atomnames[i].size()))
+        if (!mi_strncasecmp(name, Colors::atomnames[i].c_str(), Colors::atomnames[i].size()))
         {
             color = Colors::findColorNumber(Colors::atomcolors[i]);
         }

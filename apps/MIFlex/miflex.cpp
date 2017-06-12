@@ -13,7 +13,6 @@
 #define i386
 #include <mmtzlib.h>
 #undef _MVS
-#define strncasecmp strnicmp
 #else
 #include <mmtzlib.h>
 #endif

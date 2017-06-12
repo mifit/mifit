@@ -23,6 +23,8 @@ bool endsWith(const std::string &str, const char *substr);
  */
 const char *file_extension(const char *file);
 
+int mi_strncasecmp(const char *s1, const char *s2, unsigned int n);
+
 #ifdef DEBUG
 #define MI_ASSERT(expr) \
     ((expr) \

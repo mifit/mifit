@@ -28,7 +28,6 @@ typedef struct
 #define i386
 #include <umtz/mmtzlib.h>
 #undef _MVS
-#define strncasecmp strnicmp
 #else
 #include <umtz/mmtzlib.h>
 #endif
@@ -3641,7 +3640,7 @@ bool parseCoefficients(const char *str, int &mapType)
     {
         for (unsigned int i = 0; i < MAP_TYPE_COUNT; i++)
         {
-            if (strncasecmp(coeff, maptypes[i], len) == 0 && len == strlen(maptypes[i]))
+            if (mi_strncasecmp(coeff, maptypes[i], len) == 0 && len == strlen(maptypes[i]))
             {
                 mapType = i;
                 break;
@@ -3901,7 +3900,7 @@ int EMapBase::Read(const char *file)
 //DEL         char coeff[200];
 //DEL         if(sscanf(ubuf,"%*s%s", coeff)==1)
 //DEL           for(i=0; i< MAP_TYPE_COUNT; i++)
-//DEL             if(strncasecmp(coeff,maptypes[i],strlen(coeff))==0 && strlen(coeff)==strlen(maptypes[i]))
+//DEL             if(mi_strncasecmp(coeff,maptypes[i],strlen(coeff))==0 && strlen(coeff)==strlen(maptypes[i]))
 //DEL               mapheader->maptype = i;
 //DEL       }else if(strncmp(buf,"resmin",6)==0){
 //DEL         if(sscanf(buf,"%*s%f", &f)==1) mapheader->resmin = f;

@@ -17,9 +17,6 @@
 
 #ifndef _WIN32
 #include <unistd.h>
-#define strnicmp strncasecmp
-#else
-#define strncasecmp strnicmp
 #endif
 
 #include <QDialog>
@@ -5204,7 +5201,7 @@ void MIGLWidget::mapLoadfromphsfile()
 
 static Molecule *FindModel(const std::string &mname, Displaylist *dl, bool or_current = false)
 {
-    if (strncasecmp(mname.c_str(), "Model:", 6)==0)
+    if (mi_strncasecmp(mname.c_str(), "Model:", 6)==0)
     {
         std::string name = std::string(&mname[6]);
         Displaylist::ModelList::iterator modelIter = dl->begin();
@@ -7810,7 +7807,7 @@ int MIGLWidget::ScriptCommand(const char *ubuf)
     s = MIToLower(s);
     const char *buf = s.c_str();
 
-#define IFC(s) if (!strncasecmp(buf, s, strlen(s)))
+#define IFC(s) if (!mi_strncasecmp(buf, s, strlen(s)))
 #define cmdtoggle(p) return cmdtogglef(buf, p, NULL);
 #define cmdtoggle2(p) return cmdtogglef(buf, NULL, &p);
 #define cmdtoggle3(p, special) \
@@ -8181,7 +8178,7 @@ int MIGLWidget::ScriptCommand(const char *ubuf)
     /* xfit extension to vu format- label.  other
      * vu software will treat this as a comment
      * format #LABEL x y z color label_string*/
-    if (!strncasecmp(buf, "label ", 6) || !strncasecmp(buf, "label\t", 6) )
+    if (!mi_strncasecmp(buf, "label ", 6) || !mi_strncasecmp(buf, "label\t", 6) )
     {
         MIAtom *atom;
         char colorstring[BUFSIZ];
@@ -9199,7 +9196,7 @@ void MIGLWidget::ReadStack(const char *pathname, bool append)
             {
                 break;
             }
-            if (strnicmp("molecule", buf, 8) == 0)
+            if (mi_strncasecmp("molecule", buf, 8) == 0)
             {
                 node = NULL;
                 std::list<Molecule*>::iterator mlist = Models->begin();
@@ -9222,7 +9219,7 @@ void MIGLWidget::ReadStack(const char *pathname, bool append)
                     Logger::message(s);
                 }
             }
-            else if (strnicmp("atom", buf, 4) == 0)
+            else if (mi_strncasecmp("atom", buf, 4) == 0)
             {
                 if (node != NULL)
                 {
@@ -11135,14 +11132,14 @@ bool MIGLWidget::OnOpenDocument(const std::string &path)
             std::string col_names("");
             while (file.gets(buf, sizeof buf) != NULL)
             {
-                if (strncasecmp(buf, "mapcolumns", 10) == 0)
+                if (mi_strncasecmp(buf, "mapcolumns", 10) == 0)
                 {
                     char labelsBuf[4096];
                     sscanf(buf, "%*s %[^\r\n]", labelsBuf);
                     col_names = std::string(labelsBuf);
                     continue;
                 }
-                if (strncasecmp(buf, "loadmap", 7) == 0)
+                if (mi_strncasecmp(buf, "loadmap", 7) == 0)
                 {
                     LoadMap(buf, pathname, col_names);
                     col_names = "";
@@ -11174,12 +11171,12 @@ bool MIGLWidget::OnOpenDocument(const std::string &path)
             // Scan for silentmode
             while (file.gets(buf, sizeof buf) != NULL)
             {
-                if (strncasecmp(buf, "silent", 6) == 0)
+                if (mi_strncasecmp(buf, "silent", 6) == 0)
                 {
                     Application::instance()->SetSilentMode(true);
                     //break;
                 }
-                if (strncasecmp(buf, "directory", 9) == 0)
+                if (mi_strncasecmp(buf, "directory", 9) == 0)
                 {
                     std::string mess(buf);
                     mess = MIBeforeFirst(mess, '\n');
@@ -11197,7 +11194,7 @@ bool MIGLWidget::OnOpenDocument(const std::string &path)
             // Scan for LoadPDB's
             while (file.gets(buf, sizeof buf) != NULL)
             {
-                if (strncasecmp(buf, "loadpdb", 7) == 0)
+                if (mi_strncasecmp(buf, "loadpdb", 7) == 0)
                 {
                     std::string oldpath = QDir::currentPath().toStdString();
                     QDir::setCurrent(path.c_str());
@@ -11224,14 +11221,14 @@ bool MIGLWidget::OnOpenDocument(const std::string &path)
             std::string col_names("");
             while (file.gets(buf, sizeof buf) != NULL)
             {
-                if (strncasecmp(buf, "mapcolumns", 10) == 0)
+                if (mi_strncasecmp(buf, "mapcolumns", 10) == 0)
                 {
                     char labelsBuf[4096];
                     sscanf(buf, "%*s %[^\r\n]", labelsBuf);
                     col_names = std::string(labelsBuf);
                     continue;
                 }
-                if (strncasecmp(buf, "loadmap", 7) == 0)
+                if (mi_strncasecmp(buf, "loadmap", 7) == 0)
                 {
 
                     if (sscanf(buf, "%*s%d %[^\r\n]", &nmap, fileBuf) != 2)
@@ -11241,7 +11238,7 @@ bool MIGLWidget::OnOpenDocument(const std::string &path)
                     EMap *map = new EMap;
                     if (checkmappath(fileBuf))
                     {
-                        if (strncasecmp(buf, "loadmapphase", 12) == 0)
+                        if (mi_strncasecmp(buf, "loadmapphase", 12) == 0)
                         {
                             if (col_names.size())
                             {
@@ -11811,7 +11808,7 @@ bool MIGLWidget::LoadMap(const char *buf, const char *pathname, const std::strin
     char file[1024];
 
     //char pathname [1024];
-    if (strncasecmp(buf, "loadmap", 7) == 0)
+    if (mi_strncasecmp(buf, "loadmap", 7) == 0)
     {
         EMap *map = new EMap;
         //map->SetCrystal(Application::instance()->Crystal);
@@ -11838,7 +11835,7 @@ bool MIGLWidget::LoadMap(const char *buf, const char *pathname, const std::strin
             {
                 *map->mapheader = inputMapHeaders[nmap-1];
             }
-            if (strncasecmp(buf, "loadmapphase", 12) == 0)
+            if (mi_strncasecmp(buf, "loadmapphase", 12) == 0)
             {
 
                 if (col_names.size())

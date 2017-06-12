@@ -103,3 +103,20 @@ const char *file_extension(const char *file)
     static char empty[2] = {0, 0};
     return empty;
 }
+
+int mi_strncasecmp(const char *s1, const char *s2, unsigned int n)
+{
+    for (; 0 < n; ++s1, ++s2, --n)
+    {
+        if (toupper(*s1) != toupper(*s2) )
+        {
+            return ((*(unsigned char*)s1 <
+                     *(unsigned char*)s2) ? -1 : +1);
+        }
+        else if (*s1 == '\0')
+        {
+            return (0);
+        }
+    }
+    return (0);
+}
