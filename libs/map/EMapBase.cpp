@@ -1852,7 +1852,9 @@ long EMapBase::SaveCCP4Phase(const char *pathname)
 }
 
 #ifdef _WIN32
+#ifndef NAN
 #define NAN 0xfffa5a5a
+#endif
 #endif //Define NAN
 
 bool EMapBase::GetMTZColumnInfo(const std::string &fname,

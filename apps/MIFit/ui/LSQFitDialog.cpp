@@ -166,9 +166,9 @@ void LSQFitDialog::on_calcButton_clicked()
     }
     a = new double[n][3];
     b = new double[n][3];
-    sourcefrom = new (Residue(*[n]));
-    targetatoms = new (MIAtom(*[n]));
-    sourceatoms = new (MIAtom(*[n]));
+    sourcefrom = new Residue*[n];
+    targetatoms = new MIAtom*[n];
+    sourceatoms = new MIAtom*[n];
     w = new double[n];
     if (!w)
     {
